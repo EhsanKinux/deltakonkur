@@ -10,13 +10,13 @@ const CustomInput = ({ control, name, label, placeholder }: ICustomInput) => {
       name={name}
       render={({ field }) => (
         <div className="form-item">
-          <FormLabel>{label}</FormLabel>
+          {/* <FormLabel>{label}</FormLabel> */}
           <div className="flex w-full flex-col">
             <FormControl>
               <Input
                 id={name}
                 className="input-class"
-                placeholder={placeholder}
+                placeholder={label}
                 type={name === "password" ? "password" : "text"}
                 {...field}
               />
