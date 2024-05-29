@@ -1,21 +1,22 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import ErrorPage from "./components/pages/error/ErrorPage.tsx";
+import ReactDOM from "react-dom/client";
+import React from "react";
+import "./index.css";
+
+import Supervision from "./components/pages/dashboard/dashboardPages/supervision/Supervision.tsx";
+import DashboardLayout from "./components/pages/dashboard/dashboardLayout/DashboardLayout.tsx";
+import Accounting from "./components/pages/dashboard/dashboardPages/accounting/Accounting.tsx";
+import Canceling from "./components/pages/dashboard/dashboardPages/canceling/Canceling.tsx";
+import Advisors from "./components/pages/dashboard/dashboardPages/advisors/Advisors.tsx";
+import Content from "./components/pages/dashboard/dashboardPages/content/Content.tsx";
+import Reserve from "./components/pages/dashboard/dashboardPages/reserve/Reserve.tsx";
+import Users from "./components/pages/dashboard/dashboardPages/users/Users.tsx";
+import Dashboard from "./components/pages/dashboard/dashboard/Dashboard.tsx";
 import AuthLayout from "./components/pages/auth/authLayout/AuthLayout.tsx";
 import SignIn from "./components/pages/auth/sign-in/SignIn.tsx";
 import SignUp from "./components/pages/auth/sign-up/SignUp.tsx";
-import DashboardLayout from "./components/pages/dashboard/dashboardLayout/DashboardLayout.tsx";
-import Dashboard from "./components/pages/dashboard/dashboard/Dashboard.tsx";
-import Reserve from "./components/pages/dashboard/dashboardPages/reserve/Reserve.tsx";
-import Advisors from "./components/pages/dashboard/dashboardPages/advisors/Advisors.tsx";
-import Accounting from "./components/pages/dashboard/dashboardPages/accounting/Accounting.tsx";
-import Supervision from "./components/pages/dashboard/dashboardPages/supervision/Supervision.tsx";
-import Canceling from "./components/pages/dashboard/dashboardPages/canceling/Canceling.tsx";
-import Content from "./components/pages/dashboard/dashboardPages/content/Content.tsx";
-import Users from "./components/pages/dashboard/dashboardPages/users/Users.tsx";
+import ErrorPage from "./components/pages/error/ErrorPage.tsx";
+import App from "./App.tsx";
 
 const router = createBrowserRouter([
   {
