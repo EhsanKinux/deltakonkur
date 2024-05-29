@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import React from "react";
 import "./index.css";
@@ -24,6 +24,10 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
+      {
+        path: "/",
+        element: <Navigate to="/auth/signIn" />,
+      },
       {
         path: "auth",
         element: <AuthLayout />,
