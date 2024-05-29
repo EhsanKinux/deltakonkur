@@ -32,14 +32,14 @@
     @apply text-12 text-red-500;
   }
   .form-btn {
-    @apply text-16 rounded-[8px] font-semibold text-white bg-[#009595] shadow-form hover:text-black;
+    @apply flex justify-center items-center pb-4 text-16 rounded-[8px] font-semibold text-white bg-blue-600 shadow-form hover:text-black;
   }
   .auth-form {
     @apply flex w-full max-w-[520px] flex-col gap-5 py-10 md:gap-8;
     @apply rounded-2xl shadow-lg bg-white/30 backdrop-blur-lg;
   }
   .form-link {
-    @apply text-14 cursor-pointer font-medium text-[#009595];
+    @apply text-14 cursor-pointer font-medium text-blue-600;
   }
 
   /* Sidebar */
