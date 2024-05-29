@@ -57,9 +57,9 @@ const AuthForm = ({ type }: { type: string }) => {
           </div>
         </form>
       </Form>
-      <footer className="flex justify-center gap-4">
+      <footer className="flex justify-center gap-4 mt-4">
         <p className="text-14 font-normal text-gray-600">
-          {type === "sign-in" ? "حساب کاربری ندارم" : "ثبت نام کردم"}
+          {type === "sign-in" ? "حساب کاربری ندارید؟" : "ثبت نام کردم"}
         </p>
         <Link to={type === "sign-in" ? "/auth/signUp" : "/auth/signIn"} className="form-link">
           {type === "sign-in" ? "ثبت نام" : "ورود"}
