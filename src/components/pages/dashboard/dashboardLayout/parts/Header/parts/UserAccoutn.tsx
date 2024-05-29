@@ -22,7 +22,7 @@ const UserAccoutn = () => {
           </div>
           <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>User</AvatarFallback>
+            <AvatarFallback className="bg-slate-600"></AvatarFallback>
           </Avatar>
           <img src={downIcon} alt="icon" />
         </div>
