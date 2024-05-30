@@ -17,9 +17,8 @@ const DashboardLayout = () => {
           </div>
         </div>
         <div className="m-5 mr-0 max-h-screen overflow-y-auto">
-        <DHeader/>
-        <Outlet />
-          
+          <DHeader />
+          <Outlet />
         </div>
       </div>
     </main>

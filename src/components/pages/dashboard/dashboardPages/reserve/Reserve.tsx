@@ -8,6 +8,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import TopRight from "./form/topright/TopRight";
+import TopLeft from "./form/topleft/TopLeft";
+import Down from "./form/down/Down";
 
 const Reserve = () => {
   const navigate = useNavigate();
@@ -32,29 +35,25 @@ const Reserve = () => {
     setIsloading(true);
     console.table(data);
     if (data) {
-      navigate("/dashboard");
+      navigate("/dashboard/advisors");
     }
     setIsloading(false);
   };
   return (
-    <section>
+    <section className="mt-8">
+      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">ثبت نام</h1>
+
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <CustomRegInput
-            control={form.control}
-            name="name"
-            label="نام"
-            // placeholder="شماره تماس خود را وارد کنید"
-          />
-          <CustomRegInput control={form.control} name="lastName" label="نام خانوادگی" />
-          <CustomRegInput control={form.control} name="school" label="نام خانوادگی" />
-          <CustomRegInput control={form.control} name="cellphone" label="شماره همراه" />
-          <CustomRegInput control={form.control} name="tellphone" label="شماره تلفن منزل" />
-          <CustomRegInput control={form.control} name="parentsPhone" label="شماره همراه والدین" />
-          <CustomRegInput control={form.control} name="major" label="رشته تحصیلی" />
-          <CustomRegInput control={form.control} name="grade" label="مقطع تحصیلی" />
-          <div className="flex flex-col gap-4">
-            <Button type="submit" className="form-btn">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-4">
+          {/* <div className="felx flex-col gap-6"> */}
+            <div className="flex justify-between gap-8">
+              <TopRight form={form} />
+              <TopLeft form={form} />
+            </div>
+            <Down form={form} />
+          {/* </div> */}
+          <div className="flex flex-col gap-4 justify-center items-center">
+            <Button type="submit" className="form-btn w-1/2">
               {isloading ? (
                 <>
                   <Loader2 size={20} className="animate-spin" />

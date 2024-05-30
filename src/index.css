@@ -26,7 +26,7 @@
     @apply flex flex-col gap-1.5;
   }
   .input-class {
-    @apply text-16 placeholder:text-16 rounded-[8px] text-gray-900 bg-slate-300 border-none placeholder:text-gray-500;
+    @apply text-16 placeholder:text-16 rounded-[8px] text-gray-900 bg-slate-300 border-none;
   }
   .form-message {
     @apply text-12 text-red-500;
