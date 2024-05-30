@@ -1,5 +1,5 @@
 import { UseFormReturn } from "react-hook-form";
-import CustomRegInput from "../customInput/CustomRegInput";
+import CustomSelect from "./parts/customSelect/CustomSelect";
 
 const Down = ({
   form,
@@ -18,10 +18,29 @@ const Down = ({
     undefined
   >;
 }) => {
+  const { register, setValue } = form;
   return (
-    <div className="flex justify-center items-center w-full gap-4 py-8 shadow-sidebar bg-slate-100 rounded-xl">
-      <CustomRegInput control={form.control} name="major" label="رشته تحصیلی" />
-      <CustomRegInput control={form.control} name="grade" label="مقطع تحصیلی" />
+    <div className="flex justify-center items-center w-full gap-3 py-16  shadow-sidebar bg-slate-100 rounded-xl">
+      <CustomSelect
+        {...register("major")}
+        onValueChange={(value: any) => setValue("major", value)}
+        placeholder="رشته تحصیلی"
+        options={[
+          { value: "math", label: "ریاضی" },
+          { value: "biology", label: "تجربی" },
+          { value: "humanities", label: "علوم انسانی" },
+        ]}
+      />
+      <CustomSelect
+        {...register("grade")}
+        onValueChange={(value: any) => setValue("grade", value)}
+        placeholder="مقطع تحصیلی"
+        options={[
+          { value: "10", label: "پایه دهم" },
+          { value: "11", label: "پایه یازدهم" },
+          { value: "12", label: "پایه دوازدهم" },
+        ]}
+      />
     </div>
   );
 };
