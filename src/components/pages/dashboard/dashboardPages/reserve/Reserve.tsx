@@ -46,7 +46,7 @@ const Reserve = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-4">
           {/* <div className="felx flex-col gap-6"> */}
-            <div className="flex justify-between gap-8">
+            <div className="flex flex-col lg:flex-row justify-between gap-8">
               <TopRight form={form} />
               <TopLeft form={form} />
             </div>
