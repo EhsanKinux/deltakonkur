@@ -1,4 +1,3 @@
-import CustomRegInput from "@/components/pages/dashboard/dashboardPages/reserve/form/customInput/CustomRegInput";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { registerFormSchema } from "@/lib/schema/Schema";
@@ -11,10 +10,13 @@ import { z } from "zod";
 import TopRight from "./form/topright/TopRight";
 import TopLeft from "./form/topleft/TopLeft";
 import Down from "./form/down/Down";
+import { appStore } from "@/lib/store/appStore";
+import { v4 as uuidv4 } from "uuid";
 
 const Reserve = () => {
   const navigate = useNavigate();
   const [isloading, setIsloading] = useState(false);
+  const addFormData = appStore((state) => state.addFormData);
 
   const formSchema = registerFormSchema();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -34,6 +36,11 @@ const Reserve = () => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsloading(true);
     console.table(data);
+    const newEntry = {
+      id: uuidv4(),
+      ...data,
+    };
+    addFormData(newEntry);
     if (data) {
       navigate("/dashboard/advisors");
     }
@@ -46,11 +53,11 @@ const Reserve = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-4">
           {/* <div className="felx flex-col gap-6"> */}
-            <div className="flex flex-col lg:flex-row justify-between gap-8">
-              <TopRight form={form} />
-              <TopLeft form={form} />
-            </div>
-            <Down form={form} />
+          <div className="flex flex-col lg:flex-row justify-between gap-8">
+            <TopRight form={form} />
+            <TopLeft form={form} />
+          </div>
+          <Down form={form} />
           {/* </div> */}
           <div className="flex flex-col gap-4 justify-center items-center">
             <Button type="submit" className="form-btn w-1/2">
