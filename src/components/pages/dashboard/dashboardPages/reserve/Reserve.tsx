@@ -45,7 +45,7 @@ const Reserve = () => {
       home_phone: data.tellphone,
       school: data.school,
       field: data.major,
-      grade: parseInt(data.grade, 10) || 922337203685477, // Use a default value if necessary
+      grade: parseInt(data.grade, 10) || 922337203685477,
     };
     const newEntry = {
       id: uuidv4(),
