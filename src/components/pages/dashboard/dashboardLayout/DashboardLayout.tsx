@@ -16,8 +16,8 @@ const DashboardLayout = () => {
             <MobileNav />
           </div>
         </div>
+        <DHeader />
         <div className="m-5 mr-0 max-h-screen overflow-y-auto">
-          <DHeader />
           <Outlet />
         </div>
       </div>
