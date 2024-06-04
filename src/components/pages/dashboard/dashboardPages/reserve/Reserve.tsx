@@ -12,6 +12,7 @@ import TopLeft from "./form/topleft/TopLeft";
 import Down from "./form/down/Down";
 import { appStore } from "@/lib/store/appStore";
 import { v4 as uuidv4 } from "uuid";
+import { submit_student_register_service } from "@/lib/apis/reserve/service";
 
 const Reserve = () => {
   const navigate = useNavigate();
@@ -36,13 +37,25 @@ const Reserve = () => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsloading(true);
     console.table(data);
+    const transformedData = {
+      first_name: data.name,
+      last_name: data.lastName,
+      phone_number: data.cellphone,
+      parent_phone: data.parentsPhone,
+      home_phone: data.tellphone,
+      school: data.school,
+      field: data.major,
+      grade: parseInt(data.grade, 10) || 922337203685477, // Use a default value if necessary
+    };
     const newEntry = {
       id: uuidv4(),
       ...data,
     };
-    addFormData(newEntry);
     if (data) {
-      navigate("/dashboard/advisors");
+      await submit_student_register_service(transformedData).finally(() => {
+        addFormData(newEntry);
+        navigate("/dashboard/advisors");
+      });
     }
     setIsloading(false);
   };
