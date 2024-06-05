@@ -19,7 +19,7 @@
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         fontFamily: {
-          custom:['yekanBakh']
+          custom: ["yekanBakh"],
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -85,6 +85,7 @@
       boxShadow: {
         form: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
         sidebar: "8px 10px 16px 0px rgba(0, 0, 0, 0.05)",
+        glow: "0 0 20px rgba(0, 123, 255, 0.5)",
       },
       backgroundImage: {
         "panel-gradient": "linear-gradient(90deg, #009595 0%, #009595 100%)",
