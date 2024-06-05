@@ -1,7 +1,6 @@
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { sidebarLinks } from "@/constants";
 import { cn } from "@/lib/utils/cn/cn";
-import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import HamIcon from "@/assets/icons/hamburger.svg"
 

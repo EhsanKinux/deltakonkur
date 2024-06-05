@@ -3,9 +3,9 @@ import { Form } from "@/components/ui/form";
 import { authFormSchema } from "@/lib/schema/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import CustomInput from "./customInput/CustomInput";
 
@@ -13,7 +13,7 @@ const AuthForm = ({ type }: { type: string }) => {
   const navigate = useNavigate();
   const [isloading, setIsloading] = useState(false);
 
-  const formSchema = authFormSchema(type);
+  const formSchema = authFormSchema();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

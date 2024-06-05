@@ -74,7 +74,7 @@ const Reserve = () => {
           <Down form={form} />
           {/* </div> */}
           <div className="flex flex-col gap-4 justify-center items-center">
-            <Button type="submit" className="form-btn w-1/2 hover:bg-blue-300">
+            <Button type="submit" className="form-btn w-1/2 hover:bg-blue-800">
               {isloading ? (
                 <>
                   <Loader2 size={20} className="animate-spin" />

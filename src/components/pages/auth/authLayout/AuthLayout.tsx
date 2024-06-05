@@ -1,4 +1,3 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
 import Wallpaper from "@/assets/images/wallpaper2.jpg";
 // import Wallpaper from "@/assets/images/bgwallpaper.png";

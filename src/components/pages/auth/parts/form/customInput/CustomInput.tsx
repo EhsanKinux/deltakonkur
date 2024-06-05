@@ -1,9 +1,8 @@
-import { FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form";
-import React from "react";
+import { FormControl, FormField, FormMessage } from "@/components/ui/form";
 import { ICustomInput } from "./interface";
 import { Input } from "@/components/ui/input";
 
-const CustomInput = ({ control, name, label, placeholder }: ICustomInput) => {
+const CustomInput = ({ control, name, label }: ICustomInput) => {
   return (
     <FormField
       control={control}

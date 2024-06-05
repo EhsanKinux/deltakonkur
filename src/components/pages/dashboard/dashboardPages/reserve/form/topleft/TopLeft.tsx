@@ -1,4 +1,4 @@
-import React from "react";
+
 import CustomRegInput from "../customInput/CustomRegInput";
 import { UseFormReturn } from "react-hook-form";
 

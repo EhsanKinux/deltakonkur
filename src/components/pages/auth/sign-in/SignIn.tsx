@@ -1,4 +1,3 @@
-import React from "react";
 import AuthForm from "../parts/form/AuthForm";
 
 

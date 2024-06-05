@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import React from "react";
 
 import MobileNav from "./parts/sidebar/MobileNav";
 import Sidebar from "./parts/sidebar/Sidebar";
@@ -17,7 +16,7 @@ const DashboardLayout = () => {
           </div>
         </div>
         <DHeader />
-        <div className="m-5 mr-0 max-h-screen overflow-y-auto">
+        <div className="m-5 mr-0 max-h-screen overflow-y-auto custom-scrollbar">
           <Outlet />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { appStore } from "@/lib/store/appStore";
 import { get_registered_students, students_delete } from "@/lib/apis/reserve/service";
 import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/student/table/interfaces";

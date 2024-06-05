@@ -9,6 +9,36 @@
   direction: rtl;
   font-family: "yekanBakh";
 }
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #5c5c7b;
+  border-radius: 50px;
+  min-height: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #7878a3;
+}
 
 @font-face {
   font-family: "yekanBakh";
@@ -41,7 +71,6 @@
   }
   .form-btn {
     @apply flex justify-center items-center pb-2 text-16 rounded-[8px] font-semibold text-white bg-blue-600;
-    @apply hover:text-black;
   }
   .auth-form {
     @apply flex w-full max-w-[520px] flex-col gap-5 py-10 md:gap-8;

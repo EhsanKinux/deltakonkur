@@ -1,7 +1,28 @@
 import { FormControl, FormField, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Control } from "react-hook-form";
 
-const CustomRegInput = ({ control, name, label }) => {
+const CustomRegInput = ({
+  control,
+  name,
+  label,
+}: {
+  control: Control<
+    {
+      first_name: string;
+      last_name: string;
+      school: string;
+      phone_number: string;
+      home_phone: string;
+      parent_phone: string;
+      field: string;
+      grade: string;
+    },
+    undefined
+  >;
+  name: "first_name" | "last_name" | "school" | "phone_number" | "home_phone" | "parent_phone" | "field" | "grade";
+  label: string;
+}) => {
   return (
     <FormField
       control={control}
@@ -15,7 +36,7 @@ const CustomRegInput = ({ control, name, label }) => {
                 id={name}
                 className="w-[246px] mx-4 text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 md:w-[346px]"
                 placeholder={label}
-                type={name === "password" ? "password" : "text"}
+                type="text"
                 {...field}
               />
             </FormControl>
