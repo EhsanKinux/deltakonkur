@@ -4,11 +4,11 @@ import { FormEntry } from "./interfaces";
 
 export const stColumns: ColumnDef<FormEntry>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "first_name",
     header: "نام",
   },
   {
-    accessorKey: "lastName",
+    accessorKey: "last_name",
     header: "نام خانوادگی",
   },
   {
@@ -16,19 +16,19 @@ export const stColumns: ColumnDef<FormEntry>[] = [
     header: "نام مدرسه",
   },
   {
-    accessorKey: "cellphone",
+    accessorKey: "phone_number",
     header: "شماره همراه",
   },
   {
-    accessorKey: "tellphone",
+    accessorKey: "home_phone",
     header: "شماره تلفن منزل",
   },
   {
-    accessorKey: "parentsPhone",
+    accessorKey: "parent_phone",
     header: "شماره همراه والدین",
   },
   {
-    accessorKey: "major",
+    accessorKey: "field",
     header: "رشته تحصیلی",
   },
   {

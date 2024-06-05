@@ -7,13 +7,13 @@ const TopRight = ({
 }: {
   form: UseFormReturn<
     {
-      name: string;
-      lastName: string;
+      first_name: string;
+      last_name: string;
       school: string;
-      cellphone: string;
-      tellphone: string;
-      parentsPhone: string;
-      major: string;
+      phone_number: string;
+      home_phone: string;
+      parent_phone: string;
+      field: string;
       grade: string;
     },
     undefined
@@ -21,8 +21,8 @@ const TopRight = ({
 }) => {
   return (
     <div className="flex flex-col justify-between items-center w-full gap-3 py-16 shadow-sidebar bg-slate-100 rounded-xl">
-      <CustomRegInput control={form.control} name="name" label="نام" />
-      <CustomRegInput control={form.control} name="lastName" label="نام خانوادگی" />
+      <CustomRegInput control={form.control} name="first_name" label="نام" />
+      <CustomRegInput control={form.control} name="last_name" label="نام خانوادگی" />
       <CustomRegInput control={form.control} name="school" label="نام مدرسه" />
     </div>
   );

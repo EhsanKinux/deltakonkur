@@ -7,13 +7,13 @@ const TopLeft = ({
 }: {
   form: UseFormReturn<
     {
-      name: string;
-      lastName: string;
+      first_name: string;
+      last_name: string;
       school: string;
-      cellphone: string;
-      tellphone: string;
-      parentsPhone: string;
-      major: string;
+      phone_number: string;
+      home_phone: string;
+      parent_phone: string;
+      field: string;
       grade: string;
     },
     undefined
@@ -21,9 +21,9 @@ const TopLeft = ({
 }) => {
   return (
     <div className="flex flex-col justify-between items-center w-full gap-3 py-16 shadow-sidebar bg-slate-100 rounded-xl">
-      <CustomRegInput control={form.control} name="cellphone" label="شماره همراه" />
-      <CustomRegInput control={form.control} name="tellphone" label="شماره تلفن منزل" />
-      <CustomRegInput control={form.control} name="parentsPhone" label="شماره همراه والدین" />
+      <CustomRegInput control={form.control} name="phone_number" label="شماره همراه" />
+      <CustomRegInput control={form.control} name="home_phone" label="شماره تلفن منزل" />
+      <CustomRegInput control={form.control} name="parent_phone" label="شماره همراه والدین" />
     </div>
   );
 };

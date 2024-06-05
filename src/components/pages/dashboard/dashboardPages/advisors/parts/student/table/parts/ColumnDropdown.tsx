@@ -13,6 +13,7 @@ import { FormEntry } from "../interfaces";
 
 const ColumnDropdown = ({ formData }: { formData: FormEntry }) => {
   const { deleteStudent } = useStudentList();
+  // console.log(formData);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -22,8 +23,8 @@ const ColumnDropdown = ({ formData }: { formData: FormEntry }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-slate-200">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => deleteStudent(formData.id)}>حذف</DropdownMenuItem>
+        <DropdownMenuLabel>اقدامات</DropdownMenuLabel>
+        <DropdownMenuItem onClick={() => deleteStudent(formData?.id)}>حذف</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>ویرایش</DropdownMenuItem>
         {/* <DropdownMenuItem></DropdownMenuItem> */}

@@ -6,13 +6,13 @@ const Down = ({
 }: {
   form: UseFormReturn<
     {
-      name: string;
-      lastName: string;
+      first_name: string;
+      last_name: string;
       school: string;
-      cellphone: string;
-      tellphone: string;
-      parentsPhone: string;
-      major: string;
+      phone_number: string;
+      home_phone: string;
+      parent_phone: string;
+      field: string;
       grade: string;
     },
     undefined
@@ -22,8 +22,8 @@ const Down = ({
   return (
     <div className="flex justify-center items-center w-full gap-3 py-16  shadow-sidebar bg-slate-100 rounded-xl">
       <CustomSelect
-        {...register("major")}
-        onValueChange={(value: any) => setValue("major", value)}
+        {...register("field")}
+        onValueChange={(value: any) => setValue("field", value)}
         placeholder="رشته تحصیلی"
         options={[
           { value: "math", label: "ریاضی" },
