@@ -5,56 +5,57 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import TopRight from "./form/topright/TopRight";
 import TopLeft from "./form/topleft/TopLeft";
 import Down from "./form/down/Down";
-import { appStore } from "@/lib/store/appStore";
+// import { appStore } from "@/lib/store/appStore";
 import { v4 as uuidv4 } from "uuid";
 import { submit_student_register_service } from "@/lib/apis/reserve/service";
 
 const Reserve = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [isloading, setIsloading] = useState(false);
-  const addFormData = appStore((state) => state.addFormData);
+  // const addFormData = appStore((state) => state.addFormData);
 
   const formSchema = registerFormSchema();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      lastName: "",
+      first_name: "",
+      last_name: "",
       school: "",
-      cellphone: "",
-      tellphone: "",
-      parentsPhone: "",
-      major: "",
+      phone_number: "",
+      home_phone: "",
+      parent_phone: "",
+      field: "",
       grade: "",
     },
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsloading(true);
-    console.table(data);
     const transformedData = {
-      first_name: data.name,
-      last_name: data.lastName,
-      phone_number: data.cellphone,
-      parent_phone: data.parentsPhone,
-      home_phone: data.tellphone,
+      id: uuidv4(),
+      first_name: data.first_name,
+      last_name: data.last_name,
+      phone_number: data.phone_number,
+      parent_phone: data.parent_phone,
+      home_phone: data.home_phone,
       school: data.school,
-      field: data.major,
+      field: data.field,
       grade: parseInt(data.grade, 10) || 922337203685477,
     };
-    const newEntry = {
-      id: uuidv4(),
-      ...data,
-    };
-    if (data) {
-      await submit_student_register_service(transformedData).finally(() => {
-        addFormData(newEntry);
-        navigate("/dashboard/advisors");
+    // const newEntry = {
+      //   id: uuidv4(),
+      //   ...data,
+      // };
+      if (data) {
+        console.table(transformedData);
+        await submit_student_register_service(transformedData).finally(() => {
+          // addFormData(newEntry);
+          // navigate("/dashboard/advisors");
       });
     }
     setIsloading(false);
@@ -73,7 +74,7 @@ const Reserve = () => {
           <Down form={form} />
           {/* </div> */}
           <div className="flex flex-col gap-4 justify-center items-center">
-            <Button type="submit" className="form-btn w-1/2">
+            <Button type="submit" className="form-btn w-1/2 hover:bg-blue-300">
               {isloading ? (
                 <>
                   <Loader2 size={20} className="animate-spin" />
