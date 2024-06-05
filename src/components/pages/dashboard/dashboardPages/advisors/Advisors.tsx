@@ -2,7 +2,6 @@ import { useState } from "react";
 import AdvisorList from "./parts/advisor/AdvisorList";
 import StudentsList from "./parts/student/StudentsList";
 import { Card, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import listIcon from "@/assets/icons/collaboration.svg";
 
 const Advisors = () => {
