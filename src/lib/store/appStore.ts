@@ -15,9 +15,14 @@ type FormData = {
 type FormStore = {
   formData: FormData[];
   addFormData: (data: FormData) => void;
+  deleteFormData: (id: string) => void;
 };
 
 export const appStore = create<FormStore>((set) => ({
   formData: [],
   addFormData: (data: FormData) => set((state) => ({ formData: [...state.formData, data] })),
+  deleteFormData: (id: string) =>
+    set((state) => ({
+      formData: state.formData.filter((student) => student.id !== id),
+    })),
 }));
