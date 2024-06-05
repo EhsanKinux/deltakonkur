@@ -5,8 +5,6 @@ export async function fetchInstance(url: string, options?: RequestInit) {
     ...options,
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST,PATCH,OPTIONS",
     },
   }).then(async (response) => {
     if (!response.ok) {
