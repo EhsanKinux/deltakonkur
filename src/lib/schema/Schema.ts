@@ -8,12 +8,12 @@ export const authFormSchema = (type) =>
 
 export const registerFormSchema = () =>
   z.object({
-    name: z.string(),
-    lastName: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
     school: z.string(),
-    cellphone: z.string(),
-    tellphone: z.string(),
-    parentsPhone: z.string(),
-    major: z.string(),
+    phone_number: z.string(),
+    home_phone: z.string(),
+    parent_phone: z.string(),
+    field: z.string(),
     grade: z.string(),
   });
