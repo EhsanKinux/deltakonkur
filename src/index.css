@@ -70,7 +70,7 @@
     @apply text-12 text-red-500;
   }
   .form-btn {
-    @apply flex justify-center items-center pb-2 text-16 rounded-[8px] font-semibold text-white bg-blue-600;
+    @apply flex justify-center items-center pb-2 text-16 rounded-[8px] font-semibold text-white bg-blue-600 hover:!bg-blue-800;
   }
   .auth-form {
     @apply flex w-full max-w-[520px] flex-col gap-5 py-10 md:gap-8;
