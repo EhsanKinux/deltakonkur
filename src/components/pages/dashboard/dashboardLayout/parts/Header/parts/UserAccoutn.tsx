@@ -32,11 +32,11 @@ const UserAccoutn = () => {
           <span>حساب کاربری</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="px-4 py-2 text-gray-600 cursor-pointer">
+        <DropdownMenuItem className="rounded-xl px-4 py-2 text-gray-600 cursor-pointer hover:!bg-slate-50">
           <img src={profileIcon} className="ml-2 h-4 w-4" />
           <span>پروفایل</span>
         </DropdownMenuItem>
-        <DropdownMenuItem className="px-4 py-2 text-gray-600 cursor-pointer">
+        <DropdownMenuItem className="rounded-xl px-4 py-2 text-gray-600 cursor-pointer hover:!bg-slate-50">
           <img src={exitIcon} className="ml-2 h-4 w-4" />
           <span>خروج</span>
         </DropdownMenuItem>
