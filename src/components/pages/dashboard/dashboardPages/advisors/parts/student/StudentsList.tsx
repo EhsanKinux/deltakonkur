@@ -3,7 +3,6 @@ import { DataTable } from "../table/DataTable";
 import { stColumns } from "./table/ColumnStDef";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { useEffect, useMemo } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 
 const StudentsList = ({ setView }: { setView: React.Dispatch<React.SetStateAction<string>> }) => {
@@ -27,11 +26,9 @@ const StudentsList = ({ setView }: { setView: React.Dispatch<React.SetStateActio
           بازگشت
         </Button>
       </div>
-      {/* <ScrollArea className="min-h-screen w-full rounded-md border p-4"> */}
       <div className="flex flex-1 justify-center items-center w-full gap-3 py-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl overflow-y-auto">
         <DataTable columns={stColumns} data={memoizedFormData} />
       </div>
-      {/* </ScrollArea> */}
     </section>
   );
 };
