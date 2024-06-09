@@ -3,6 +3,8 @@ import AdvisorList from "./parts/advisor/AdvisorList";
 import StudentsList from "./parts/student/StudentsList";
 import { Card, CardTitle } from "@/components/ui/card";
 import listIcon from "@/assets/icons/collaboration.svg";
+import studentHatIcon from "@/assets/icons/studenHat.svg";
+import advisorBagIcon from "@/assets/icons/advisorBag.svg";
 
 const Advisors = () => {
   const [view, setView] = useState("cards"); // 'cards', 'advisors', 'students'
@@ -22,13 +24,19 @@ const Advisors = () => {
               className="flex justify-center items-center w-1/3 gap-3 py-16 mt-4 shadow-sidebar bg-slate-50 border border-slate-600 rounded-xl cursor-pointer hover:shadow-glow transition-shadow duration-300 ease-in-out"
               onClick={() => setView("advisors")}
             >
-              <CardTitle className="text-lg font-semibold">لیست مشاوران</CardTitle>
+              <CardTitle className="flex gap-2 justify-center items-center text-lg font-semibold">
+                <img src={advisorBagIcon} alt="advisorBagIcon" />
+                <span className="pt-2">لیست مشاوران</span>
+              </CardTitle>
             </Card>
             <Card
               className="flex flex-col justify-center items-center w-1/3 gap-3 py-16 mt-4 shadow-sidebar bg-slate-50 border border-slate-600  rounded-xl cursor-pointe hover:shadow-glow transition-shadow duration-300 ease-in-outr"
               onClick={() => setView("students")}
             >
-              <CardTitle className="text-lg font-semibold">لیست دانش‌آموزان</CardTitle>
+              <CardTitle className="flex gap-2 justify-center items-center text-lg font-semibold">
+                <img src={studentHatIcon} alt="studenthatIcon" />
+                <span className="pt-2">لیست دانش‌آموزان</span>
+              </CardTitle>
             </Card>
           </div>
         </div>
