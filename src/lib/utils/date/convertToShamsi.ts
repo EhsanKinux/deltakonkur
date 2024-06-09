@@ -1,6 +1,6 @@
-import jalaali from 'jalaali-js'
+import jalaali from "jalaali-js";
 
-export const convertToShamsi = (isoDate) => {
+export const convertToShamsi = (isoDate: string) => {
   const date = new Date(isoDate);
   const gregorianDate = {
     gy: date.getFullYear(),
@@ -12,5 +12,3 @@ export const convertToShamsi = (isoDate) => {
 
   return `${shamsiDate.jy}-${shamsiDate.jm}-${shamsiDate.jd}`;
 };
-
-
