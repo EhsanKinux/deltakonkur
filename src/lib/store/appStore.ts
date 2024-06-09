@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { convertToShamsi } from "../utils/date/convertToShamsi";
 
 type FormData = {
   id: string;
@@ -10,6 +11,7 @@ type FormData = {
   parent_phone: string;
   field: string;
   grade: string;
+  created?: string;
 };
 
 type FormStore = {
@@ -20,14 +22,20 @@ type FormStore = {
 
 export const appStore = create<FormStore>((set) => ({
   formData: [],
-  addFormData: (data: FormData) =>
+  addFormData: (data: FormData) => {
+    const convertedData = {
+      ...data,
+      created: data.created ? convertToShamsi(data.created) : undefined,
+    };
+
     set((state) => {
-      if (!state.formData.some((student) => student.id === data.id)) {
-        return { formData: [...state.formData, data] };
+      if (!state.formData.some((student) => student.id === convertedData.id)) {
+        return { formData: [...state.formData, convertedData] };
       } else {
         return state;
       }
-    }),
+    });
+  },
   deleteFormData: (id: string) =>
     set((state) => ({
       formData: state.formData.filter((student) => student.id !== id),
