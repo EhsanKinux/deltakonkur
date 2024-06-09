@@ -20,7 +20,14 @@ type FormStore = {
 
 export const appStore = create<FormStore>((set) => ({
   formData: [],
-  addFormData: (data: FormData) => set((state) => ({ formData: [...state.formData, data] })),
+  addFormData: (data: FormData) =>
+    set((state) => {
+      if (!state.formData.some((student) => student.id === data.id)) {
+        return { formData: [...state.formData, data] };
+      } else {
+        return state;
+      }
+    }),
   deleteFormData: (id: string) =>
     set((state) => ({
       formData: state.formData.filter((student) => student.id !== id),
