@@ -45,7 +45,7 @@ const ColumnDropdown = ({ formData }: { formData: FormEntry }) => {
         <DropdownMenuContent align="end" className="bg-slate-200 rounded-xl">
           <DropdownMenuLabel>اقدامات</DropdownMenuLabel>
           <DropdownMenuItem
-            className="cursor-pointer flex gap-2 hover:!bg-red-100 rounded-[5px]"
+            className="cursor-pointer flex gap-2 hover:!bg-red-200 rounded-[5px]"
             onClick={handleOpenDeleteDialog}
           >
             <img className="w-5" src={userDeleteIcon} alt="userDeleteIcon" />
