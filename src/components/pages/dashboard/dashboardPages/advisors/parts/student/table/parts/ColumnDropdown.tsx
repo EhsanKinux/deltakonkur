@@ -32,11 +32,17 @@ const ColumnDropdown = ({ formData }: { formData: FormEntry }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-slate-200 rounded-xl">
         <DropdownMenuLabel>اقدامات</DropdownMenuLabel>
-        <DropdownMenuItem className="cursor-pointer" onClick={() => setDeleteDialogOpen(true)}>
+        <DropdownMenuItem
+          className="cursor-pointer hover:!bg-slate-100 rounded-[5px]"
+          onClick={() => setDeleteDialogOpen(true)}
+        >
           حذف
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-slate-300" />
-        <DropdownMenuItem className="cursor-pointer" onClick={() => setEditDialogOpen(true)}>
+        <DropdownMenuItem
+          className="cursor-pointer hover:!bg-slate-100 rounded-[5px]"
+          onClick={() => setEditDialogOpen(true)}
+        >
           ویرایش
         </DropdownMenuItem>
       </DropdownMenuContent>
