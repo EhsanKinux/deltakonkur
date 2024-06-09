@@ -57,14 +57,24 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button className="rounded-[8px] border border-black" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-          قبلی
-        </Button>
-        <Button className="rounded-[8px] border border-black" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-          بعدی
-        </Button>
-        <span>
+      <div className="flex items-center justify-between space-x-2 py-4">
+        <div>
+          <Button
+            className="rounded-[8px] border border-black"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            قبلی
+          </Button>
+          <Button
+            className="rounded-[8px] border border-black"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            بعدی
+          </Button>
+        </div>
+        <span className="text-slate-600 text-sm">
           صفحه {table.getState().pagination.pageIndex + 1} از {table.getPageCount()}
         </span>
       </div>
