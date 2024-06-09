@@ -26,9 +26,9 @@ const Down = ({
         onValueChange={(value: any) => setValue("field", value)}
         placeholder="رشته تحصیلی"
         options={[
-          { value: "math", label: "ریاضی" },
-          { value: "biology", label: "تجربی" },
-          { value: "humanities", label: "علوم انسانی" },
+          { value: "ریاضی", label: "ریاضی" },
+          { value: "تجربی", label: "تجربی" },
+          { value: "علوم انسانی", label: "علوم انسانی" },
         ]}
       />
       <CustomSelect
