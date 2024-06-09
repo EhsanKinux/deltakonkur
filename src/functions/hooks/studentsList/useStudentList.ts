@@ -19,8 +19,12 @@ export const useStudentList = () => {
 
   const deleteStudent = async (studentId: string) => {
     try {
-      await students_delete({ studentId });
-      deleteFormData(studentId);
+      const response = await students_delete({ studentId });
+      if (response === null || response.ok) {
+        deleteFormData(studentId);
+      } else {
+        console.error("Failed to delete student: ", response.statusText);
+      }
     } catch (error) {
       console.error("Failed to delete student:", error);
     }
