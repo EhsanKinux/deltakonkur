@@ -10,10 +10,12 @@ import {
 // import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import moreIcon from "@/assets/icons/more.svg";
 import { FormEntry } from "../interfaces";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { EditStudentDialog } from "./edit/EditStudentDialog";
 import { useState } from "react";
 import DeleteConfirmationDialog from "./edit/DeleteConfirmationDialog";
+import userDeleteIcon from "@/assets/icons/userRemove.svg";
+import userEditIcon from "@/assets/icons/userEdit.svg";
 
 const ColumnDropdown = ({ formData }: { formData: FormEntry }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -43,14 +45,16 @@ const ColumnDropdown = ({ formData }: { formData: FormEntry }) => {
         <DropdownMenuContent align="end" className="bg-slate-200 rounded-xl">
           <DropdownMenuLabel>اقدامات</DropdownMenuLabel>
           <DropdownMenuItem
-            className="cursor-pointer hover:!bg-slate-100 rounded-[5px]"
+            className="cursor-pointer flex gap-2 hover:!bg-red-100 rounded-[5px]"
             onClick={handleOpenDeleteDialog}
           >
-            حذف
+            <img className="w-5" src={userDeleteIcon} alt="userDeleteIcon" />
+            <span>حذف</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator className="bg-slate-300" />
-          <DropdownMenuItem className="cursor-pointer hover:!bg-slate-100 rounded-[5px]" onClick={handleOpenEditDialog}>
-            ویرایش
+          <DropdownMenuItem className="cursor-pointer flex gap-2 hover:!bg-green-100 rounded-[5px]" onClick={handleOpenEditDialog}>
+            <img className="w-5" src={userEditIcon} alt="userEditIcon" />
+            <span>ویرایش</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
