@@ -36,6 +36,10 @@ export const stColumns: ColumnDef<FormEntry>[] = [
     header: "مقطع تحصیلی",
   },
   {
+    accessorKey: "created",
+    header: "تاریخ ثبت",
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const formData = row.original;
