@@ -58,7 +58,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </Table>
       </div>
       <div className="flex items-center justify-between space-x-2 py-4">
-        <div>
+        <div className="flex gap-2">
           <Button
             className="rounded-[8px] border border-black"
             onClick={() => table.previousPage()}
