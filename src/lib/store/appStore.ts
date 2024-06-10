@@ -16,12 +16,21 @@ type FormData = {
 
 type FormStore = {
   formData: FormData[];
+  studentInfo: FormData | null;
+  loading: boolean;
+  error: string | null;
   addFormData: (data: FormData) => void;
   deleteFormData: (id: string) => void;
+  setStudentInfo: (data: FormData | null) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
 };
 
 export const appStore = create<FormStore>((set) => ({
   formData: [],
+  studentInfo: null,
+  loading: false,
+  error: null,
   addFormData: (data: FormData) => {
     const convertedData = {
       ...data,
@@ -40,4 +49,7 @@ export const appStore = create<FormStore>((set) => ({
     set((state) => ({
       formData: state.formData.filter((student) => student.id !== id),
     })),
+  setStudentInfo: (data) => set({ studentInfo: data }),
+  setLoading: (loading) => set({ loading }),
+  setError: (error) => set({ error }),
 }));
