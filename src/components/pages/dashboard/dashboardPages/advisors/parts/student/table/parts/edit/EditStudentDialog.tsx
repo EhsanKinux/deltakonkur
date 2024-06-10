@@ -13,8 +13,15 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerFormSchema } from "@/lib/schema/Schema";
+import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
+import { useEffect } from "react";
+import Name from "./parts/name/Name";
+import TellNumbers from "./parts/tel-numbers/TellNumbers";
+import FieldGrade from "./parts/fieldAndGrade/FieldGrade";
 
 export function EditStudentDialog() {
+  const { studentInfo, loading, error } = useStudentList();
+
   const formSchema = registerFormSchema();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -29,7 +36,27 @@ export function EditStudentDialog() {
       grade: "",
     },
   });
+
+  useEffect(() => {
+    if (studentInfo) {
+      form.reset({
+        first_name: studentInfo.first_name,
+        last_name: studentInfo.last_name,
+        school: studentInfo.school,
+        phone_number: studentInfo.phone_number,
+        home_phone: studentInfo.home_phone,
+        parent_phone: studentInfo.parent_phone,
+        field: studentInfo.field,
+        grade: studentInfo.grade,
+      });
+    }
+  }, [studentInfo, form]);
+
   const onSubmit = async () => {};
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <>
       <DialogContent className="bg-slate-100 !rounded-[10px]">
@@ -41,13 +68,11 @@ export function EditStudentDialog() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
               <div className="flex">
-                <CustomEditInput control={form.control} name="first_name" label="نام" customclass="w-1/2" />
-                <CustomEditInput control={form.control} name="last_name" label="نام خانوادگی" customclass="w-1/2" />
+                <Name form={form} />
               </div>
-              <CustomEditInput control={form.control} name="phone_number" label="شماره همراه" />
-              <CustomEditInput control={form.control} name="parent_phone" label="شماره همراه والدین" />
-              <CustomEditInput control={form.control} name="phone_number" label="شماره تلفن منزل" />
+              <TellNumbers form={form} />
               <CustomEditInput control={form.control} name="school" label="نام مدرسه" />
+              <FieldGrade form={form} />
             </form>
           </Form>
         </div>
