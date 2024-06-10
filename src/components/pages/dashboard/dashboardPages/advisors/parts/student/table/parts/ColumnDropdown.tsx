@@ -7,7 +7,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import moreIcon from "@/assets/icons/more.svg";
 import { FormEntry } from "../interfaces";
 import { Dialog } from "@/components/ui/dialog";
@@ -16,21 +15,22 @@ import { useState } from "react";
 import DeleteConfirmationDialog from "./edit/DeleteConfirmationDialog";
 import userDeleteIcon from "@/assets/icons/userRemove.svg";
 import userEditIcon from "@/assets/icons/userEdit.svg";
+import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 
 const ColumnDropdown = ({ formData }: { formData: FormEntry }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-
-  console.log(formData);
+  const { fetchStudentInfo } = useStudentList();
 
   const handleOpenDeleteDialog = (e: React.MouseEvent) => {
     e.stopPropagation();
     setDeleteDialogOpen(true);
   };
 
-  const handleOpenEditDialog = (e: React.MouseEvent) => {
+  const handleOpenEditDialog = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setEditDialogOpen(true);
+    await fetchStudentInfo(formData?.id);
   };
 
   return (
@@ -52,7 +52,10 @@ const ColumnDropdown = ({ formData }: { formData: FormEntry }) => {
             <span>حذف</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator className="bg-slate-300" />
-          <DropdownMenuItem className="cursor-pointer flex gap-2 hover:!bg-green-100 rounded-[5px]" onClick={handleOpenEditDialog}>
+          <DropdownMenuItem
+            className="cursor-pointer flex gap-2 hover:!bg-green-100 rounded-[5px]"
+            onClick={handleOpenEditDialog}
+          >
             <img className="w-5" src={userEditIcon} alt="userEditIcon" />
             <span>ویرایش</span>
           </DropdownMenuItem>
