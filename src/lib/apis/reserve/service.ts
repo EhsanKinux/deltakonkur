@@ -8,3 +8,6 @@ export const get_registered_students = () => fetchInstance(`api/register/student
 
 export const students_delete = ({ studentId }: { studentId: string }) =>
   fetchInstance(`api/register/students/${studentId}/`, { method: "DELETE" });
+
+export const get_student_info = ({ studentId }: { studentId: string }) =>
+  fetchInstance(`api/register/students/${studentId}/`, { method: "GET" });
