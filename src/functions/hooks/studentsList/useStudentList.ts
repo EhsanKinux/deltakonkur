@@ -1,12 +1,18 @@
 import { useCallback, useState } from "react";
 import { appStore } from "@/lib/store/appStore";
-import { get_registered_students, students_delete } from "@/lib/apis/reserve/service";
+import { get_registered_students, get_student_info, students_delete } from "@/lib/apis/reserve/service";
 import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/student/table/interfaces";
 
 export const useStudentList = () => {
   const addFormData = appStore((state) => state.addFormData);
   const deleteFormData = appStore((state) => state.deleteFormData);
   const [dataLoaded, setDataLoaded] = useState(false);
+  const studentInfo = appStore((state) => state.studentInfo);
+  const loading = appStore((state) => state.loading);
+  const error = appStore((state) => state.error);
+  const setStudentInfo = appStore((state) => state.setStudentInfo);
+  const setLoading = appStore((state) => state.setLoading);
+  const setError = appStore((state) => state.setError);
 
   const getData = useCallback(async () => {
     if (!dataLoaded) {
@@ -30,8 +36,28 @@ export const useStudentList = () => {
     }
   };
 
+  const fetchStudentInfo = useCallback(
+    async (studentId: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await get_student_info({ studentId });
+        setStudentInfo(data);
+      } catch (err) {
+        setError(err.message || "Failed to fetch student information");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading, setStudentInfo]
+  );
+
   return {
     deleteStudent,
     getData,
+    studentInfo,
+    loading,
+    error,
+    fetchStudentInfo,
   };
 };
