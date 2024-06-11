@@ -52,7 +52,7 @@ export function EditStudentDialog() {
         parent_phone: studentInfo.parent_phone,
         field: studentInfo.field,
         grade: studentInfo.grade,
-        created: convertToShamsi2(studentInfo.created),
+        created: convertToShamsi2(studentInfo.created) || "",
       });
     }
   }, [studentInfo, form]);
