@@ -11,3 +11,11 @@ export const students_delete = ({ studentId }: { studentId: string }) =>
 
 export const get_student_info = ({ studentId }: { studentId: string }) =>
   fetchInstance(`api/register/students/${studentId}/`, { method: "GET" });
+
+export const update_student_info = ({
+  studentId,
+  ...body
+}: {
+  studentId: string;
+  body: ISubmitStudentRegisterService;
+}) => fetchInstance(`api/register/students/${studentId}`, { method: "PATCH", body: JSON.stringify(body) });
