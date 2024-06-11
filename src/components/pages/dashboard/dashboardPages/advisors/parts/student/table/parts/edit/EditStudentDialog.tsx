@@ -18,6 +18,8 @@ import { useEffect } from "react";
 import Name from "./parts/name/Name";
 import TellNumbers from "./parts/tel-numbers/TellNumbers";
 import FieldGrade from "./parts/fieldAndGrade/FieldGrade";
+import DateAndTime from "./parts/dateAndTime/DateAndTime";
+import { convertToIso, convertToShamsi2 } from "@/lib/utils/date/convertDate";
 
 export function EditStudentDialog() {
   const { studentInfo, loading, error } = useStudentList();
@@ -34,11 +36,13 @@ export function EditStudentDialog() {
       parent_phone: "",
       field: "",
       grade: "",
+      created: "",
     },
   });
 
   useEffect(() => {
     if (studentInfo) {
+      console.log(studentInfo);
       form.reset({
         first_name: studentInfo.first_name,
         last_name: studentInfo.last_name,
@@ -48,11 +52,21 @@ export function EditStudentDialog() {
         parent_phone: studentInfo.parent_phone,
         field: studentInfo.field,
         grade: studentInfo.grade,
+        created: convertToShamsi2(studentInfo.created),
       });
     }
   }, [studentInfo, form]);
 
-  const onSubmit = async () => {};
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    if (data) {
+      const isoCreated = convertToIso(data.created);
+      const modifiedData = {
+        ...data,
+        created: isoCreated,
+      };
+      console.table(modifiedData);
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -67,30 +81,28 @@ export function EditStudentDialog() {
         <div className="py-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-              <div className="flex">
+              <div className="flex gap-2">
                 <Name form={form} />
               </div>
               <TellNumbers form={form} />
-              <CustomEditInput control={form.control} name="school" label="نام مدرسه" />
+              <CustomEditInput control={form.control} name="school" label="نام مدرسه" customclass="w-[90%]" />
               <FieldGrade form={form} />
+              <DateAndTime form={form} />
+              <DialogFooter>
+                <div className="flex justify-between items-center w-full">
+                  <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2">
+                    ثبت ویرایش
+                  </Button>
+                  <DialogClose asChild>
+                    <Button className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2">
+                      لغو
+                    </Button>
+                  </DialogClose>
+                </div>
+              </DialogFooter>
             </form>
           </Form>
         </div>
-        <DialogFooter>
-          <div className="flex justify-between items-center w-full">
-            <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2">
-              ثبت ویرایش
-            </Button>
-            <DialogClose asChild>
-              <Button
-                type="submit"
-                className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
-              >
-                لغو
-              </Button>
-            </DialogClose>
-          </div>
-        </DialogFooter>
       </DialogContent>
     </>
   );
