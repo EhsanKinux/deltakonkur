@@ -21,7 +21,7 @@ const StudentsList = ({ setView }: { setView: React.Dispatch<React.SetStateActio
       <div className="flex justify-between">
         <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">دانش‌آموزان</h1>
         <Button
-          className="flex gap-2 pt-4 pb-3 font-bold text-slate-600 rounded hover:bg-blue-500 hover:text-white"
+          className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600"
           onClick={() => setView("cards")}
         >
           <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />

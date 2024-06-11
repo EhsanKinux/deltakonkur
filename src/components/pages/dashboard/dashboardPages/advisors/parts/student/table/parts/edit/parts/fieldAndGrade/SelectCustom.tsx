@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const SelectCustom = React.forwardRef<HTMLButtonElement, any>((props, ref) => {
   return (
-    <Select {...props}>
+    <Select {...props} disabled>
       <SelectTrigger
         ref={ref}
         className="mx-4 text-16 placeholder:text-16 rounded-[8px] text-gray-500 border-slate-400"

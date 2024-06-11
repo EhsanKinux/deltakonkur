@@ -17,6 +17,7 @@ const CustomRegInput = ({
       parent_phone: string;
       field: string;
       grade: string;
+      created:string;
     },
     undefined
   >;

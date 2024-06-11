@@ -1,4 +1,4 @@
-import { FormControl, FormField, FormMessage } from "@/components/ui/form";
+import { FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Control } from "react-hook-form";
 
@@ -18,6 +18,7 @@ const CustomEditInput = ({
       parent_phone: string;
       field: string;
       grade: string;
+      created: string;
     },
     undefined
   >;
@@ -30,12 +31,13 @@ const CustomEditInput = ({
       control={control}
       name={name}
       render={({ field }) => (
-        <div className={`flex flex-grow ${customclass}`}>
-          <FormControl className="flex-grow">
+        <div className={`flex flex-col gap-2 ${customclass}`}>
+          <FormLabel className="pr-5">{label}</FormLabel>
+          <FormControl className="">
             <Input
+              disabled
               id={name}
               className="mx-4 text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
-              placeholder={label}
               type="text"
               {...field}
             />

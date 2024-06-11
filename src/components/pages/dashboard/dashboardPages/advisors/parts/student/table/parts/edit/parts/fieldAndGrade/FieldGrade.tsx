@@ -14,6 +14,7 @@ const FieldGrade = ({
       parent_phone: string;
       field: string;
       grade: string;
+      created: string;
     },
     undefined
   >;
@@ -21,12 +22,13 @@ const FieldGrade = ({
   const { register, setValue, watch } = form;
   const fieldValue = watch("field");
   const gradeValue = watch("grade");
+
   return (
-    <div className="flex justify-center items-center gap-3 bg-slate-100 rounded-xl">
+    <div className="flex justify-center items-center !gap-2 bg-slate-100 rounded-xl">
       <SelectCustom
         {...register("field")}
         value={fieldValue}
-        onValueChange={(value: any) => setValue("field", value)}
+        onValueChange={(value: string) => setValue("field", value)}
         placeholder="رشته تحصیلی"
         options={[
           { value: "ریاضی", label: "ریاضی" },
@@ -37,7 +39,7 @@ const FieldGrade = ({
       <SelectCustom
         {...register("grade")}
         value={gradeValue}
-        onValueChange={(value: any) => setValue("grade", value)}
+        onValueChange={(value: string) => setValue("grade", value)}
         placeholder="مقطع تحصیلی"
         options={[
           { value: "10", label: "پایه دهم" },

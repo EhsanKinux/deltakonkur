@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { convertToShamsi } from "../utils/date/convertToShamsi";
+import { convertToShamsi } from "../utils/date/convertDate";
 
 type FormData = {
   id: string;

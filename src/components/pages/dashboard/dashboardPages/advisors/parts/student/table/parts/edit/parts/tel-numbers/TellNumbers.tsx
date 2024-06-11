@@ -14,15 +14,16 @@ const TellNumbers = ({
       parent_phone: string;
       field: string;
       grade: string;
+      created:string;
     },
     undefined
   >;
 }) => {
   return (
     <>
-      <CustomEditInput control={form.control} name="phone_number" label="شماره همراه" />
-      <CustomEditInput control={form.control} name="parent_phone" label="شماره همراه والدین" />
-      <CustomEditInput control={form.control} name="phone_number" label="شماره تلفن منزل" />
+      <CustomEditInput control={form.control} name="phone_number" label="شماره همراه" customclass="w-[90%]" />
+      <CustomEditInput control={form.control} name="parent_phone" label="شماره همراه والدین" customclass="w-[90%]" />
+      <CustomEditInput control={form.control} name="phone_number" label="شماره تلفن منزل" customclass="w-[90%]" />
     </>
   );
 };

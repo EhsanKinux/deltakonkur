@@ -16,4 +16,5 @@ export const registerFormSchema = () =>
     parent_phone: z.string(),
     field: z.string(),
     grade: z.string(),
+    created: z.string(),
   });

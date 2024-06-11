@@ -14,14 +14,15 @@ const Name = ({
       parent_phone: string;
       field: string;
       grade: string;
+      created:string;
     },
     undefined
   >;
 }) => {
   return (
     <>
-      <CustomEditInput control={form.control} name="first_name" label="نام" customclass="w-1/2" />
-      <CustomEditInput control={form.control} name="last_name" label="نام خانوادگی" customclass="w-1/2" />
+      <CustomEditInput control={form.control} name="first_name" label="نام" />
+      <CustomEditInput control={form.control} name="last_name" label="نام خانوادگی" />
     </>
   );
 };
