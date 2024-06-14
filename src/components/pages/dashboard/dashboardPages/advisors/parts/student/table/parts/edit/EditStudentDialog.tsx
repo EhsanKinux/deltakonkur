@@ -52,24 +52,29 @@ export function EditStudentDialog() {
         parent_phone: studentInfo.parent_phone,
         field: studentInfo.field,
         grade: studentInfo.grade,
-        created: convertToShamsi2(studentInfo.created) || "",
+        created: studentInfo.created ? convertToShamsi2(studentInfo.created) : "",
       });
     }
-  }, [studentInfo, form]);
+    if (error) {
+      console.log(error);
+    }
+  }, [studentInfo, form, error]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    if (data) {
-      const isoCreated = convertToIso(data.created);
+    if (data && studentInfo) {
+      // const isoCreated = convertToIso(data.created);
       const modifiedData = {
         ...data,
-        created: isoCreated,
+        created: convertToIso(data.created),
       };
+      console.table(convertToIso(data.created));
       console.table(modifiedData);
+      // await updateStudentInfo(studentInfo.id, modifiedData);
     }
   };
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  // if (error) return <div>Error: {error}</div>;
 
   return (
     <>

@@ -15,6 +15,7 @@ const TopRight = ({
       parent_phone: string;
       field: string;
       grade: string;
+      created: string;
     },
     undefined
   >;

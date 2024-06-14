@@ -1,6 +1,11 @@
 import { useCallback, useState } from "react";
 import { appStore } from "@/lib/store/appStore";
-import { get_registered_students, get_student_info, students_delete } from "@/lib/apis/reserve/service";
+import {
+  get_registered_students,
+  get_student_info,
+  students_delete,
+  update_student_info,
+} from "@/lib/apis/reserve/service";
 import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/student/table/interfaces";
 
 export const useStudentList = () => {
@@ -44,7 +49,36 @@ export const useStudentList = () => {
         const data = await get_student_info({ studentId });
         setStudentInfo(data);
       } catch (err) {
-        setError(err.message || "Failed to fetch student information");
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to fetch student information");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading, setStudentInfo]
+  );
+
+  const updateStudentInfo = useCallback(
+    async (studentId: string, body: any) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await update_student_info({ studentId, ...body });
+        if (response.ok) {
+          const updatedInfo = await response.json();
+          setStudentInfo(updatedInfo);
+        } else {
+          setError("Failed to update student information");
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to update student information");
+        }
       } finally {
         setLoading(false);
       }
@@ -59,5 +93,6 @@ export const useStudentList = () => {
     loading,
     error,
     fetchStudentInfo,
+    updateStudentInfo,
   };
 };

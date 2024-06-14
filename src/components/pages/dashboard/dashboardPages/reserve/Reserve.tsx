@@ -31,7 +31,7 @@ const Reserve = () => {
       parent_phone: "",
       field: "",
       grade: "",
-      created:"",
+      created: "",
     },
   });
 
@@ -47,16 +47,17 @@ const Reserve = () => {
       school: data.school,
       field: data.field,
       grade: parseInt(data.grade, 10) || 922337203685477,
+      created: data.created,
     };
     // const newEntry = {
-      //   id: uuidv4(),
-      //   ...data,
-      // };
-      if (data) {
-        console.table(transformedData);
-        await submit_student_register_service(transformedData).finally(() => {
-          // addFormData(newEntry);
-          // navigate("/dashboard/advisors");
+    //   id: uuidv4(),
+    //   ...data,
+    // };
+    if (data) {
+      console.table(transformedData);
+      await submit_student_register_service(transformedData).finally(() => {
+        // addFormData(newEntry);
+        // navigate("/dashboard/advisors");
       });
     }
     setIsloading(false);
