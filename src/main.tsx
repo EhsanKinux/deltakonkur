@@ -1,27 +1,37 @@
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import ReactDOM from "react-dom/client";
+import { Suspense, lazy } from "react";
 import "./index.css";
 
-import Supervision from "./components/pages/dashboard/dashboardPages/supervision/Supervision.tsx";
-import DashboardLayout from "./components/pages/dashboard/dashboardLayout/DashboardLayout.tsx";
-import Accounting from "./components/pages/dashboard/dashboardPages/accounting/Accounting.tsx";
-import Canceling from "./components/pages/dashboard/dashboardPages/canceling/Canceling.tsx";
-import Advisors from "./components/pages/dashboard/dashboardPages/advisors/Advisors.tsx";
-import Content from "./components/pages/dashboard/dashboardPages/content/Content.tsx";
-import Reserve from "./components/pages/dashboard/dashboardPages/reserve/Reserve.tsx";
-import Users from "./components/pages/dashboard/dashboardPages/users/Users.tsx";
-import Dashboard from "./components/pages/dashboard/dashboard/Dashboard.tsx";
-import AuthLayout from "./components/pages/auth/authLayout/AuthLayout.tsx";
-import SignIn from "./components/pages/auth/sign-in/SignIn.tsx";
-import SignUp from "./components/pages/auth/sign-up/SignUp.tsx";
-import ErrorPage from "./components/pages/error/ErrorPage.tsx";
-import App from "./App.tsx";
+// Lazy load components
+const Supervision = lazy(() => import("./components/pages/dashboard/dashboardPages/supervision/Supervision.tsx"));
+const DashboardLayout = lazy(() => import("./components/pages/dashboard/dashboardLayout/DashboardLayout.tsx"));
+const Accounting = lazy(() => import("./components/pages/dashboard/dashboardPages/accounting/Accounting.tsx"));
+const Canceling = lazy(() => import("./components/pages/dashboard/dashboardPages/canceling/Canceling.tsx"));
+const Advisors = lazy(() => import("./components/pages/dashboard/dashboardPages/advisors/Advisors.tsx"));
+const Content = lazy(() => import("./components/pages/dashboard/dashboardPages/content/Content.tsx"));
+const Reserve = lazy(() => import("./components/pages/dashboard/dashboardPages/reserve/Reserve.tsx"));
+const Users = lazy(() => import("./components/pages/dashboard/dashboardPages/users/Users.tsx"));
+const Dashboard = lazy(() => import("./components/pages/dashboard/dashboard/Dashboard.tsx"));
+const AuthLayout = lazy(() => import("./components/pages/auth/authLayout/AuthLayout.tsx"));
+const SignIn = lazy(() => import("./components/pages/auth/sign-in/SignIn.tsx"));
+const SignUp = lazy(() => import("./components/pages/auth/sign-up/SignUp.tsx"));
+const ErrorPage = lazy(() => import("./components/pages/error/ErrorPage.tsx"));
+const App = lazy(() => import("./App.tsx"));
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-    errorElement: <ErrorPage />,
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <App />
+      </Suspense>
+    ),
+    errorElement: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <ErrorPage />
+      </Suspense>
+    ),
     children: [
       {
         path: "/",
@@ -29,53 +39,101 @@ const router = createBrowserRouter([
       },
       {
         path: "auth",
-        element: <AuthLayout />,
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <AuthLayout />
+          </Suspense>
+        ),
         children: [
           {
             path: "signIn",
-            element: <SignIn />,
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <SignIn />
+              </Suspense>
+            ),
           },
           {
             path: "signUp",
-            element: <SignUp />,
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <SignUp />
+              </Suspense>
+            ),
           },
         ],
       },
       {
         path: "dashboard",
-        element: <DashboardLayout />,
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <DashboardLayout />
+          </Suspense>
+        ),
         children: [
           {
             path: "",
-            element: <Dashboard />,
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <Dashboard />
+              </Suspense>
+            ),
           },
           {
             path: "reserve",
-            element: <Reserve />,
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <Reserve />
+              </Suspense>
+            ),
           },
           {
             path: "advisors",
-            element: <Advisors />,
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <Advisors />
+              </Suspense>
+            ),
           },
           {
             path: "accounting",
-            element: <Accounting />,
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <Accounting />
+              </Suspense>
+            ),
           },
           {
             path: "supervision",
-            element: <Supervision />,
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <Supervision />
+              </Suspense>
+            ),
           },
           {
             path: "canceling",
-            element: <Canceling />,
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <Canceling />
+              </Suspense>
+            ),
           },
           {
             path: "content",
-            element: <Content />,
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <Content />
+              </Suspense>
+            ),
           },
           {
             path: "users",
-            element: <Users />,
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <Users />
+              </Suspense>
+            ),
           },
         ],
       },
