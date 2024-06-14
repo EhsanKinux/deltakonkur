@@ -18,4 +18,4 @@ export const update_student_info = ({
 }: {
   studentId: string;
   body: ISubmitStudentRegisterService;
-}) => fetchInstance(`api/register/students/${studentId}`, { method: "PATCH", body: JSON.stringify(body) });
+}) => fetchInstance(`api/register/students/${studentId}/`, { method: "PATCH", body: JSON.stringify(body) });
