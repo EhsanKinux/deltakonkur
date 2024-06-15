@@ -3,21 +3,18 @@ import { DataTable } from "../table/DataTable";
 import { columns } from "./parts/table/ColumnDef";
 import backIcon from "@/assets/icons/back.svg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AdvisorRegisterForm from "./parts/advisorRegisteration/AdvisorRegisterForm";
 
 const AdvisorList = ({ setView }: { setView: React.Dispatch<React.SetStateAction<string>> }) => {
   const FormEntry = [
     {
-      id: "hello",
-      name: "jjjj",
-      lastName: "hekklkjo",
-      id_number: "3758614389",
-      num_of_students: "107",
-      active_st: "98",
-      canceled_st: "34",
-      stoped_st: "12",
-      saticfaction: "45",
-      advisor_level: "67",
-      account_num: "5423675498341234",
+      id: "",
+      first_name: "علی",
+      last_name: "حضرتی",
+      field: "تجربی",
+      phone_number: "09876654",
+      national_id: "23456465786",
+      bank_account: "324523453245",
     },
   ];
   return (
@@ -45,7 +42,9 @@ const AdvisorList = ({ setView }: { setView: React.Dispatch<React.SetStateAction
           <TabsContent value="advisorsTable">
             <DataTable columns={columns} data={FormEntry} />
           </TabsContent>
-          <TabsContent value="register">Make changes to your account here.</TabsContent>
+          <TabsContent value="register">
+            <AdvisorRegisterForm />
+          </TabsContent>
         </Tabs>
       </div>
     </section>
