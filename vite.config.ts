@@ -23,4 +23,7 @@ export default defineConfig({
       },
     },
   },
+  optimizeDeps: {
+    include: ['date-fns/locale/fa-IR']
+  }
 });
