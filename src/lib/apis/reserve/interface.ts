@@ -7,6 +7,6 @@ export interface ISubmitStudentRegisterService {
   home_phone: string;
   school: string;
   field: string;
-  grade: number;
+  grade: string;
   created:string;
 }

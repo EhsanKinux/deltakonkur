@@ -7,6 +7,7 @@ import {
   update_student_info,
 } from "@/lib/apis/reserve/service";
 import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/student/table/interfaces";
+import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 
 export const useStudentList = () => {
   const addFormData = appStore((state) => state.addFormData);
@@ -62,11 +63,11 @@ export const useStudentList = () => {
   );
 
   const updateStudentInfo = useCallback(
-    async (studentId: string, body: any) => {
+    async (studentId: string, body: ISubmitStudentRegisterService) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await update_student_info({ studentId, ...body });
+        const response = await update_student_info({ studentId, body });
         if (response.ok) {
           const updatedInfo = await response.json();
           setStudentInfo(updatedInfo);
