@@ -1,13 +1,14 @@
 import { useCallback, useState } from "react";
 import { appStore } from "@/lib/store/appStore";
+
+import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/student/table/interfaces";
+import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 import {
   get_registered_students,
   get_student_info,
   students_delete,
   update_student_info,
-} from "@/lib/apis/reserve/service";
-import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/student/table/interfaces";
-import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
+} from "@/lib/apis/students/service";
 
 export const useStudentList = () => {
   const addFormData = appStore((state) => state.addFormData);
