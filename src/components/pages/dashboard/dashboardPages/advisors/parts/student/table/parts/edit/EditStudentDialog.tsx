@@ -18,16 +18,17 @@ import { useEffect } from "react";
 import Name from "./parts/name/Name";
 import TellNumbers from "./parts/tel-numbers/TellNumbers";
 import FieldGrade from "./parts/fieldAndGrade/FieldGrade";
-import DateAndTime from "./parts/dateAndTime/DateAndTime";
-import { convertToIso, convertToShamsi2 } from "@/lib/utils/date/convertDate";
+import DateAndTime2 from "./parts/dateAndTime/DateAndTime2";
+import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 
 export function EditStudentDialog() {
-  const { studentInfo, loading, error } = useStudentList();
+  const { studentInfo, loading, error, updateStudentInfo } = useStudentList();
 
   const formSchema = registerFormSchema();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id:"",
       first_name: "",
       last_name: "",
       school: "",
@@ -44,6 +45,7 @@ export function EditStudentDialog() {
     if (studentInfo) {
       console.log(studentInfo);
       form.reset({
+        id: studentInfo.id,
         first_name: studentInfo.first_name,
         last_name: studentInfo.last_name,
         school: studentInfo.school,
@@ -52,7 +54,7 @@ export function EditStudentDialog() {
         parent_phone: studentInfo.parent_phone,
         field: studentInfo.field,
         grade: studentInfo.grade,
-        created: studentInfo.created ? convertToShamsi2(studentInfo.created) : "",
+        created: studentInfo.created,
       });
     }
     if (error) {
@@ -62,14 +64,12 @@ export function EditStudentDialog() {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (data && studentInfo) {
-      // const isoCreated = convertToIso(data.created);
-      const modifiedData = {
+      const modifiedData: ISubmitStudentRegisterService = {
         ...data,
-        created: convertToIso(data.created),
+        created: String(data.created),
       };
-      console.table(convertToIso(data.created));
       console.table(modifiedData);
-      // await updateStudentInfo(studentInfo.id, modifiedData);
+      await updateStudentInfo(studentInfo.id, modifiedData);
     }
   };
 
@@ -92,7 +92,7 @@ export function EditStudentDialog() {
               <TellNumbers form={form} />
               <CustomEditInput control={form.control} name="school" label="نام مدرسه" customclass="w-[90%]" />
               <FieldGrade form={form} />
-              <DateAndTime form={form} />
+              <DateAndTime2 form={form} />
               <DialogFooter>
                 <div className="flex justify-between items-center w-full">
                   <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2">
