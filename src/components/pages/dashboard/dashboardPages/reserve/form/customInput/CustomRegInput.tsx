@@ -9,6 +9,7 @@ const CustomRegInput = ({
 }: {
   control: Control<
     {
+      id: string;
       first_name: string;
       last_name: string;
       school: string;
