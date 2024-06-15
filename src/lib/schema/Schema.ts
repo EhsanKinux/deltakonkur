@@ -19,3 +19,14 @@ export const registerFormSchema = () =>
     grade: z.string(),
     created: z.string(),
   });
+
+export const registerAdvisorFormSchema = () =>
+  z.object({
+    id: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+    field: z.string(),
+    phone_number: z.string(),
+    national_id: z.string(),
+    bank_account: z.string(),
+  });
