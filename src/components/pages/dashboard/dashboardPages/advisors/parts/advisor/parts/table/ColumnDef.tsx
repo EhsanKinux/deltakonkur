@@ -13,43 +13,27 @@ import { FormEntry } from "./interfaces";
 
 export const columns: ColumnDef<FormEntry>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "first_name",
     header: "نام",
   },
   {
-    accessorKey: "lastName",
+    accessorKey: "last_name",
     header: "نام خانوادگی",
   },
   {
-    accessorKey: "id_number",
+    accessorKey: "phone_number",
+    header: "شماره همراه",
+  },
+  {
+    accessorKey: "national_id",
     header: "کد ملی",
   },
   {
-    accessorKey: "num_of_students",
-    header: "کل دانش‌آموزان",
+    accessorKey: "field",
+    header: "رشته",
   },
   {
-    accessorKey: "active_st",
-    header: "دانش‌آموزان فعال",
-  },
-  {
-    accessorKey: "canceled_st",
-    header: "دانش‌آموزان کنسلی",
-  },
-  {
-    accessorKey: "stoped_st",
-    header: "دانش‌آموزان توقف شده",
-  },
-  {
-    accessorKey: "saticfaction",
-    header: "درصد رضایت",
-  },
-  {
-    accessorKey: "advisor_level",
-    header: "سطح مشاور",
-  },
-  {
-    accessorKey: "account_num",
+    accessorKey: "bank_account",
     header: "شماره حساب",
   },
   {
