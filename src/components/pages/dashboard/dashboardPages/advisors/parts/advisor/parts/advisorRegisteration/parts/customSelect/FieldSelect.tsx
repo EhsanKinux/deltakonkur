@@ -1,4 +1,4 @@
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, useController } from "react-hook-form";
 import CustomFieldSelect from "./CustomFieldSelect";
 
 const FieldSelect = ({
@@ -17,12 +17,21 @@ const FieldSelect = ({
     undefined
   >;
 }) => {
-  const { register, setValue } = form;
+  const { control } = form;
+
+  const {
+    field: { onChange, value },
+  } = useController({
+    name: "field",
+    control,
+    defaultValue: "",
+  });
+
   return (
     <div className="flex justify-center items-center w-full">
       <CustomFieldSelect
-        {...register("field")}
-        onValueChange={(value: any) => setValue("field", value)}
+        value={value}
+        onValueChange={(value: any) => onChange(value)}
         placeholder="رشته تحصیلی"
         options={[
           { value: "ریاضی", label: "ریاضی" },
