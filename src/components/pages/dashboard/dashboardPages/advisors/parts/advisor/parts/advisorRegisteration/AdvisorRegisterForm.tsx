@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import CustomAdvisorInput from "./parts/CustomAdvisorInput";
 import FieldSelect from "./parts/customSelect/FieldSelect";
+import { submit_advisors_register_service } from "@/lib/apis/advisors/service";
 
 const AdvisorRegisterForm = () => {
   const [isloading, setIsloading] = useState(false);
@@ -28,8 +29,16 @@ const AdvisorRegisterForm = () => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsloading(true);
-    console.log(data);
-    setIsloading(false);
+    try {
+      await submit_advisors_register_service(data);
+      console.log("Form submitted successfully:", data);
+      // Optionally reset the form here
+      form.reset();
+    } catch (error) {
+      console.error("Form submission error:", error);
+    } finally {
+      setIsloading(false);
+    }
   };
 
   return (
@@ -41,8 +50,10 @@ const AdvisorRegisterForm = () => {
             <CustomAdvisorInput control={form.control} name="last_name" label="نام خانوادگی" />
           </div>
           <CustomAdvisorInput control={form.control} name="phone_number" label="شماره همراه" />
-          <CustomAdvisorInput control={form.control} name="national_id" label="کد ملی" />
-          <CustomAdvisorInput control={form.control} name="bank_account" label="شماره حساب" />
+          <div className="flex justify-between gap-8">
+            <CustomAdvisorInput control={form.control} name="national_id" label="کد ملی" />
+            <CustomAdvisorInput control={form.control} name="bank_account" label="شماره حساب" />
+          </div>
           <FieldSelect form={form} />
           <div className="flex flex-col gap-4 justify-center items-center">
             <Button type="submit" className="form-btn w-1/2 hover:bg-blue-800">
