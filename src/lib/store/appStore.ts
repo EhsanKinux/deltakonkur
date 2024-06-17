@@ -1,36 +1,30 @@
+// src/store/appStore.ts
 import { create } from "zustand";
 import { convertToShamsi } from "../utils/date/convertDate";
-
-type FormData = {
-  id: string;
-  first_name: string;
-  last_name: string;
-  school: string;
-  phone_number: string;
-  home_phone: string;
-  parent_phone: string;
-  field: string;
-  grade: string;
-  created?: string;
-};
-
-type FormStore = {
-  formData: FormData[];
-  studentInfo: FormData | null;
-  loading: boolean;
-  error: string | null;
-  addFormData: (data: FormData) => void;
-  deleteFormData: (id: string) => void;
-  setStudentInfo: (data: FormData | null) => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
-};
+import { Advisor, FormData, FormStore } from "./types";
 
 export const appStore = create<FormStore>((set) => ({
   formData: [],
+  advisors: [],
+  advisorInfo: null,
   studentInfo: null,
   loading: false,
   error: null,
+  setAdvisors: (advisors: Advisor[]) => set({ advisors }),
+  addAdvisor: (advisor: Advisor) =>
+    set((state) => {
+      const advisorExists = state.advisors.some((existingAdvisor) => existingAdvisor.id === advisor.id);
+      if (!advisorExists) {
+        const updatedAdvisors = [...state.advisors, advisor];
+        return { advisors: updatedAdvisors };
+      }
+      return state;
+    }),
+  deleteAdvisor: (advisorId) =>
+    set((state) => ({
+      advisors: state.advisors.filter((advisor) => advisor.id !== advisorId),
+    })),
+  setAdvisorInfo: (advisorInfo) => set({ advisorInfo }),
   addFormData: (data: FormData) => {
     const convertedData = {
       ...data,
