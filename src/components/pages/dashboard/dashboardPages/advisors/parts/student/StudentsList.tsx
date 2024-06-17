@@ -6,7 +6,7 @@ import { useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import backIcon from "@/assets/icons/back.svg";
 
-const StudentsList = ({ setView }: { setView: React.Dispatch<React.SetStateAction<string>> }) => {
+const StudentsList = () => {
   const formData = appStore((state) => state.formData);
   const { getData } = useStudentList();
 
@@ -17,12 +17,11 @@ const StudentsList = ({ setView }: { setView: React.Dispatch<React.SetStateActio
   const memoizedFormData = useMemo(() => formData, [formData]);
 
   return (
-    <section className="mt-8 flex flex-col gap-3 h-[20%]">
+    <section className="mt-8 flex flex-col gap-3">
       <div className="flex justify-between">
         <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">دانش‌آموزان</h1>
         <Button
           className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600"
-          onClick={() => setView("cards")}
         >
           <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
           <span>بازگشت</span>

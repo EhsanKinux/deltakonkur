@@ -7,6 +7,7 @@ const CustomAdvisorInput = ({
   name,
   label,
   customclass,
+  placeHolder
 }: {
   control: Control<
     {
@@ -23,19 +24,21 @@ const CustomAdvisorInput = ({
   name: "first_name" | "last_name" | "field" | "phone_number" | "national_id" | "bank_account";
   label: string;
   customclass?: string;
+  placeHolder: string;
 }) => {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <div className={`flex flex-col gap-2 ${customclass}`}>
+        <div className={`flex flex-col w-full gap-2 ${customclass}`}>
           <FormLabel className="pr-5">{label}</FormLabel>
           <FormControl className="">
             <Input
               id={name}
-              className="mx-4 text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
+              className="mx-4 text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-400"
               type="text"
+              placeholder={placeHolder}
               {...field}
             />
           </FormControl>

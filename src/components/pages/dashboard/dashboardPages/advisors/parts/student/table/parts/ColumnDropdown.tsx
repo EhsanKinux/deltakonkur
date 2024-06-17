@@ -12,7 +12,7 @@ import { FormEntry } from "../interfaces";
 import { Dialog } from "@/components/ui/dialog";
 import { EditStudentDialog } from "./edit/EditStudentDialog";
 import { useState } from "react";
-import DeleteConfirmationDialog from "./edit/DeleteConfirmationDialog";
+import DeleteConfirmationDialog from "./delete/DeleteConfirmationDialog";
 import userDeleteIcon from "@/assets/icons/userRemove.svg";
 import userEditIcon from "@/assets/icons/userEdit.svg";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
