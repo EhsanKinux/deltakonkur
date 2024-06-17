@@ -23,9 +23,9 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className="rounded-md border">
+      <div className="!rounded-xl border overflow-hidden">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-slate-300">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
