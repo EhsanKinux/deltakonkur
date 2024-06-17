@@ -8,7 +8,9 @@ const Supervision = lazy(() => import("./components/pages/dashboard/dashboardPag
 const DashboardLayout = lazy(() => import("./components/pages/dashboard/dashboardLayout/DashboardLayout.tsx"));
 const Accounting = lazy(() => import("./components/pages/dashboard/dashboardPages/accounting/Accounting.tsx"));
 const Canceling = lazy(() => import("./components/pages/dashboard/dashboardPages/canceling/Canceling.tsx"));
-const Advisors = lazy(() => import("./components/pages/dashboard/dashboardPages/advisors/Advisors.tsx"));
+const AllStudents = lazy(() => import("./components/pages/dashboard/dashboardPages/advisors/parts/student/StudentsList.tsx"));
+const AllAdvisors = lazy(() => import("./components/pages/dashboard/dashboardPages/advisors/parts/advisor/AdvisorList.tsx"));
+const NewAdvisor = lazy(() => import("./components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorRegisteration/AdvisorRegisterForm.tsx"));
 const Content = lazy(() => import("./components/pages/dashboard/dashboardPages/content/Content.tsx"));
 const Reserve = lazy(() => import("./components/pages/dashboard/dashboardPages/reserve/Reserve.tsx"));
 const Users = lazy(() => import("./components/pages/dashboard/dashboardPages/users/Users.tsx"));
@@ -91,7 +93,23 @@ const router = createBrowserRouter([
             path: "advisors",
             element: (
               <Suspense fallback={<div>Loading...</div>}>
-                <Advisors />
+                <AllAdvisors />
+              </Suspense>
+            ),
+          },
+          {
+            path: "advisors/register",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <NewAdvisor />
+              </Suspense>
+            ),
+          },
+          {
+            path: "students",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <AllStudents />
               </Suspense>
             ),
           },
