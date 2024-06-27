@@ -8,17 +8,19 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FormEntry } from "../../interfaces";
+import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 
 const DeleteConfirmation = ({
   setDeleteDialogOpen,
-  // formData,
+  formData,
 }: {
   setDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   formData: FormEntry;
 }) => {
+  const { advisorDelete } = useAdvisorsList();
 
   const handleDeleteConfirm = () => {
-    // deleteStudent(formData?.id);
+    advisorDelete(formData?.id);
     setDeleteDialogOpen(false);
   };
 
