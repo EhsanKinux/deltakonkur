@@ -2,7 +2,7 @@ import backIcon from "@/assets/icons/back.svg";
 import { Button } from "@/components/ui/button";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { appStore } from "@/lib/store/appStore";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { DataTable } from "../table/DataTable";
 import { columns } from "./parts/table/ColumnDef";
 

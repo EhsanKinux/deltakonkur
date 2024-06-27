@@ -41,8 +41,8 @@ const Advisors = () => {
           </div>
         </div>
       )}
-      {view === "advisors" && <AdvisorList setView={setView} />}
-      {view === "students" && <StudentsList setView={setView} />}
+      {view === "advisors" && <AdvisorList />}
+      {view === "students" && <StudentsList />}
     </section>
   );
 };

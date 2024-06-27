@@ -1,5 +1,4 @@
 import FakeLogo from "@/assets/icons/FakeTwichIcon.svg";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { sidebarLinks } from "@/constants";
 import { cn } from "@/lib/utils/cn/cn";
 import { Link, useLocation } from "react-router-dom";

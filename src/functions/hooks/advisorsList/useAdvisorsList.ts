@@ -1,7 +1,7 @@
 import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/table/interfaces";
 import { get_registered_advisors } from "@/lib/apis/advisors/service";
 import { appStore } from "@/lib/store/appStore";
-import { Advisor } from "@/lib/store/types";
+// import { Advisor } from "@/lib/store/types";
 import { useCallback, useState } from "react";
 
 export const useAdvisorsList = () => {

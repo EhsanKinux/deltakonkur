@@ -7,17 +7,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { FormEntry } from "../../interfaces";
 
 const DeleteConfirmation = ({
   setDeleteDialogOpen,
-  formData,
+  // formData,
 }: {
   setDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   formData: FormEntry;
 }) => {
-//   const { deleteStudent } = useStudentList();
 
   const handleDeleteConfirm = () => {
     // deleteStudent(formData?.id);
