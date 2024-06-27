@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import ColumnDropdown from "./parts/ColumnDropdown";
+import StudentDialogButtons from "./parts/StudentDialogButtons";
 import { FormEntry } from "./interfaces";
 
 export const stColumns: ColumnDef<FormEntry>[] = [
@@ -43,7 +43,7 @@ export const stColumns: ColumnDef<FormEntry>[] = [
     id: "actions",
     cell: ({ row }) => {
       const formData = row.original;
-      return <ColumnDropdown formData={formData} />;
+      return <StudentDialogButtons formData={formData} />;
     },
   },
 ];

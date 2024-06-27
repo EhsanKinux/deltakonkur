@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { FormEntry } from "./interfaces";
-import ColumnDropdown from "./parts/ColumnDropdown";
+import AdvisorDialogButtons from "./parts/AdvisorDialogButtons";
 
 export const columns: ColumnDef<FormEntry>[] = [
   {
@@ -32,7 +32,7 @@ export const columns: ColumnDef<FormEntry>[] = [
     cell: ({ row }) => {
       const formData = row.original;
 
-      return <ColumnDropdown formData={formData} />;
+      return <AdvisorDialogButtons formData={formData} />;
     },
   },
 ];
