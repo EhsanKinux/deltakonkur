@@ -1,11 +1,11 @@
 import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/table/interfaces";
-import { get_registered_advisors } from "@/lib/apis/advisors/service";
+import { advisors_delete, get_registered_advisors } from "@/lib/apis/advisors/service";
 import { appStore } from "@/lib/store/appStore";
 // import { Advisor } from "@/lib/store/types";
 import { useCallback, useState } from "react";
 
 export const useAdvisorsList = () => {
-  // const deleteAdvisor = appStore((state) => state.deleteAdvisor);
+  const deleteAdvisor = appStore((state) => state.deleteAdvisor);
   // const advisorInfo = appStore((state) => state.advisorInfo);
   // const loading = appStore((state) => state.loading);
   // const error = appStore((state) => state.error);
@@ -37,5 +37,18 @@ export const useAdvisorsList = () => {
     }
   }, [addAdvisor, dataLoaded, setLoading, setError]);
 
-  return { getAdvisorsData };
+  const advisorDelete = async (advisorId: string) => {
+    try {
+      const response = await advisors_delete({ advisorId });
+      if (response === null || response.ok) {
+        deleteAdvisor(advisorId);
+      } else {
+        console.error("Failed to delete advisor: ", response.statusText);
+      }
+    } catch (error) {
+      console.error("Failed to delete student:", error);
+    }
+  };
+
+  return { getAdvisorsData, advisorDelete };
 };
