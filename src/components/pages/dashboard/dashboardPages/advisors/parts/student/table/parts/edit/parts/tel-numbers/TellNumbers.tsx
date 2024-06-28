@@ -16,6 +16,7 @@ const TellNumbers = ({
       field: string;
       grade: string;
       created:string;
+      advisor:string;
     },
     undefined
   >;

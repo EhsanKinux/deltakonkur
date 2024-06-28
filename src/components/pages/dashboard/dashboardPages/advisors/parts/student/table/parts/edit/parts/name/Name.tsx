@@ -16,6 +16,7 @@ const Name = ({
       field: string;
       grade: string;
       created:string;
+      advisor:string;
     },
     undefined
   >;

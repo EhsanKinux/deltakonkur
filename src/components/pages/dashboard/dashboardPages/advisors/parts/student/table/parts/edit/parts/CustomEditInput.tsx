@@ -20,6 +20,7 @@ const CustomEditInput = ({
       field: string;
       grade: string;
       created: string;
+      advisor:string;
     },
     undefined
   >;
