@@ -12,23 +12,35 @@ import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerFormSchema } from "@/lib/schema/Schema";
+import { editStudentFormSchema } from "@/lib/schema/Schema";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Name from "./parts/name/Name";
 import TellNumbers from "./parts/tel-numbers/TellNumbers";
 import FieldGrade from "./parts/fieldAndGrade/FieldGrade";
 import DateAndTime2 from "./parts/dateAndTime/DateAndTime2";
 import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
+import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
+import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
+import { appStore } from "@/lib/store/appStore";
 
 export function EditStudentDialog() {
   const { studentInfo, loading, error, updateStudentInfo } = useStudentList();
+  const { getAdvisorsData } = useAdvisorsList();
+  const advisors = appStore((state) => state.advisors);
 
-  const formSchema = registerFormSchema();
+  useEffect(() => {
+    getAdvisorsData();
+  }, [getAdvisorsData]);
+
+  // Memoize advisors to prevent unnecessary re-renders
+  const memoizedAdvisors = useMemo(() => advisors, [advisors]);
+
+  const formSchema = editStudentFormSchema();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      id:"",
+      id: "",
       first_name: "",
       last_name: "",
       school: "",
@@ -38,6 +50,7 @@ export function EditStudentDialog() {
       field: "",
       grade: "",
       created: "",
+      advisor: "",
     },
   });
 
@@ -55,6 +68,7 @@ export function EditStudentDialog() {
         field: studentInfo.field,
         grade: studentInfo.grade,
         created: studentInfo.created,
+        advisor: "",
       });
     }
     if (error) {
@@ -64,6 +78,7 @@ export function EditStudentDialog() {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (data && studentInfo) {
+      const { advisor, ...studentInfo } = data;
       const modifiedData: ISubmitStudentRegisterService = {
         ...data,
         created: String(data.created),
@@ -92,7 +107,10 @@ export function EditStudentDialog() {
               <TellNumbers form={form} />
               <CustomEditInput control={form.control} name="school" label="نام مدرسه" customclass="w-[90%]" />
               <FieldGrade form={form} />
-              <DateAndTime2 form={form} />
+              <div className="flex gap-5">
+                <SelectStudentAdvisor form={form} memoizedAdvisors={memoizedAdvisors} />
+                <DateAndTime2 form={form} />
+              </div>
               <DialogFooter>
                 <div className="flex justify-between items-center w-full">
                   <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2">
