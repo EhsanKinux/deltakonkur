@@ -25,7 +25,7 @@ import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList"
 import { appStore } from "@/lib/store/appStore";
 
 export function EditStudentDialog() {
-  const { studentInfo, loading, error, updateStudentInfo } = useStudentList();
+  const { studentInfo, loading, error, updateStudentInfo, setAdvisorForStudent } = useStudentList();
   const { getAdvisorsData } = useAdvisorsList();
   const advisors = appStore((state) => state.advisors);
 
@@ -56,7 +56,6 @@ export function EditStudentDialog() {
 
   useEffect(() => {
     if (studentInfo) {
-      console.log(studentInfo);
       form.reset({
         id: studentInfo.id,
         first_name: studentInfo.first_name,
@@ -77,6 +76,7 @@ export function EditStudentDialog() {
   }, [studentInfo, form, error]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    console.log("Form submitted with data:", data);
     if (data && studentInfo) {
       const { advisor, ...studentInfo } = data;
       const modifiedData: ISubmitStudentRegisterService = {
@@ -85,6 +85,9 @@ export function EditStudentDialog() {
       };
       console.table(modifiedData);
       await updateStudentInfo(studentInfo.id, modifiedData);
+      if (advisor) {
+        await setAdvisorForStudent({ studentId: studentInfo.id, advisorId: advisor });
+      }
     }
   };
 
