@@ -8,9 +8,22 @@ const Supervision = lazy(() => import("./components/pages/dashboard/dashboardPag
 const DashboardLayout = lazy(() => import("./components/pages/dashboard/dashboardLayout/DashboardLayout.tsx"));
 const Accounting = lazy(() => import("./components/pages/dashboard/dashboardPages/accounting/Accounting.tsx"));
 const Canceling = lazy(() => import("./components/pages/dashboard/dashboardPages/canceling/Canceling.tsx"));
-const AllStudents = lazy(() => import("./components/pages/dashboard/dashboardPages/advisors/parts/student/StudentsList.tsx"));
-const AllAdvisors = lazy(() => import("./components/pages/dashboard/dashboardPages/advisors/parts/advisor/AdvisorList.tsx"));
-const NewAdvisor = lazy(() => import("./components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorRegisteration/AdvisorRegisterForm.tsx"));
+const AllStudents = lazy(
+  () => import("./components/pages/dashboard/dashboardPages/advisors/parts/student/StudentsList.tsx")
+);
+const AllAdvisors = lazy(
+  () => import("./components/pages/dashboard/dashboardPages/advisors/parts/advisor/AdvisorList.tsx")
+);
+const NewAdvisor = lazy(
+  () =>
+    import(
+      "./components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorRegisteration/AdvisorRegisterForm.tsx"
+    )
+);
+const AdvisorDetail = lazy(
+  () =>
+    import("./components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/AdvisorDetail.tsx")
+);
 const Content = lazy(() => import("./components/pages/dashboard/dashboardPages/content/Content.tsx"));
 const Reserve = lazy(() => import("./components/pages/dashboard/dashboardPages/reserve/Reserve.tsx"));
 const Users = lazy(() => import("./components/pages/dashboard/dashboardPages/users/Users.tsx"));
@@ -94,6 +107,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<div>Loading...</div>}>
                 <AllAdvisors />
+              </Suspense>
+            ),
+          },
+          {
+            path: "advisors/:advisorId",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <AdvisorDetail />
               </Suspense>
             ),
           },
