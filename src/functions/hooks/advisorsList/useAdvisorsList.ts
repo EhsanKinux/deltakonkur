@@ -1,5 +1,5 @@
 import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/table/interfaces";
-import { advisors_delete, get_registered_advisors } from "@/lib/apis/advisors/service";
+import { advisors_delete, get_advisor_info, get_registered_advisors } from "@/lib/apis/advisors/service";
 import { appStore } from "@/lib/store/appStore";
 // import { Advisor } from "@/lib/store/types";
 import { useCallback, useState } from "react";
@@ -9,7 +9,7 @@ export const useAdvisorsList = () => {
   // const advisorInfo = appStore((state) => state.advisorInfo);
   // const loading = appStore((state) => state.loading);
   // const error = appStore((state) => state.error);
-  // const setAdvisorInfo = appStore((state) => state.setAdvisorInfo);
+  const setAdvisorInfo = appStore((state) => state.setAdvisorInfo);
   const addAdvisor = appStore((state) => state.addAdvisor);
   const setLoading = appStore((state) => state.setLoading);
   const setError = appStore((state) => state.setError);
@@ -50,5 +50,25 @@ export const useAdvisorsList = () => {
     }
   };
 
-  return { getAdvisorsData, advisorDelete };
+  const fetchAdvisorInfo = useCallback(
+    async (advisorId: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await get_advisor_info({ advisorId });
+        setAdvisorInfo(data);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to fetch student information");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading, setAdvisorInfo]
+  );
+
+  return { getAdvisorsData, advisorDelete, fetchAdvisorInfo };
 };
