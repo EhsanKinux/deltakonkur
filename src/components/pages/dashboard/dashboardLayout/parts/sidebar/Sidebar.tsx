@@ -28,7 +28,7 @@ const Sidebar = () => {
           <div className="h-10 absolute top-0 w-full bg-gradient-to-b from-black to-transparent z-10"></div>
           <div className="relative flex flex-col gap-3 overflow-y-auto no-scrollbar h-[60vh] py-10">
           {sidebarLinks.map((item) => {
-            let isActive = location.pathname === item.route || location.pathname.endsWith(`${item.route}/`);
+            const isActive = location.pathname === item.route || location.pathname.endsWith(`${item.route}/`);
             return item.children ? (
               <LinkWithChildren menuItem={item} isActive={isActive} />
             ) : (
