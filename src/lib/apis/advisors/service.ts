@@ -9,3 +9,6 @@ export const submit_advisors_register_service = ({ ...body }: ISubmitAdvisorRegi
 
 export const advisors_delete = ({ advisorId }: { advisorId: string }) =>
   fetchInstance(`api/advisor/advisors/${advisorId}/`, { method: "DELETE" });
+
+export const get_advisor_info = ({ advisorId }: { advisorId: string }) =>
+  fetchInstance(`api/advisor/advisors/${advisorId}/`, { method: "GET" });
