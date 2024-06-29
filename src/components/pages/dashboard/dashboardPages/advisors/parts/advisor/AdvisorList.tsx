@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { appStore } from "@/lib/store/appStore";
 import { useEffect, useMemo } from "react";
-import { DataTable } from "../table/DataTable";
 import { columns } from "./parts/table/ColumnDef";
+import { AdvisorDataTable } from "../table/AdvisorDataTable";
 
 const AdvisorList = () => {
   const { getAdvisorsData } = useAdvisorsList();
@@ -27,7 +27,7 @@ const AdvisorList = () => {
         </Button>
       </div>
       <div className="flex justify-center items-center w-full gap-3 py-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl">
-        <DataTable columns={columns} data={memoizedAdvisors} />
+        <AdvisorDataTable columns={columns} data={memoizedAdvisors} />
       </div>
     </section>
   );
