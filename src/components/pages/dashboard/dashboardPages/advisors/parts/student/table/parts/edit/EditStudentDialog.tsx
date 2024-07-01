@@ -37,7 +37,7 @@ export function EditStudentDialog() {
   const memoizedAdvisors = useMemo(() => advisors, [advisors]);
 
   const formSchema = editStudentFormSchema();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       id: "",
@@ -57,7 +57,7 @@ export function EditStudentDialog() {
   useEffect(() => {
     if (studentInfo) {
       form.reset({
-        id: studentInfo.id,
+        id: "",
         first_name: studentInfo.first_name,
         last_name: studentInfo.last_name,
         school: studentInfo.school,
@@ -76,14 +76,15 @@ export function EditStudentDialog() {
   }, [studentInfo, form, error]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log("Form submitted with data:", data);
+    // console.log("Form submitted with data:", data);
     if (data && studentInfo) {
-      const { advisor, ...studentInfo } = data;
+      const { advisor, ...restData } = data;
       const modifiedData: ISubmitStudentRegisterService = {
-        ...data,
+        ...restData,
+        id: studentInfo.id,
         created: String(data.created),
       };
-      console.table(modifiedData);
+      // console.table(modifiedData);
       await updateStudentInfo(studentInfo.id, modifiedData);
       if (advisor) {
         await setAdvisorForStudent({ studentId: studentInfo.id, advisorId: advisor });
