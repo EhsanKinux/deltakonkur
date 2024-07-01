@@ -1,6 +1,6 @@
 import { fetchInstance } from "../fetch-config";
-import { ISubmitStudentRegisterService } from "./interface";
+import { IRegisterStudentService } from "./interface";
 
-export const submit_student_register_service = ({ ...body }: ISubmitStudentRegisterService) =>
+export const submit_student_register_service = ({ ...body }: IRegisterStudentService) =>
   fetchInstance(`api/register/students/`, { method: "POST", body: JSON.stringify(body) });
 

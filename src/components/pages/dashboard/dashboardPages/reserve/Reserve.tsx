@@ -11,7 +11,7 @@ import TopRight from "./form/topright/TopRight";
 import { Button } from "@/components/ui/button";
 
 import { submit_student_register_service } from "@/lib/apis/reserve/service";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 
 import studentPic from "@/assets/icons/education.svg";
 import { Loader2 } from "lucide-react";
@@ -23,6 +23,7 @@ const Reserve = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      // id:"",
       first_name: "",
       last_name: "",
       school: "",
@@ -37,8 +38,9 @@ const Reserve = () => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsloading(true);
+    const currentDateTime = new Date().toISOString();
     const transformedData = {
-      id: uuidv4(),
+      // id: "",
       first_name: data.first_name,
       last_name: data.last_name,
       phone_number: data.phone_number,
@@ -47,9 +49,10 @@ const Reserve = () => {
       school: data.school,
       field: data.field,
       grade: data.grade,
-      created: data.created,
+      created: currentDateTime,
     };
     if (data) {
+      // const {id, created, ...restData} = transformedData
       console.table(transformedData);
       await submit_student_register_service(transformedData).finally(() => {
         // addFormData(newEntry);

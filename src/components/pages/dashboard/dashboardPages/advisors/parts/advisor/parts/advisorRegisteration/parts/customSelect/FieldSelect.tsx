@@ -31,7 +31,7 @@ const FieldSelect = ({
     <div className="flex justify-center items-center">
       <CustomFieldSelect
         value={value}
-        onValueChange={(value: any) => onChange(value)}
+        onValueChange={(value: string) => onChange(value)}
         placeholder="رشته تحصیلی"
         options={[
           { value: "ریاضی", label: "ریاضی" },

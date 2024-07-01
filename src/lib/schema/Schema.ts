@@ -23,7 +23,7 @@ export const editStudentFormSchema = () =>
 
 export const registerFormSchema = () =>
   z.object({
-    id: z.string(),
+    // id: z.string(),
     first_name: z.string(),
     last_name: z.string(),
     school: z.string(),
