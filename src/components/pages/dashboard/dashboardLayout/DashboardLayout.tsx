@@ -16,7 +16,7 @@ const DashboardLayout = () => {
           </div>
         </div>
         <DHeader />
-        <div className="m-5 mr-0 max-h-screen overflow-y-auto custom-scrollbar">
+        <div className="h-full p-5 mr-0 max-h-screen overflow-y-auto custom-scrollbar">
           <Outlet />
         </div>
       </div>
