@@ -22,7 +22,7 @@ const Down = ({
 }) => {
   const { register, setValue } = form;
   return (
-    <div className="flex justify-center items-center w-full gap-3 py-16  shadow-sidebar bg-slate-100 rounded-xl">
+    <div className="flex justify-center items-center w-full gap-3 rounded-xl">
       <CustomSelect
         {...register("field")}
         onValueChange={(value: any) => setValue("field", value)}

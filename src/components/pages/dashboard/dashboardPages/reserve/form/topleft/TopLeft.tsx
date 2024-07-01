@@ -22,7 +22,7 @@ const TopLeft = ({
   >;
 }) => {
   return (
-    <div className="flex flex-col justify-between items-center w-full gap-3 py-16 shadow-sidebar bg-slate-100 rounded-xl">
+    <div className="flex flex-col justify-between items-center w-full gap-3 rounded-xl">
       <CustomRegInput control={form.control} name="phone_number" label="شماره همراه" />
       <CustomRegInput control={form.control} name="home_phone" label="شماره تلفن منزل" />
       <CustomRegInput control={form.control} name="parent_phone" label="شماره همراه والدین" />

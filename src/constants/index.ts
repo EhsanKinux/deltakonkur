@@ -1,11 +1,12 @@
 import reserveIcon from "@/assets/icons/reserve.svg";
 import advisorIcon from "@/assets/icons/people.svg";
+import advisorsListIcon from "@/assets/icons/advisorBag.svg";
+import studentIcon from "@/assets/icons/studenHat.svg";
 import accountingIcon from "@/assets/icons/calculator.svg";
 import supervisorIcon from "@/assets/icons/task-square.svg";
 import cancelingIcon from "@/assets/icons/profile-delete.svg";
 import contentIcon from "@/assets/icons/document-text.svg";
 import usersIcon from "@/assets/icons/profile-2user.svg";
-import listIcon from "@/assets/icons/List.svg";
 import addSquareIcon from "@/assets/icons/addSquare.svg"
 
 export const sidebarLinks = [
@@ -24,11 +25,11 @@ export const sidebarLinks = [
         route: "/dashboard/advisors/register",
         label: "افزودن مشاور جدید",
       },{
-        imgURL: listIcon,
+        imgURL: advisorsListIcon,
         route: "/dashboard/advisors",
         label: "لیست مشاوران",
       },{
-        imgURL: listIcon,
+        imgURL: studentIcon,
         route: "/dashboard/students",
         label: "لیست دانش آموزان",
       },
