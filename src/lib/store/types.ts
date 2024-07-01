@@ -7,6 +7,9 @@ export type Advisor = {
   phone_number: string;
   national_id: string;
   bank_account: string;
+  active_students?: string;
+  stopped_students?: string;
+  cancelled_students?: string;
 };
 
 export type FormData = {
