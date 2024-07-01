@@ -32,11 +32,11 @@ const CustomAdvisorInput = ({
       name={name}
       render={({ field }) => (
         <div className={`flex flex-col w-full gap-2 ${customclass}`}>
-          <FormLabel className="pr-5">{label}</FormLabel>
+          <FormLabel className="pr-5 font-semibold">{label}</FormLabel>
           <FormControl className="">
             <Input
               id={name}
-              className="mx-4 text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-400"
+              className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-400"
               type="text"
               placeholder={placeHolder}
               {...field}

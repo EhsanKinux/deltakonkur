@@ -28,7 +28,7 @@ const FieldSelect = ({
   });
 
   return (
-    <div className="flex justify-center items-center w-full">
+    <div className="flex justify-center items-center">
       <CustomFieldSelect
         value={value}
         onValueChange={(value: any) => onChange(value)}

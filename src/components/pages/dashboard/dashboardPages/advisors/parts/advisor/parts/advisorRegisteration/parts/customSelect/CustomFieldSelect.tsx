@@ -6,7 +6,7 @@ const CustomFieldSelect = React.forwardRef<HTMLButtonElement, any>((props, ref) 
     <Select {...props}>
       <SelectTrigger
         ref={ref}
-        className="w-[246px] mx-4 text-16 placeholder:text-16 rounded-[8px] text-gray-500 border-slate-400 md:w-[346px]"
+        className="w-full text-16 placeholder:text-16 rounded-[8px] text-gray-500 border-slate-400"
       >
         <SelectValue placeholder={props.placeholder} />
       </SelectTrigger>
