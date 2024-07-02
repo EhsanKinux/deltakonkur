@@ -55,8 +55,7 @@ const Reserve = () => {
       // const {id, created, ...restData} = transformedData
       console.table(transformedData);
       await submit_student_register_service(transformedData).finally(() => {
-        // addFormData(newEntry);
-        // navigate("/dashboard/advisors");
+        form.reset();
       });
     }
     setIsloading(false);
