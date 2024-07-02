@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { editStudentFormSchema } from "@/lib/schema/Schema";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Name from "./parts/name/Name";
 import TellNumbers from "./parts/tel-numbers/TellNumbers";
 import FieldGrade from "./parts/fieldAndGrade/FieldGrade";
@@ -28,6 +28,7 @@ export function EditStudentDialog() {
   const { studentInfo, loading, error, updateStudentInfo, setAdvisorForStudent } = useStudentList();
   const { getAdvisorsData } = useAdvisorsList();
   const advisors = appStore((state) => state.advisors);
+  const setRefresh = appStore((state) => state.setRefresh);
 
   useEffect(() => {
     getAdvisorsData();
@@ -74,6 +75,7 @@ export function EditStudentDialog() {
       console.log(error);
     }
   }, [studentInfo, form, error]);
+  const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // console.log("Form submitted with data:", data);
@@ -81,14 +83,17 @@ export function EditStudentDialog() {
       const { advisor, ...restData } = data;
       const modifiedData: ISubmitStudentRegisterService = {
         ...restData,
-        id: studentInfo.id,
+        id: String(studentInfo.id),
         created: String(data.created),
       };
-      // console.table(modifiedData);
-      await updateStudentInfo(studentInfo.id, modifiedData);
+      console.table(modifiedData);
+      await updateStudentInfo(modifiedData);
       if (advisor) {
+        console.log("stID:", studentInfo.id, "advID:", advisor);
         await setAdvisorForStudent({ studentId: studentInfo.id, advisorId: advisor });
       }
+      setRefresh(true); // Refresh the data
+      dialogCloseRef.current?.click(); // Trigger dialog close
     }
   };
 
@@ -121,7 +126,10 @@ export function EditStudentDialog() {
                     ثبت ویرایش
                   </Button>
                   <DialogClose asChild>
-                    <Button className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2">
+                    <Button
+                      ref={dialogCloseRef}
+                      className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
+                    >
                       لغو
                     </Button>
                   </DialogClose>
