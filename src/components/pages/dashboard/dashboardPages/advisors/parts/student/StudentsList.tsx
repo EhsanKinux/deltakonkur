@@ -2,7 +2,7 @@ import { appStore } from "@/lib/store/appStore";
 import { DataTable } from "../table/DataTable";
 import { stColumns } from "./table/ColumnStDef";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import backIcon from "@/assets/icons/back.svg";
 
@@ -21,7 +21,7 @@ const StudentsList = () => {
       getData();
       setRefresh(false);
     }
-  }, [refresh, getData, setRefresh]);
+  }, [refresh, getData, setRefresh, formData]);
 
   // const memoizedFormData = useMemo(() => formData, [formData]);
 
