@@ -8,13 +8,22 @@ import backIcon from "@/assets/icons/back.svg";
 
 const StudentsList = () => {
   const formData = appStore((state) => state.formData);
+  const refresh = appStore((state) => state.refresh);
+  const setRefresh = appStore((state) => state.setRefresh);
   const { getData } = useStudentList();
 
   useEffect(() => {
     getData();
   }, [getData]);
 
-  const memoizedFormData = useMemo(() => formData, [formData]);
+    useEffect(() => {
+    if (refresh) {
+      getData();
+      setRefresh(false);
+    }
+  }, [refresh, getData, setRefresh]);
+
+  // const memoizedFormData = useMemo(() => formData, [formData]);
 
   return (
     <section className="mt-8 flex flex-col gap-3">
@@ -28,7 +37,7 @@ const StudentsList = () => {
         </Button>
       </div>
       <div className="flex flex-1 justify-center items-center w-full gap-3 py-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl overflow-y-auto">
-        <DataTable columns={stColumns} data={memoizedFormData} />
+        <DataTable columns={stColumns} data={formData} />
       </div>
     </section>
   );
