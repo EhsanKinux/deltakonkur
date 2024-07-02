@@ -66,17 +66,18 @@ export const useStudentList = () => {
   );
 
   const updateStudentInfo = useCallback(
-    async (studentId: string, body: ISubmitStudentRegisterService) => {
+    async (body: ISubmitStudentRegisterService) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await update_student_info({ studentId, body });
+        const response = await update_student_info(body);
         if (response.ok) {
           const updatedInfo = await response.json();
           setStudentInfo(updatedInfo);
-        } else {
-          setError("Failed to update student information");
         }
+        // else {
+        //   setError("Failed to update student information");
+        // }
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -96,17 +97,18 @@ export const useStudentList = () => {
       setError(null);
       try {
         const body: ISetStudentAdvisor = {
-          student: studentId,
+          student: String(studentId),
           advisor: advisorId,
           status: "active",
         };
-        const response = await set_student_advisor({ body });
+        const response = await set_student_advisor(body);
         if (response.ok) {
           const updatedInfo = await response.json();
           console.table("SetAdvisor:", updatedInfo);
-        } else {
-          setError("Failed to set advisor for student");
         }
+        // else {
+        //   setError("Failed to set advisor for student");
+        // }
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
