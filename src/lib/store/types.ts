@@ -32,6 +32,8 @@ export type FormStore = {
   studentInfo: FormData | null;
   loading: boolean;
   error: string | null;
+  refresh: boolean;
+  setRefresh: (refresh: boolean) => void;
   addFormData: (data: FormData) => void;
   deleteFormData: (id: string) => void;
   setAdvisors: (advisors: Advisor[]) => void;

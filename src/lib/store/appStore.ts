@@ -10,6 +10,8 @@ export const appStore = create<FormStore>((set) => ({
   studentInfo: null,
   loading: false,
   error: null,
+  refresh: false,
+  setRefresh: (refresh) => set({ refresh }),
   setAdvisors: (advisors: Advisor[]) => set({ advisors }),
   addAdvisor: (advisor: Advisor) =>
     set((state) => {
