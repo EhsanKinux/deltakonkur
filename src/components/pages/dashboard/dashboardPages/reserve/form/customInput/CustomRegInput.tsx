@@ -30,20 +30,18 @@ const CustomRegInput = ({
       control={control}
       name={name}
       render={({ field }) => (
-        <div className="flex gap-1.5 w-full">
+        <div className="flex flex-col w-full gap-2">
           {/* <FormLabel>{label}</FormLabel> */}
-          <div className="flex flex-grow">
-            <FormControl className="flex-grow">
+            <FormControl className="">
               <Input
                 id={name}
-                className="w-[246px] mx-4 text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 md:w-[346px]"
+                className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
                 placeholder={label}
                 type="text"
                 {...field}
               />
             </FormControl>
             <FormMessage className="form-message mt-2" />
-          </div>
         </div>
       )}
     />

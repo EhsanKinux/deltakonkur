@@ -1,6 +1,6 @@
 import { UseFormReturn } from "react-hook-form";
 import CustomSelect from "./parts/customSelect/CustomSelect";
-import { FormField } from "@/components/ui/form";
+import { FormField, FormMessage } from "@/components/ui/form";
 
 const Down = ({
   form,
@@ -23,37 +23,43 @@ const Down = ({
 }) => {
   const { register, setValue } = form;
   return (
-    <div className="flex justify-center items-center w-full gap-3 rounded-xl">
+    <div className="flex justify-center items-center gap-8 w-full rounded-xl">
       <FormField
         control={form.control}
         name="field"
         render={() => (
-          <CustomSelect
-            {...register("field")}
-            onValueChange={(value: string) => setValue("field", value)}
-            placeholder="رشته تحصیلی"
-            options={[
-              { value: "ریاضی", label: "ریاضی" },
-              { value: "تجربی", label: "تجربی" },
-              { value: "علوم انسانی", label: "علوم انسانی" },
-            ]}
-          />
+          <div className="flex flex-col w-full">
+            <CustomSelect
+              {...register("field")}
+              onValueChange={(value: string) => setValue("field", value)}
+              placeholder="رشته تحصیلی"
+              options={[
+                { value: "ریاضی", label: "ریاضی" },
+                { value: "تجربی", label: "تجربی" },
+                { value: "علوم انسانی", label: "علوم انسانی" },
+              ]}
+            />
+            <FormMessage className="form-message mt-2" />
+          </div>
         )}
       />
       <FormField
         control={form.control}
         name="grade"
         render={() => (
-          <CustomSelect
-            {...register("grade")}
-            onValueChange={(value: string) => setValue("grade", value)}
-            placeholder="مقطع تحصیلی"
-            options={[
-              { value: "10", label: "پایه دهم" },
-              { value: "11", label: "پایه یازدهم" },
-              { value: "12", label: "پایه دوازدهم" },
-            ]}
-          />
+          <div className="flex flex-col w-full">
+            <CustomSelect
+              {...register("grade")}
+              onValueChange={(value: string) => setValue("grade", value)}
+              placeholder="مقطع تحصیلی"
+              options={[
+                { value: "10", label: "پایه دهم" },
+                { value: "11", label: "پایه یازدهم" },
+                { value: "12", label: "پایه دوازدهم" },
+              ]}
+            />
+            <FormMessage className="form-message mt-2" />
+          </div>
         )}
       />
     </div>

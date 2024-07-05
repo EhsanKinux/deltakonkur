@@ -61,13 +61,13 @@ const Reserve = () => {
     setIsloading(false);
   };
   return (
-    <section className="mt-8">
+    <section className="flex flex-col items-center justify-center bg-slate-100 rounded-xl shadow-form px-5 py-10 xl:p-5">
       {/* <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">ثبت نام</h1> */}
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4">
-          <div className="flex flex-col justify-between items-center gap-5 p-5 py-20 shadow-sidebar bg-slate-100 rounded-xl">
-            <div className="flex flex-col xl:flex-row w-full max-w-7xl gap-2 xl:gap-0">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+          <div className="flex flex-col justify-between items-center gap-3 py-10 ">
+            <div className="flex flex-col xl:flex-row w-full gap-2 xl:gap-10">
               <div className="w-full xl:w-1/2 flex gap-2 justify-center">
                 {/* pic */}
                 <img src={studentPic} width={300} />
@@ -81,7 +81,7 @@ const Reserve = () => {
               </div>
             </div>
 
-            <div className="flex flex-col xl:flex-row gap-10 max-w-7xl w-full">
+            <div className="flex flex-col xl:flex-row gap-2 xl:gap-10 w-full">
               {/* contact info */}
               <div className="w-full xl:w-1/2 flex flex-col items-center gap-3 bg-slate-200 rounded-xl p-5">
                 <h2 className="text-2xl">اطلاعات ارتباطی</h2>
@@ -89,8 +89,8 @@ const Reserve = () => {
               </div>
 
               {/* education info */}
-              <div className="w-full xl:w-1/2 flex flex-col gap-3">
-                <div className="flex flex-col gap-3 items-center bg-slate-200 rounded-xl p-5 flex-1">
+              <div className="w-full xl:w-1/2 flex flex-col justify-between gap-3">
+                <div className="flex flex-col gap-5 items-center justify-center bg-slate-200 rounded-xl py-5 px-10">
                   <h2 className="text-2xl">اطلاعات تحصیلی</h2>
                   <Down form={form} />
                 </div>

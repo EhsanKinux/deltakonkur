@@ -4,14 +4,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 const CustomSelect = React.forwardRef<HTMLButtonElement, any>((props, ref) => {
   return (
     <Select {...props}>
-      <SelectTrigger
-        ref={ref}
-        className="w-[246px] mx-4 text-16 placeholder:text-16 rounded-[8px] text-gray-500 border-slate-400 md:w-[346px]"
-      >
+      <SelectTrigger ref={ref} className="text-16 placeholder:text-16 rounded-[8px] text-gray-500 border-slate-400">
         <SelectValue placeholder={props.placeholder} />
       </SelectTrigger>
       <SelectContent className="bg-slate-100 rounded-xl shadow-lg mt-2">
-        {props.options.map((option: any) => (
+        {props.options.map((option: { value: string; label: string }) => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}
           </SelectItem>
