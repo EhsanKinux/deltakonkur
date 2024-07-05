@@ -26,7 +26,7 @@ const StudentsList = () => {
   // const memoizedFormData = useMemo(() => formData, [formData]);
 
   return (
-    <section className="max-h-screen bg-red-300">
+    <section className="max-h-screen">
       <div className="flex justify-between">
         <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">دانش‌آموزان</h1>
         <Button
