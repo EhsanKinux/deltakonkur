@@ -26,7 +26,7 @@ const StudentsList = () => {
   // const memoizedFormData = useMemo(() => formData, [formData]);
 
   return (
-    <section className="mt-8 flex flex-col gap-3">
+    <section className="max-h-screen bg-red-300">
       <div className="flex justify-between">
         <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">دانش‌آموزان</h1>
         <Button
@@ -36,7 +36,7 @@ const StudentsList = () => {
           <span>بازگشت</span>
         </Button>
       </div>
-      <div className="flex flex-1 justify-center items-center w-full gap-3 py-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl overflow-y-auto">
+      <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
         <DataTable columns={stColumns} data={formData} />
       </div>
     </section>

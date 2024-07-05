@@ -22,8 +22,8 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   });
 
   return (
-    <div>
-      <div className="!rounded-xl border overflow-hidden">
+    <div className="w-full overflow-hidden p-5 absolute top-0 right-0 left-0 bottom-0">
+      <div className="!rounded-xl border">
         <Table>
           <TableHeader className="bg-slate-300">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -57,7 +57,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between space-x-2 py-4">
+      <div className="flex items-center justify-between py-4 w-full">
         <div className="flex gap-2">
           <Button
             className="rounded-[8px] border border-black"
