@@ -24,24 +24,53 @@ export const editStudentFormSchema = () =>
 export const registerFormSchema = () =>
   z.object({
     // id: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-    school: z.string(),
-    phone_number: z.string(),
-    home_phone: z.string(),
-    parent_phone: z.string(),
-    field: z.string(),
-    grade: z.string(),
+    first_name: z
+      .string()
+      .min(1, { message: "لطفا اسم را وارد کنید" })
+      .max(125, { message: "نام ورودی بیش از حد مجاز است" }),
+    last_name: z
+      .string()
+      .min(1, { message: "لطفا نام خانوادگی را وارد کنید" })
+      .max(125, { message: "نام ورودی بیش از حد مجاز است" }),
+    school: z
+      .string()
+      .min(1, { message: "لطفا نام مدرسه را وارد کنید" })
+      .max(125, { message: "نام ورودی بیش از حد مجاز است" }),
+    phone_number: z
+      .string()
+      .min(11, { message: "شماره نا معتبر است" })
+      .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
+    home_phone: z
+      .string()
+      .min(1, { message: "شماره نا معتبر است" })
+      .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
+    parent_phone: z
+      .string()
+      .min(11, { message: "شماره نا معتبر است" })
+      .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
+    field: z.string().min(1, { message: "رشته‌ی تحصیلی را انتخاب کنید" }),
+    grade: z.string().min(1, { message: "مقطع تحصیلی را انتخاب کنید" }),
     created: z.string(),
   });
 
 export const registerAdvisorFormSchema = () =>
   z.object({
     id: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-    field: z.string(),
-    phone_number: z.string(),
-    national_id: z.string(),
+    first_name: z
+      .string()
+      .min(1, { message: "لطفا اسم را وارد کنید" })
+      .max(125, { message: "نام ورودی بیش از حد مجاز است" }),
+    last_name: z
+      .string()
+      .min(1, { message: "لطفا نام مدرسه را وارد کنید" })
+      .max(125, { message: "نام ورودی بیش از حد مجاز است" }),
+    field: z.string().min(1, { message: "رشته‌ی تحصیلی را انتخاب کنید" }),
+    phone_number: z
+      .string()
+      .min(11, { message: "شماره نا معتبر است" })
+      .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
+    national_id: z.string()
+    .min(1, { message: "کد نا معتبر است" })
+    .max(10, { message: "کد ورودی بیش از حد مجاز است" }),
     bank_account: z.string(),
   });
