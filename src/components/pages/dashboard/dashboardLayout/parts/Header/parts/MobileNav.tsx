@@ -7,7 +7,7 @@ import HamIcon from "@/assets/icons/hamburger.svg"
 const MobileNav = () => {
   const location = useLocation();
   return (
-    <section className="w-full max-w-[264px]">
+    <section className="w-full max-w-[164px] md:hidden">
       <Sheet>
         <SheetTrigger>
           <img src={HamIcon} width={30} height={30} alt="menu" className="cursor-pointer" />

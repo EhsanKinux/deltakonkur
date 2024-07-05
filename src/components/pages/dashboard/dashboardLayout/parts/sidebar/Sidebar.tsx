@@ -8,7 +8,7 @@ import logOutIcon from "@/assets/icons/logout.svg";
 const Sidebar = () => {
   const location = useLocation();
   return (
-    <section className="sidebar m-5 rounded-xl max-h-screen overflow-hidden">
+    <section className="min-w-[150px] max-h-screen right-0 top-0 bottom-0 flex flex-col justify-between  bg-black pt-8 text-white max-md:hidden sm:p-4 xl:p-6 2xl:w-[300px] m-5 rounded-xl overflow-hidden">
       <nav className="flex flex-col gap-4">
         <Link to="/dashboard" className="flex mb-12 cursor-pointer items-center gap-2 justify-center p-10">
           <img
