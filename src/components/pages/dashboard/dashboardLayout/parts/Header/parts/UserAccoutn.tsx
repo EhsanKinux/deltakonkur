@@ -17,7 +17,7 @@ const UserAccoutn = () => {
       <DropdownMenuTrigger asChild className="border-none hover:cursor-pointer">
         <div className="flex justify-center items-center gap-4 text-black bg-slate-200 rounded-xl px-3 py-2">
           <div className="flex flex-col justify-centerّ">
-            <span>احسان خداویسی</span>
+            <span>نام نام‌خانوادگی</span>
             <span className="text-black text-sm font-light">مدیر کل</span>
           </div>
           <Avatar>
