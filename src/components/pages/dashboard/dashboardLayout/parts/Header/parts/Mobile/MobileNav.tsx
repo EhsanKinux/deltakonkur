@@ -8,7 +8,7 @@ import LinkWithChildren from "./LinkWithChildren";
 const MobileNav = () => {
   const location = useLocation();
   return (
-    <section className="w-full max-w-[164px] md:hidden">
+    <section className="w-full md:hidden">
       <Sheet>
         <SheetTrigger>
           <img src={HamIcon} width={30} height={30} alt="menu" className="cursor-pointer" />
