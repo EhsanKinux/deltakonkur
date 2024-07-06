@@ -49,41 +49,43 @@ const AdvisorRegisterForm = () => {
         <h3 className="text-3xl text-white font-bold">افزودن مشاور جدید</h3>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-4 w-1/2 p-5 ">
-          <div className="flex justify-between gap-8">
-            <CustomAdvisorInput control={form.control} name="first_name" label="نام" placeHolder="اصغر" />
-            <CustomAdvisorInput control={form.control} name="last_name" label="نام خانوادگی" placeHolder="فرهادی" />
-          </div>
-          <CustomAdvisorInput
-            control={form.control}
-            name="phone_number"
-            label="شماره همراه"
-            placeHolder="09012345678"
-          />
-          <div className="flex justify-between gap-8">
-            <CustomAdvisorInput control={form.control} name="national_id" label="کد ملی" placeHolder="31212301234" />
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 w-3/4 px-8">
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col md:flex-row justify-between gap-5">
+              <CustomAdvisorInput control={form.control} name="first_name" label="نام" placeHolder="اصغر" />
+              <CustomAdvisorInput control={form.control} name="last_name" label="نام خانوادگی" placeHolder="فرهادی" />
+            </div>
             <CustomAdvisorInput
               control={form.control}
-              name="bank_account"
-              label="شماره حساب"
-              placeHolder="312123123123"
+              name="phone_number"
+              label="شماره همراه"
+              placeHolder="09012345678"
             />
-          </div>
-          <div className="flex gap-8">
-            <div className="w-1/2">
-              <FieldSelect form={form} />
+            <div className="flex flex-col md:flex-row justify-between gap-5">
+              <CustomAdvisorInput control={form.control} name="national_id" label="کد ملی" placeHolder="31212301234" />
+              <CustomAdvisorInput
+                control={form.control}
+                name="bank_account"
+                label="شماره حساب"
+                placeHolder="312123123123"
+              />
             </div>
-            <div className="flex flex-col w-1/2 justify-center items-center">
-              <Button type="submit" className="form-btn w-full hover:bg-blue-800">
-                {isloading ? (
-                  <>
-                    <Loader2 size={20} className="animate-spin" />
-                    &nbsp; در حال ثبت...
-                  </>
-                ) : (
-                  "ثبت مشاور"
-                )}
-              </Button>
+            <div className="flex flex-col md:flex-row justify-between gap-5">
+              <div className="w-full">
+                <FieldSelect form={form} />
+              </div>
+              <div className="flex flex-col justify-center items-center w-full">
+                <Button type="submit" className="form-btn w-full hover:bg-blue-800">
+                  {isloading ? (
+                    <>
+                      <Loader2 size={20} className="animate-spin" />
+                      &nbsp; در حال ثبت...
+                    </>
+                  ) : (
+                    "ثبت مشاور"
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         </form>
