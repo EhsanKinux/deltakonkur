@@ -44,7 +44,7 @@ const MobileNav = () => {
                               : "invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(1) contrast(1)",
                           }}
                         />
-                        <p className={cn("text-16 font-semibold text-slate-100", { "text-black": isActive })}>
+                        <p className={cn("!text-[12px] text-slate-100", { "text-black": isActive })}>
                           {item.label}
                         </p>
                       </Link>

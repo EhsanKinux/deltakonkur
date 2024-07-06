@@ -22,11 +22,11 @@ const LinkWithChildren = ({
     <Accordion type="single" collapsible className="sidebar-link w-full !py-0">
       <AccordionItem value="item-1" className="w-full">
         <AccordionTrigger>
-          <div className="flex gap-2 w-full">
+          <div className="flex justify-center gap-2 w-full">
             <div className="relative size-6">
               <img src={menuItem.imgURL} alt={menuItem.label} className={cn("brightness-[100] invert-0")} />
             </div>
-            <p className={"sidebar-label"}>{menuItem.label}</p>
+            <p className={"text-[12px] text-gray-100"}>{menuItem.label}</p>
           </div>
         </AccordionTrigger>
         <AccordionContent className="flex flex-col gap-3 mt-3 bg-slate-700 rounded-xl">
@@ -54,7 +54,7 @@ const LinkWithChildren = ({
                       }}
                     />
                   </div>
-                  <p className={cn("!text-[12px]", { "!text-black": isActive })}>
+                  <p className={cn("!text-12", { "!text-black": isActive })}>
                     {subMenuItem.label}
                   </p>
                 </Link>
