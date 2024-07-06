@@ -90,7 +90,7 @@ const Reserve = () => {
 
               {/* education info */}
               <div className="w-full xl:w-1/2 flex flex-col justify-between gap-3">
-                <div className="flex flex-col gap-5 items-center justify-center bg-slate-200 rounded-xl py-5 px-10">
+                <div className="flex h-full flex-col gap-5 items-center justify-center bg-slate-200 rounded-xl py-5 px-10">
                   <h2 className="text-2xl">اطلاعات تحصیلی</h2>
                   <Down form={form} />
                 </div>
