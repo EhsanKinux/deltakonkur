@@ -18,15 +18,14 @@ const AdvisorList = () => {
   const memoizedAdvisors = useMemo(() => advisors, [advisors]);
 
   return (
-    <section>
+    <section className="max-h-screen">
       <div className="flex justify-between">
         <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">مشاوران</h1>
         <Button className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600">
           <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
-          <span>بازگشت</span>
         </Button>
       </div>
-      <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-[70vh]">
+      <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
         <AdvisorDataTable columns={columns} data={memoizedAdvisors} />
       </div>
     </section>
