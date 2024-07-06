@@ -1,4 +1,4 @@
-import MobileNav from "./parts/MobileNav";
+import MobileNav from "./parts/Mobile/MobileNav";
 import UserAccoutn from "./parts/UserAccoutn";
 
 export default function DHeader() {

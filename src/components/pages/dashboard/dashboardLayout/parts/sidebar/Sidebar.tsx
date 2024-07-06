@@ -2,8 +2,8 @@ import FakeLogo from "@/assets/icons/FakeTwichIcon.svg";
 import { sidebarLinks } from "@/constants";
 import { cn } from "@/lib/utils/cn/cn";
 import { Link, useLocation } from "react-router-dom";
-import LinkWithChildren from "./parts/LinkWithChildren";
 import logOutIcon from "@/assets/icons/logout.svg";
+import LinkWithChildren from "./parts/LinkWithChilderen";
 
 const Sidebar = () => {
   const location = useLocation();

@@ -41,7 +41,10 @@ const LinkWithChildren = ({
                   <img
                     src={subMenuItem.imgURL}
                     alt={subMenuItem.label}
-                    className={cn({ "scale-75 brightness-[3] invert-0": isActive, "slate-100-color scale-75": !isActive })}
+                    className={cn({
+                      "scale-75 brightness-[3] invert-0": isActive,
+                      "slate-100-color scale-75": !isActive,
+                    })}
                     style={{
                       filter: isActive
                         ? "none"
