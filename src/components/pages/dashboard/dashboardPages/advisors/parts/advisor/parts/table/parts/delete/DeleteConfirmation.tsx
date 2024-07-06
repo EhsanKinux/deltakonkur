@@ -26,6 +26,12 @@ const DeleteConfirmation = ({
     setDeleteDialogOpen(false);
   };
 
+  const handleDeleteCancel = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDeleteDialogOpen(false);
+  };
+
   return (
     <DialogContent className="bg-slate-100 !rounded-[10px]">
       <DialogHeader>
@@ -37,9 +43,13 @@ const DeleteConfirmation = ({
           <Button className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2" onClick={handleDeleteConfirm}>
             حذف مشاور
           </Button>
-          <DialogClose asChild>
-            <Button className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2">لغو</Button>
-          </DialogClose>
+
+          <Button
+            className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
+            onClick={handleDeleteCancel}
+          >
+            لغو
+          </Button>
         </div>
       </DialogFooter>
     </DialogContent>
