@@ -19,7 +19,9 @@ const DeleteConfirmation = ({
 }) => {
   const { advisorDelete } = useAdvisorsList();
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     advisorDelete(formData?.id);
     setDeleteDialogOpen(false);
   };

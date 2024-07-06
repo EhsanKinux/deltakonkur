@@ -13,11 +13,13 @@ const AdvisorDialogButtons = ({ formData }: { formData: FormEntry }) => {
 
   const handleOpenDeleteDialog = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     setDeleteDialogOpen(true);
   };
 
   const handleOpenEditDialog = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     setEditDialogOpen(true);
     // await fetchStudentInfo(formData?.id);
   };
