@@ -13,23 +13,23 @@ const MobileNav = () => {
         <SheetTrigger>
           <img src={HamIcon} width={30} height={30} alt="menu" className="cursor-pointer" />
         </SheetTrigger>
-        <SheetContent side="right" className="border-none bg-black">
+        <SheetContent side="right" className="border-none bg-black !w-1/2 !max-w-[20rem]">
           <Link to="/dashboard" className="flex px-4 cursor-pointer items-center gap-2">
             {/* <img src="/icons/logo.svg" width={34} height={34} alt="Kinux-Logo" /> */}
             <h1 className="text-26 font-ibm-plex-serif font-bold text-black-1">دلتا کنکور</h1>
           </Link>
           <div className="mobilenav-sheet">
   
-              <nav className="flex h-full flex-col gap-6 pt-16 text-white">
+              <nav className="flex h-full flex-col gap-10 pt-16 text-white">
                 {sidebarLinks.map((item) => {
                   const isActive = location.pathname === item.route || location.pathname.startsWith(`${item.route}/`);
                   return item.children ? (
-                    <LinkWithChildren menuItem={item} isActive={isActive} />
+                    <LinkWithChildren key={item.id} menuItem={item} isActive={isActive} />
                   ) : (
-                    <SheetClose asChild key={item.route}>
+                    <SheetClose asChild key={item.id}>
                       <Link
                         to={item.route}
-                        key={item.label}
+                        key={item.id}
                         className={cn("sidebar-link", { "bg-gray-200": isActive })}
                       >
                         <img

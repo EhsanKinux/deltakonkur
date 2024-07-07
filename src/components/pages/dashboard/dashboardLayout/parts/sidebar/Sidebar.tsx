@@ -30,7 +30,7 @@ const Sidebar = () => {
           {sidebarLinks.map((item) => {
             const isActive = location.pathname === item.route || location.pathname.endsWith(`${item.route}/`);
             return item.children ? (
-              <LinkWithChildren menuItem={item} isActive={isActive} />
+              <LinkWithChildren key={item.id} menuItem={item} isActive={isActive} />
             ) : (
               <Link to={item.route} key={item.label} className={cn("sidebar-link", { "bg-gray-200": isActive })}>
                 <div className="relative size-6">

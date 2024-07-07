@@ -7,10 +7,12 @@ const LinkWithChildren = ({
   isActive,
 }: {
   menuItem: {
+    id:number;
     imgURL: string;
     route: string;
     label: string;
     children: {
+      id: number;
       imgURL: string;
       route: string;
       label: string;
@@ -33,10 +35,10 @@ const LinkWithChildren = ({
           {menuItem.children.map((subMenuItem) => {
             isActive = location.pathname === subMenuItem.route || location.pathname.endsWith(`${subMenuItem.route}/`);
             return (
-              <SheetClose asChild key={subMenuItem.route}>
+              <SheetClose asChild key={subMenuItem.id}>
                 <Link
                   to={subMenuItem.route}
-                  key={subMenuItem.label}
+                  key={subMenuItem.id}
                   className={cn("sidebar-link", { "bg-gray-200": isActive })}
                 >
                   <div className="relative size-6">
