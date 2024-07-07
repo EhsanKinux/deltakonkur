@@ -6,7 +6,7 @@ import { useCallback, useState } from "react";
 
 export const useAdvisorsList = () => {
   const deleteAdvisor = appStore((state) => state.deleteAdvisor);
-  // const advisorInfo = appStore((state) => state.advisorInfo);
+  const advisorInfo = appStore((state) => state.advisorInfo);
   // const loading = appStore((state) => state.loading);
   // const error = appStore((state) => state.error);
   const setAdvisorInfo = appStore((state) => state.setAdvisorInfo);
@@ -70,5 +70,5 @@ export const useAdvisorsList = () => {
     [setError, setLoading, setAdvisorInfo]
   );
 
-  return { getAdvisorsData, advisorDelete, fetchAdvisorInfo };
+  return { getAdvisorsData, advisorDelete, fetchAdvisorInfo, advisorInfo };
 };
