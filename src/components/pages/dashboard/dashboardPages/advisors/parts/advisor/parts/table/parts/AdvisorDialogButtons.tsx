@@ -5,6 +5,7 @@ import { useState } from "react";
 import userDeleteIcon from "@/assets/icons/userRemove.svg";
 import userEditIcon from "@/assets/icons/userEdit.svg";
 import DeleteConfirmation from "./delete/DeleteConfirmation";
+import EditAdvisorDialog from "./edit/EditAdvisorDialog";
 
 const AdvisorDialogButtons = ({ formData }: { formData: FormEntry }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -37,7 +38,7 @@ const AdvisorDialogButtons = ({ formData }: { formData: FormEntry }) => {
         </Button>
       </div>
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        {/* <EditAdvisorDialog /> */}
+        <EditAdvisorDialog setEditDialogOpen={setEditDialogOpen} />
       </Dialog>
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DeleteConfirmation setDeleteDialogOpen={setDeleteDialogOpen} formData={formData} />
