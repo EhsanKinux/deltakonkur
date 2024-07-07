@@ -11,24 +11,29 @@ import addSquareIcon from "@/assets/icons/addSquare.svg"
 
 export const sidebarLinks = [
   {
+    id: 1,
     imgURL: reserveIcon,
     route: "/dashboard/reserve",
     label: "رزرو",
   },
   {
+    id: 2,
     imgURL: advisorIcon,
     route: "/dashboard/advisors",
     label: "مشاوران",
     children:[
       {
+        id: 21,
         imgURL: addSquareIcon,
         route: "/dashboard/advisors/register",
         label: "افزودن مشاور جدید",
       },{
+        id: 22,
         imgURL: advisorsListIcon,
         route: "/dashboard/advisors",
         label: "لیست مشاوران",
       },{
+        id: 23,
         imgURL: studentIcon,
         route: "/dashboard/students",
         label: "لیست دانش آموزان",
@@ -36,26 +41,31 @@ export const sidebarLinks = [
     ]
   },
   {
+    id: 3,
     imgURL: accountingIcon,
     route: "/dashboard/accounting",
     label: "حسابداری",
   },
   {
+    id: 4,
     imgURL: supervisorIcon,
     route: "/dashboard/supervision",
     label: "نظارت",
   },
   {
+    id: 5,
     imgURL: cancelingIcon,
     route: "/dashboard/canceling",
     label: "کنسلی",
   },
   {
+    id: 6,
     imgURL: contentIcon,
     route: "/dashboard/content",
     label: "محتوا",
   },
   {
+    id: 7,
     imgURL: usersIcon,
     route: "/dashboard/users",
     label: "کاربران",
