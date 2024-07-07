@@ -2,7 +2,7 @@ import { fetchInstance } from "../fetch-config";
 import { ISubmitStudentRegisterService } from "../reserve/interface";
 import { ISetStudentAdvisor } from "./interface";
 
-export const get_registered_students = () => fetchInstance(`api/register/students`);
+export const get_registered_students = () => fetchInstance(`api/register/students-no-advisor`);
 
 export const students_delete = ({ studentId }: { studentId: string }) =>
   fetchInstance(`api/register/students/${studentId}/`, { method: "DELETE" });
