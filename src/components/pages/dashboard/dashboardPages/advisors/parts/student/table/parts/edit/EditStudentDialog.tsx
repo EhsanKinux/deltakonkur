@@ -25,10 +25,9 @@ import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList"
 import { appStore } from "@/lib/store/appStore";
 
 export function EditStudentDialog() {
-  const { studentInfo, loading, error, updateStudentInfo, setAdvisorForStudent } = useStudentList();
+  const { studentInfo, updateStudentInfo, setAdvisorForStudent } = useStudentList();
   const { getAdvisorsData } = useAdvisorsList();
   const advisors = appStore((state) => state.advisors);
-  const setRefresh = appStore((state) => state.setRefresh);
 
   useEffect(() => {
     getAdvisorsData();
@@ -71,10 +70,7 @@ export function EditStudentDialog() {
         advisor: "",
       });
     }
-    if (error) {
-      console.log(error);
-    }
-  }, [studentInfo, form, error]);
+  }, [studentInfo, form]);
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -92,13 +88,10 @@ export function EditStudentDialog() {
         console.log("stID:", studentInfo.id, "advID:", advisor);
         await setAdvisorForStudent({ studentId: studentInfo.id, advisorId: advisor });
       }
-      setRefresh(true); // Refresh the data
+
       dialogCloseRef.current?.click(); // Trigger dialog close
     }
   };
-
-  if (loading) return <div>Loading...</div>;
-  // if (error) return <div>Error: {error}</div>;
 
   return (
     <>
