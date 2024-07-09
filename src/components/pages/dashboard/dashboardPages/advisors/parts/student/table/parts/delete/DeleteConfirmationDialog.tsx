@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { FormEntry } from "../../interfaces";
+import { toast } from "sonner";
 
 const DeleteConfirmationDialog = ({
   setDeleteDialogOpen,
@@ -20,7 +21,11 @@ const DeleteConfirmationDialog = ({
   const { deleteStudent } = useStudentList();
 
   const handleDeleteConfirm = () => {
-    deleteStudent(formData?.id);
+    toast.promise(deleteStudent(formData?.id), {
+      loading: "در حال حذف...",
+      success: `حذف ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`,
+      error: "خطایی رخ داده است!",
+    });
     setDeleteDialogOpen(false);
   };
 
