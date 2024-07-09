@@ -12,7 +12,7 @@ const CustomAdvisorSelect = React.forwardRef<HTMLButtonElement, any>((props, ref
       </SelectTrigger>
       <SelectContent className="bg-slate-100 rounded-xl shadow-lg mt-2">
         <SelectGroup>
-          {props.options.map((option: any) => (
+          {props.options.map((option: { value: string; label: string }) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}
             </SelectItem>

@@ -26,7 +26,7 @@ export const appStore = create<FormStore>((set) => ({
     set((state) => ({
       advisors: state.advisors.filter((advisor) => advisor.id !== advisorId),
     })),
-  setAdvisorInfo: (advisorInfo) => set({ advisorInfo }),
+  setAdvisorInfo: (data) => set({ advisorInfo : data }),
   addFormData: (data: FormData) => {
     const convertedData = {
       ...data,
