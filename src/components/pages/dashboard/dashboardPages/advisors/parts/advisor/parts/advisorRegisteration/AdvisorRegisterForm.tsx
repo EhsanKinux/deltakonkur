@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import CustomAdvisorInput from "./parts/CustomAdvisorInput";
 import FieldSelect from "./parts/customSelect/FieldSelect";
+import { toast } from "sonner";
 
 const AdvisorRegisterForm = () => {
   const [isloading, setIsloading] = useState(false);
@@ -30,16 +31,19 @@ const AdvisorRegisterForm = () => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsloading(true);
-    try {
-      await submit_advisors_register_service(data);
-      console.log("Form submitted successfully:", data);
-      // Optionally reset the form here
-      form.reset();
-    } catch (error) {
-      console.error("Form submission error:", error);
-    } finally {
-      setIsloading(false);
+    if (data) {
+      toast.promise(
+        submit_advisors_register_service(data).then(() => {
+          form.reset();
+        }),
+        {
+          loading: "در حال ثبت مشاور...",
+          success: "ثبت مشاور با موفقیت انجام شد!",
+          error: "خطایی رخ داده است!",
+        }
+      );
     }
+    setIsloading(false);
   };
 
   return (
