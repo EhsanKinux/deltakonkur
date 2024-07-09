@@ -101,14 +101,8 @@ export const useStudentList = () => {
           advisor: advisorId,
           status: "active",
         };
-        const response = await set_student_advisor(body);
-        if (response.ok) {
-          const updatedInfo = await response.json();
-          console.table("SetAdvisor:", updatedInfo);
-        }
-        // else {
-        //   setError("Failed to set advisor for student");
-        // }
+        await set_student_advisor(body);
+        deleteFormData(studentId);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -119,7 +113,7 @@ export const useStudentList = () => {
         setLoading(false);
       }
     },
-    [setError, setLoading]
+    [setError, setLoading, deleteFormData]
   );
 
   return {
