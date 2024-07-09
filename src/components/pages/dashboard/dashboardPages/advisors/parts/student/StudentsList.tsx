@@ -6,22 +6,11 @@ import { useEffect } from "react";
 
 const StudentsList = () => {
   const formData = appStore((state) => state.formData);
-  const refresh = appStore((state) => state.refresh);
-  const setRefresh = appStore((state) => state.setRefresh);
   const { getData } = useStudentList();
 
   useEffect(() => {
     getData();
   }, [getData]);
-
-  useEffect(() => {
-    if (refresh) {
-      getData();
-      setRefresh(false);
-    }
-  }, [refresh, getData, setRefresh, formData]);
-
-  // const memoizedFormData = useMemo(() => formData, [formData]);
 
   return (
     <section className="max-h-screen">
