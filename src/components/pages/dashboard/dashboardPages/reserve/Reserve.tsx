@@ -15,6 +15,7 @@ import { submit_student_register_service } from "@/lib/apis/reserve/service";
 
 import studentPic from "@/assets/icons/education.svg";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const Reserve = () => {
   const [isloading, setIsloading] = useState(false);
@@ -52,11 +53,17 @@ const Reserve = () => {
       created: currentDateTime,
     };
     if (data) {
-      // const {id, created, ...restData} = transformedData
       console.table(transformedData);
-      await submit_student_register_service(transformedData).finally(() => {
-        form.reset();
-      });
+      await toast.promise(
+        submit_student_register_service(transformedData).then(() => {
+          form.reset();
+        }),
+        {
+          loading: 'در حال ثبت نام...',
+          success: 'ثبت نام با موفقیت انجام شد!',
+          error: 'خطایی رخ داده است!',
+        }
+      );
     }
     setIsloading(false);
   };
