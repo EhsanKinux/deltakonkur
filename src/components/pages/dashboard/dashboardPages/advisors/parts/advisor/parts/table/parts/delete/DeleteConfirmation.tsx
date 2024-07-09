@@ -1,13 +1,8 @@
 import { Button } from "@/components/ui/button";
-import {
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FormEntry } from "../../interfaces";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
+import { toast } from "sonner";
 
 const DeleteConfirmation = ({
   setDeleteDialogOpen,
@@ -21,7 +16,11 @@ const DeleteConfirmation = ({
   const handleDeleteConfirm = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    advisorDelete(formData?.id);
+    toast.promise(advisorDelete(formData?.id), {
+      loading: "در حال حذف...",
+      success: `حذف ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`,
+      error: "خطایی رخ داده است!",
+    });
     setDeleteDialogOpen(false);
   };
 
