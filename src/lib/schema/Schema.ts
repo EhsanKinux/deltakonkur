@@ -29,7 +29,7 @@ export const editStudentFormSchema = () =>
     field: z.string(),
     grade: z.string(),
     created: z.string(),
-    advisor: z.string(),
+    advisor: z.string().min(1, {message: "مشاور دانش آموز را تعیین کنید!"}),
   });
 
 export const registerFormSchema = () =>
