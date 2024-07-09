@@ -6,11 +6,12 @@ import userDeleteIcon from "@/assets/icons/userRemove.svg";
 import userEditIcon from "@/assets/icons/userEdit.svg";
 import DeleteConfirmation from "./delete/DeleteConfirmation";
 import EditAdvisorDialog from "./edit/EditAdvisorDialog";
+import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 
 const AdvisorDialogButtons = ({ formData }: { formData: FormEntry }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  //   const { fetchStudentInfo } = useStudentList();
+  const {fetchAdvisorInfo} = useAdvisorsList();
 
   const handleOpenDeleteDialog = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -22,7 +23,7 @@ const AdvisorDialogButtons = ({ formData }: { formData: FormEntry }) => {
     e.stopPropagation();
     e.preventDefault();
     setEditDialogOpen(true);
-    // await fetchStudentInfo(formData?.id);
+    await fetchAdvisorInfo(formData?.id);
   };
 
   return (
