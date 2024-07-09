@@ -1,7 +1,7 @@
 import { UseFormReturn } from "react-hook-form";
 import CustomAdvisorSelect from "./CustomAdvisorSelect";
 import { Advisor } from "@/lib/store/types";
-import { FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 const SelectStudentAdvisor = ({
   form,
@@ -45,8 +45,8 @@ const SelectStudentAdvisor = ({
               label: `${advisor.first_name} ${advisor.last_name}`,
             }))}
           />
-          <FormDescription className="pr-5">مشاور دانش آموز را تعیین کنید!</FormDescription>
-          <FormMessage />
+          {/* <FormDescription className="pr-5">مشاور دانش آموز را تعیین کنید!</FormDescription> */}
+          <FormMessage className="form-message mt-2 pr-5" />
         </FormItem>
       )}
     />
