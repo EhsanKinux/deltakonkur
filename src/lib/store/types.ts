@@ -25,11 +25,19 @@ export type FormData = {
   created?: string;
 };
 
+export type IadvisorStudent = {
+  id: string;
+  student: string;
+  advisor: string;
+  status: string;
+}[];
+
 export type FormStore = {
   formData: FormData[];
   advisors: Advisor[];
   advisorInfo: Advisor | null;
   studentInfo: FormData | null;
+  advisorStudent: IadvisorStudent | null;
   loading: boolean;
   error: string | null;
   refresh: boolean;
@@ -41,6 +49,7 @@ export type FormStore = {
   deleteAdvisor: (id: string) => void;
   setAdvisorInfo: (advisor: Advisor | null) => void;
   setStudentInfo: (data: FormData | null) => void;
+  setAdvisorStudent: (advisorSt: IadvisorStudent | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
 };
