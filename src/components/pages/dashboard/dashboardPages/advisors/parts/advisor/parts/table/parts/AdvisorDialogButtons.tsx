@@ -11,17 +11,15 @@ import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList"
 const AdvisorDialogButtons = ({ formData }: { formData: FormEntry }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const {fetchAdvisorInfo} = useAdvisorsList();
+  const { fetchAdvisorInfo } = useAdvisorsList();
 
   const handleOpenDeleteDialog = (e: React.MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault();
     setDeleteDialogOpen(true);
   };
 
   const handleOpenEditDialog = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault();
     setEditDialogOpen(true);
     await fetchAdvisorInfo(formData?.id);
   };

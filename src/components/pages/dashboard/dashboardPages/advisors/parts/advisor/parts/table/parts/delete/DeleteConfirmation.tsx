@@ -14,7 +14,6 @@ const DeleteConfirmation = ({
   const { advisorDelete } = useAdvisorsList();
 
   const handleDeleteConfirm = (e: React.MouseEvent) => {
-    e.preventDefault();
     e.stopPropagation();
     toast.promise(advisorDelete(formData?.id), {
       loading: "در حال حذف...",
@@ -25,13 +24,12 @@ const DeleteConfirmation = ({
   };
 
   const handleDeleteCancel = (e: React.MouseEvent) => {
-    e.preventDefault();
     e.stopPropagation();
     setDeleteDialogOpen(false);
   };
 
   return (
-    <DialogContent className="bg-slate-100 !rounded-[10px]">
+    <DialogContent className="bg-slate-100 !rounded-[10px]" onClick={(e) => e.stopPropagation()}>
       <DialogHeader>
         <DialogTitle>تایید حذف</DialogTitle>
         <DialogDescription>آیا از حذف این مشاور مطمئن هستید؟</DialogDescription>
