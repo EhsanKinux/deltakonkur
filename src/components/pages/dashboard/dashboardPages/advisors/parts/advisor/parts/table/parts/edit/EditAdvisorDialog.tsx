@@ -20,7 +20,7 @@ const EditAdvisorDialog = ({
   // const setRefresh = appStore((state) => state.setRefresh);
 
   const handleEditCancel = (e: React.MouseEvent) => {
-    e.preventDefault();
+    // e.preventDefault();
     e.stopPropagation();
     setEditDialogOpen(false);
   };
@@ -42,7 +42,7 @@ const EditAdvisorDialog = ({
   useEffect(() => {
     if (advisorInfo) {
       form.reset({
-        id: "",
+        id: advisorInfo.id,
         first_name: advisorInfo?.first_name,
         last_name: advisorInfo?.last_name,
         phone_number: advisorInfo?.phone_number,
@@ -51,14 +51,12 @@ const EditAdvisorDialog = ({
         bank_account: advisorInfo?.bank_account,
       });
     }
-    // if (error) {
-    //   console.log(error);
-    // }
   }, [advisorInfo, form]);
 
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    // e.stopPropagation();
     console.log("Form submitted with data:", data);
     if (data && advisorInfo) {
       const modifiedData: Advisor = {
@@ -67,8 +65,7 @@ const EditAdvisorDialog = ({
       };
       console.table(modifiedData);
 
-      //   setRefresh(true);
-      //   dialogCloseRef.current?.click(); // Trigger dialog close
+      dialogCloseRef.current?.click(); // Trigger dialog close
     }
   };
 
