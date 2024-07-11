@@ -25,8 +25,13 @@ export function AdvisorDataTable({ columns, data }: AdvisorDataTableProps) {
 
   const navigate = useNavigate();
 
-  const handleRowClick = (advisorId: string) => {
-    navigate(`/dashboard/advisors/${advisorId}`);
+  const handleRowClick = (advisorId: string, e: React.MouseEvent) => {
+    if (
+      (e.target as HTMLElement).tagName.toLowerCase() !== "button" &&
+      (e.target as HTMLElement).tagName.toLowerCase() !== "input"
+    ) {
+      navigate(`/dashboard/advisors/${advisorId}`);
+    }
   };
 
   return (
@@ -34,7 +39,7 @@ export function AdvisorDataTable({ columns, data }: AdvisorDataTableProps) {
       <Table className="!rounded-xl border">
         <TableHeader className="bg-slate-300">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} >
+            <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id} className="!text-center">
@@ -52,10 +57,12 @@ export function AdvisorDataTable({ columns, data }: AdvisorDataTableProps) {
                 className="hover:bg-slate-200 hover:cursor-pointer"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                onClick={() => handleRowClick(data[index].id)}
+                onClick={(e) => handleRowClick(data[index].id, e)}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell className="!text-center" key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  <TableCell className="!text-center" key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
                 ))}
               </TableRow>
             ))
