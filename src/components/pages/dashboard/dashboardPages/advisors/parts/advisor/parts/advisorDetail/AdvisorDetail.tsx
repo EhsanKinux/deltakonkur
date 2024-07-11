@@ -1,109 +1,124 @@
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import { appStore } from "@/lib/store/appStore";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import counselorProfile from "@/assets/icons/work.svg";
-import studentActive from "@/assets/icons/student-active.svg";
-import studentCancel from "@/assets/icons/student-cancel.svg";
-import studentStop from "@/assets/icons/student-stop.svg";
-import personCard from "@/assets/icons/person-card.svg";
-import callIcon from "@/assets/icons/call.svg";
 import { Button } from "@/components/ui/button";
 import backIcon from "@/assets/icons/back.svg";
+import AdvisorInfo from "./parts/Info/AdvisorInfo";
+import { appStore } from "@/lib/store/appStore";
+import { IadvisorStudent } from "@/lib/store/types";
+import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
+import { AdvisorDitailTable } from "../../../table/AdvisorDitailTable";
+import { convertToShamsi } from "@/lib/utils/date/convertDate";
+import { stColumns } from "./parts/advisorStudentTable/ColumnDef";
+import { ProcessedStudentData, StudentInformation } from "./interface";
+
+const defaultProcessedStudentData: ProcessedStudentData = {
+  status: null,
+  created: "",
+  id: "",
+  first_name: "",
+  last_name: "",
+  school: "",
+  phone_number: "",
+  home_phone: "",
+  parent_phone: "",
+  field: "",
+  grade: "",
+};
 
 const AdvisorDetail = () => {
   const { advisorId } = useParams();
-  const { fetchAdvisorInfo } = useAdvisorsList();
-  const advisorInfo = appStore((state) => state.advisorInfo);
+  const {
+    fetchStudentInformation,
+    studentInformation,
+  }: { fetchStudentInformation: (id: string) => void; studentInformation: StudentInformation } = useStudentList();
+  const { fetchAdvisorInfo, advisorStudentsInfo } = useAdvisorsList();
+  const { advisorStudent } = appStore();
   const navigate = useNavigate();
 
+  const [filteredStudents, setFilteredStudents] = useState<IadvisorStudent | undefined>([]);
+  const [processedStudentData, setProcessedStudentData] = useState<ProcessedStudentData[]>([]);
+
+  // get advisor information and the list of students
   useEffect(() => {
     if (advisorId) {
       fetchAdvisorInfo(advisorId);
+      advisorStudentsInfo();
     }
-  }, [advisorId, fetchAdvisorInfo]);
+  }, [advisorId, fetchAdvisorInfo, advisorStudentsInfo]);
+
+  // filtering the students of advisor base on id
+  useEffect(() => {
+    if (advisorId) {
+      const thisAdvisorStudents = advisorStudent?.filter((student) => String(student.advisor) === String(advisorId));
+      setFilteredStudents(thisAdvisorStudents);
+      // console.log("filteredStudents", filteredStudents);
+      // console.log("advisorStudent", advisorStudent);
+    }
+  }, [advisorId, advisorStudent]);
+
+  // get filtered students information
+  useEffect(() => {
+    if (filteredStudents) {
+      filteredStudents.forEach((student) => {
+        fetchStudentInformation(student.student);
+      });
+    }
+  }, [filteredStudents, fetchStudentInformation]);
+  // console.log("studentInformation", studentInformation);
+  // const arrayOfObjects = Object.keys(studentInformation)?.map((k: NonNullable<unknown>) => studentInformation[k]);
+  // console.log("arrayOfObjects", arrayOfObjects);
+
+  // converting the students date and combining with their status
+  useEffect(() => {
+    if (filteredStudents && Array.isArray(filteredStudents)) {
+      const processedData = filteredStudents.map((student) => {
+        const studentInfo: ProcessedStudentData = studentInformation[student.student] || {
+          ...defaultProcessedStudentData,
+        };
+        let createdShamsi = "Invalid Date";
+        if (studentInfo.created) {
+          try {
+            createdShamsi = convertToShamsi(studentInfo.created);
+          } catch (error) {
+            console.error("Date conversion error:", error, "for student ID:", student.student);
+          }
+        }
+        return {
+          ...studentInfo,
+          id: student.student,
+          status: student.status,
+          created: createdShamsi,
+        };
+      });
+      setProcessedStudentData(processedData);
+    }
+  }, [filteredStudents, studentInformation]);
 
   const goToAdisors = () => {
-    navigate('/dashboard/advisors')
-  }
+    navigate("/dashboard/advisors");
+  };
 
   if (!advisorId) {
     return <div>Loading...</div>;
   }
 
   return (
-    <>
-      <Button className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600" onClick={goToAdisors}>
+    <div className="h-screen">
+      <Button
+        className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600"
+        onClick={goToAdisors}
+      >
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
-
-      <div className="flex flex-col xl:flex-row justify-between w-full gap-3 p-4 mt-4 rounded-xl shadow-form relative bg-slate-100">
-        {/* personal info */}
-        <div className="flex justify-center xl:justify-between flex-1 gap-10 p-5">
-          <div className="h-full w-1/4">
-            {/* profile pic */}
-            <img src={counselorProfile} width={500} className="h-full" />
-          </div>
-          {/* details */}
-          <div className="min-h-full xl:flex-1 flex flex-col justify-center gap-1">
-            <h1 className="text-4xl font-bold mb-4">
-              {advisorInfo?.first_name} {advisorInfo?.last_name}
-            </h1>
-            <div className="flex gap-2 items-center">
-              <img src={callIcon} width={25} />
-              <h1 className="text-lg font-medium">شماره تلفن: {advisorInfo?.phone_number}</h1>
-            </div>
-            <div className="flex gap-2 items-center">
-              <img src={personCard} width={25} />
-              <h1 className="text-lg font-medium">کد ملی: {advisorInfo?.national_id}</h1>
-            </div>
-          </div>
-        </div>
-
-        {/* students status */}
-        <div className="flex gap-2 justify-between items-center w-full xl:w-1/2 bg-slate-200 rounded-xl p-3">
-          <div className="flex flex-col gap-2 items-center w-1/3">
-            <img
-              src={studentActive}
-              width={70}
-              style={{
-                filter: "invert(50%) sepia(86%) saturate(4975%) hue-rotate(90deg) brightness(105%) contrast(60%)",
-              }}
-            />
-            <h2 className="text-base font-medium">
-              دانش ‌آموزان فعال: <span className="text-green-500 font-semibold">{advisorInfo?.active_students}</span>
-            </h2>
-          </div>
-          <div className="flex flex-col gap-2 items-center w-1/3">
-            <img
-              src={studentCancel}
-              width={70}
-              style={{
-                filter: "invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(20%)",
-              }}
-            />
-            <h2 className="text-base font-medium">
-              دانش آموزان کنسلی: <span className="text-gray-400 font-semibold">{advisorInfo?.cancelled_students}</span>
-            </h2>
-          </div>
-          <div className="flex flex-col gap-2 items-center w-1/3">
-            <img
-              src={studentStop}
-              width={70}
-              style={{
-                filter: "invert(11%) sepia(97%) saturate(7433%) hue-rotate(1deg) brightness(105%) contrast(70%)",
-              }}
-            />
-            <h2 className="text-base font-medium">
-              دانش آموزان متوقف شده: <span className="text-red-500 font-semibold">{advisorInfo?.stopped_students}</span>
-            </h2>
-          </div>
-        </div>
+      <AdvisorInfo />
+      <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
+        <AdvisorDitailTable columns={stColumns} data={processedStudentData} />
       </div>
-    </>
+    </div>
   );
 };
 
