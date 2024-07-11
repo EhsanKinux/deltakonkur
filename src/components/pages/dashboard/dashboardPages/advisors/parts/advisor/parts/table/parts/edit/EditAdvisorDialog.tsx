@@ -1,5 +1,5 @@
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { editAdvisorFormSchema } from "@/lib/schema/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,12 +19,6 @@ const EditAdvisorDialog = ({
   const { advisorInfo } = useAdvisorsList();
   // const setRefresh = appStore((state) => state.setRefresh);
 
-  const handleEditCancel = (e: React.MouseEvent) => {
-    // e.preventDefault();
-    e.stopPropagation();
-    setEditDialogOpen(false);
-  };
-
   const formSchema = editAdvisorFormSchema();
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -42,7 +36,7 @@ const EditAdvisorDialog = ({
   useEffect(() => {
     if (advisorInfo) {
       form.reset({
-        id: advisorInfo.id,
+        id: "",
         first_name: advisorInfo?.first_name,
         last_name: advisorInfo?.last_name,
         phone_number: advisorInfo?.phone_number,
@@ -53,10 +47,7 @@ const EditAdvisorDialog = ({
     }
   }, [advisorInfo, form]);
 
-  const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
-
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    // e.stopPropagation();
     console.log("Form submitted with data:", data);
     if (data && advisorInfo) {
       const modifiedData: Advisor = {
@@ -65,7 +56,7 @@ const EditAdvisorDialog = ({
       };
       console.table(modifiedData);
 
-      dialogCloseRef.current?.click(); // Trigger dialog close
+      setEditDialogOpen(false);
     }
   };
 
@@ -74,7 +65,7 @@ const EditAdvisorDialog = ({
 
   return (
     <>
-      <DialogContent className="bg-slate-100 !rounded-[10px]">
+      <DialogContent className="bg-slate-100 !rounded-[10px]" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>ویرایش اطلاعات</DialogTitle>
           <DialogDescription>بعد از انجام ویرایش برای ذخیره اطلاعات روی ثبت ویرایش کلیک کنید</DialogDescription>
@@ -123,9 +114,11 @@ const EditAdvisorDialog = ({
                       ثبت ویرایش
                     </Button>
                     <Button
-                      ref={dialogCloseRef}
                       className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
-                      onClick={() => handleEditCancel}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditDialogOpen(false);
+                      }}
                     >
                       لغو
                     </Button>
