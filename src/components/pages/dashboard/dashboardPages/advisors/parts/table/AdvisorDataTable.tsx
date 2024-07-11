@@ -34,10 +34,10 @@ export function AdvisorDataTable({ columns, data }: AdvisorDataTableProps) {
       <Table className="!rounded-xl border">
         <TableHeader className="bg-slate-300">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} >
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="!text-center">
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 );
@@ -55,7 +55,7 @@ export function AdvisorDataTable({ columns, data }: AdvisorDataTableProps) {
                 onClick={() => handleRowClick(data[index].id)}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  <TableCell className="!text-center" key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                 ))}
               </TableRow>
             ))
