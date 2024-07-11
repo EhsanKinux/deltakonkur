@@ -13,5 +13,7 @@ export const advisors_delete = ({ advisorId }: { advisorId: string }) =>
 export const get_advisor_info = ({ advisorId }: { advisorId: string }) =>
   fetchInstance(`api/advisor/advisors/${advisorId}/`, { method: "GET" });
 
-export const advisor_students = () =>
-  fetchInstance(`api/register/student-advisors/`, { method: "GET" });
+export const advisor_students = () => fetchInstance(`api/register/student-advisors/`, { method: "GET" });
+
+export const update_advisor_ifo = ({ advisorId }: { advisorId: string }) =>
+  fetchInstance(`/api/advisor/advisors/${advisorId}/`, { method: "PATCH" });
