@@ -22,6 +22,7 @@ export const useStudentList = () => {
   const setStudentInfo = appStore((state) => state.setStudentInfo);
   const setLoading = appStore((state) => state.setLoading);
   const setError = appStore((state) => state.setError);
+  const [studentInformation, setStudentInformaion] = useState({});
 
   const getData = useCallback(async () => {
     if (!dataLoaded) {
@@ -116,6 +117,26 @@ export const useStudentList = () => {
     [setError, setLoading, deleteFormData]
   );
 
+  const fetchStudentInformation = useCallback(async (studentId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await get_student_info({ studentId });
+      setStudentInformaion((prev) => ({
+        ...prev,
+        [studentId]: data,
+      }));
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Failed to fetch student information");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
     deleteStudent,
     getData,
@@ -125,5 +146,7 @@ export const useStudentList = () => {
     fetchStudentInfo,
     updateStudentInfo,
     setAdvisorForStudent,
+    fetchStudentInformation,
+    studentInformation,
   };
 };
