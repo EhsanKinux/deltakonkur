@@ -6,7 +6,12 @@ import "./index.css";
 // Lazy load components
 const Supervision = lazy(() => import("./components/pages/dashboard/dashboardPages/supervision/Supervision.tsx"));
 const DashboardLayout = lazy(() => import("./components/pages/dashboard/dashboardLayout/DashboardLayout.tsx"));
-const Accounting = lazy(() => import("./components/pages/dashboard/dashboardPages/accounting/Accounting.tsx"));
+const AllAccountingAdvisors = lazy(
+  () => import("./components/pages/dashboard/dashboardPages/accounting/allAdvisors/AllAccountingAdvisors.tsx")
+);
+const AllAccountingStudents = lazy(
+  () => import("./components/pages/dashboard/dashboardPages/accounting/allStudents/AllAccountingStudents.tsx")
+);
 const Canceling = lazy(() => import("./components/pages/dashboard/dashboardPages/canceling/Canceling.tsx"));
 const AllStudents = lazy(
   () => import("./components/pages/dashboard/dashboardPages/advisors/parts/student/StudentsList.tsx")
@@ -135,10 +140,18 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "accounting",
+            path: "allAdvisors",
             element: (
               <Suspense fallback={<div>Loading...</div>}>
-                <Accounting />
+                <AllAccountingAdvisors />
+              </Suspense>
+            ),
+          },
+          {
+            path: "allStudents",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <AllAccountingStudents />
               </Suspense>
             ),
           },
