@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import StudentDialogButtons from "../../../../../student/table/parts/StudentDialogButtons";
 import { ProcessedStudentData } from "../../interface";
+import StudentDialogButtons from "./DialogButtons";
 
 
 export const stColumns: ColumnDef<ProcessedStudentData>[] = [
