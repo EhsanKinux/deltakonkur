@@ -53,3 +53,24 @@ export type FormStore = {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
 };
+
+export type IallStudents = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  school: string;
+  phone_number: string;
+  home_phone: string;
+  parent_phone: string;
+  field: string;
+  grade: string;
+  created: string;
+};
+
+export type IAccountStore = {
+  allstudents: IallStudents[];
+
+  setAllstudents: (students: IallStudents[]) => void;
+  addAllstudents: (student: IallStudents) => void;
+  deleteStudent: (id: string) => void;
+};
