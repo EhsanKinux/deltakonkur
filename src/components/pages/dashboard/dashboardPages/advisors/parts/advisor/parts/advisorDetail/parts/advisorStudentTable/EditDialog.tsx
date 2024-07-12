@@ -89,7 +89,8 @@ export function EditStudentDialog() {
         await setAdvisorForStudent({ studentId: studentInfo.id, advisorId: advisor });
       }
 
-      dialogCloseRef.current?.click(); // Trigger dialog close
+      dialogCloseRef.current?.click();
+      window.location.reload();
     }
   };
 
