@@ -7,7 +7,7 @@ import supervisorIcon from "@/assets/icons/task-square.svg";
 import cancelingIcon from "@/assets/icons/profile-delete.svg";
 import contentIcon from "@/assets/icons/document-text.svg";
 import usersIcon from "@/assets/icons/profile-2user.svg";
-import addSquareIcon from "@/assets/icons/addSquare.svg"
+import addSquareIcon from "@/assets/icons/addSquare.svg";
 
 export const sidebarLinks = [
   {
@@ -21,30 +21,46 @@ export const sidebarLinks = [
     imgURL: advisorIcon,
     route: "/dashboard/advisors",
     label: "مشاوران",
-    children:[
+    children: [
       {
         id: 21,
         imgURL: addSquareIcon,
         route: "/dashboard/advisors/register",
         label: "افزودن مشاور جدید",
-      },{
+      },
+      {
         id: 22,
         imgURL: advisorsListIcon,
         route: "/dashboard/advisors",
         label: "لیست مشاوران",
-      },{
+      },
+      {
         id: 23,
         imgURL: studentIcon,
         route: "/dashboard/students",
         label: "لیست دانش آموزان",
       },
-    ]
+    ],
   },
   {
     id: 3,
     imgURL: accountingIcon,
     route: "/dashboard/accounting",
     label: "حسابداری",
+    children: [
+      {
+        id: 22,
+        imgURL: advisorsListIcon,
+        route: "/dashboard/allAdvisors",
+        label: "تمام مشاوران",
+      },
+      {
+        id: 23,
+        imgURL: studentIcon,
+        route: "/dashboard/allStudents",
+        label: "تمام دانش آموزان",
+      },
+    ],
   },
   {
     id: 4,
