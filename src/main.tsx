@@ -140,7 +140,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "allAdvisors",
+            path: "accounting/allAdvisors",
             element: (
               <Suspense fallback={<div>Loading...</div>}>
                 <AllAccountingAdvisors />
@@ -148,7 +148,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "allStudents",
+            path: "accounting/allStudents",
             element: (
               <Suspense fallback={<div>Loading...</div>}>
                 <AllAccountingStudents />
