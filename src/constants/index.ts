@@ -51,13 +51,13 @@ export const sidebarLinks = [
       {
         id: 22,
         imgURL: advisorsListIcon,
-        route: "/dashboard/allAdvisors",
+        route: "/dashboard/accounting/allAdvisors",
         label: "تمام مشاوران",
       },
       {
         id: 23,
         imgURL: studentIcon,
-        route: "/dashboard/allStudents",
+        route: "/dashboard/accounting/allStudents",
         label: "تمام دانش آموزان",
       },
     ],
