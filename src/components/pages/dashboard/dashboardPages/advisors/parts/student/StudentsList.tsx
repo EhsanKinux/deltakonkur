@@ -10,6 +10,14 @@ const StudentsList = () => {
 
   useEffect(() => {
     getData();
+
+    // Set up an interval to fetch data every 5 minutes (300000 milliseconds)
+    const intervalId = setInterval(() => {
+      getData();
+    }, 300000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, [getData]);
 
   return (

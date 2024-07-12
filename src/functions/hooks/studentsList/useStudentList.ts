@@ -15,7 +15,7 @@ import { ISetStudentAdvisor } from "@/lib/apis/students/interface";
 export const useStudentList = () => {
   const addFormData = appStore((state) => state.addFormData);
   const deleteFormData = appStore((state) => state.deleteFormData);
-  const [dataLoaded, setDataLoaded] = useState(false);
+  // const [dataLoaded, setDataLoaded] = useState(false);
   const studentInfo = appStore((state) => state.studentInfo);
   const loading = appStore((state) => state.loading);
   const error = appStore((state) => state.error);
@@ -25,13 +25,10 @@ export const useStudentList = () => {
   const [studentInformation, setStudentInformaion] = useState({});
 
   const getData = useCallback(async () => {
-    if (!dataLoaded) {
-      const data = await get_registered_students();
-      data.forEach((student: FormEntry) => addFormData(student));
-      // console.log(data);
-      setDataLoaded(true);
-    }
-  }, [addFormData, dataLoaded]);
+    const data = await get_registered_students();
+    data.forEach((student: FormEntry) => addFormData(student));
+    // console.log(data);
+  }, [addFormData]);
 
   const deleteStudent = async (studentId: string) => {
     try {
