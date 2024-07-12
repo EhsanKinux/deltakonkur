@@ -21,7 +21,7 @@ const LinkWithChildren = ({
     <Accordion type="single" collapsible className="sidebar-link w-full !py-0">
       <AccordionItem value="item-1" className="w-full">
         <AccordionTrigger>
-          <div className="flex justify-center xl:justify-normal gap-2 w-full">
+          <div className="flex justify-center md:justify-normal gap-2 w-full">
             <div className="relative size-6 flex justify-center">
               <img src={menuItem.imgURL} alt={menuItem.label} className={cn("brightness-[100] invert-0")} />
             </div>
