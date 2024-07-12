@@ -16,7 +16,7 @@ export function StudentTable<TData, TValue>({ columns, data }: StudentTableProps
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 8,
+        pageSize: 10,
       },
     },
   });
