@@ -6,6 +6,7 @@ import {
   get_registered_advisors,
 } from "@/lib/apis/advisors/service";
 import { appStore } from "@/lib/store/appStore";
+import { Advisor } from "@/lib/store/types";
 // import { Advisor } from "@/lib/store/types";
 import { useCallback, useState } from "react";
 
@@ -42,6 +43,34 @@ export const useAdvisorsList = () => {
       }
     }
   }, [addAdvisor, dataLoaded, setLoading, setError]);
+
+  const getAdvisorsData2 = useCallback(async () => {
+    if (!dataLoaded) {
+      try {
+        setLoading(true);
+        const data = await get_registered_advisors();
+        const advisorsArray: Advisor[] = [];
+        data.forEach((advisor: FormEntry) => {
+          addAdvisor(advisor);
+          advisorsArray.push(advisor);
+        });
+        setDataLoaded(true);
+        return advisorsArray; // Return the advisors array
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to fetch advisors");
+        }
+        return []; // Return an empty array in case of error
+      } finally {
+        setLoading(false);
+      }
+    }
+    return []; // Return an empty array if data is already loaded
+  }, [addAdvisor, dataLoaded, setLoading, setError]);
+  
+  
 
   const advisorDelete = async (advisorId: string) => {
     try {
@@ -97,5 +126,5 @@ export const useAdvisorsList = () => {
     [setAdvisorStudent, setError, setLoading]
   );
 
-  return { getAdvisorsData, advisorDelete, fetchAdvisorInfo, advisorInfo, advisorStudentsInfo };
+  return { getAdvisorsData, advisorDelete, fetchAdvisorInfo, advisorInfo, advisorStudentsInfo, getAdvisorsData2 };
 };
