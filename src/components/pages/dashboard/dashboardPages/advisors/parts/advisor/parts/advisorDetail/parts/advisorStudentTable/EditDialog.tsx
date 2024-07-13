@@ -13,28 +13,34 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { editStudentFormSchema } from "@/lib/schema/Schema";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import { appStore } from "@/lib/store/appStore";
 import Name from "../../../../../student/table/parts/edit/parts/name/Name";
 import TellNumbers from "../../../../../student/table/parts/edit/parts/tel-numbers/TellNumbers";
 import CustomEditInput from "../../../../../student/table/parts/edit/parts/CustomEditInput";
 import FieldGrade from "../../../../../student/table/parts/edit/parts/fieldAndGrade/FieldGrade";
 import SelectStudentAdvisor from "../../../../../student/table/parts/edit/parts/selectAdvisor/SelectStudentAdvisor";
 import DateAndTime2 from "../../../../../student/table/parts/edit/parts/dateAndTime/DateAndTime2";
+import { Advisor } from "@/lib/store/types";
 
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo, setAdvisorForStudent } = useStudentList();
-  const { getAdvisorsData, advisorInfo } = useAdvisorsList();
-  const advisors = appStore((state) => state.advisors);
+  const { getAdvisorsData2 } = useAdvisorsList();
+  // const advisors = appStore((state) => state.advisors);
+  const [advisors, setAdvisors] = useState<Advisor[]>([]);
 
   useEffect(() => {
-    getAdvisorsData();
-  }, [getAdvisorsData]);
+    getAdvisorsData2().then((data) => {
+      if (data && data.length > 0) {
+        setAdvisors(data);
+      }
+      console.log("Fetched advisors:", data); // Add this line
+    });
+  }, [getAdvisorsData2]);
 
   // Memoize advisors to prevent unnecessary re-renders
-  const memoizedAdvisors = useMemo(() => advisors, [advisors]);
+  // const memoizedAdvisors = useMemo(() => advisors, [advisors]);
 
   const formSchema = editStudentFormSchema();
   const form = useForm({
@@ -67,10 +73,11 @@ export function EditStudentDialog() {
         field: studentInfo.field,
         grade: studentInfo.grade,
         created: studentInfo.created,
-        advisor: advisorInfo?.id,
+        advisor: "",
       });
     }
-  }, [studentInfo, form, advisorInfo?.id]);
+    // console.log(advisor);
+  }, [studentInfo, form]);
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -85,7 +92,7 @@ export function EditStudentDialog() {
       console.table(modifiedData);
       await updateStudentInfo(modifiedData);
       if (advisor) {
-        console.log("stID:", studentInfo.id, "advID:", advisor);
+        // console.log("stID:", studentInfo.id, "advID:", advisor);
         await setAdvisorForStudent({ studentId: studentInfo.id, advisorId: advisor });
       }
 
@@ -111,7 +118,7 @@ export function EditStudentDialog() {
               <CustomEditInput control={form.control} name="school" label="نام مدرسه" customclass="w-[90%]" />
               <FieldGrade form={form} />
               <div className="flex gap-5">
-                <SelectStudentAdvisor form={form} memoizedAdvisors={memoizedAdvisors} />
+                <SelectStudentAdvisor form={form} memoizedAdvisors={advisors} />
                 <DateAndTime2 form={form} />
               </div>
               <DialogFooter>
