@@ -23,6 +23,7 @@ import FieldGrade from "../../../../../student/table/parts/edit/parts/fieldAndGr
 import SelectStudentAdvisor from "../../../../../student/table/parts/edit/parts/selectAdvisor/SelectStudentAdvisor";
 import DateAndTime2 from "../../../../../student/table/parts/edit/parts/dateAndTime/DateAndTime2";
 import { Advisor } from "@/lib/store/types";
+import { convertToGregorian } from "@/lib/utils/date/convertDate";
 
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo, setAdvisorForStudent } = useStudentList();
@@ -35,7 +36,7 @@ export function EditStudentDialog() {
       if (data && data.length > 0) {
         setAdvisors(data);
       }
-      console.log("Fetched advisors:", data); // Add this line
+      // console.log("Fetched advisors:", data);
     });
   }, [getAdvisorsData2]);
 
@@ -47,6 +48,7 @@ export function EditStudentDialog() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       id: "",
+      date_of_birth: "",
       first_name: "",
       last_name: "",
       school: "",
@@ -64,6 +66,7 @@ export function EditStudentDialog() {
     if (studentInfo) {
       form.reset({
         id: "",
+        date_of_birth: convertToGregorian(studentInfo.date_of_birth),
         first_name: studentInfo.first_name,
         last_name: studentInfo.last_name,
         school: studentInfo.school,
