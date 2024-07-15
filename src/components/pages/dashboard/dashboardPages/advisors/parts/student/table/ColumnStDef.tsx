@@ -32,6 +32,10 @@ export const stColumns: ColumnDef<FormEntry>[] = [
     header: "رشته تحصیلی",
   },
   {
+    accessorKey: "date_of_birth",
+    header: "تاریخ تولد",
+  },
+  {
     accessorKey: "grade",
     header: "مقطع تحصیلی",
   },
