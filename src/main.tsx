@@ -13,8 +13,8 @@ const AllAccountingStudents = lazy(
   () => import("./components/pages/dashboard/dashboardPages/accounting/allStudents/AllAccountingStudents.tsx")
 );
 const Canceling = lazy(() => import("./components/pages/dashboard/dashboardPages/canceling/Canceling.tsx"));
-const AllStudents = lazy(
-  () => import("./components/pages/dashboard/dashboardPages/advisors/parts/student/StudentsList.tsx")
+const StudentTabs = lazy(
+  () => import("./components/pages/dashboard/dashboardPages/advisors/parts/student/tabs/StudentTabs.tsx")
 );
 const AllAdvisors = lazy(
   () => import("./components/pages/dashboard/dashboardPages/advisors/parts/advisor/AdvisorList.tsx")
@@ -135,7 +135,7 @@ const router = createBrowserRouter([
             path: "students",
             element: (
               <Suspense fallback={<div>Loading...</div>}>
-                <AllStudents />
+                <StudentTabs />
               </Suspense>
             ),
           },
