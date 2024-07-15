@@ -14,6 +14,10 @@ export async function fetchInstance(url: string, options?: RequestInit) {
     if (response.status === 204) {
       return null;
     }
+    // if (response.status === 500) {
+    //   const message = await response.text();
+    //   throw new Error(message || "Network Error!");
+    // }
     return response.json();
   });
 }
