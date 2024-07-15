@@ -31,6 +31,8 @@ export type IadvisorStudent = {
   student: string;
   advisor: string;
   status: string;
+  started_date: string;
+  ended_date: string;
 }[];
 
 export type FormStore = {
