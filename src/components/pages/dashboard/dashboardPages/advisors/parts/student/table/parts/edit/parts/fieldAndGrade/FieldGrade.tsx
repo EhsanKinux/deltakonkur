@@ -7,6 +7,7 @@ const FieldGrade = ({
   form: UseFormReturn<
     {
       id: string;
+      date_of_birth: string;
       first_name: string;
       last_name: string;
       school: string;
@@ -16,7 +17,7 @@ const FieldGrade = ({
       field: string;
       grade: string;
       created: string;
-      advisor:string;
+      advisor: string;
     },
     undefined
   >;

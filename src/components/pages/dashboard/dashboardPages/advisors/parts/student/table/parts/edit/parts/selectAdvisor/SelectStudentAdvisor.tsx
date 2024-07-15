@@ -10,6 +10,7 @@ const SelectStudentAdvisor = ({
   form: UseFormReturn<
     {
       id: string;
+      date_of_birth: string;
       first_name: string;
       last_name: string;
       school: string;
@@ -34,7 +35,7 @@ const SelectStudentAdvisor = ({
       name="advisor"
       render={() => (
         <FormItem className="flex flex-col bg-slate-100 rounded-xl">
-          <FormLabel className="pr-5">تعیین مشاور</FormLabel>
+          <FormLabel className="pt-2 font-bold text-slate-500">تعیین مشاور</FormLabel>
           <CustomAdvisorSelect
             {...register("advisor")}
             value={advisorValue}

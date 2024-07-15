@@ -1,5 +1,6 @@
 export type FormEntry = {
   id: string;
+  date_of_birth: string;
   first_name: string;
   last_name: string;
   school: string;

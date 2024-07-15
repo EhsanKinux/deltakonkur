@@ -1,4 +1,3 @@
-
 import CustomRegInput from "../customInput/CustomRegInput";
 import { UseFormReturn } from "react-hook-form";
 
@@ -8,6 +7,7 @@ const TopRight = ({
   form: UseFormReturn<
     {
       // id: string;
+      date_of_birth: string;
       first_name: string;
       last_name: string;
       school: string;

@@ -11,6 +11,7 @@ const CustomEditInput = ({
   control: Control<
     {
       id: string;
+      date_of_birth: string;
       first_name: string;
       last_name: string;
       school: string;
@@ -33,13 +34,13 @@ const CustomEditInput = ({
       control={control}
       name={name}
       render={({ field }) => (
-        <div className={`flex flex-col gap-2 ${customclass}`}>
-          <FormLabel className="pr-5">{label}</FormLabel>
+        <div className={`flex justify-center flex-col w-full gap-2 ${customclass}`}>
+          <FormLabel className="pt-2 font-bold text-slate-500">{label}</FormLabel>
           <FormControl className="">
             <Input
               disabled
               id={name}
-              className="mx-4 text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
+              className="w-full text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
               type="text"
               {...field}
             />

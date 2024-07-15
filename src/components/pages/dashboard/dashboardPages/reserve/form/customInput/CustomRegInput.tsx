@@ -10,6 +10,7 @@ const CustomRegInput = ({
   control: Control<
     {
       // id: string;
+      date_of_birth: string;
       first_name: string;
       last_name: string;
       school: string;
@@ -18,7 +19,7 @@ const CustomRegInput = ({
       parent_phone: string;
       field: string;
       grade: string;
-      created:string;
+      created: string;
     },
     undefined
   >;
@@ -32,16 +33,16 @@ const CustomRegInput = ({
       render={({ field }) => (
         <div className="flex flex-col w-full gap-2">
           {/* <FormLabel>{label}</FormLabel> */}
-            <FormControl className="">
-              <Input
-                id={name}
-                className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
-                placeholder={label}
-                type="text"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage className="form-message mt-2" />
+          <FormControl className="">
+            <Input
+              id={name}
+              className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
+              placeholder={label}
+              type="text"
+              {...field}
+            />
+          </FormControl>
+          <FormMessage className="form-message mt-2" />
         </div>
       )}
     />

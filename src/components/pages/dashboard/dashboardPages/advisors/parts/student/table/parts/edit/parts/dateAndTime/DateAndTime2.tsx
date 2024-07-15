@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils/cn/cn";
 import { format } from "date-fns-jalali";
@@ -16,6 +16,7 @@ const DateAndTime2 = ({
   form: UseFormReturn<
     {
       id: string;
+      date_of_birth: string;
       first_name: string;
       last_name: string;
       school: string;
@@ -35,15 +36,15 @@ const DateAndTime2 = ({
       control={form.control}
       name="created"
       render={({ field }) => (
-        <FormItem className="flex flex-col">
-          <FormLabel className="pr-5">تاریخ ثبت:</FormLabel>
+        <FormItem className="flex justify-center flex-col w-full">
+          <FormLabel className="pt-2 font-bold text-slate-500">تاریخ ثبت:</FormLabel>
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "mx-4 text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 flex gap-4",
+                    "w-full text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 flex gap-4",
                     !field.value && "text-muted-foreground"
                   )}
                 >
@@ -64,7 +65,7 @@ const DateAndTime2 = ({
               />
             </PopoverContent>
           </Popover>
-          <FormDescription className="pr-5">در تغییر تاریخ لطفا دقت کنید!</FormDescription>
+          {/* <FormDescription className="pr-5">در تغییر تاریخ لطفا دقت کنید!</FormDescription> */}
           <FormMessage />
         </FormItem>
       )}

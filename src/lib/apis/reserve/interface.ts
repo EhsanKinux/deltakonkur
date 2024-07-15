@@ -1,5 +1,5 @@
 export interface ISubmitStudentRegisterService {
-  id:string;
+  id: string;
   first_name: string;
   last_name: string;
   phone_number: string;
@@ -8,10 +8,11 @@ export interface ISubmitStudentRegisterService {
   school: string;
   field: string;
   grade: string;
-  created:string;
+  created: string;
 }
 
 export interface IRegisterStudentService {
+  date_of_birth: string;
   first_name: string;
   last_name: string;
   phone_number: string;
@@ -20,5 +21,5 @@ export interface IRegisterStudentService {
   school: string;
   field: string;
   grade: string;
-  created:string;
+  created: string;
 }

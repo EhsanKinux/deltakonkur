@@ -6,7 +6,7 @@ const CustomAdvisorSelect = React.forwardRef<HTMLButtonElement, any>((props, ref
     <Select {...props}>
       <SelectTrigger
         ref={ref}
-        className="mx-4 text-16 placeholder:text-16 rounded-[8px] text-gray-500 border-slate-400"
+        className="w-full text-16 placeholder:text-16 rounded-[8px] text-gray-500 border-slate-400"
       >
         <SelectValue placeholder={props.placeholder} />
       </SelectTrigger>

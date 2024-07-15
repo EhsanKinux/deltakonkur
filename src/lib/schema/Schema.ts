@@ -16,7 +16,7 @@ export const editAdvisorFormSchema = () =>
     bank_account: z.string(),
     national_id: z.string(),
   });
-  
+
 export const editStudentFormSchema = () =>
   z.object({
     id: z.string(),
@@ -29,7 +29,8 @@ export const editStudentFormSchema = () =>
     field: z.string(),
     grade: z.string(),
     created: z.string(),
-    advisor: z.string().min(1, {message: "مشاور دانش آموز را تعیین کنید!"}),
+    advisor: z.string().min(1, { message: "مشاور دانش آموز را تعیین کنید!" }),
+    date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
   });
 
 export const registerFormSchema = () =>
@@ -61,6 +62,7 @@ export const registerFormSchema = () =>
       .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
     field: z.string().min(1, { message: "رشته‌ی تحصیلی را انتخاب کنید" }),
     grade: z.string().min(1, { message: "مقطع تحصیلی را انتخاب کنید" }),
+    date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
     created: z.string(),
   });
 
