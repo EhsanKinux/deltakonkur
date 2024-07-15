@@ -37,8 +37,12 @@ export const stColumns: ColumnDef<ProcessedStudentData>[] = [
     header: "مقطع تحصیلی",
   },
   {
-    accessorKey: "created",
-    header: "تاریخ ثبت",
+    accessorKey: "started_date",
+    header: "تاریخ شروع",
+  },
+  {
+    accessorKey: "ended_date",
+    header: "تاریخ پایان",
   },
   {
     id: "actions",
