@@ -16,6 +16,9 @@ import { submit_student_register_service } from "@/lib/apis/reserve/service";
 import studentPic from "@/assets/icons/education.svg";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import BirthDate from "./form/topright/BirthDate";
+import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
+import PlansType from "./form/down/PlansType";
 
 const Reserve = () => {
   const [isloading, setIsloading] = useState(false);
@@ -25,6 +28,7 @@ const Reserve = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       // id:"",
+      date_of_birth: "",
       first_name: "",
       last_name: "",
       school: "",
@@ -42,6 +46,7 @@ const Reserve = () => {
     const currentDateTime = new Date().toISOString();
     const transformedData = {
       // id: "",
+      date_of_birth: convertToShamsi2(data.date_of_birth),
       first_name: data.first_name,
       last_name: data.last_name,
       phone_number: data.phone_number,
@@ -59,9 +64,9 @@ const Reserve = () => {
           form.reset();
         }),
         {
-          loading: 'در حال ثبت نام...',
-          success: 'ثبت نام با موفقیت انجام شد!',
-          error: 'خطایی رخ داده است!',
+          loading: "در حال ثبت نام...",
+          success: "ثبت نام با موفقیت انجام شد!",
+          error: "خطایی رخ داده است!",
         }
       );
     }
@@ -85,6 +90,7 @@ const Reserve = () => {
               <div className="w-full xl:w-1/2 flex flex-col justify-center items-center gap-3 bg-slate-200 rounded-xl p-5">
                 <h2 className="text-2xl">اطلاعات شخصی</h2>
                 <TopRight form={form} />
+                <BirthDate form={form} />
               </div>
             </div>
 
@@ -100,6 +106,7 @@ const Reserve = () => {
                 <div className="flex h-full flex-col gap-5 items-center justify-center bg-slate-200 rounded-xl py-5 px-10">
                   <h2 className="text-2xl">اطلاعات تحصیلی</h2>
                   <Down form={form} />
+                  <PlansType />
                 </div>
                 <Button type="submit" className="form-btn w-full hover:bg-blue-800">
                   {isloading ? (
