@@ -23,6 +23,8 @@ import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { appStore } from "@/lib/store/appStore";
+import Birthdate from "./parts/dateAndTime/Birthdate";
+import { convertToGregorian } from "@/lib/utils/date/convertDate";
 
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo, setAdvisorForStudent } = useStudentList();
@@ -41,6 +43,7 @@ export function EditStudentDialog() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       id: "",
+      date_of_birth: "",
       first_name: "",
       last_name: "",
       school: "",
@@ -58,6 +61,7 @@ export function EditStudentDialog() {
     if (studentInfo) {
       form.reset({
         id: "",
+        date_of_birth: convertToGregorian(studentInfo.date_of_birth),
         first_name: studentInfo.first_name,
         last_name: studentInfo.last_name,
         school: studentInfo.school,
@@ -110,9 +114,10 @@ export function EditStudentDialog() {
               <CustomEditInput control={form.control} name="school" label="نام مدرسه" customclass="w-[90%]" />
               <FieldGrade form={form} />
               <div className="flex gap-5">
-                <SelectStudentAdvisor form={form} memoizedAdvisors={memoizedAdvisors} />
+                <Birthdate form={form} />
                 <DateAndTime2 form={form} />
               </div>
+              <SelectStudentAdvisor form={form} memoizedAdvisors={memoizedAdvisors} />
               <DialogFooter>
                 <div className="flex justify-between items-center w-full">
                   <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2">
