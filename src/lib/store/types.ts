@@ -57,6 +57,7 @@ export type FormStore = {
 
 export type IallStudents = {
   id: string;
+  date_of_birth: string;
   first_name: string;
   last_name: string;
   school: string;
