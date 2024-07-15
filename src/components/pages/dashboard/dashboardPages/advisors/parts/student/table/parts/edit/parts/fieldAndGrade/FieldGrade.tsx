@@ -48,6 +48,7 @@ const FieldGrade = ({
           { value: "10", label: "پایه دهم" },
           { value: "11", label: "پایه یازدهم" },
           { value: "12", label: "پایه دوازدهم" },
+          { value: "0", label: "فارغ‌التحصیل" },
         ]}
       />
     </div>
