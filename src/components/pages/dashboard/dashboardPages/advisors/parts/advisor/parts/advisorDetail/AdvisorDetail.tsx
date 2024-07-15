@@ -26,6 +26,9 @@ const defaultProcessedStudentData: ProcessedStudentData = {
   parent_phone: "",
   field: "",
   grade: "",
+  date_of_birth: "",
+  started_date: "",
+  ended_date: "",
 };
 
 const AdvisorDetail = () => {
@@ -78,10 +81,18 @@ const AdvisorDetail = () => {
         const studentInfo: ProcessedStudentData = studentInformation[student.student] || {
           ...defaultProcessedStudentData,
         };
-        let createdShamsi = "Invalid Date";
-        if (studentInfo.created) {
+        let startededShamsi = "Invalid Date";
+        let endededShamsi = "";
+        if (student.started_date) {
           try {
-            createdShamsi = convertToShamsi(studentInfo.created);
+            startededShamsi = convertToShamsi(student.started_date);
+          } catch (error) {
+            console.error("Date conversion error:", error, "for student ID:", student.student);
+          }
+        }
+        if (student.ended_date) {
+          try {
+            endededShamsi = convertToShamsi(student.ended_date);
           } catch (error) {
             console.error("Date conversion error:", error, "for student ID:", student.student);
           }
@@ -90,7 +101,8 @@ const AdvisorDetail = () => {
           ...studentInfo,
           id: student.student,
           status: student.status,
-          created: createdShamsi,
+          started_date: startededShamsi,
+          ended_date: endededShamsi,
         };
       });
       setProcessedStudentData(processedData);
