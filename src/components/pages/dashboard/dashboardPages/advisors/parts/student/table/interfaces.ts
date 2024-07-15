@@ -9,5 +9,5 @@ export type FormEntry = {
   parent_phone: string;
   field: string;
   grade: string;
-  created?: string;
+  created: string;
 };
