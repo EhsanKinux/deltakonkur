@@ -78,6 +78,9 @@ export const registerFormSchema = () =>
     grade: z.string().min(1, { message: "مقطع تحصیلی را انتخاب کنید" }),
     date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
     created: z.string(),
+    solar_date_day: z.string(),
+    solar_date_month: z.string(),
+    solar_date_year: z.string(),
   });
 
 export const registerAdvisorFormSchema = () =>
