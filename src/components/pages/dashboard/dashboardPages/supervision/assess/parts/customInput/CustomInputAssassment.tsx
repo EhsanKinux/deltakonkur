@@ -11,6 +11,7 @@ const CustomInputAssassment = ({
   control: Control<
     {
       student: string;
+      plan_score: string;
       report_score: string;
       phone_score: string;
       advisor_behaviour_score: string;
@@ -28,7 +29,8 @@ const CustomInputAssassment = ({
     | "followup_score"
     | "motivation_score"
     | "exam_score"
-    | "advisor_score";
+    | "advisor_score"
+    | "plan_score";
   label: string;
   placeHolder: string;
 }) => {
