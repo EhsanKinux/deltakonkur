@@ -8,15 +8,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
-import { FormEntry } from "../../interfaces";
+// import { FormEntry } from "../../interfaces";
 import { toast } from "sonner";
+import { FormData } from "@/lib/store/types";
 
 const DeleteConfirmationDialog = ({
   setDeleteDialogOpen,
   formData,
 }: {
   setDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  formData: FormEntry;
+  formData: FormData;
 }) => {
   const { deleteStudent } = useStudentList();
 

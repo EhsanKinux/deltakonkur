@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { FormEntry } from "../interfaces";
+// import { FormEntry } from "../interfaces";
 import { Dialog } from "@/components/ui/dialog";
 import { EditStudentDialog } from "./edit/EditStudentDialog";
 import { useState } from "react";
@@ -7,8 +7,9 @@ import DeleteConfirmationDialog from "./delete/DeleteConfirmationDialog";
 import userDeleteIcon from "@/assets/icons/userRemove.svg";
 import userEditIcon from "@/assets/icons/userEdit.svg";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
+import { FormData } from "@/lib/store/types";
 
-const StudentDialogButtons = ({ formData }: { formData: FormEntry }) => {
+const StudentDialogButtons = ({ formData }: { formData: FormData }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { fetchStudentInfo } = useStudentList();
