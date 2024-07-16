@@ -35,7 +35,7 @@ const AdvisorDetail = () => {
     }
   }, [advisorDetailData]);
 
-  console.log("advisorDetailData", advisorDetailData);
+  // console.log("advisorDetailData", advisorDetailData);
 
   const goToAdisors = () => {
     navigate("/dashboard/advisors");
