@@ -12,8 +12,6 @@ const CancelingDialogButton = ({ formData }: { formData: FormEntry }) => {
   const handleOpenCancelDialog = (e: React.MouseEvent) => {
     e.stopPropagation();
     setDeleteDialogOpen(true);
-    //   await fetchStudentInfo(formData?.id);
-    console.log("formDataID", formData);
   };
 
   return (

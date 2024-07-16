@@ -18,15 +18,35 @@ const CancelConfirmation = ({
   setDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   formData: FormData;
 }) => {
-  const { cancelStudent } = useCanceling();
+  const { cancelStudent, checkStudentIsActive } = useCanceling();
 
-  const handleDeleteConfirm = () => {
-    toast.promise(cancelStudent(formData?.id), {
-      loading: "در حال کنسل کردن...",
-      success: `کنسل کردن ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`,
-      error: "خطایی رخ داده است!",
-    });
-    setDeleteDialogOpen(false);
+  const handleDeleteConfirm = async () => {
+    const loadingToastId = toast.loading("در حال بررسی وضعیت دانش‌آموز...");
+    try {
+      const response = await checkStudentIsActive(formData?.id);
+      if (response?.status === "active") {
+        toast.dismiss(loadingToastId);
+        const cancelToastId = toast.loading("در حال کنسل کردن...");
+        await cancelStudent(response.id);
+        toast.dismiss(cancelToastId);
+        toast.success(`کنسل کردن ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`);
+      } else {
+        toast.dismiss(loadingToastId);
+        toast.error("این دانش‌آموز مشاور ندارد!");
+      }
+      if (response?.detail === "student-advisor not found") {
+        toast.error("این دانش‌آموز مشاور ندارد!");
+      } 
+    } catch (error) {
+      toast.dismiss(loadingToastId);
+      if (error) {
+        toast.error("این دانش‌آموز مشاور ندارد!");
+      }else {
+        toast.error("خطایی رخ داده است!");
+      }
+    } finally {
+      setDeleteDialogOpen(false);
+    }
   };
 
   return (
