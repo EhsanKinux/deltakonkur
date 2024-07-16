@@ -2,11 +2,11 @@ import { ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRow
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ProcessedStudentData } from "../advisor/parts/advisorDetail/interface";
+import { StudentWithDetails } from "../advisor/parts/advisorDetail/interface";
 
 interface AdvisorDitailTableProps {
-  columns: ColumnDef<ProcessedStudentData>[];
-  data: ProcessedStudentData[];
+  columns: ColumnDef<StudentWithDetails>[];
+  data: StudentWithDetails[];
 }
 
 export function AdvisorDitailTable({ columns, data }: AdvisorDitailTableProps) {

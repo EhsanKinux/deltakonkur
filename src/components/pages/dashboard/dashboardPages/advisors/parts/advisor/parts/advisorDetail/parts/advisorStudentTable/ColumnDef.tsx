@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ProcessedStudentData } from "../../interface";
+import { StudentWithDetails } from "../../interface";
 import StudentDialogButtons from "./DialogButtons";
 
 
-export const stColumns: ColumnDef<ProcessedStudentData>[] = [
+export const stColumns: ColumnDef<StudentWithDetails>[] = [
   {
     accessorKey: "first_name",
     header: "نام",
