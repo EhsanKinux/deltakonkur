@@ -39,11 +39,37 @@ const AdvisorRegisterForm = () => {
         {
           loading: "در حال ثبت مشاور...",
           success: "ثبت مشاور با موفقیت انجام شد!",
-          error: "خطایی رخ داده است!",
+          error: "شماره در سیستم موجود است!",
         }
       );
     }
     setIsloading(false);
+    // if (data) {
+    //   try {
+    //     const response = await submit_advisors_register_service(data);
+    //     toast.promise(
+    //       response.then(() => {
+    //         console.log(response);
+    //         form.reset();
+    //       }),
+    //       {
+    //         loading: "در حال ثبت نام...",
+    //         success: "ثبت نام با موفقیت انجام شد!",
+    //         error: (response) => {
+    //           if (response.status === 500) {
+    //             return "این شماره در سیستم وجود دارد!";
+    //           } else {
+    //             return "خطایی رخ داده است!";
+    //           }
+    //         },
+    //       }
+    //     );
+    //   } catch (error) {
+    //     toast.error("خطایی رخ داده است!");
+    //   } finally {
+    //     setIsloading(false);
+    //   }
+    // }
   };
 
   return (
