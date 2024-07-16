@@ -7,6 +7,9 @@ import "./index.css";
 const SupervisionSearchingTabs = lazy(
   () => import("./components/pages/dashboard/dashboardPages/supervision/tabs/SupervisionSearchingTabs.tsx")
 );
+const StudentAssessment = lazy(
+  () => import("./components/pages/dashboard/dashboardPages/supervision/assess/StudentAssessment.tsx")
+);
 const DashboardLayout = lazy(() => import("./components/pages/dashboard/dashboardLayout/DashboardLayout.tsx"));
 const AllAccountingAdvisors = lazy(
   () => import("./components/pages/dashboard/dashboardPages/accounting/allAdvisors/AllAccountingAdvisors.tsx")
@@ -162,6 +165,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<div>Loading...</div>}>
                 <SupervisionSearchingTabs />
+              </Suspense>
+            ),
+          },
+          {
+            path: "supervision/:studentId",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <StudentAssessment />
               </Suspense>
             ),
           },
