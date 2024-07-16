@@ -10,6 +10,7 @@ export const studentAssessment = () =>
   z.object({
     // id: z.string(),
     student: z.string(),
+    plan_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
     report_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
     phone_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
     advisor_behaviour_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
