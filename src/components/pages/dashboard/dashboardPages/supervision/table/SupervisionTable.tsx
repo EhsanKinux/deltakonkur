@@ -1,14 +1,16 @@
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
+import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, ColumnDef } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { FormEntry } from "../../advisors/parts/student/table/interfaces";
 
-interface SupervisionTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface SupervisionTableProps {
+  columns: ColumnDef<FormEntry>[];
+  data: FormEntry[];
 }
 
-export function SupervisionTable<TData, TValue>({ columns, data }: SupervisionTableProps<TData, TValue>) {
+export function SupervisionTable({ columns, data }: SupervisionTableProps) {
   const table = useReactTable({
     data,
     columns,
@@ -20,6 +22,17 @@ export function SupervisionTable<TData, TValue>({ columns, data }: SupervisionTa
       },
     },
   });
+
+  const navigate = useNavigate();
+
+  const handleRowClick = (studentId: string) => {
+    // if (
+    //   (e.target as HTMLElement).tagName.toLowerCase() !== "button" &&
+    //   (e.target as HTMLElement).tagName.toLowerCase() !== "input"
+    // ) {
+    // }
+    navigate(`/dashboard/supervision/${studentId}`);
+  };
 
   return (
     <div className="w-full overflow-hidden p-10 absolute top-0 right-0 left-0 bottom-0">
@@ -39,8 +52,13 @@ export function SupervisionTable<TData, TValue>({ columns, data }: SupervisionTa
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow className="hover:bg-slate-200" key={row.id} data-state={row.getIsSelected() && "selected"}>
+            table.getRowModel().rows.map((row, index) => (
+              <TableRow
+                className="hover:bg-slate-200 hover:cursor-pointer"
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+                onClick={() => handleRowClick(data[index].id)}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell className="!text-center" key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
