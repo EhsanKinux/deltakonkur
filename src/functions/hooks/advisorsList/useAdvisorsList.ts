@@ -1,9 +1,11 @@
+import { AdvisorDetailEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/interface";
 import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/table/interfaces";
 import {
   advisor_students,
   advisors_delete,
   get_advisor_info,
   get_registered_advisors,
+  get_students_of_each_advisor,
 } from "@/lib/apis/advisors/service";
 import { appStore } from "@/lib/store/appStore";
 import { Advisor } from "@/lib/store/types";
@@ -22,6 +24,7 @@ export const useAdvisorsList = () => {
   const setError = appStore((state) => state.setError);
 
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [advisorDetailData, setAdvisorDetailData] = useState<AdvisorDetailEntry[]>();
 
   const getAdvisorsData = useCallback(async () => {
     if (!dataLoaded) {
@@ -69,8 +72,6 @@ export const useAdvisorsList = () => {
     }
     return []; // Return an empty array if data is already loaded
   }, [addAdvisor, dataLoaded, setLoading, setError]);
-  
-  
 
   const advisorDelete = async (advisorId: string) => {
     try {
@@ -105,26 +106,48 @@ export const useAdvisorsList = () => {
     [setError, setLoading, setAdvisorInfo]
   );
 
-  const advisorStudentsInfo = useCallback(
-    async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await advisor_students();
-        setAdvisorStudent(data);
-        // console.log("dataAdvisorStudent", data);
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("Failed to fetch student information");
-        }
-      } finally {
-        setLoading(false);
+  const advisorStudentsInfo = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await advisor_students();
+      setAdvisorStudent(data);
+      console.log("dataAdvisorStudent", data);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Failed to fetch student information");
       }
-    },
-    [setAdvisorStudent, setError, setLoading]
-  );
+    } finally {
+      setLoading(false);
+    }
+  }, [setAdvisorStudent, setError, setLoading]);
 
-  return { getAdvisorsData, advisorDelete, fetchAdvisorInfo, advisorInfo, advisorStudentsInfo, getAdvisorsData2 };
+  const getStudentsOfAdvisor = useCallback(async (advisorId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await get_students_of_each_advisor({ advisorId });
+      setAdvisorDetailData(data);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Failed to fetch student information");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [setError, setLoading]);
+  return {
+    getAdvisorsData,
+    advisorDelete,
+    fetchAdvisorInfo,
+    advisorInfo,
+    advisorStudentsInfo,
+    getAdvisorsData2,
+    getStudentsOfAdvisor,
+    advisorDetailData,
+  };
 };
