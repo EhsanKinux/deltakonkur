@@ -17,7 +17,7 @@ import studentPic from "@/assets/icons/education.svg";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import BirthDate from "./form/topright/BirthDate";
-import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
+import { convertToShamsi, convertToShamsi2 } from "@/lib/utils/date/convertDate";
 import PlansType from "./form/down/PlansType";
 
 const Reserve = () => {
@@ -38,12 +38,19 @@ const Reserve = () => {
       field: "",
       grade: "",
       created: "",
+      solar_date_day: "",
+      solar_date_month: "",
+      solar_date_year: "",
     },
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsloading(true);
+    // get current date
     const currentDateTime = new Date().toISOString();
+    const shamsiDate = convertToShamsi(currentDateTime);
+    const [day, month, year] = shamsiDate.split(" / ").map(Number);
+    // console.log(shamsiDate);
     const transformedData = {
       // id: "",
       date_of_birth: convertToShamsi2(data.date_of_birth),
@@ -56,9 +63,12 @@ const Reserve = () => {
       field: data.field,
       grade: data.grade,
       created: currentDateTime,
+      solar_date_day: day.toString(),
+      solar_date_month: month.toString(),
+      solar_date_year: year.toString(),
     };
     if (data) {
-      console.table(transformedData);
+      // console.table(transformedData);
       await toast.promise(
         submit_student_register_service(transformedData).then(() => {
           form.reset();
