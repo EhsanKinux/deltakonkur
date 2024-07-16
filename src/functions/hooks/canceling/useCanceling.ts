@@ -1,4 +1,4 @@
-import { cancel_student } from "@/lib/apis/canceling/service";
+import { cancel_student, check_student_is_active } from "@/lib/apis/canceling/service";
 
 export const useCanceling = () => {
   const cancelStudent = async (studentId: string) => {
@@ -14,5 +14,17 @@ export const useCanceling = () => {
     }
   };
 
-  return { cancelStudent };
+  const checkStudentIsActive = async (studentId: string) => {
+    try {
+      const response = await check_student_is_active({ studentId });
+      return response; // Return the response data
+    } catch (error) {
+      console.error("Failed to check if student is active:");
+      if (error) {
+        throw new Error();
+      }
+    }
+  };
+
+  return { cancelStudent, checkStudentIsActive };
 };
