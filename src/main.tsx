@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom"
 import ReactDOM from "react-dom/client";
 import { Suspense, lazy } from "react";
 import "./index.css";
+import Loading from "./components/loader/Loading.tsx";
 
 // Lazy load components
 const SupervisionSearchingTabs = lazy(
@@ -48,12 +49,12 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading />}>
         <App />
       </Suspense>
     ),
     errorElement: (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading />}>
         <ErrorPage />
       </Suspense>
     ),
@@ -65,7 +66,7 @@ const router = createBrowserRouter([
       {
         path: "auth",
         element: (
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<Loading />}>
             <AuthLayout />
           </Suspense>
         ),
@@ -73,7 +74,7 @@ const router = createBrowserRouter([
           {
             path: "signIn",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <SignIn />
               </Suspense>
             ),
@@ -81,7 +82,7 @@ const router = createBrowserRouter([
           {
             path: "signUp",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <SignUp />
               </Suspense>
             ),
@@ -91,7 +92,7 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: (
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<Loading />}>
             <DashboardLayout />
           </Suspense>
         ),
@@ -99,7 +100,7 @@ const router = createBrowserRouter([
           {
             path: "",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <Dashboard />
               </Suspense>
             ),
@@ -107,7 +108,7 @@ const router = createBrowserRouter([
           {
             path: "reserve",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <Reserve />
               </Suspense>
             ),
@@ -115,7 +116,7 @@ const router = createBrowserRouter([
           {
             path: "advisors",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <AllAdvisors />
               </Suspense>
             ),
@@ -123,7 +124,7 @@ const router = createBrowserRouter([
           {
             path: "advisors/:advisorId",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <AdvisorDetail />
               </Suspense>
             ),
@@ -131,7 +132,7 @@ const router = createBrowserRouter([
           {
             path: "advisors/register",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <NewAdvisor />
               </Suspense>
             ),
@@ -139,7 +140,7 @@ const router = createBrowserRouter([
           {
             path: "students",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <StudentTabs />
               </Suspense>
             ),
@@ -147,7 +148,7 @@ const router = createBrowserRouter([
           {
             path: "accounting/allAdvisors",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <AllAccountingAdvisors />
               </Suspense>
             ),
@@ -155,7 +156,7 @@ const router = createBrowserRouter([
           {
             path: "accounting/allStudents",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <AllAccountingStudents />
               </Suspense>
             ),
@@ -163,7 +164,7 @@ const router = createBrowserRouter([
           {
             path: "supervision",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <SupervisionSearchingTabs />
               </Suspense>
             ),
@@ -171,7 +172,7 @@ const router = createBrowserRouter([
           {
             path: "supervision/:studentId",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <StudentAssessment />
               </Suspense>
             ),
@@ -179,7 +180,7 @@ const router = createBrowserRouter([
           {
             path: "canceling",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <Canceling />
               </Suspense>
             ),
@@ -187,7 +188,7 @@ const router = createBrowserRouter([
           {
             path: "content",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <Content />
               </Suspense>
             ),
@@ -195,7 +196,7 @@ const router = createBrowserRouter([
           {
             path: "users",
             element: (
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loading />}>
                 <Users />
               </Suspense>
             ),
