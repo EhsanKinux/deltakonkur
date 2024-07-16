@@ -18,6 +18,7 @@ const StudentAssessment = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       student: "",
+      plan_score: "",
       report_score: "",
       phone_score: "",
       advisor_behaviour_score: "",
@@ -33,6 +34,7 @@ const StudentAssessment = () => {
     if (studentId) {
       const dataTransformed = {
         student: studentId,
+        plan_score: data.plan_score,
         report_score: data.report_score,
         phone_score: data.phone_score,
         advisor_behaviour_score: data.advisor_behaviour_score,
@@ -56,6 +58,12 @@ const StudentAssessment = () => {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 w-3/4 px-8">
+        <CustomInputAssassment
+            control={form.control}
+            name="plan_score"
+            label="نمره برنامه‌ریزی"
+            placeHolder="یک عدد بین 0 تا 5 وارد کنید..."
+          />
           <CustomInputAssassment
             control={form.control}
             name="report_score"
@@ -89,7 +97,7 @@ const StudentAssessment = () => {
           <CustomInputAssassment
             control={form.control}
             name="exam_score"
-            label="نمره برنامه ریزی"
+            label="نمره آزمون"
             placeHolder="یک عدد بین 0 تا 5 وارد کنید..."
           />
           <CustomInputAssassment
