@@ -4,7 +4,9 @@ import { Suspense, lazy } from "react";
 import "./index.css";
 
 // Lazy load components
-const Supervision = lazy(() => import("./components/pages/dashboard/dashboardPages/supervision/Supervision.tsx"));
+const SupervisionSearchingTabs = lazy(
+  () => import("./components/pages/dashboard/dashboardPages/supervision/tabs/SupervisionSearchingTabs.tsx")
+);
 const DashboardLayout = lazy(() => import("./components/pages/dashboard/dashboardLayout/DashboardLayout.tsx"));
 const AllAccountingAdvisors = lazy(
   () => import("./components/pages/dashboard/dashboardPages/accounting/allAdvisors/AllAccountingAdvisors.tsx")
@@ -159,7 +161,7 @@ const router = createBrowserRouter([
             path: "supervision",
             element: (
               <Suspense fallback={<div>Loading...</div>}>
-                <Supervision />
+                <SupervisionSearchingTabs />
               </Suspense>
             ),
           },
