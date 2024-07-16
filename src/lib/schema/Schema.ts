@@ -6,6 +6,19 @@ export const authFormSchema = () =>
     password: z.string().min(8, { message: "حداقل 8 کاراکتر باید وارد شود" }),
   });
 
+export const studentAssessment = () =>
+  z.object({
+    // id: z.string(),
+    student: z.string(),
+    report_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
+    phone_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
+    advisor_behaviour_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
+    followup_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
+    motivation_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
+    exam_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
+    advisor_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
+  });
+
 export const editAdvisorFormSchema = () =>
   z.object({
     id: z.string(),
