@@ -6,9 +6,19 @@ import studentCancel from "@/assets/icons/student-cancel.svg";
 import studentStop from "@/assets/icons/student-stop.svg";
 import personCard from "@/assets/icons/person-card.svg";
 import callIcon from "@/assets/icons/call.svg";
+import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
+import { useEffect } from "react";
 
-const AdvisorInfo = () => {
+const AdvisorInfo = ({ advisorId }: { advisorId: string }) => {
   const advisorInfo = appStore((state) => state.advisorInfo);
+  const { fetchAdvisorInfo } = useAdvisorsList();
+
+  useEffect(() => {
+    if (advisorId) {
+      fetchAdvisorInfo(advisorId);
+    }
+  }, [advisorId, fetchAdvisorInfo]);
+
   return (
     <div className="flex flex-col xl:flex-row justify-between w-full gap-3 p-4 mt-4 rounded-xl shadow-form relative bg-slate-100">
       {/* personal info */}
