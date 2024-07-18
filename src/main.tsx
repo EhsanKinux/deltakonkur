@@ -5,6 +5,7 @@ import "./index.css";
 import Loading from "./components/loader/Loading.tsx";
 
 // Lazy load components
+const UserDetails = lazy(() => import("./components/pages/dashboard/dashboardPages/users/userDetail/UserDetails.tsx"));
 const RegisterUser = lazy(
   () => import("./components/pages/dashboard/dashboardPages/users/registerUser/RegisterUser.tsx")
 );
@@ -209,6 +210,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<Loading />}>
                 <RegisterUser />
+              </Suspense>
+            ),
+          },
+          {
+            path: "users/detail/:userId",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <UserDetails />
               </Suspense>
             ),
           },
