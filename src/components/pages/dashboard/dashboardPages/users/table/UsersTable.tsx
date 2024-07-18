@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { IUsers } from "../users/interface";
+import { MouseEvent } from "react";
 
 interface UsersTableProps {
   columns: ColumnDef<IUsers>[];
@@ -25,13 +26,15 @@ export function UsersTable({ columns, data }: UsersTableProps) {
 
   const navigate = useNavigate();
 
-  const handleRowClick = (studentId: string) => {
-    // if (
-    //   (e.target as HTMLElement).tagName.toLowerCase() !== "button" &&
-    //   (e.target as HTMLElement).tagName.toLowerCase() !== "input"
-    // ) {
-    // }
-    navigate(`/dashboard/supervision/${studentId}`);
+  const handleRowClick = (userId: string, e:MouseEvent) => {
+    if (
+      (e.target as HTMLElement).tagName.toLowerCase() !== "button" &&
+      (e.target as HTMLElement).tagName.toLowerCase() !== "input"
+    ) {
+      navigate(`/dashboard/users/detail/${userId}`);
+    }
+    // console.log(studentId);
+    // console.log(data);
   };
 
   return (
@@ -57,7 +60,7 @@ export function UsersTable({ columns, data }: UsersTableProps) {
                 className="hover:bg-slate-200 hover:cursor-pointer"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                onClick={() => handleRowClick(data[index].id)}
+                onClick={(e) => handleRowClick(data[index].id, e)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell className="!text-center" key={cell.id}>
