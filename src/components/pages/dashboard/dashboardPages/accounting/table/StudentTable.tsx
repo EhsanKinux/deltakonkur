@@ -1,7 +1,17 @@
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getPaginationRowModel,
+  getFilteredRowModel,
+  ColumnFiltersState,
+} from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 interface StudentTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -9,20 +19,41 @@ interface StudentTableProps<TData, TValue> {
 }
 
 export function StudentTable<TData, TValue>({ columns, data }: StudentTableProps<TData, TValue>) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     initialState: {
       pagination: {
         pageSize: 10,
       },
     },
+    state: {
+      columnFilters,
+    },
   });
 
   return (
     <div className="w-full overflow-hidden p-10 absolute top-0 right-0 left-0 bottom-0">
+      <div className="flex items-center gap-2 py-4">
+        <Input
+          placeholder="فیلتر براساس نام"
+          value={(table.getColumn("first_name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn("first_name")?.setFilterValue(event.target.value)}
+          className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
+        />
+        <Input
+          placeholder="فیلتر براساس نام خانوادگی"
+          value={(table.getColumn("last_name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn("last_name")?.setFilterValue(event.target.value)}
+          className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
+        />
+      </div>
       <Table className="!rounded-xl border">
         <TableHeader className="bg-slate-300">
           {table.getHeaderGroups().map((headerGroup) => (
