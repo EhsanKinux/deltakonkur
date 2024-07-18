@@ -6,6 +6,16 @@ export const authFormSchema = () =>
     password: z.string().min(8, { message: "حداقل 8 کاراکتر باید وارد شود" }),
   });
 
+export const registerUserFormSchema = () =>
+  z.object({
+    // id: ;
+    first_name: z.string().min(1, { message: "لطفا نام را وارد کنید" }),
+    last_name: z.string().min(1, { message: "لطفا نام خانوادگی را وارد کنید" }),
+    national_id: z.string().min(1, { message: "کد ملی وارد نشده است" }),
+    phone_number: z.string().min(1, { message: "شماره تلفن را وارد کنید" }),
+    role: z.string().min(1, { message: "نوع کاربر را مشخص کنید" }),
+  });
+
 export const studentAssessment = () =>
   z.object({
     // id: z.string(),
