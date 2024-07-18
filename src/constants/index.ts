@@ -49,13 +49,13 @@ export const sidebarLinks = [
     label: "حسابداری",
     children: [
       {
-        id: 22,
+        id: 31,
         imgURL: advisorsListIcon,
         route: "/dashboard/accounting/allAdvisors",
         label: "تمام مشاوران",
       },
       {
-        id: 23,
+        id: 32,
         imgURL: studentIcon,
         route: "/dashboard/accounting/allStudents",
         label: "تمام دانش آموزان",
@@ -85,5 +85,19 @@ export const sidebarLinks = [
     imgURL: usersIcon,
     route: "/dashboard/users",
     label: "کاربران",
+    children: [
+      {
+        id: 71,
+        imgURL: addSquareIcon,
+        route: "/dashboard/users/register",
+        label: "ثبت کاربر جدید",
+      },
+      {
+        id: 72,
+        imgURL: usersIcon,
+        route: "/dashboard/users",
+        label: "کاربران",
+      },
+    ],
   },
 ];
