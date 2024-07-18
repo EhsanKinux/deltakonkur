@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { IUsers } from "../users/interface";
+import UserDialogButton from "./delete/UserDialogButton";
 
 // import StudentDialogButtons from "./parts/StudentDialogButtons";
 
@@ -24,11 +25,11 @@ export const userColumns: ColumnDef<IUsers>[] = [
     accessorKey: "role",
     header: "نوع کاربر",
   },
-  //   {
-  //     id: "actions",
-  //     cell: ({ row }) => {
-  //       const formData = row.original;
-  //       return <StudentDialogButtons formData={formData} />;
-  //     },
-  //   },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const formData = row.original;
+      return <UserDialogButton formData={formData} />;
+    },
+  },
 ];
