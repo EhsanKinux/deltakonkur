@@ -5,6 +5,9 @@ import "./index.css";
 import Loading from "./components/loader/Loading.tsx";
 
 // Lazy load components
+const RegisterUser = lazy(
+  () => import("./components/pages/dashboard/dashboardPages/users/registerUser/RegisterUser.tsx")
+);
 const SupervisionSearchingTabs = lazy(
   () => import("./components/pages/dashboard/dashboardPages/supervision/tabs/SupervisionSearchingTabs.tsx")
 );
@@ -37,7 +40,7 @@ const AdvisorDetail = lazy(
 );
 const Content = lazy(() => import("./components/pages/dashboard/dashboardPages/content/Content.tsx"));
 const Reserve = lazy(() => import("./components/pages/dashboard/dashboardPages/reserve/Reserve.tsx"));
-const Users = lazy(() => import("./components/pages/dashboard/dashboardPages/users/Users.tsx"));
+const Users = lazy(() => import("./components/pages/dashboard/dashboardPages/users/users/Users.tsx"));
 const Dashboard = lazy(() => import("./components/pages/dashboard/dashboard/Dashboard.tsx"));
 const AuthLayout = lazy(() => import("./components/pages/auth/authLayout/AuthLayout.tsx"));
 const SignIn = lazy(() => import("./components/pages/auth/sign-in/SignIn.tsx"));
@@ -198,6 +201,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<Loading />}>
                 <Users />
+              </Suspense>
+            ),
+          },
+          {
+            path: "users/register",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <RegisterUser />
               </Suspense>
             ),
           },
