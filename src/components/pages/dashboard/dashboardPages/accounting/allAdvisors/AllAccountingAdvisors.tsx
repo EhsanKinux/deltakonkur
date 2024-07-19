@@ -1,75 +1,95 @@
-import { Button } from "@/components/ui/button";
 import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
 import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
-// import { utils, write } from "xlsx";
-// import { write } from "xlsx";
-import { saveAs } from "file-saver";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { CSVLink } from "react-csv";
+
 const AllAccountingAdvisors = () => {
-  const { getExelInfo, getTestExelInfo, jsonTestData, jsonData } = useAccounting();
-  
-  const exportToExcel = async (data: any[], fileName: string | undefined) => {
-    const XLSX = await import("../allAdvisors/parts/EXEL/SheetJSWriteWrapper");
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const dataBlob = new Blob([excelBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-    const currentShamsiDate = getCurrentShamsiDate();
-    const fullFileName = `${fileName}_${currentShamsiDate}.xlsx`;
-    saveAs(dataBlob, fullFileName);
-  };
+  const { getExelInfo, getTestExelInfo, jsonTestData, jsonData, setJsonTestData, setJsonData } = useAccounting();
 
-  useEffect(() => {
-    if (jsonData && jsonData.length > 0) {
-      exportToExcel(jsonData, "Accountant");
-    }
-  }, [jsonData, getExelInfo]);
+  const [loading, setLoading] = useState(false);
+  const [testLoading, setTestLoading] = useState(false);
+  const [isModified, setIsModified] = useState(false);
 
-  useEffect(() => {
-    if (jsonTestData && jsonTestData.length > 0) {
-      exportToExcel(jsonTestData, "TestAccountant");
-    }
-  }, [jsonTestData, getTestExelInfo]);
-
-  const handleExelData = async () => {
-    try {
-      await getExelInfo();
-      // jsonData will be updated, and useEffect will handle the export
-    } catch (error) {
-      console.error("Error fetching Exel data:", error);
-    }
-  };
-
-  const handleTestExelData = async () => {
-    try {
-      await getTestExelInfo();
-      // jsonTestData will be updated, and useEffect will handle the export
-    } catch (error) {
-      console.error("Error fetching test Exel data:", error);
-    }
-  };
+  const headers = [
+    { label: "نام", key: "first_name" },
+    { label: "نام خانوادگی", key: "last_name" },
+    { label: "به شماره حساب", key: "to_account" },
+    { label: "از شماره حساب", key: "from_account" },
+    { label: "مقدار", key: "amount" },
+  ];
 
   const getCurrentShamsiDate = () => {
     const today = new Date().toISOString();
     return convertToShamsi2(today);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await getExelInfo();
+        await getTestExelInfo();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+        setTestLoading(false);
+      }
+    };
 
+    fetchData();
+  }, [getExelInfo, getTestExelInfo]);
+
+  useEffect(() => {
+    if (jsonTestData && jsonTestData.length > 0 && !isModified) {
+      const modifiedData = jsonTestData.map((item) => ({
+        ...item,
+        to_account: `'${item.to_account}`,
+        from_account: `'${item.from_account}`,
+        amount: String(item.amount),
+      }));
+      setJsonTestData(modifiedData);
+      setIsModified(true);
+    }
+  }, [jsonTestData, isModified, setJsonTestData]);
+
+  useEffect(() => {
+    if (jsonData && jsonData.length > 0 && !isModified) {
+      const modifiedData = jsonData.map((item) => ({
+        ...item,
+        to_account: `'${item.to_account}`,
+        from_account: `'${item.from_account}`,
+        amount: String(item.amount),
+      }));
+      setJsonData(modifiedData);
+      setIsModified(true);
+    }
+  }, [jsonTestData, isModified, setJsonTestData]);
 
   return (
     <div className="flex justify-center items-center gap-3 p-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl">
-      <Button className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2" onClick={handleTestExelData}>
-        گزارشگیری تستی
-      </Button>
-      <Button
-        className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
-        onClick={handleExelData}
-      >
-        گزارشگیری
-      </Button>
+      {!testLoading && (
+        <CSVLink
+          headers={headers}
+          data={jsonTestData || []}
+          filename={`TestAccountant_${getCurrentShamsiDate()}.csv`}
+          style={{ textDecoration: "none", color: "#fff" }}
+          className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl p-2"
+        >
+          گزارشگیری تستی
+        </CSVLink>
+      )}
+
+      {!loading && (
+        <CSVLink
+          headers={headers}
+          data={jsonData || []}
+          filename={`Accountant_${getCurrentShamsiDate()}.csv`}
+          style={{ textDecoration: "none", color: "#000" }}
+          className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl p-2"
+        >
+          گزارشگیری
+        </CSVLink>
+      )}
     </div>
   );
 };
