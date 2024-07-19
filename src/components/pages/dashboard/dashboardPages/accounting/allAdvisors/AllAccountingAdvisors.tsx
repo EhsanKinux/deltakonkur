@@ -1,21 +1,36 @@
 import { Button } from "@/components/ui/button";
 import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
+import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
 // import { utils, write } from "xlsx";
 // import { write } from "xlsx";
 import { saveAs } from "file-saver";
 import { useEffect } from "react";
 const AllAccountingAdvisors = () => {
   const { getExelInfo, getTestExelInfo, jsonTestData, jsonData } = useAccounting();
+  
+  const exportToExcel = async (data: any[], fileName: string | undefined) => {
+    const XLSX = await import("../allAdvisors/parts/EXEL/SheetJSWriteWrapper");
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const dataBlob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const currentShamsiDate = getCurrentShamsiDate();
+    const fullFileName = `${fileName}_${currentShamsiDate}.xlsx`;
+    saveAs(dataBlob, fullFileName);
+  };
 
   useEffect(() => {
     if (jsonData && jsonData.length > 0) {
-      exportToExcel(jsonData, "Accountant.xlsx");
+      exportToExcel(jsonData, "Accountant");
     }
   }, [jsonData, getExelInfo]);
 
   useEffect(() => {
     if (jsonTestData && jsonTestData.length > 0) {
-      exportToExcel(jsonTestData, "TestAccountant.xlsx");
+      exportToExcel(jsonTestData, "TestAccountant");
     }
   }, [jsonTestData, getTestExelInfo]);
 
@@ -37,17 +52,12 @@ const AllAccountingAdvisors = () => {
     }
   };
 
-  const exportToExcel = async (data: any[], fileName: string | undefined) => {
-    const XLSX = await import("../allAdvisors/parts/EXEL/SheetJSWriteWrapper");
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const dataBlob = new Blob([excelBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-    saveAs(dataBlob, fileName);
+  const getCurrentShamsiDate = () => {
+    const today = new Date().toISOString();
+    return convertToShamsi2(today);
   };
+
+
 
   return (
     <div className="flex justify-center items-center gap-3 p-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl">
