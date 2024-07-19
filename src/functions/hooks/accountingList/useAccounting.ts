@@ -1,10 +1,12 @@
-import { get_all_students } from "@/lib/apis/accounting/service";
+import { get_all_students, get_exel_info, get_exel_info_test } from "@/lib/apis/accounting/service";
 import { accountingStore } from "@/lib/store/accountingStore";
 import { IallStudents } from "@/lib/store/types";
 import { useCallback, useState } from "react";
 
 export const useAccounting = () => {
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [jsonTestData, setJsonTestData] = useState([]);
+  const [jsonData, setJsonData] = useState([]);
 
   const addStudentData = accountingStore((state) => state.addAllstudents);
 
@@ -15,5 +17,16 @@ export const useAccounting = () => {
       setDataLoaded(true);
     }
   }, [addStudentData, dataLoaded]);
-  return { getAllStudents };
+
+  const getExelInfo = useCallback(async () => {
+    const maindata = await get_exel_info();
+    setJsonData(maindata);
+  }, []);
+
+  const getTestExelInfo = useCallback(async () => {
+    const maindata = await get_exel_info_test();
+    setJsonTestData(maindata);
+  }, []);
+
+  return { getAllStudents, getExelInfo, getTestExelInfo, jsonTestData, jsonData };
 };
