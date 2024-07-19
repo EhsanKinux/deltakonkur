@@ -2,11 +2,12 @@ import { get_all_students, get_exel_info, get_exel_info_test } from "@/lib/apis/
 import { accountingStore } from "@/lib/store/accountingStore";
 import { IallStudents } from "@/lib/store/types";
 import { useCallback, useState } from "react";
+import { IJsonData, IJsonTestData } from "./interface";
 
 export const useAccounting = () => {
   const [dataLoaded, setDataLoaded] = useState(false);
-  const [jsonTestData, setJsonTestData] = useState([]);
-  const [jsonData, setJsonData] = useState([]);
+  const [jsonTestData, setJsonTestData] = useState<IJsonTestData[]>();
+  const [jsonData, setJsonData] = useState<IJsonData[]>();
 
   const addStudentData = accountingStore((state) => state.addAllstudents);
 
@@ -28,5 +29,5 @@ export const useAccounting = () => {
     setJsonTestData(maindata);
   }, []);
 
-  return { getAllStudents, getExelInfo, getTestExelInfo, jsonTestData, jsonData };
+  return { getAllStudents, getExelInfo, getTestExelInfo, jsonTestData, jsonData, setJsonTestData, setJsonData };
 };
