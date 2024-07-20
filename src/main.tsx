@@ -5,6 +5,13 @@ import "./index.css";
 import Loading from "./components/loader/Loading.tsx";
 
 // Lazy load components
+const AccountingAdvisorDetail = lazy(
+  () =>
+    import(
+      "./components/pages/dashboard/dashboardPages/accounting/allAdvisors/allAccountingAdvisors/parts/advisorDetail/AccountingAdvisorDetail.tsx"
+    )
+);
+
 const UserDetails = lazy(() => import("./components/pages/dashboard/dashboardPages/users/userDetail/UserDetails.tsx"));
 const RegisterUser = lazy(
   () => import("./components/pages/dashboard/dashboardPages/users/registerUser/RegisterUser.tsx")
@@ -17,7 +24,10 @@ const StudentAssessment = lazy(
 );
 const DashboardLayout = lazy(() => import("./components/pages/dashboard/dashboardLayout/DashboardLayout.tsx"));
 const AllAccountingAdvisors = lazy(
-  () => import("./components/pages/dashboard/dashboardPages/accounting/allAdvisors/AllAccountingAdvisors.tsx")
+  () =>
+    import(
+      "./components/pages/dashboard/dashboardPages/accounting/allAdvisors/allAccountingAdvisors/AllAccountingAdvisors.tsx"
+    )
 );
 const AllAccountingStudents = lazy(
   () => import("./components/pages/dashboard/dashboardPages/accounting/allStudents/AllAccountingStudents.tsx")
@@ -154,6 +164,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<Loading />}>
                 <AllAccountingAdvisors />
+              </Suspense>
+            ),
+          },
+          {
+            path: "accounting/allAdvisors/:advisorId",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <AccountingAdvisorDetail />
               </Suspense>
             ),
           },
