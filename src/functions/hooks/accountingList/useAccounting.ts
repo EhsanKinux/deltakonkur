@@ -22,11 +22,13 @@ export const useAccounting = () => {
   const getExelInfo = useCallback(async () => {
     const maindata = await get_exel_info();
     setJsonData(maindata);
+    return maindata;
   }, []);
 
   const getTestExelInfo = useCallback(async () => {
     const maindata = await get_exel_info_test();
     setJsonTestData(maindata);
+    return maindata;
   }, []);
 
   return { getAllStudents, getExelInfo, getTestExelInfo, jsonTestData, jsonData, setJsonTestData, setJsonData };
