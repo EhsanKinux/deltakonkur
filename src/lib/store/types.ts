@@ -71,10 +71,27 @@ export type IallStudents = {
   created: string;
 };
 
+export type IallAdvisors = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  field: string;
+  phone_number: string;
+  national_id: string;
+  bank_account: string;
+  active_students: string;
+  stopped_students: string;
+  cancelled_students: string;
+}
+
 export type IAccountStore = {
   allstudents: IallStudents[];
+  alladvisors: IallAdvisors[];
 
   setAllstudents: (students: IallStudents[]) => void;
   addAllstudents: (student: IallStudents) => void;
   deleteStudent: (id: string) => void;
+
+  setAlladvisors: (advisor: IallAdvisors[]) => void;
+  addAlladvisors: (advisor: IallAdvisors) => void;
 };
