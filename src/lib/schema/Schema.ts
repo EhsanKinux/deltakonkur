@@ -125,8 +125,8 @@ export const registerAdvisorFormSchema = () =>
     field: z.string().min(1, { message: "رشته‌ی تحصیلی را انتخاب کنید" }),
     phone_number: z
       .string()
-      .min(10, { message: "شماره نا معتبر است" })
-      .max(10, { message: "شماره ورودی بیش از حد مجاز است" }),
+      .min(8, { message: "شماره نا معتبر است" })
+      .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
     national_id: z.string().min(1, { message: "کد نا معتبر است" }).max(10, { message: "کد ورودی بیش از حد مجاز است" }),
     bank_account: z.string(),
   });
