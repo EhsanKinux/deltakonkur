@@ -26,8 +26,15 @@ export const useStudentList = () => {
 
   const getData = useCallback(async () => {
     const data = await get_registered_students();
-    data.forEach((student: FormEntry) => addFormData(student));
-    // console.log(data);
+
+    // Transform the data to convert grade to string
+    const transformedData = data.map((student: FormEntry) => ({
+      ...student,
+      grade: student.grade.toString(),
+    }));
+
+    // Add transformed data to your state
+    transformedData.forEach((student: FormEntry) => addFormData(student));
   }, [addFormData]);
 
   const deleteStudent = async (studentId: string) => {
