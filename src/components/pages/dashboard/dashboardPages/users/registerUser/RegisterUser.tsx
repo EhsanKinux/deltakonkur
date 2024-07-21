@@ -11,6 +11,19 @@ import CustomUserInput from "./parts/CustomUserInput";
 import SelectRoles from "./parts/selectRoles/SelectRoles";
 import { submit_user_register_form } from "@/lib/apis/users/service";
 
+interface CustomError extends Error {
+  response?: {
+    status: number;
+    data: {
+      first_name: string;
+      last_name: string;
+      national_id: string;
+      phone_number: string;
+      role: string;
+    };
+  };
+}
+
 const RegisterUser = () => {
   const [isloading, setIsloading] = useState(false);
 
@@ -34,7 +47,7 @@ const RegisterUser = () => {
       const loadingToastId = toast.loading("در حال انجام عملیات ثبت...");
       try {
         const response = await submit_user_register_form(data);
-        if (response.ok) {
+        if (response) {
           toast.dismiss(loadingToastId);
           toast.success(`ثبت ${data.first_name} ${data.last_name} با موفقیت انجام شد`);
         }
@@ -43,15 +56,28 @@ const RegisterUser = () => {
         console.error("Error:", error);
 
         // Parsing the error message
+
         let errorMessage = "خطا در ثبت کاربر، لطفا دوباره تلاش کنید";
         if (error instanceof Error) {
-          try {
-            const errorJson = JSON.parse(error.message);
-            if (errorJson.national_id && errorJson.national_id.includes("user with this national id already exists.")) {
-              errorMessage = "این کاربر با این کد ملی در حال حاظر وجود دارد!";
+          // Cast error to CustomError type
+          const customError = error as CustomError;
+
+          if (customError.response) {
+            if (customError.response.status === 500) {
+              errorMessage = "این شماره همراه تکراری است";
             }
-          } catch (parseError) {
-            console.error("Error parsing the error message:", parseError);
+          } else {
+            try {
+              const errorJson = JSON.parse(error.message);
+              if (
+                errorJson.national_id &&
+                errorJson.national_id.includes("user with this national id already exists.")
+              ) {
+                errorMessage = "این کاربر با این کد ملی در حال حاظر وجود دارد!";
+              }
+            } catch (parseError) {
+              console.error("Error parsing the error message:", parseError);
+            }
           }
         }
 
