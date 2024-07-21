@@ -10,7 +10,8 @@ import { z } from "zod";
 import CustomInput from "./customInput/CustomInput";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
-import axios from "axios";
+// import axios from "axios";
+import api from "@/lib/apis/global-interceptor";
 
 const AuthForm = ({ type }: { type: string }) => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const AuthForm = ({ type }: { type: string }) => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      const response = await axios.post(`${BASE_API_URL}/api/auth/login/`, {
+      const response = await api.post(`${BASE_API_URL}/api/auth/login/`, {
         username: data.tell,
         password: data.password,
       });
@@ -37,7 +38,7 @@ const AuthForm = ({ type }: { type: string }) => {
       setTokens(access, refresh);
 
       // Fetch user role (assuming this endpoint returns the role)
-      const roleResponse = await axios.get(`${BASE_API_URL}/api/auth/current-user/`, {
+      const roleResponse = await api.get(`${BASE_API_URL}/api/auth/current-user/`, {
         headers: {
           Authorization: `Bearer ${access}`,
         },
