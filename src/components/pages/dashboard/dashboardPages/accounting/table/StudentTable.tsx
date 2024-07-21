@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import SearchIcon from "@/assets/icons/search.svg";
 
 interface StudentTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -40,21 +41,27 @@ export function StudentTable<TData, TValue>({ columns, data }: StudentTableProps
 
   return (
     <div className="w-full overflow-hidden p-10 absolute top-0 right-0 left-0 bottom-0">
-      <div className="flex items-center gap-2 py-4">
-        <Input
-          placeholder="فیلتر براساس نام"
-          value={(table.getColumn("first_name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("first_name")?.setFilterValue(event.target.value)}
-          className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
-        />
-        <Input
-          placeholder="فیلتر براساس نام خانوادگی"
-          value={(table.getColumn("last_name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("last_name")?.setFilterValue(event.target.value)}
-          className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
-        />
+      <div className="flex flex-col items-center xl:flex-row gap-2 py-4">
+        <div className="relative flex items-center w-full text-14 rounded-[8px]">
+          <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
+          <Input
+            placeholder="جستجو براساس نام"
+            value={(table.getColumn("first_name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn("first_name")?.setFilterValue(event.target.value)}
+            className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
+          />
+        </div>
+        <div className="relative flex items-center w-full text-14 rounded-[8px]">
+          <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
+          <Input
+            placeholder="جستجو براساس نام خانوادگی"
+            value={(table.getColumn("last_name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn("last_name")?.setFilterValue(event.target.value)}
+            className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
+          />
+        </div>
       </div>
-      <Table className="!rounded-xl border">
+      <Table className="!rounded-xl border mt-5">
         <TableHeader className="bg-slate-300">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>

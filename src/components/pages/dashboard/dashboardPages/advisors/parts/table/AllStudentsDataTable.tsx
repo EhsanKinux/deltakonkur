@@ -40,18 +40,18 @@ export function AllStudentsDataTable<TData, TValue>({ columns, data }: AllStuden
 
   return (
     <div className="w-full overflow-hidden p-10 absolute top-0 right-0 left-0 bottom-0">
-      <div className="flex items-center gap-2 py-4">
+      <div className="flex flex-col items-center xl:flex-row gap-2 py-4">
         <Input
           placeholder="فیلتر براساس نام"
           value={(table.getColumn("first_name")?.getFilterValue() as string) ?? ""}
           onChange={(event) => table.getColumn("first_name")?.setFilterValue(event.target.value)}
-          className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
+          className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
         />
         <Input
           placeholder="فیلتر براساس نام خانوادگی"
           value={(table.getColumn("last_name")?.getFilterValue() as string) ?? ""}
           onChange={(event) => table.getColumn("last_name")?.setFilterValue(event.target.value)}
-          className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
+          className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
         />
       </div>
       <Table className="!rounded-xl border">
