@@ -10,19 +10,35 @@ import {
 import exitIcon from "@/assets/icons/exit.svg";
 import profileIcon from "@/assets/icons/profile.svg";
 import downIcon from "@/assets/icons/down.svg";
+import { IUserDetail } from "@/components/pages/dashboard/dashboardPages/users/userDetail/interface";
+import { getRoleName } from "@/lib/utils/roles/Roles";
 
-const UserAccoutn = () => {
+const UserAccoutn = ({ user }: { user: IUserDetail | undefined }) => {
+  // Helper function to get initials from names
+  const getInitials = (firstName: string, lastName: string) => {
+    const firstInitial = firstName.charAt(0).toUpperCase();
+    const lastInitial = lastName.charAt(0).toUpperCase();
+    return `${firstInitial}${lastInitial}`;
+  };
+
+  // Determine the role name based on user's role
+  const roleName = user ? getRoleName(user.role) : "نامشخص";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="border-none hover:cursor-pointer">
         <div className="flex justify-center items-center gap-4 text-black bg-slate-200 rounded-xl px-3 py-2">
           <div className="flex flex-col justify-centerّ">
-            <span>نام نام‌خانوادگی</span>
-            <span className="text-black text-sm font-light">مدیر کل</span>
+            <span>
+              {user?.first_name} {user?.last_name}
+            </span>
+            <span className="text-black text-sm font-light">{roleName}</span>
           </div>
           <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback className="bg-slate-600"></AvatarFallback>
+            <AvatarFallback className="bg-slate-600 text-slate-100">
+              {user ? getInitials(user.first_name, user.last_name) : "?"}
+            </AvatarFallback>
           </Avatar>
           <img src={downIcon} alt="icon" />
         </div>
