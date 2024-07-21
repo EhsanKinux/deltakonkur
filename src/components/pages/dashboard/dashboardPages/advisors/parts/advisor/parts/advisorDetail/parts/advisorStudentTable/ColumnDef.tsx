@@ -52,3 +52,18 @@ export const stColumns: ColumnDef<StudentWithDetails>[] = [
     },
   },
 ];
+
+// Conditionally add action column if userRole is 7
+// const actionColumn: ColumnDef<StudentWithDetails> | undefined =
+//   userRole === 7
+//     ? {
+//         id: "actions",
+//         cell: ({ row }) => {
+//           const formData = row.original;
+//           return <StudentDialogButtons formData={formData} />;
+//         },
+//       }
+//     : undefined;
+
+// // Combine base columns with the conditional column
+// export const stColumns: ColumnDef<StudentWithDetails>[] = [...baseColumns, ...(actionColumn ? [actionColumn] :[])];
