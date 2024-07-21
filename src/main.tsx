@@ -65,54 +65,34 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ProtectedRoute
-        element={
-          <Suspense fallback={<Loading />}>
-            <App />
-          </Suspense>
-        }
-        requiredRole={[0, 1, 2, 3, 4, 5, 6, 7]}
-      />
+      <Suspense fallback={<Loading />}>
+        <App />
+      </Suspense>
     ),
     errorElement: (
-      <ProtectedRoute
-        element={
-          <Suspense fallback={<Loading />}>
-            <ErrorPage />
-          </Suspense>
-        }
-        requiredRole={[0, 1, 2, 3, 4, 5, 6, 7]}
-      />
+      <Suspense fallback={<Loading />}>
+        <ErrorPage />
+      </Suspense>
     ),
     children: [
       {
         path: "/",
-        element: <ProtectedRoute element={<Navigate to="/auth/signIn" />} requiredRole={[0, 1, 2, 3, 4, 5, 6, 7]} />,
+        element: <Navigate to="/auth/signIn" />,
       },
       {
         path: "auth",
         element: (
-          <ProtectedRoute
-            element={
-              <Suspense fallback={<Loading />}>
-                <AuthLayout />
-              </Suspense>
-            }
-            requiredRole={[0, 1, 2, 3, 4, 5, 6, 7]}
-          />
+          <Suspense fallback={<Loading />}>
+            <AuthLayout />
+          </Suspense>
         ),
         children: [
           {
             path: "signIn",
             element: (
-              <ProtectedRoute
-                element={
-                  <Suspense fallback={<Loading />}>
-                    <SignIn />
-                  </Suspense>
-                }
-                requiredRole={[0, 1, 2, 3, 4, 5, 6, 7]}
-              />
+              <Suspense fallback={<Loading />}>
+                <SignIn />
+              </Suspense>
             ),
           },
           {
