@@ -1,6 +1,7 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils/cn/cn";
 import { Link } from "react-router-dom";
+import { SidebarLink } from "../Sidebar";
 const LinkWithChildren = ({
   menuItem,
   isActive,
@@ -9,11 +10,8 @@ const LinkWithChildren = ({
     imgURL: string;
     route: string;
     label: string;
-    children: {
-      imgURL: string;
-      route: string;
-      label: string;
-    }[];
+    roles: number[];
+    children?: SidebarLink[];
   };
   isActive: boolean;
 }) => {
@@ -29,7 +27,7 @@ const LinkWithChildren = ({
           </div>
         </AccordionTrigger>
         <AccordionContent className="flex flex-col gap-3 mt-3 bg-slate-700 rounded-xl">
-          {menuItem.children.map((subMenuItem) => {
+          {menuItem.children?.map((subMenuItem) => {
             isActive = location.pathname === subMenuItem.route || location.pathname.endsWith(`${subMenuItem.route}/`);
             return (
               <Link
