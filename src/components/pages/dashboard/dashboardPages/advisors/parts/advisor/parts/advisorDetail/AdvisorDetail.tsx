@@ -54,7 +54,7 @@ const AdvisorDetail = () => {
       fetchUserData();
     }
   }, [navigate, userRole, accessToken, setUserRole]);
-  console.table(currentUser);
+  // console.table(currentUser);
 
   useEffect(() => {
     if (advisorId) {
