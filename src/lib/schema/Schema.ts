@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const authFormSchema = () =>
   z.object({
-    tell: z.string().min(10, { message: "نام کاربری اشتباه است" }).max(13, { message: "نام کاربری اشتباه است" }),
+    tell: z.string().min(8, { message: "حداقل 8 کاراکتر باید وارد شود" }),
     password: z.string().min(8, { message: "حداقل 8 کاراکتر باید وارد شود" }),
   });
 
