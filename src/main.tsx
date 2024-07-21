@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import { Suspense, lazy } from "react";
 import "./index.css";
 import Loading from "./components/loader/Loading.tsx";
+import ProtectedRoute from "./components/pages/auth/ProtectedRoute.tsx";
+import Unauthorized from "./components/pages/auth/Unauthorized.tsx";
 
 // Lazy load components
 const AccountingAdvisorDetail = lazy(
@@ -63,34 +65,54 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <Suspense fallback={<Loading />}>
-        <App />
-      </Suspense>
+      <ProtectedRoute
+        element={
+          <Suspense fallback={<Loading />}>
+            <App />
+          </Suspense>
+        }
+        requiredRole={[0, 1, 2, 3, 4, 5, 6, 7]}
+      />
     ),
     errorElement: (
-      <Suspense fallback={<Loading />}>
-        <ErrorPage />
-      </Suspense>
+      <ProtectedRoute
+        element={
+          <Suspense fallback={<Loading />}>
+            <ErrorPage />
+          </Suspense>
+        }
+        requiredRole={[0, 1, 2, 3, 4, 5, 6, 7]}
+      />
     ),
     children: [
       {
         path: "/",
-        element: <Navigate to="/auth/signIn" />,
+        element: <ProtectedRoute element={<Navigate to="/auth/signIn" />} requiredRole={[0, 1, 2, 3, 4, 5, 6, 7]} />,
       },
       {
         path: "auth",
         element: (
-          <Suspense fallback={<Loading />}>
-            <AuthLayout />
-          </Suspense>
+          <ProtectedRoute
+            element={
+              <Suspense fallback={<Loading />}>
+                <AuthLayout />
+              </Suspense>
+            }
+            requiredRole={[0, 1, 2, 3, 4, 5, 6, 7]}
+          />
         ),
         children: [
           {
             path: "signIn",
             element: (
-              <Suspense fallback={<Loading />}>
-                <SignIn />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <SignIn />
+                  </Suspense>
+                }
+                requiredRole={[0, 1, 2, 3, 4, 5, 6, 7]}
+              />
             ),
           },
           {
@@ -106,140 +128,233 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: (
-          <Suspense fallback={<Loading />}>
-            <DashboardLayout />
-          </Suspense>
+          <ProtectedRoute
+            element={
+              <Suspense fallback={<Loading />}>
+                <DashboardLayout />
+              </Suspense>
+            }
+            requiredRole={[0, 1, 2, 3, 4, 5, 6, 7]}
+          />
         ),
         children: [
           {
             path: "",
             element: (
-              <Suspense fallback={<Loading />}>
-                <Dashboard />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <Dashboard />
+                  </Suspense>
+                }
+                requiredRole={[0, 1, 2, 3, 4, 5, 6, 7]}
+              />
             ),
           },
           {
             path: "reserve",
             element: (
-              <Suspense fallback={<Loading />}>
-                <Reserve />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <Reserve />
+                  </Suspense>
+                }
+                requiredRole={[0, 1]}
+              />
             ),
           },
           {
             path: "advisors",
             element: (
-              <Suspense fallback={<Loading />}>
-                <AllAdvisors />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <AllAdvisors />
+                  </Suspense>
+                }
+                requiredRole={[0, 2]}
+              />
             ),
           },
           {
             path: "advisors/:advisorId",
             element: (
-              <Suspense fallback={<Loading />}>
-                <AdvisorDetail />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <AdvisorDetail />
+                  </Suspense>
+                }
+                requiredRole={[0, 7]}
+              />
             ),
           },
           {
             path: "advisors/register",
             element: (
-              <Suspense fallback={<Loading />}>
-                <NewAdvisor />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <NewAdvisor />
+                  </Suspense>
+                }
+                requiredRole={[0, 2]}
+              />
             ),
           },
           {
             path: "students",
             element: (
-              <Suspense fallback={<Loading />}>
-                <StudentTabs />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <StudentTabs />
+                  </Suspense>
+                }
+                requiredRole={[0, 2]}
+              />
             ),
           },
           {
             path: "accounting/allAdvisors",
             element: (
-              <Suspense fallback={<Loading />}>
-                <AllAccountingAdvisors />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <AllAccountingAdvisors />
+                  </Suspense>
+                }
+                requiredRole={[0, 3]}
+              />
             ),
           },
           {
             path: "accounting/allAdvisors/:advisorId",
             element: (
-              <Suspense fallback={<Loading />}>
-                <AccountingAdvisorDetail />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <AccountingAdvisorDetail />
+                  </Suspense>
+                }
+                requiredRole={[0, 3]}
+              />
             ),
           },
           {
             path: "accounting/allStudents",
             element: (
-              <Suspense fallback={<Loading />}>
-                <AllAccountingStudents />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <AllAccountingStudents />
+                  </Suspense>
+                }
+                requiredRole={[0, 3]}
+              />
             ),
           },
           {
             path: "supervision",
             element: (
-              <Suspense fallback={<Loading />}>
-                <SupervisionSearchingTabs />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <SupervisionSearchingTabs />
+                  </Suspense>
+                }
+                requiredRole={[0, 4]}
+              />
             ),
           },
           {
             path: "supervision/:studentId",
             element: (
-              <Suspense fallback={<Loading />}>
-                <StudentAssessment />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <StudentAssessment />
+                  </Suspense>
+                }
+                requiredRole={[0, 4]}
+              />
             ),
           },
           {
             path: "canceling",
             element: (
-              <Suspense fallback={<Loading />}>
-                <Canceling />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <Canceling />
+                  </Suspense>
+                }
+                requiredRole={[0, 5]}
+              />
             ),
           },
           {
             path: "content",
             element: (
-              <Suspense fallback={<Loading />}>
-                <Content />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <Content />
+                  </Suspense>
+                }
+                requiredRole={[0, 6]}
+              />
             ),
           },
           {
             path: "users",
             element: (
-              <Suspense fallback={<Loading />}>
-                <Users />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <Users />
+                  </Suspense>
+                }
+                requiredRole={[0]}
+              />
             ),
           },
           {
             path: "users/register",
             element: (
-              <Suspense fallback={<Loading />}>
-                <RegisterUser />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <RegisterUser />
+                  </Suspense>
+                }
+                requiredRole={[0]}
+              />
             ),
           },
           {
             path: "users/detail/:userId",
             element: (
-              <Suspense fallback={<Loading />}>
-                <UserDetails />
-              </Suspense>
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <UserDetails />
+                  </Suspense>
+                }
+                requiredRole={[0]}
+              />
             ),
           },
         ],
+      },
+      {
+        path: "unauthorized",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Unauthorized />
+          </Suspense>
+        ),
       },
     ],
   },
