@@ -8,10 +8,14 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import CustomInput from "./customInput/CustomInput";
+import { authStore } from "@/lib/store/authStore";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import axios from "axios";
 
 const AuthForm = ({ type }: { type: string }) => {
   const navigate = useNavigate();
-  const [isloading, setIsloading] = useState(false);
+  const [isloading, setIsLoading] = useState(false);
+  const { setTokens, setUserRole, accessToken, refreshToken, userRole } = authStore();
 
   const formSchema = authFormSchema();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -23,13 +27,35 @@ const AuthForm = ({ type }: { type: string }) => {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    setIsloading(true);
-    console.table(data);
-    if (data) {
+    setIsLoading(true);
+    try {
+      const response = await axios.post(`${BASE_API_URL}/api/auth/login/`, {
+        username: data.tell,
+        password: data.password,
+      });
+      const { access, refresh } = response.data;
+      setTokens(access, refresh);
+
+      // Fetch user role (assuming this endpoint returns the role)
+      const roleResponse = await axios.get(`${BASE_API_URL}/api/auth/current-user/`, {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      });
+      const { role } = roleResponse.data;
+      setUserRole(role);
+
       navigate("/dashboard");
+    } catch (error) {
+      console.error("Authentication failed:", error);
     }
-    setIsloading(false);
+    setIsLoading(false);
   };
+
+  console.log("accessToken", accessToken);
+  console.log("refreshToken", refreshToken);
+  console.log("userRole", userRole);
+
   return (
     <section>
       <Form {...form}>
