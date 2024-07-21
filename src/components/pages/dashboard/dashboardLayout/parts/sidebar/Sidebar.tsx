@@ -6,7 +6,7 @@ import logOutIcon from "@/assets/icons/logout.svg";
 import LinkWithChildren from "./parts/LinkWithChilderen";
 import { authStore } from "@/lib/store/authStore";
 
-interface SidebarLink {
+export interface SidebarLink {
   id: number;
   imgURL: string;
   route: string;
@@ -20,8 +20,11 @@ const Sidebar = () => {
   const { userRole } = authStore();
 
   const filterLinksByRole = (links: SidebarLink[], role: number | null): SidebarLink[] => {
+    if (role === null) {
+      return []; 
+    }
     return links
-      .filter((link) => link.roles.includes(role || -1)) // Handle case where role is null
+      .filter((link) => link.roles.includes(role)) // Filter based on the role
       .map((link) => {
         if (link.children) {
           return {
@@ -55,7 +58,7 @@ const Sidebar = () => {
           <div className="h-10 absolute bottom-0 w-full bg-gradient-to-t from-black to-transparent z-10"></div>
           <div className="h-10 absolute top-0 w-full bg-gradient-to-b from-black to-transparent z-10"></div>
           <div className="relative flex flex-col gap-3 overflow-y-auto no-scrollbar h-[60vh] py-10">
-            {filteredLinks.map((item: any) => {
+            {filteredLinks.map((item: SidebarLink) => {
               const isActive = location.pathname === item.route || location.pathname.endsWith(`${item.route}/`);
               return item.children ? (
                 <LinkWithChildren key={item.id} menuItem={item} isActive={isActive} />
