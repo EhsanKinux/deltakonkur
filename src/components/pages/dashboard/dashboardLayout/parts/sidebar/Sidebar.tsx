@@ -6,13 +6,22 @@ import logOutIcon from "@/assets/icons/logout.svg";
 import LinkWithChildren from "./parts/LinkWithChilderen";
 import { authStore } from "@/lib/store/authStore";
 
+interface SidebarLink {
+  id: number;
+  imgURL: string;
+  route: string;
+  label: string;
+  roles: number[];
+  children?: SidebarLink[];
+}
+
 const Sidebar = () => {
   const location = useLocation();
   const { userRole } = authStore();
 
-  const filterLinksByRole = (links: any, role: number | null) => {
+  const filterLinksByRole = (links: SidebarLink[], role: number | null): SidebarLink[] => {
     return links
-      .filter((link) => link.roles.includes(role))
+      .filter((link) => link.roles.includes(role || -1)) // Handle case where role is null
       .map((link) => {
         if (link.children) {
           return {
