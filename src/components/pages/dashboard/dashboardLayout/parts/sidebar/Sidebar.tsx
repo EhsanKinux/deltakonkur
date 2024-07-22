@@ -1,10 +1,11 @@
 import FakeLogo from "@/assets/icons/FakeTwichIcon.svg";
 import { sidebarLinks } from "@/constants";
 import { cn } from "@/lib/utils/cn/cn";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logOutIcon from "@/assets/icons/logout.svg";
 import LinkWithChildren from "./parts/LinkWithChilderen";
 import { authStore } from "@/lib/store/authStore";
+import { Button } from "@/components/ui/button";
 
 export interface SidebarLink {
   id: number;
@@ -17,11 +18,13 @@ export interface SidebarLink {
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { userRole } = authStore();
+  const clearAuth = authStore((state) => state.clearAuth);
 
   const filterLinksByRole = (links: SidebarLink[], role: number | null): SidebarLink[] => {
     if (role === null) {
-      return []; 
+      return [];
     }
     return links
       .filter((link) => link.roles.includes(role)) // Filter based on the role
@@ -37,6 +40,11 @@ const Sidebar = () => {
   };
 
   const filteredLinks = filterLinksByRole(sidebarLinks, userRole);
+
+  const handleLogout = () => {
+    clearAuth();
+    navigate("/auth/signIn");
+  };
 
   return (
     <section className="min-w-[100px] max-h-screen right-0 top-0 bottom-0 flex flex-col justify-between  bg-black pt-8 text-white max-md:hidden sm:p-4 xl:p-6 lg:w-[200px] 2xl:w-[240px] m-5 rounded-xl overflow-hidden">
@@ -85,12 +93,12 @@ const Sidebar = () => {
       </nav>
       {/* footer */}
       <div className="flex flex-col overflow-y-auto no-scrollbar rounded-xl  border-2 border-slate-500 justify-center">
-        <Link to="/dashboard" className={cn("sidebar-link")}>
+        <Button className={cn("sidebar-link")} onClick={handleLogout}>
           <div className="relative size-6">
             <img src={logOutIcon} alt={"خروج از حساب"} className={cn("brightness-[100] invert-0")} />
           </div>
           <p className="text-slate-300">خروج</p>
-        </Link>
+        </Button>
       </div>
     </section>
   );

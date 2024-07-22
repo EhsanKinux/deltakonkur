@@ -13,9 +13,12 @@ import downIcon from "@/assets/icons/down.svg";
 import { IUserDetail } from "@/components/pages/dashboard/dashboardPages/users/userDetail/interface";
 import { getRoleName } from "@/lib/utils/roles/Roles";
 import { useNavigate } from "react-router-dom";
+import { authStore } from "@/lib/store/authStore";
 
 const UserAccoutn = ({ user }: { user: IUserDetail | undefined }) => {
   const navigate = useNavigate();
+  const clearAuth = authStore((state) => state.clearAuth);
+
   // Helper function to get initials from names
   const getInitials = (firstName: string, lastName: string) => {
     const firstInitial = firstName.charAt(0).toUpperCase();
@@ -28,6 +31,11 @@ const UserAccoutn = ({ user }: { user: IUserDetail | undefined }) => {
 
   const goToProfile = () => {
     navigate("/dashboard");
+  };
+
+  const handleLogout = () => {
+    clearAuth();
+    navigate("/auth/signIn");
   };
 
   return (
@@ -61,7 +69,10 @@ const UserAccoutn = ({ user }: { user: IUserDetail | undefined }) => {
           <img src={profileIcon} className="ml-2 h-4 w-4" />
           <span>پروفایل</span>
         </DropdownMenuItem>
-        <DropdownMenuItem className="rounded-xl px-4 py-2 text-gray-600 cursor-pointer hover:!bg-slate-50 hover:!text-red-600">
+        <DropdownMenuItem
+          className="rounded-xl px-4 py-2 text-gray-600 cursor-pointer hover:!bg-slate-50 hover:!text-red-600"
+          onClick={handleLogout}
+        >
           <img src={exitIcon} className="ml-2 h-4 w-4" />
           <span>خروج</span>
         </DropdownMenuItem>
