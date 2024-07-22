@@ -20,7 +20,7 @@ const Dashboard = () => {
   }, [fetchUserData, userRole]);
   return (
     <div className="flex flex-col items-center justify-center bg-slate-100 rounded-xl shadow-form px-5 py-10 xl:p-5 gap-8">
-      <h1 className="text-2xl">حساب کاربری</h1>
+      <h1 className="text-2xl">پروفایل</h1>
       <div className="flex gap-6 bg-slate-200 rounded-xl px-5 py-10">
         <span className="text-black text-nowrap"> نام : {user?.first_name}</span>
         <span className="text-black text-nowrap">نام خانوادگی : {user?.last_name}</span>
