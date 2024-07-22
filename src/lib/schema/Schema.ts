@@ -7,12 +7,12 @@ export const authFormSchema = () =>
   });
 
 export const contentFormSchema = () =>
-  z.object({
-    // id: z.string(),
-    first_name: z.string().min(1, { message: "لطفا اسم را انتخاب کنید" }),
-    last_name: z.string().min(1, { message: "لطفا اسم را انتخاب کنید" }),
-    content: z.string().min(1, { message: "لطفا موضوع خود را وارد کنید" }),
-  });
+  z.record(
+    z.object({
+      advisor: z.string().min(1, { message: "حداقل یک مشاور باید انتخاب کنید" }),
+      subject: z.string().min(1, { message: "حداقل یک موضوع باید بنویسید" }),
+    })
+  );
 
 export const updateUserFormSchema = () =>
   z.object({
