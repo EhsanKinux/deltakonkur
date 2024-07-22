@@ -12,6 +12,7 @@ import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
 // import axios from "axios";
 import api from "@/lib/apis/global-interceptor";
+import Cookies from "js-cookie";
 
 const AuthForm = ({ type }: { type: string }) => {
   const navigate = useNavigate();
@@ -36,6 +37,9 @@ const AuthForm = ({ type }: { type: string }) => {
       });
       const { access, refresh } = response.data;
       setTokens(access, refresh);
+
+      Cookies.set("username", data.tell, { secure: true, sameSite: "strict" });
+      Cookies.set("password", data.password, { secure: true, sameSite: "strict" });
 
       // Fetch user role (assuming this endpoint returns the role)
       const roleResponse = await api.get(`${BASE_API_URL}/api/auth/current-user/`, {
