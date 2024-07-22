@@ -12,8 +12,10 @@ import profileIcon from "@/assets/icons/profile.svg";
 import downIcon from "@/assets/icons/down.svg";
 import { IUserDetail } from "@/components/pages/dashboard/dashboardPages/users/userDetail/interface";
 import { getRoleName } from "@/lib/utils/roles/Roles";
+import { useNavigate } from "react-router-dom";
 
 const UserAccoutn = ({ user }: { user: IUserDetail | undefined }) => {
+  const navigate = useNavigate();
   // Helper function to get initials from names
   const getInitials = (firstName: string, lastName: string) => {
     const firstInitial = firstName.charAt(0).toUpperCase();
@@ -23,6 +25,10 @@ const UserAccoutn = ({ user }: { user: IUserDetail | undefined }) => {
 
   // Determine the role name based on user's role
   const roleName = user ? getRoleName(user.role) : "نامشخص";
+
+  const goToProfile = () => {
+    navigate("/dashboard");
+  };
 
   return (
     <DropdownMenu>
@@ -48,11 +54,14 @@ const UserAccoutn = ({ user }: { user: IUserDetail | undefined }) => {
           <span>حساب کاربری</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="rounded-xl px-4 py-2 text-gray-600 cursor-pointer hover:!bg-slate-50">
+        <DropdownMenuItem
+          className="rounded-xl px-4 py-2 text-gray-600 cursor-pointer hover:!bg-slate-50 hover:!text-blue-600"
+          onClick={goToProfile}
+        >
           <img src={profileIcon} className="ml-2 h-4 w-4" />
           <span>پروفایل</span>
         </DropdownMenuItem>
-        <DropdownMenuItem className="rounded-xl px-4 py-2 text-gray-600 cursor-pointer hover:!bg-slate-50">
+        <DropdownMenuItem className="rounded-xl px-4 py-2 text-gray-600 cursor-pointer hover:!bg-slate-50 hover:!text-red-600">
           <img src={exitIcon} className="ml-2 h-4 w-4" />
           <span>خروج</span>
         </DropdownMenuItem>
