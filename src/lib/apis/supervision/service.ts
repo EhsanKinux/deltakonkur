@@ -12,3 +12,5 @@ export const get_students_by_day = ({ solar_date_day }: { solar_date_day: string
 
 export const post_student_assassment = (body: IPostStudentAssessment) =>
   fetchInstance(`api/register/assessment/`, { method: "POST", body: JSON.stringify(body) });
+
+export const get_students_assassments = () => fetchInstance(`api/register/assessment/`, { method: "GET" });
