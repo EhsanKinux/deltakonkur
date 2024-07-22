@@ -24,7 +24,7 @@ api.interceptors.response.use(
           const password = Cookies.get("password");
 
           if (username && password) {
-            const response = await axios.post(`${BASE_API_URL}/api/auth/login/`, {
+            const response = await axios.post(`${BASE_API_URL}api/auth/login/`, {
               username: username,
               password: password,
             });

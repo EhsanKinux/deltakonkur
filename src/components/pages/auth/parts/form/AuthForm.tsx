@@ -31,7 +31,7 @@ const AuthForm = ({ type }: { type: string }) => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      const response = await api.post(`${BASE_API_URL}/api/auth/login/`, {
+      const response = await api.post(`${BASE_API_URL}api/auth/login/`, {
         username: data.tell,
         password: data.password,
       });
@@ -42,7 +42,7 @@ const AuthForm = ({ type }: { type: string }) => {
       Cookies.set("password", data.password, { secure: true, sameSite: "strict" });
 
       // Fetch user role (assuming this endpoint returns the role)
-      const roleResponse = await api.get(`${BASE_API_URL}/api/auth/current-user/`, {
+      const roleResponse = await api.get(`${BASE_API_URL}api/auth/current-user/`, {
         headers: {
           Authorization: `Bearer ${access}`,
         },
