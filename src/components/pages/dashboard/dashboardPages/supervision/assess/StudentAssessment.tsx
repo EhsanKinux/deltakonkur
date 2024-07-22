@@ -1,17 +1,29 @@
 import { studentAssessment } from "@/lib/schema/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import CustomInputAssassment from "./parts/customInput/CustomInputAssassment";
 import { Form } from "@/components/ui/form";
 import { useSupervision } from "@/functions/hooks/supervision/useSupervision";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import backIcon from "@/assets/icons/back.svg";
+import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
+import { useEffect } from "react";
+import RecentAssassments from "./parts/recentAssassments/RecentAssassments";
 
 const StudentAssessment = () => {
   const { studentId } = useParams();
   const { submitAssassmentForm, loading } = useSupervision();
+  const { fetchStudentInfo, studentInfo } = useStudentList();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (studentId) {
+      fetchStudentInfo(studentId);
+    }
+  }, [fetchStudentInfo, studentId]);
 
   const formSchema = studentAssessment();
   const form = useForm({
@@ -49,77 +61,94 @@ const StudentAssessment = () => {
       }
     }
   };
-  return (
-    <section className="mt-8 flex flex-col items-center justify-center bg-slate-100 rounded-xl overflow-hidden pb-10 shadow-form">
-      <div className="w-full bg-slate-400 rounded-b-full flex justify-center items-center gap-3 flex-col p-5">
-        {/* <img src={AddAdvisor} width={500} /> */}
-        <h3 className="text-3xl text-white font-bold">نظرسنجی عملکرد مشاور</h3>
-      </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 w-3/4 px-8">
-        <CustomInputAssassment
-            control={form.control}
-            name="plan_score"
-            label="نمره برنامه‌ریزی"
-            placeHolder="یک عدد بین 0 تا 5 وارد کنید..."
-          />
-          <CustomInputAssassment
-            control={form.control}
-            name="report_score"
-            label="نمره گزارش کار"
-            placeHolder="یک عدد بین 0 تا 5 وارد کنید..."
-          />
-          <CustomInputAssassment
-            control={form.control}
-            name="phone_score"
-            label="نمره تایم تماس تلفنی"
-            placeHolder="یک عدد بین 0 تا 5 وارد کنید..."
-          />
-          <CustomInputAssassment
-            control={form.control}
-            name="advisor_behaviour_score"
-            label="نمره برخورد مشاور"
-            placeHolder="یک عدد بین 0 تا 5 وارد کنید..."
-          />
-          <CustomInputAssassment
-            control={form.control}
-            name="followup_score"
-            label="نمره پیگیری و جدیت"
-            placeHolder="یک عدد بین 0 تا 5 وارد کنید..."
-          />
-          <CustomInputAssassment
-            control={form.control}
-            name="motivation_score"
-            label="نمره عملکرد انگیزشی"
-            placeHolder="یک عدد بین 0 تا 5 وارد کنید..."
-          />
-          <CustomInputAssassment
-            control={form.control}
-            name="exam_score"
-            label="نمره آزمون"
-            placeHolder="یک عدد بین 0 تا 5 وارد کنید..."
-          />
-          <CustomInputAssassment
-            control={form.control}
-            name="advisor_score"
-            label="نمره کلی مشاوره"
-            placeHolder="یک عدد بین 0 تا 5 وارد کنید..."
-          />
-          <div className="flex flex-col justify-center items-center w-full mt-5">
-            <Button type="submit" className="form-btn w-full hover:bg-blue-800">
-              {loading ? (
-                <>
-                  <Loader2 size={20} className="animate-spin" />
-                  &nbsp; در حال ثبت...
-                </>
-              ) : (
-                "ثبت مشاور"
-              )}
-            </Button>
-          </div>
-        </form>
-      </Form>
+  const goBackToSupervision = () => {
+    navigate("/dashboard/supervision");
+  };
+
+  return (
+    <section className="flex flex-col overflow-hidden">
+      <Button
+        className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600"
+        onClick={goBackToSupervision}
+      >
+        <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
+        <span>بازگشت</span>
+      </Button>
+      <div className="mt-8 flex flex-col items-center justify-center bg-slate-100 rounded-xl overflow-hidden pb-10 shadow-form">
+        <div className="w-full bg-slate-400 rounded-b-full flex justify-center items-center gap-3 flex-col p-5">
+          {/* <img src={AddAdvisor} width={500} /> */}
+          <h3 className="text-3xl text-white font-bold">
+            نظرسنجی عملکرد مشاور {studentInfo?.first_name} {studentInfo?.last_name}
+          </h3>
+        </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 w-3/4 px-8">
+            <CustomInputAssassment
+              control={form.control}
+              name="plan_score"
+              label="نمره برنامه‌ریزی"
+              placeHolder="یک عدد بین 0 تا 10 وارد کنید..."
+            />
+            <CustomInputAssassment
+              control={form.control}
+              name="report_score"
+              label="نمره گزارش کار"
+              placeHolder="یک عدد بین 0 تا 10 وارد کنید..."
+            />
+            <CustomInputAssassment
+              control={form.control}
+              name="phone_score"
+              label="نمره تایم تماس تلفنی"
+              placeHolder="یک عدد بین 0 تا 10 وارد کنید..."
+            />
+            <CustomInputAssassment
+              control={form.control}
+              name="advisor_behaviour_score"
+              label="نمره برخورد مشاور"
+              placeHolder="یک عدد بین 0 تا 10 وارد کنید..."
+            />
+            <CustomInputAssassment
+              control={form.control}
+              name="followup_score"
+              label="نمره پیگیری و جدیت"
+              placeHolder="یک عدد بین 0 تا 10 وارد کنید..."
+            />
+            <CustomInputAssassment
+              control={form.control}
+              name="motivation_score"
+              label="نمره عملکرد انگیزشی"
+              placeHolder="یک عدد بین 0 تا 10 وارد کنید..."
+            />
+            <CustomInputAssassment
+              control={form.control}
+              name="exam_score"
+              label="نمره آزمون"
+              placeHolder="یک عدد بین 0 تا 4 وارد کنید..."
+            />
+            <CustomInputAssassment
+              control={form.control}
+              name="advisor_score"
+              label="نمره کلی مشاوره"
+              placeHolder="یک عدد بین 0 تا 20 وارد کنید..."
+            />
+            <div className="flex flex-col justify-center items-center w-full mt-5">
+              <Button type="submit" className="form-btn w-full hover:bg-blue-800">
+                {loading ? (
+                  <>
+                    <Loader2 size={20} className="animate-spin" />
+                    &nbsp; در حال ثبت...
+                  </>
+                ) : (
+                  "ثبت نظرسنجی"
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
+      <RecentAssassments studentId={studentId} />
     </section>
   );
 };
