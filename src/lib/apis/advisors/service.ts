@@ -16,7 +16,7 @@ export const get_advisor_info = ({ advisorId }: { advisorId: string }) =>
 export const advisor_students = () => fetchInstance(`api/register/student-advisors/`, { method: "GET" });
 
 export const update_advisor_ifo = ({ advisorId }: { advisorId: string }) =>
-  fetchInstance(`/api/advisor/advisors/${advisorId}/`, { method: "PATCH" });
+  fetchInstance(`api/advisor/advisors/${advisorId}/`, { method: "PATCH" });
 
 export const get_students_of_each_advisor = ({ advisorId }: { advisorId: string }) =>
   fetchInstance(`api/register/advisor/students/${advisorId}/`, { method: "GET" });

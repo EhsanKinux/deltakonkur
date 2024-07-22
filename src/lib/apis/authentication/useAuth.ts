@@ -13,7 +13,7 @@ export const useAuth = () => {
   const fetchUserData = useCallback(async () => {
     // console.log("accessToken:", accessToken);
     try {
-      const response = await api.get(`${BASE_API_URL}/api/auth/current-user/`, {
+      const response = await api.get(`${BASE_API_URL}api/auth/current-user/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
