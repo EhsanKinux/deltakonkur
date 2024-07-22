@@ -1,88 +1,113 @@
-import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
 import { Advisor } from "@/lib/store/types";
-import { cn } from "@/lib/utils/cn/cn";
-import { Check, ChevronsUpDown } from "lucide-react";
+
+import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import Select, { MultiValue } from "react-select";
+
+type Option = {
+  value: string;
+  label: string;
+};
 
 const SearchAdvisors = ({
   form,
   advisors,
 }: {
   form: UseFormReturn<
-    {
-      //   id: string;
-      first_name: string;
-      last_name: string;
-      content: string;
-    },
+    Record<
+      string,
+      {
+        advisor: string;
+        subject: string;
+      }
+    >,
     undefined
   >;
   advisors: Advisor[];
 }) => {
+  const [selectedAdvisors, setSelectedAdvisors] = useState<{ advisor: string; subject: string }[]>([]);
+  const [subject, setsubject] = useState("");
+
+  const options: Option[] = advisors.map((adv) => ({
+    value: String(adv.id),
+    label: `${adv.first_name} ${adv.last_name}`,
+  }));
+
+  const handleChange = (newValue: MultiValue<Option>) => {
+    const selectedOptions = newValue as Option[];
+    const newSelectedAdvisors = selectedOptions.map((option) => ({
+      advisor: option.value,
+      subject: subject, // Use current subject value for all advisors
+    }));
+    setSelectedAdvisors(newSelectedAdvisors);
+    newSelectedAdvisors.forEach((adv, index) => {
+      form.setValue(`${index}.advisor`, String(adv.advisor));
+      form.setValue(`${index}.subject`, subject);
+    });
+  };
+
+  const handlesubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newsubject = e.target.value;
+    setsubject(newsubject);
+    const updatedAdvisors = selectedAdvisors.map((adv) => ({
+      ...adv,
+      subject: newsubject,
+    }));
+    setSelectedAdvisors(updatedAdvisors);
+    updatedAdvisors.forEach((_advisor, index) => {
+      form.setValue(`${index}.subject`, newsubject);
+    });
+  };
+
   return (
-    <FormField
-      control={form.control}
-      name="first_name"
-      render={({ field }) => (
-        <FormItem className="flex flex-col">
-          <FormLabel>مشاور</FormLabel>
-          <Popover>
-            <PopoverTrigger asChild>
-              <FormControl>
-                <Button
-                  // variant="outline"
-                  role="combobox"
-                  className={cn(
-                    "justify-between rounded-xl border border-slate-400",
-                    !field.value && "text-muted-foreground"
-                  )}
-                >
-                  {field.value
-                    ? advisors.find((advisor) => advisor.first_name === field.value)?.first_name +
-                      " " +
-                      advisors.find((advisor) => advisor.first_name === field.value)?.last_name
-                    : "انتخاب مشاور"}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </FormControl>
-            </PopoverTrigger>
-            <PopoverContent className="p-0 bg-slate-100 shadow-form rounded-xl">
-              <Command>
-                <CommandInput placeholder="جستجوی مشاور..." className="text-gray-400" />
-                <CommandList>
-                  <CommandEmpty>هیچ مشاوری یافت نشد!</CommandEmpty>
-                  <CommandGroup>
-                    {advisors.map((advisor) => (
-                      <CommandItem
-                        value={advisor.first_name + " " + advisor.last_name}
-                        key={advisor.id}
-                        onSelect={() => {
-                          form.setValue("first_name", advisor.first_name);
-                          form.setValue("last_name", advisor.last_name);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            advisor.first_name === field.value ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        {advisor.first_name + " " + advisor.last_name}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          {/* <FormDescription>مشاور خود را انتخاب کنید.</FormDescription> */}
-          <FormMessage />
-        </FormItem>
-      )}
-    />
+    <div className="w-full flex items-end flex-col md:flex-row gap-4">
+      <div className="w-full flex flex-col gap-5 items-end">
+        <span className="w-full">مشاور و استاد گرامی،</span>
+        <div className="w-full flex items-end flex-col md:flex-row gap-4">
+          <div className="w-full flex-col inline-flex">
+            <label className="font-light">انتخاب مشاور</label>
+            <Select
+              options={options}
+              value={selectedAdvisors.map((advisor) => ({
+                value: String(advisor.advisor),
+                label:
+                  advisors.find((adv) => String(adv.id) === String(advisor.advisor))?.first_name +
+                  " " +
+                  advisors.find((adv) => String(adv.id) === String(advisor.advisor))?.last_name,
+              }))}
+              onChange={handleChange}
+              isMulti
+              placeholder="جستجوی مشاوران"
+              isSearchable={true}
+              styles={{
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  borderColor: state.isFocused ? "primary75" : "rgb(148, 163, 184)",
+                  backgroundColor: "rgb(241, 245, 249)",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                }),
+              }}
+            />
+          </div>
+          <div className="w-full flex-col inline-flex">
+            <label className="font-light">موضوع</label>
+            <Input
+              name="advisor"
+              type="text"
+              placeholder="موضوع"
+              value={subject}
+              onChange={handlesubjectChange}
+              className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
+            />
+          </div>
+        </div>
+        <span className="w-full">
+          برای این ماه شما در نظر گرفته شده است. لطفا وویس خود را ضبط نموده و طی 5 روز آینده به واحد محتوا تحویل دهید.
+        </span>
+      </div>
+    </div>
   );
 };
 
