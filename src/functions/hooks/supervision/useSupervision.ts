@@ -1,10 +1,12 @@
 import { IPostStudentAssessment } from "@/lib/apis/supervision/interface";
-import { post_student_assassment } from "@/lib/apis/supervision/service";
+import { get_students_assassments, post_student_assassment } from "@/lib/apis/supervision/service";
 import { useCallback, useState } from "react";
+import { IAssessments } from "./interface";
 
 export const useSupervision = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [assassments, setAssessments] = useState<IAssessments[]>();
 
   const submitAssassmentForm = useCallback(
     async (body: IPostStudentAssessment) => {
@@ -33,5 +35,10 @@ export const useSupervision = () => {
     [setError, setLoading]
   );
 
-  return { submitAssassmentForm, error, loading };
+  const getAssessments = useCallback(async () => {
+    const data = await get_students_assassments();
+    setAssessments(data);
+  }, []);
+
+  return { submitAssassmentForm, error, loading, getAssessments, assassments };
 };
