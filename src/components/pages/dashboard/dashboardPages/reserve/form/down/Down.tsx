@@ -1,30 +1,9 @@
 import { UseFormReturn } from "react-hook-form";
 import CustomSelect from "./parts/customSelect/CustomSelect";
 import { FormField, FormMessage } from "@/components/ui/form";
+import { IRegisterStudentService } from "@/lib/apis/reserve/interface";
 
-const Down = ({
-  form,
-}: {
-  form: UseFormReturn<
-    {
-      // id: string;
-      date_of_birth: string;
-      first_name: string;
-      last_name: string;
-      school: string;
-      phone_number: string;
-      home_phone: string;
-      parent_phone: string;
-      field: string;
-      grade: string;
-      created: string;
-      solar_date_day: string;
-      solar_date_month: string;
-      solar_date_year: string;
-    },
-    undefined
-  >;
-}) => {
+const Down = ({ form }: { form: UseFormReturn<IRegisterStudentService, undefined> }) => {
   const { register, setValue } = form;
   return (
     <div className="flex justify-center items-center gap-8 w-full rounded-xl">

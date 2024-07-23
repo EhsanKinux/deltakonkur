@@ -1,30 +1,8 @@
-
+import { IRegisterStudentService } from "@/lib/apis/reserve/interface";
 import CustomRegInput from "../customInput/CustomRegInput";
 import { UseFormReturn } from "react-hook-form";
 
-const TopLeft = ({
-  form,
-}: {
-  form: UseFormReturn<
-    {
-      // id: string;
-      date_of_birth: string;
-      first_name: string;
-      last_name: string;
-      school: string;
-      phone_number: string;
-      home_phone: string;
-      parent_phone: string;
-      field: string;
-      grade: string;
-      created:string;
-      solar_date_day: string;
-      solar_date_month: string;
-      solar_date_year: string;
-    },
-    undefined
-  >;
-}) => {
+const TopLeft = ({ form }: { form: UseFormReturn<IRegisterStudentService, undefined> }) => {
   return (
     <div className="flex flex-col justify-between items-center w-full gap-3 rounded-xl">
       <CustomRegInput control={form.control} name="phone_number" label="شماره همراه" />

@@ -9,30 +9,9 @@ import { cn } from "@/lib/utils/cn/cn";
 import { format } from "date-fns-jalali";
 import { faIR } from "date-fns-jalali/locale";
 import { UseFormReturn } from "react-hook-form";
+import { IRegisterStudentService } from "@/lib/apis/reserve/interface";
 
-const BirthDate = ({
-  form,
-}: {
-  form: UseFormReturn<
-    {
-      // id: string;
-      date_of_birth: string;
-      first_name: string;
-      last_name: string;
-      school: string;
-      phone_number: string;
-      home_phone: string;
-      parent_phone: string;
-      field: string;
-      grade: string;
-      created: string;
-      solar_date_day: string;
-      solar_date_month: string;
-      solar_date_year: string;
-    },
-    undefined
-  >;
-}) => {
+const BirthDate = ({ form }: { form: UseFormReturn<IRegisterStudentService, undefined> }) => {
   return (
     <FormField
       control={form.control}
