@@ -54,23 +54,15 @@ const Reserve = () => {
     // console.log(shamsiDate);
     const transformedData = {
       // id: "",
+      ...data,
       date_of_birth: convertToShamsi2(data.date_of_birth),
-      first_name: data.first_name,
-      last_name: data.last_name,
-      phone_number: data.phone_number,
-      parent_phone: data.parent_phone,
-      home_phone: data.home_phone,
-      school: data.school,
-      field: data.field,
-      grade: data.grade,
       created: currentDateTime,
-      package_price: data.package_price,
       solar_date_day: day.toString(),
       solar_date_month: month.toString(),
       solar_date_year: year.toString(),
     };
     if (data) {
-      // console.table(transformedData);
+      console.table(transformedData);
       await toast.promise(
         submit_student_register_service(transformedData).then(() => {
           form.reset();
