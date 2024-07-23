@@ -38,6 +38,7 @@ const Reserve = () => {
       field: "",
       grade: "",
       created: "",
+      package_price: "",
       solar_date_day: "",
       solar_date_month: "",
       solar_date_year: "",
@@ -63,6 +64,7 @@ const Reserve = () => {
       field: data.field,
       grade: data.grade,
       created: currentDateTime,
+      package_price: data.package_price,
       solar_date_day: day.toString(),
       solar_date_month: month.toString(),
       solar_date_year: year.toString(),
@@ -116,7 +118,7 @@ const Reserve = () => {
                 <div className="flex h-full flex-col gap-5 items-center justify-center bg-slate-200 rounded-xl py-5 px-10">
                   <h2 className="text-2xl">اطلاعات تحصیلی</h2>
                   <Down form={form} />
-                  <PlansType />
+                  <PlansType name="package_price" control={form.control} label="هزینه ی بسته" />
                 </div>
                 <Button type="submit" className="form-btn w-full hover:bg-blue-800">
                   {isloading ? (
