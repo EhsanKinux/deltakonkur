@@ -175,7 +175,7 @@ const router = createBrowserRouter([
                     <AdvisorDetail />
                   </Suspense>
                 }
-                requiredRole={[0, 7]}
+                requiredRole={[0, 2, 7]}
               />
             ),
           },
