@@ -7,6 +7,15 @@ import ProtectedRoute from "./components/pages/auth/ProtectedRoute.tsx";
 import Unauthorized from "./components/pages/auth/Unauthorized.tsx";
 
 // Lazy load components
+const ContentAdvisorDetail = lazy(
+  () =>
+    import(
+      "./components/pages/dashboard/dashboardPages/content/advisors/parts/contentAdvisorDetail/ContentAdvisorDetail.tsx"
+    )
+);
+const ContentAdvisor = lazy(
+  () => import("./components/pages/dashboard/dashboardPages/content/advisors/ContentAdvisor.tsx")
+);
 const AccountingAdvisorDetail = lazy(
   () =>
     import(
@@ -51,7 +60,7 @@ const AdvisorDetail = lazy(
   () =>
     import("./components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/AdvisorDetail.tsx")
 );
-const Content = lazy(() => import("./components/pages/dashboard/dashboardPages/content/Content.tsx"));
+const Content = lazy(() => import("./components/pages/dashboard/dashboardPages/content/sendMessage/Content.tsx"));
 const Reserve = lazy(() => import("./components/pages/dashboard/dashboardPages/reserve/Reserve.tsx"));
 const Users = lazy(() => import("./components/pages/dashboard/dashboardPages/users/users/Users.tsx"));
 const Dashboard = lazy(() => import("./components/pages/dashboard/dashboard/Dashboard.tsx"));
@@ -275,12 +284,38 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "content",
+            path: "content/sendMessage",
             element: (
               <ProtectedRoute
                 element={
                   <Suspense fallback={<Loading />}>
                     <Content />
+                  </Suspense>
+                }
+                requiredRole={[0, 6]}
+              />
+            ),
+          },
+          {
+            path: "content/advisors",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <ContentAdvisor />
+                  </Suspense>
+                }
+                requiredRole={[0, 6]}
+              />
+            ),
+          },
+          {
+            path: "content/advisors/:advisorId",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <ContentAdvisorDetail />
                   </Suspense>
                 }
                 requiredRole={[0, 6]}
