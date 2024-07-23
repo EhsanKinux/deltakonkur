@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import CustomInput from "./customInput/CustomInput";
 import { authStore } from "@/lib/store/authStore";
@@ -62,9 +62,10 @@ const AuthForm = ({ type }: { type: string }) => {
   console.log("userRole", userRole);
 
   return (
-    <section>
+    <section className="flex flex-col justify-center items-center w-full">
+      <h1 className="font-bold text-2xl">دلتا کنکور</h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8 w-full">
           <CustomInput
             control={form.control}
             name="tell"
@@ -89,12 +90,12 @@ const AuthForm = ({ type }: { type: string }) => {
         </form>
       </Form>
       <footer className="flex justify-center gap-4 mt-4">
-        <p className="text-14 font-normal text-gray-600">
+        {/* <p className="text-14 font-normal text-gray-600">
           {type === "sign-in" ? "حساب کاربری ندارید؟" : "ثبت نام کردم"}
         </p>
         <Link to={type === "sign-in" ? "/auth/signUp" : "/auth/signIn"} className="form-link">
           {type === "sign-in" ? "ثبت نام" : "ورود"}
-        </Link>
+        </Link> */}
       </footer>
     </section>
   );
