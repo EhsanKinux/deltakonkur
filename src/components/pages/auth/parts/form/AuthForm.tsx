@@ -3,7 +3,7 @@ import { Form } from "@/components/ui/form";
 import { authFormSchema } from "@/lib/schema/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -28,6 +28,33 @@ const AuthForm = ({ type }: { type: string }) => {
     },
   });
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      const access = Cookies.get("accessToken");
+      const refresh = Cookies.get("refreshToken");
+
+      if (access && refresh) {
+        try {
+          const roleResponse = await api.get(`${BASE_API_URL}api/auth/current-user/`, {
+            headers: {
+              Authorization: `Bearer ${access}`,
+            },
+          });
+          const { role } = roleResponse.data;
+          setUserRole(role);
+          setTokens(access, refresh);
+          navigate("/dashboard");
+        } catch (error) {
+          console.error("Token validation failed:", error);
+          navigate("/auth/signIn");
+        }
+      } else {
+        navigate("/auth/signIn");
+      }
+    };
+    checkAuth();
+  }, [navigate, setTokens, setUserRole]);
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
@@ -50,7 +77,11 @@ const AuthForm = ({ type }: { type: string }) => {
       const { role } = roleResponse.data;
       setUserRole(role);
 
-      navigate("/dashboard");
+      if (role) {
+        navigate("/dashboard");
+      } else {
+        navigate("/auth/signIn");
+      }
     } catch (error) {
       console.error("Authentication failed:", error);
     }
@@ -78,7 +109,7 @@ const AuthForm = ({ type }: { type: string }) => {
               {isloading ? (
                 <>
                   <Loader2 size={20} className="animate-spin" />
-                  &nbsp; Loading...
+                  &nbsp; درحال ورود...
                 </>
               ) : type === "sign-in" ? (
                 "ورود"
