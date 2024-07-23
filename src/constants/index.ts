@@ -8,6 +8,7 @@ import cancelingIcon from "@/assets/icons/profile-delete.svg";
 import contentIcon from "@/assets/icons/document-text.svg";
 import usersIcon from "@/assets/icons/profile-2user.svg";
 import addSquareIcon from "@/assets/icons/addSquare.svg";
+import sendMessageIcon from "@/assets/icons/sendmsg.svg";
 
 export const sidebarLinks = [
   {
@@ -90,6 +91,22 @@ export const sidebarLinks = [
     route: "/dashboard/content",
     label: "محتوا",
     roles: [0, 6],
+    children: [
+      {
+        id: 61,
+        imgURL: advisorsListIcon,
+        route: "/dashboard/content/advisors",
+        label: "مشاوران",
+        roles: [0, 6],
+      },
+      {
+        id: 62,
+        imgURL: sendMessageIcon,
+        route: "/dashboard/content/sendMessage",
+        label: "ارسال پیام",
+        roles: [0, 6],
+      },
+    ],
   },
   {
     id: 7,
