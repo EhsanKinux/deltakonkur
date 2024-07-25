@@ -16,14 +16,12 @@ import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { useEffect, useRef, useState } from "react";
 import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import Name from "../../../../../student/table/parts/edit/parts/name/Name";
-import TellNumbers from "../../../../../student/table/parts/edit/parts/tel-numbers/TellNumbers";
-import CustomEditInput from "../../../../../student/table/parts/edit/parts/CustomEditInput";
-import FieldGrade from "../../../../../student/table/parts/edit/parts/fieldAndGrade/FieldGrade";
-import SelectStudentAdvisor from "../../../../../student/table/parts/edit/parts/selectAdvisor/SelectStudentAdvisor";
-import DateAndTime2 from "../../../../../student/table/parts/edit/parts/dateAndTime/DateAndTime2";
 import { Advisor } from "@/lib/store/types";
-import { convertToGregorian } from "@/lib/utils/date/convertDate";
+import CustomEditInput from "./parts/CustomEditInput";
+import FieldGrade from "./parts/fieldAndGrade/FieldGrade";
+import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
+import DateAndTime2 from "./parts/DateAndTime2";
+import { toast } from "sonner";
 
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo, setAdvisorForStudent } = useStudentList();
@@ -65,8 +63,8 @@ export function EditStudentDialog() {
   useEffect(() => {
     if (studentInfo) {
       form.reset({
-        id: "",
-        date_of_birth: convertToGregorian(studentInfo.date_of_birth),
+        id: String(studentInfo.id),
+        date_of_birth: studentInfo.date_of_birth,
         first_name: studentInfo.first_name,
         last_name: studentInfo.last_name,
         school: studentInfo.school,
@@ -74,7 +72,7 @@ export function EditStudentDialog() {
         home_phone: studentInfo.home_phone,
         parent_phone: studentInfo.parent_phone,
         field: studentInfo.field,
-        grade: studentInfo.grade,
+        grade: String(studentInfo.grade),
         created: studentInfo.created,
         advisor: "",
       });
@@ -83,24 +81,37 @@ export function EditStudentDialog() {
   }, [studentInfo, form]);
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    // console.log("Form submitted with data:", data);
-    if (data && studentInfo) {
-      const { advisor, ...restData } = data;
-      const modifiedData: ISubmitStudentRegisterService = {
-        ...restData,
-        id: String(studentInfo.id),
-        created: String(data.created),
-      };
-      console.table(modifiedData);
-      await updateStudentInfo(modifiedData);
-      if (advisor) {
-        // console.log("stID:", studentInfo.id, "advID:", advisor);
-        await setAdvisorForStudent({ studentId: studentInfo.id, advisorId: advisor });
-      }
+  console.log(studentInfo);
 
-      dialogCloseRef.current?.click();
-      window.location.reload();
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const loadingToastId = toast.loading("در حال انجام عملیات ثبت...");
+    try {
+      if (data && studentInfo) {
+        const { advisor, ...restData } = data;
+        const modifiedData: ISubmitStudentRegisterService = {
+          ...restData,
+          id: String(studentInfo.id),
+          created: String(data.created),
+        };
+        console.table(modifiedData);
+        if (advisor) {
+          await setAdvisorForStudent({ studentId: studentInfo.id, advisorId: advisor });
+        }
+        await updateStudentInfo(modifiedData);
+
+        dialogCloseRef.current?.click();
+        toast.dismiss(loadingToastId);
+        toast.success("ویرایش اطلاعات دانش آموز با موفقیت انجام شد.");
+      }
+    } catch (error) {
+      toast.dismiss(loadingToastId);
+      let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";
+      if (error instanceof Error) {
+        if (error.message.includes("integrity error! student has another advisor!")) {
+          errorMessage = "امکان تعویض مشاور نیست. لطفا ابتدا در واحد حسابداری دانش آموز را متوقف کنید!";
+        }
+      }
+      toast.error(errorMessage);
     }
   };
 
@@ -115,9 +126,22 @@ export function EditStudentDialog() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
               <div className="flex gap-2">
-                <Name form={form} />
+                <CustomEditInput control={form.control} name="first_name" label="نام" />
+                <CustomEditInput control={form.control} name="last_name" label="نام خانوادگی" />
               </div>
-              <TellNumbers form={form} />
+              <CustomEditInput control={form.control} name="phone_number" label="شماره همراه" customclass="w-[90%]" />
+              <CustomEditInput
+                control={form.control}
+                name="parent_phone"
+                label="شماره همراه والدین"
+                customclass="w-[90%]"
+              />
+              <CustomEditInput
+                control={form.control}
+                name="phone_number"
+                label="شماره تلفن منزل"
+                customclass="w-[90%]"
+              />
               <CustomEditInput control={form.control} name="school" label="نام مدرسه" customclass="w-[90%]" />
               <FieldGrade form={form} />
               <div className="flex gap-5">
