@@ -44,6 +44,7 @@ const AuthForm = ({ type }: { type: string }) => {
           setUserRole(role);
           setTokens(access, refresh);
           navigate("/dashboard");
+          window.location.reload();
         } catch (error) {
           console.error("Token validation failed:", error);
           navigate("/auth/signIn");
@@ -77,8 +78,9 @@ const AuthForm = ({ type }: { type: string }) => {
       const { role } = roleResponse.data;
       setUserRole(role);
 
-      if (role) {
+      if (role && userRole) {
         navigate("/dashboard");
+        window.location.reload();
       } else {
         navigate("/auth/signIn");
       }
