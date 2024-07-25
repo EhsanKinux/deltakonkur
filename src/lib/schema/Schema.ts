@@ -130,4 +130,5 @@ export const registerAdvisorFormSchema = () =>
       .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
     national_id: z.string().min(1, { message: "کد نا معتبر است" }).max(10, { message: "کد ورودی بیش از حد مجاز است" }),
     bank_account: z.string(),
+    level: z.string().min(1, { message: "سطح مشاور را انتخاب کنید" }),
   });
