@@ -101,18 +101,26 @@ export const useStudentList = () => {
       setLoading(true);
       setError(null);
       try {
+        const now = new Date();
+        const expireDate = new Date(now);
+        expireDate.setDate(now.getDate() + 31);
+
         const body: ISetStudentAdvisor = {
           student: String(studentId),
           advisor: advisorId,
           status: "active",
+          expire_date: expireDate.toISOString(),
         };
         await set_student_advisor(body);
         deleteFormData(studentId);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
+          throw err; // rethrow the error to be caught by the caller
         } else {
-          setError("Failed to set advisor for student");
+          const customError = new Error("Failed to set advisor for student");
+          setError(customError.message);
+          throw customError; // rethrow the custom error to be caught by the caller
         }
       } finally {
         setLoading(false);
