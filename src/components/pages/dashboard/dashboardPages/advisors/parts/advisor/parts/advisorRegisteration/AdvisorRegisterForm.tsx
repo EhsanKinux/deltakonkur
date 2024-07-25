@@ -11,6 +11,7 @@ import { z } from "zod";
 import CustomAdvisorInput from "./parts/CustomAdvisorInput";
 import FieldSelect from "./parts/customSelect/FieldSelect";
 import { toast } from "sonner";
+import LevelSelect from "./parts/customSelect/LevelSelect";
 
 const AdvisorRegisterForm = () => {
   const [isloading, setIsloading] = useState(false);
@@ -26,6 +27,7 @@ const AdvisorRegisterForm = () => {
       phone_number: "",
       national_id: "",
       bank_account: "",
+      level: "1",
     },
   });
 
@@ -100,9 +102,10 @@ const AdvisorRegisterForm = () => {
                 placeHolder="312123123123"
               />
             </div>
+            <FieldSelect form={form} />
             <div className="flex flex-col md:flex-row justify-between gap-5">
               <div className="w-full">
-                <FieldSelect form={form} />
+                <LevelSelect form={form} />
               </div>
               <div className="flex flex-col justify-center items-center w-full">
                 <Button type="submit" className="form-btn w-full hover:bg-blue-800">
