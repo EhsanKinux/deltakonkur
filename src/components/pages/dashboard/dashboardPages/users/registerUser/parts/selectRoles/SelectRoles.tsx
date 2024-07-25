@@ -33,7 +33,7 @@ const SelectRoles = ({
     { value: "4", label: "واحد نظارت" },
     { value: "5", label: "واحد کنسلی" },
     { value: "6", label: "واحد محتوا" },
-    { value: "7", label: "مشاور" },
+    // { value: "7", label: "مشاور" },
   ];
 
   return (
