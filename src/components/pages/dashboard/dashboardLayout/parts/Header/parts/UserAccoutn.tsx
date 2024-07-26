@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,18 +13,13 @@ import { IUserDetail } from "@/components/pages/dashboard/dashboardPages/users/u
 import { getRoleName } from "@/lib/utils/roles/Roles";
 import { useNavigate } from "react-router-dom";
 import { authStore } from "@/lib/store/authStore";
+import Avvvatars from "avvvatars-react";
 
 const UserAccoutn = ({ user }: { user: IUserDetail | undefined }) => {
   const navigate = useNavigate();
   const clearAuth = authStore((state) => state.clearAuth);
 
   // Helper function to get initials from names
-  const getInitials = (firstName: string, lastName: string) => {
-    const firstInitial = firstName.charAt(0).toUpperCase();
-    const lastInitial = lastName.charAt(0).toUpperCase();
-    return `${firstInitial} ${lastInitial}`;
-  };
-
   // Determine the role name based on user's role
   const roleName = user ? getRoleName(user.role) : "نامشخص";
 
@@ -48,12 +42,8 @@ const UserAccoutn = ({ user }: { user: IUserDetail | undefined }) => {
             </span>
             <span className="text-black text-sm font-light">{roleName}</span>
           </div>
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback className="bg-slate-600 text-slate-100">
-              {user ? getInitials(user.first_name, user.last_name) : "?"}
-            </AvatarFallback>
-          </Avatar>
+
+          <Avvvatars value={user ? `${user.first_name} ${user.last_name}` : "?"} style="shape" size={45} border />
           <img src={downIcon} alt="icon" />
         </div>
       </DropdownMenuTrigger>
