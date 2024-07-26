@@ -1,14 +1,27 @@
-import { get_all_advisors, get_all_students, get_exel_info, get_exel_info_test } from "@/lib/apis/accounting/service";
+import {
+  get_all_advisors,
+  get_all_students,
+  get_exel_info,
+  get_exel_info_test,
+  get_students_with_advisors,
+  reset_student,
+  stop_student_advisor,
+} from "@/lib/apis/accounting/service";
 import { accountingStore } from "@/lib/store/accountingStore";
 import { IallAdvisors, IallStudents } from "@/lib/store/types";
 import { useCallback, useState } from "react";
 import { IJsonData, IJsonTestData } from "./interface";
+import { IStudentAdvisor } from "@/components/pages/dashboard/dashboardPages/accounting/allStudents/parts/interfaces";
+import { IRestartStudent, IStopStudent } from "@/lib/apis/accounting/interface";
 
 export const useAccounting = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [studentDataLoaded, setStudentDataLoaded] = useState(false);
   const [advisorDataLoaded, setAdvisorDataLoaded] = useState(false);
   const [jsonTestData, setJsonTestData] = useState<IJsonTestData[]>();
   const [jsonData, setJsonData] = useState<IJsonData[]>();
+  const [studentAdvisorData, setStudentAdvisorData] = useState<IStudentAdvisor[]>([]);
 
   const addStudentData = accountingStore((state) => state.addAllstudents);
   const addAlladvisors = accountingStore((state) => state.addAlladvisors);
@@ -43,6 +56,65 @@ export const useAccounting = () => {
     }
   }, [addAlladvisors, advisorDataLoaded]);
 
+  const getStudentsWithAdvisors = useCallback(async () => {
+    const data = await get_students_with_advisors();
+    setStudentAdvisorData(data);
+    return data;
+  }, []);
+
+  const stopStudent = useCallback(
+    async ({ studentId, advisorId }: { studentId: string; advisorId: string }) => {
+      setLoading(true);
+      setError("");
+      try {
+        const now = new Date();
+        const stopDate = new Date(now);
+
+        const body: IStopStudent = {
+          student: String(studentId),
+          advisor: String(advisorId),
+          status: "stop",
+          stop_date: stopDate.toISOString(),
+        };
+        await stop_student_advisor(body);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+          throw err; // rethrow the error to be caught by the caller
+        } else {
+          const customError = new Error("Failed to stop advisor for student");
+          setError(customError.message);
+          throw customError; // rethrow the custom error to be caught by the caller
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading]
+  );
+
+  const resetStudent = useCallback(
+    async (body: IRestartStudent) => {
+      setLoading(true);
+      setError("");
+      try {
+        await reset_student(body);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+          throw err; // rethrow the error to be caught by the caller
+        } else {
+          const customError = new Error("Failed to reset student advisor");
+          setError(customError.message);
+          throw customError; // rethrow the custom error to be caught by the caller
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading]
+  );
+
   return {
     getAllStudents,
     getExelInfo,
@@ -52,5 +124,11 @@ export const useAccounting = () => {
     setJsonTestData,
     setJsonData,
     getAdvisorsData,
+    getStudentsWithAdvisors,
+    studentAdvisorData,
+    stopStudent,
+    loading,
+    error,
+    resetStudent
   };
 };
