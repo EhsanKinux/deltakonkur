@@ -1,10 +1,11 @@
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import { Suspense, lazy } from "react";
 import "./index.css";
 import Loading from "./components/loader/Loading.tsx";
 import ProtectedRoute from "./components/pages/auth/ProtectedRoute.tsx";
 import Unauthorized from "./components/pages/auth/Unauthorized.tsx";
+import RedirectRoute from "./components/pages/auth/RedirectRoute.tsx";
 
 // Lazy load components
 const ContentAdvisorDetail = lazy(
@@ -65,7 +66,6 @@ const Reserve = lazy(() => import("./components/pages/dashboard/dashboardPages/r
 const Users = lazy(() => import("./components/pages/dashboard/dashboardPages/users/users/Users.tsx"));
 const Dashboard = lazy(() => import("./components/pages/dashboard/dashboard/Dashboard.tsx"));
 const AuthLayout = lazy(() => import("./components/pages/auth/authLayout/AuthLayout.tsx"));
-const SignIn = lazy(() => import("./components/pages/auth/sign-in/SignIn.tsx"));
 const SignUp = lazy(() => import("./components/pages/auth/sign-up/SignUp.tsx"));
 const ErrorPage = lazy(() => import("./components/pages/error/ErrorPage.tsx"));
 const App = lazy(() => import("./App.tsx"));
@@ -86,34 +86,25 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Navigate to="/auth/signIn" />,
+        element: <RedirectRoute />,
       },
       {
-        path: "auth",
+        path: "auth/signIn",
         element: (
           <Suspense fallback={<Loading />}>
             <AuthLayout />
           </Suspense>
         ),
-        children: [
-          {
-            path: "signIn",
-            element: (
-              <Suspense fallback={<Loading />}>
-                <SignIn />
-              </Suspense>
-            ),
-          },
-          {
-            path: "signUp",
-            element: (
-              <Suspense fallback={<Loading />}>
-                <SignUp />
-              </Suspense>
-            ),
-          },
-        ],
       },
+      {
+        path: "signUp",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <SignUp />
+          </Suspense>
+        ),
+      },
+
       {
         path: "dashboard",
         element: (

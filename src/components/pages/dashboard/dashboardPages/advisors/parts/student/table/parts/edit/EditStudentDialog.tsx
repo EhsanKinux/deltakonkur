@@ -89,7 +89,7 @@ export function EditStudentDialog() {
       console.table(modifiedData);
       await updateStudentInfo(modifiedData);
       if (advisor) {
-        console.log("stID:", studentInfo.id, "advID:", advisor);
+        // console.log("stID:", studentInfo.id, "advID:", advisor);
         await setAdvisorForStudent({ studentId: studentInfo.id, advisorId: advisor });
       }
 

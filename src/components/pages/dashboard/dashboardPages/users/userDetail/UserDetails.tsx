@@ -60,7 +60,7 @@ const UserDetails = () => {
         ...data,
         id: String(userInfo.id),
       };
-      console.log(modifiedData);
+      // console.log(modifiedData);
       const loadingToastId = toast.loading("در حال انجام عملیات ویرایش...");
       try {
         const response = await update_user_info(modifiedData);

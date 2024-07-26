@@ -17,7 +17,7 @@ export const useSupervision = () => {
         if (response.ok) {
           //   const updatedInfo = await response.json();
           //   setStudentInfo(updatedInfo);
-          console.log(response);
+          // console.log(response);
         }
         // else {
         //   setError("Failed to update student information");

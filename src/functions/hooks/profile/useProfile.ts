@@ -12,7 +12,7 @@ export const useProfile = () => {
     if (!studentDataLoaded) {
       const data: ICountingStudents[] = await get_counting_students();
       setCountingStudents(data);
-      setActiveStudentsCount(data.filter((student) => student.status === "active").length);
+      setActiveStudentsCount(data?.filter((student) => student.status === "active").length);
       setTotalStudentsCount(data.length);
       setStudentDataLoaded(true);
     }

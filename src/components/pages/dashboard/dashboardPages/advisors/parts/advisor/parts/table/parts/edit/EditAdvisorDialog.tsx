@@ -48,7 +48,7 @@ const EditAdvisorDialog = ({
   }, [advisorInfo, form]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log("Form submitted with data:", data);
+    // console.log("Form submitted with data:", data);
     if (data && advisorInfo) {
       const modifiedData: Advisor = {
         ...data,

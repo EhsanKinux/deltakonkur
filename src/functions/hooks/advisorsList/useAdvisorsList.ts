@@ -112,7 +112,7 @@ export const useAdvisorsList = () => {
     try {
       const data = await advisor_students();
       setAdvisorStudent(data);
-      console.log("dataAdvisorStudent", data);
+      // console.log("dataAdvisorStudent", data);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

@@ -10,14 +10,14 @@ import { z } from "zod";
 import CustomInput from "./customInput/CustomInput";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
-// import axios from "axios";
 import api from "@/lib/apis/global-interceptor";
 import Cookies from "js-cookie";
 
-const AuthForm = ({ type }: { type: string }) => {
+const AuthForm = () => {
   const navigate = useNavigate();
+  const { setTokens, setUserRole, userRole } = authStore();
   const [isloading, setIsLoading] = useState(false);
-  const { setTokens, setUserRole, accessToken, refreshToken, userRole } = authStore();
+  const [isRoleFetching, setIsRoleFetching] = useState(false);
 
   const formSchema = authFormSchema();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -29,32 +29,30 @@ const AuthForm = ({ type }: { type: string }) => {
   });
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const access = Cookies.get("accessToken");
-      const refresh = Cookies.get("refreshToken");
+    if (!isRoleFetching && userRole) {
+      navigate("/dashboard");
+    }
+  }, [isRoleFetching, userRole, navigate]);
 
-      if (access && refresh) {
-        try {
-          const roleResponse = await api.get(`${BASE_API_URL}api/auth/current-user/`, {
-            headers: {
-              Authorization: `Bearer ${access}`,
-            },
-          });
-          const { role } = roleResponse.data;
-          setUserRole(role);
-          setTokens(access, refresh);
-          navigate("/dashboard");
-          window.location.reload();
-        } catch (error) {
-          console.error("Token validation failed:", error);
-          navigate("/auth/signIn");
-        }
-      } else {
-        navigate("/auth/signIn");
-      }
-    };
-    checkAuth();
-  }, [navigate, setTokens, setUserRole]);
+  const fetchUserRole = async (access: string) => {
+    setIsRoleFetching(true);
+    try {
+      const roleResponse = await api.get(`${BASE_API_URL}api/auth/current-user/`, {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      });
+
+      const { role } = roleResponse.data;
+      setUserRole(role);
+      return role;
+    } catch (error) {
+      console.error("Failed to fetch user role:", error);
+      return null;
+    } finally {
+      setIsRoleFetching(false);
+    }
+  };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
@@ -63,36 +61,29 @@ const AuthForm = ({ type }: { type: string }) => {
         username: data.tell,
         password: data.password,
       });
-      const { access, refresh } = response.data;
-      setTokens(access, refresh);
 
-      Cookies.set("username", data.tell, { secure: true, sameSite: "strict" });
-      Cookies.set("password", data.password, { secure: true, sameSite: "strict" });
+      if (response.data) {
+        const { access, refresh } = response.data;
+        setTokens(access, refresh);
 
-      // Fetch user role (assuming this endpoint returns the role)
-      const roleResponse = await api.get(`${BASE_API_URL}api/auth/current-user/`, {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      });
-      const { role } = roleResponse.data;
-      setUserRole(role);
+        Cookies.set("username", data.tell, { secure: true, sameSite: "strict" });
+        Cookies.set("password", data.password, { secure: true, sameSite: "strict" });
 
-      if (role && userRole) {
-        navigate("/dashboard");
-        window.location.reload();
+        await fetchUserRole(access);
+
+        navigate("/dashboard"); // This is now handled in useEffect
       } else {
         navigate("/auth/signIn");
       }
     } catch (error) {
       console.error("Authentication failed:", error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
-
-  console.log("accessToken", accessToken);
-  console.log("refreshToken", refreshToken);
-  console.log("userRole", userRole);
+  // console.log("accessToken", accessToken);
+  // console.log("refreshToken", refreshToken);
+  // console.log("userRole", userRole);
 
   return (
     <section className="flex flex-col justify-center items-center w-full">
@@ -113,10 +104,8 @@ const AuthForm = ({ type }: { type: string }) => {
                   <Loader2 size={20} className="animate-spin" />
                   &nbsp; درحال ورود...
                 </>
-              ) : type === "sign-in" ? (
-                "ورود"
               ) : (
-                "ثبت نام"
+                "ورود"
               )}
             </Button>
           </div>
