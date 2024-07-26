@@ -11,7 +11,7 @@ const Dashboard = () => {
   const { fetchUserData } = useAuth();
   const [user, setUser] = useState<IUserDetail>();
 
-  const { getCountingStudents, activeStudentsCount, totalStudentsCount } = useProfile();
+  const { getCountingStudents, totalActiveStudentsCount, getTotalStudent, totalStudents } = useProfile();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,7 +23,8 @@ const Dashboard = () => {
 
     fetchData();
     getCountingStudents();
-  }, [fetchUserData, userRole, getCountingStudents]);
+    getTotalStudent();
+  }, [fetchUserData, userRole, getCountingStudents, getTotalStudent]);
 
   const roleName = user ? getRoleName(user?.role) : "نامشخص";
 
@@ -49,11 +50,11 @@ const Dashboard = () => {
       {userRole === 0 && (
         <div className="mt-8 flex justify-center gap-8">
           <div className="flex flex-col items-center bg-blue-100 p-4 rounded-lg shadow-lg">
-            <span className="text-4xl font-bold text-blue-600">{totalStudentsCount}</span>
+            <span className="text-4xl font-bold text-blue-600">{totalStudents}</span>
             <span className="text-lg font-medium text-blue-600">کل دانش‌آموزان</span>
           </div>
           <div className="flex flex-col items-center bg-green-100 p-4 rounded-lg shadow-lg">
-            <span className="text-4xl font-bold text-green-600">{activeStudentsCount}</span>
+            <span className="text-4xl font-bold text-green-600">{totalActiveStudentsCount}</span>
             <span className="text-lg font-medium text-green-600">تمام دانش‌آموزان فعال</span>
           </div>
         </div>
