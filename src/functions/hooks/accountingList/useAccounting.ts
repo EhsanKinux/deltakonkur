@@ -63,7 +63,7 @@ export const useAccounting = () => {
   }, []);
 
   const stopStudent = useCallback(
-    async ({ studentId, advisorId }: { studentId: string; advisorId: string }) => {
+    async ({ id, studentId, advisorId }: { id: string; studentId: string; advisorId: string }) => {
       setLoading(true);
       setError("");
       try {
@@ -71,6 +71,7 @@ export const useAccounting = () => {
         const stopDate = new Date(now);
 
         const body: IStopStudent = {
+          id: String(id),
           student: String(studentId),
           advisor: String(advisorId),
           status: "stop",
@@ -129,6 +130,6 @@ export const useAccounting = () => {
     stopStudent,
     loading,
     error,
-    resetStudent
+    resetStudent,
   };
 };

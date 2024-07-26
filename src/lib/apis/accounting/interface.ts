@@ -1,4 +1,5 @@
 export interface IStopStudent {
+  id: string;
   student: string;
   advisor: string;
   status: string;

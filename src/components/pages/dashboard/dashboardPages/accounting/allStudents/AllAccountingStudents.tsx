@@ -24,7 +24,7 @@ const AllAccountingStudents = () => {
   useEffect(() => {
     if (dataLoaded) {
       const formatted = studentAdvisorData.map((item: IStudentAdvisor) => ({
-        id: item.student.id, // ID from the student object
+        id: item.id, // ID from the student object
         studentId: item.student.id,
         grade: String(item.student.grade),
         advisor: item.advisor,

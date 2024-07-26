@@ -12,7 +12,7 @@ export const get_all_advisors = () => fetchInstance(`api/advisor/advisors/`, { m
 export const get_students_with_advisors = () => fetchInstance(`api/register/student-advisors/`, { method: "GET" });
 
 export const stop_student_advisor = (body: IStopStudent) =>
-  fetchInstance(`api/register/student-advisors/`, { method: "PATCH", body: JSON.stringify(body) });
+  fetchInstance(`api/register/student-advisors/${body.id}/`, { method: "PATCH", body: JSON.stringify(body) });
 
 export const reset_student = (body: IRestartStudent) =>
   fetchInstance(`api/register/student-advisors/restart/${body.student}/`, {

@@ -32,7 +32,7 @@ export interface IStudent {
 
 // Interface for the main student-advisor object
 export interface IStudentAdvisor {
-  // id: string;
+  id: string;
   student: IStudent;
   advisor: string;
   status: string;

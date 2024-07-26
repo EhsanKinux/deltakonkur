@@ -15,7 +15,7 @@ const StopDialog = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
   const { stopStudent } = useAccounting();
 
   const handleStopStudent = () => {
-    toast.promise(stopStudent({ studentId: rowData?.studentId, advisorId: rowData?.advisor }), {
+    toast.promise(stopStudent({id: rowData?.id, studentId: rowData?.studentId, advisorId: rowData?.advisor }), {
       loading: "در حال توقف...",
       success: `توقف ${rowData?.first_name} ${rowData?.last_name} با موفقیت انجام شد!`,
       error: "خطایی رخ داده است!",
