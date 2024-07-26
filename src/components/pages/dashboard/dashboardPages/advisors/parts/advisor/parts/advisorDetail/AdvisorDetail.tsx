@@ -13,6 +13,8 @@ import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
 import { authStore } from "@/lib/store/authStore";
 import axios from "axios";
 import { BASE_API_URL } from "@/lib/variables/variables";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
 
 export interface ICurrentUser {
   id: number;
@@ -78,6 +80,7 @@ const AdvisorDetail = () => {
   }, [advisorDetailData]);
 
   // console.log("advisorDetailData", advisorDetailData);
+  // console.log("processedStudentData", processedStudentData);
 
   const goToAdisors = () => {
     navigate("/dashboard/advisors");
@@ -100,9 +103,26 @@ const AdvisorDetail = () => {
         <span>بازگشت</span>
       </Button>
       <AdvisorInfo advisorId={advisorId} />
-      <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-        <AdvisorDitailTable columns={stColumns} data={processedStudentData} />
-      </div>
+      <Tabs defaultValue="studentTable" className="mt-4">
+        <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
+          <TabsTrigger value="studentTable" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+            لیست دانش‌آموزان
+          </TabsTrigger>
+          <TabsTrigger value="assessment" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+            نظرسنجی ها
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="studentTable">
+          <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
+            <AdvisorDitailTable columns={stColumns} data={processedStudentData} />
+          </div>
+        </TabsContent>
+        <TabsContent value="assessment">
+          <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl">
+            <AdvisorAssessment data={processedStudentData} />
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
