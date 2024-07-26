@@ -10,6 +10,7 @@ export type Advisor = {
   active_students?: string;
   stopped_students?: string;
   cancelled_students?: string;
+  activePercentage?: number;
 };
 
 export type FormData = {
@@ -33,6 +34,9 @@ export type IadvisorStudent = {
   status: string;
   started_date: string;
   ended_date: string;
+  active_students: string;
+  stopped_students: string;
+  cancelled_students: string;
 }[];
 
 export type FormStore = {
@@ -82,7 +86,7 @@ export type IallAdvisors = {
   active_students: string;
   stopped_students: string;
   cancelled_students: string;
-}
+};
 
 export type IAccountStore = {
   allstudents: IallStudents[];
