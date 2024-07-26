@@ -46,6 +46,7 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
       }
 
       const body: IRestartStudent = {
+        id: String(rowData?.id),
         student: String(rowData?.studentId),
         advisor: String(rowData?.advisor),
         status: "active",
