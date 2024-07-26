@@ -19,6 +19,17 @@ const AdvisorInfo = ({ advisorId }: { advisorId: string }) => {
     }
   }, [advisorId, fetchAdvisorInfo]);
 
+  const calculateActivePercentage = (active: number, stopped: number, canceled: number) => {
+    const total = active + stopped + canceled;
+    return total ? ((active / total) * 100).toFixed(2) : 0;
+  };
+
+  const activePercentage = calculateActivePercentage(
+    parseInt(advisorInfo?.active_students ?? "0"),
+    parseInt(advisorInfo?.stopped_students ?? "0"),
+    parseInt(advisorInfo?.cancelled_students ?? "0")
+  );
+
   return (
     <div className="flex flex-col xl:flex-row justify-between w-full gap-3 p-4 mt-4 rounded-xl shadow-form relative bg-slate-100">
       {/* personal info */}
@@ -39,6 +50,11 @@ const AdvisorInfo = ({ advisorId }: { advisorId: string }) => {
           <div className="flex gap-2 items-center">
             <img src={personCard} width={25} />
             <h1 className="text-lg font-medium">کد ملی: {advisorInfo?.national_id}</h1>
+          </div>
+          <div className="flex gap-2 items-center">
+            <h2 className="text-base font-medium">
+              درصد رضایت: <span className="text-blue-500 font-semibold">{activePercentage}%</span>
+            </h2>
           </div>
         </div>
       </div>
