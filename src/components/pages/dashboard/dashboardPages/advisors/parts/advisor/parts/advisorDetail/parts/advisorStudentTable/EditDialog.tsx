@@ -81,7 +81,7 @@ export function EditStudentDialog() {
   }, [studentInfo, form]);
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
-  console.log(studentInfo);
+  // console.log(studentInfo);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const loadingToastId = toast.loading("در حال انجام عملیات ثبت...");
