@@ -28,6 +28,10 @@ export const columns: ColumnDef<FormEntry>[] = [
     header: "شماره حساب",
   },
   {
+    accessorKey: "activePercentage",
+    header: "درصد رضایت",
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const formData = row.original;
