@@ -60,24 +60,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
           />
         </div>
-        <div className="relative flex items-center w-full text-14 rounded-[8px]">
-          <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
-          <Input
-            placeholder="جستجو براساس رشته"
-            value={(table.getColumn("field")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn("field")?.setFilterValue(event.target.value)}
-            className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
-          />
-        </div>
-        <div className="relative flex items-center w-full text-14 rounded-[8px]">
-          <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
-          <Input
-            placeholder="جستجو براساس مقطع تحصیلی"
-            value={(table.getColumn("grade")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn("grade")?.setFilterValue(event.target.value)}
-            className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
-          />
-        </div>
       </div>
       <Table className="!rounded-xl border mt-5">
         <TableHeader className="bg-slate-300">
