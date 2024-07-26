@@ -15,11 +15,26 @@ const StopDialog = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
   const { stopStudent } = useAccounting();
 
   const handleStopStudent = () => {
-    toast.promise(stopStudent({id: rowData?.id, studentId: rowData?.studentId, advisorId: rowData?.advisor }), {
-      loading: "در حال توقف...",
-      success: `توقف ${rowData?.first_name} ${rowData?.last_name} با موفقیت انجام شد!`,
-      error: "خطایی رخ داده است!",
-    });
+    // Check if the endDate exists and is not null
+    if (rowData?.ended_date) {
+      toast.warning(`دانش‌آموز ${rowData?.first_name} ${rowData?.last_name} قبلا متوقف شده است!`, {
+        duration: 3000, // Display warning for 3 seconds
+      });
+      return; // Exit the function early
+    }
+
+    toast.promise(
+      stopStudent({
+        id: rowData?.id,
+        studentId: rowData?.studentId,
+        advisorId: rowData?.advisor,
+      }),
+      {
+        loading: "در حال توقف...",
+        success: `توقف ${rowData?.first_name} ${rowData?.last_name} با موفقیت انجام شد!`,
+        error: "خطایی رخ داده است!",
+      }
+    );
     // setDeleteDialogOpen(false);
     console.log(rowData?.studentId);
   };
