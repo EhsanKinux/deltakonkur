@@ -1,7 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { IAccountingStudents } from "./interfaces";
+import { IFormattedStudentAdvisor } from "./interfaces";
+import StDialogButtons from "./studentDialogButton/StDialogButtons";
 
-export const accountingStColumns: ColumnDef<IAccountingStudents>[] = [
+export const accountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] = [
   {
     accessorKey: "first_name",
     header: "نام",
@@ -38,11 +39,19 @@ export const accountingStColumns: ColumnDef<IAccountingStudents>[] = [
     accessorKey: "created",
     header: "تاریخ ثبت",
   },
-//   {
-//     id: "actions",
-//     cell: ({ row }) => {
-//       const formData = row.original;
-//       return <StudentDialogButtons formData={formData} />;
-//     },
-//   },
+  {
+    accessorKey: "left_days_to_expire",
+    header: "روز مانده",
+  },
+  {
+    accessorKey: "expire_date",
+    header: "تاریخ انقضا",
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const rowData = row.original;
+      return <StDialogButtons rowData={rowData} />;
+    },
+  },
 ];
