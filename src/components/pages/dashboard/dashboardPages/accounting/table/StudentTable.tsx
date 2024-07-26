@@ -13,13 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import SearchIcon from "@/assets/icons/search.svg";
+import { IFormattedStudentAdvisor } from "../allStudents/parts/interfaces";
 
-interface StudentTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface StudentTableProps {
+  columns: ColumnDef<IFormattedStudentAdvisor>[];
+  data: IFormattedStudentAdvisor[];
 }
 
-export function StudentTable<TData, TValue>({ columns, data }: StudentTableProps<TData, TValue>) {
+export function StudentTable({ columns, data }: StudentTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
