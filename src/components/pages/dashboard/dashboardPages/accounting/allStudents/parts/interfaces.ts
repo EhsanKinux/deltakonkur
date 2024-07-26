@@ -67,4 +67,5 @@ export interface IFormattedStudentAdvisor {
   solar_date_month: string;
   solar_date_year: string;
   stop_date: string;
+  ended_date: string;
 }
