@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import { IUserDetail } from "../dashboardPages/users/userDetail/interface";
 import profileCover from "@/assets/images/cover-01.png";
 import { getRoleName } from "@/lib/utils/roles/Roles";
+import { useProfile } from "@/functions/hooks/profile/useProfile";
 
 const Dashboard = () => {
   const { userRole } = authStore();
   const { fetchUserData } = useAuth();
   const [user, setUser] = useState<IUserDetail>();
+
+  const { getCountingStudents, activeStudentsCount, totalStudentsCount } = useProfile();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,7 +22,8 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, [fetchUserData, userRole]);
+    getCountingStudents();
+  }, [fetchUserData, userRole, getCountingStudents]);
 
   const roleName = user ? getRoleName(user?.role) : "نامشخص";
 
@@ -40,6 +44,16 @@ const Dashboard = () => {
           </span>
           <span className="text-black text-xl font-light">{roleName}</span>
           <span className="text-black text-nowrap font-thin">شماره همراه : {user?.phone_number}</span>
+        </div>
+      </div>
+      <div className="mt-8 flex justify-center gap-8">
+        <div className="flex flex-col items-center bg-blue-100 p-4 rounded-lg shadow-lg">
+          <span className="text-4xl font-bold text-blue-600">{totalStudentsCount}</span>
+          <span className="text-lg font-medium text-blue-600">کل دانش‌آموزان</span>
+        </div>
+        <div className="flex flex-col items-center bg-green-100 p-4 rounded-lg shadow-lg">
+          <span className="text-4xl font-bold text-green-600">{activeStudentsCount}</span>
+          <span className="text-lg font-medium text-green-600">تمام دانش‌آموزان فعال</span>
         </div>
       </div>
     </div>
