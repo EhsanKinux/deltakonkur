@@ -4,6 +4,7 @@ import { useEffect, useMemo } from "react";
 import { columns } from "./parts/table/ColumnDef";
 import { AdvisorDataTable } from "../table/AdvisorDataTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Advisor } from "@/lib/store/types";
 
 const AdvisorList = () => {
   const { getAdvisorsData } = useAdvisorsList();
@@ -13,15 +14,34 @@ const AdvisorList = () => {
     getAdvisorsData();
   }, [getAdvisorsData]);
 
-  // Memoize advisors to prevent unnecessary re-renders
-  const memoizedAdvisors = useMemo(() => advisors, [advisors]);
+  const calculateActivePercentage = (active: number, stopped: number, canceled: number) => {
+    const total = active + stopped + canceled;
+    return total ? ((active / total) * 100).toFixed(2) : "0.00";
+  };
 
-  const mathAdvisors = memoizedAdvisors.filter((advisor) => advisor.field === "ریاضی");
-  const experimentalAdvisors = memoizedAdvisors.filter((advisor) => advisor.field === "تجربی");
-  const humanitiesAdvisors = memoizedAdvisors.filter((advisor) => advisor.field === "علوم انسانی");
-  // console.log("mathAdvisors", mathAdvisors);
-  // console.log("experimentalAdvisors", experimentalAdvisors);
-  // console.log("humanitiesAdvisors", humanitiesAdvisors);
+  const memoizedAdvisors: Advisor[] = useMemo(() => {
+    return advisors.map((advisor) => ({
+      ...advisor,
+      activePercentage: parseFloat(
+        calculateActivePercentage(
+          parseInt(advisor.active_students ?? "0"),
+          parseInt(advisor.stopped_students ?? "0"),
+          parseInt(advisor.cancelled_students ?? "0")
+        )
+      ),
+    }));
+  }, [advisors]);
+
+  const sortAdvisorsByActivePercentage = (advisors: Advisor[]): Advisor[] => {
+    return advisors.sort((a, b) => (b.activePercentage ?? 0) - (a.activePercentage ?? 0));
+  };
+  const mathAdvisors = sortAdvisorsByActivePercentage(memoizedAdvisors.filter((advisor) => advisor.field === "ریاضی"));
+  const experimentalAdvisors = sortAdvisorsByActivePercentage(
+    memoizedAdvisors.filter((advisor) => advisor.field === "تجربی")
+  );
+  const humanitiesAdvisors = sortAdvisorsByActivePercentage(
+    memoizedAdvisors.filter((advisor) => advisor.field === "علوم انسانی")
+  );
 
   return (
     <section className="max-h-screen">
