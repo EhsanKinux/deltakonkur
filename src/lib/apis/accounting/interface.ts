@@ -8,6 +8,7 @@ export interface IStopStudent {
 }
 
 export interface IRestartStudent {
+  id: string;
   student: string;
   advisor: string;
   status: string;
