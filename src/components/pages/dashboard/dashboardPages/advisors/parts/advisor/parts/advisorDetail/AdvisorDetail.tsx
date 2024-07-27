@@ -10,84 +10,24 @@ import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { AdvisorDitailTable } from "../../../table/AdvisorDitailTable";
 import { stColumns } from "./parts/advisorStudentTable/ColumnDef";
 import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
-import { authStore } from "@/lib/store/authStore";
-import axios from "axios";
-import { BASE_API_URL } from "@/lib/variables/variables";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
 
-export interface ICurrentUser {
-  id: number;
-  first_name: string;
-  last_name: string;
-  national_id: string;
-  phone_number: string;
-  role: number;
-}
-
-export interface AdvisorData {
-  id: number;
-  first_name: string;
-  last_name: string;
-  field: string;
-  phone_number: string;
-  national_id: string;
-  bank_account: string;
-  created: string;
-  updated: string;
-  active_students: number;
-  stopped_students: number;
-  cancelled_students: number;
-}
-
 const AdvisorDetail = () => {
   const { advisorId } = useParams();
-  const { accessToken, userRole, setUserRole } = authStore();
   const navigate = useNavigate();
   const { advisorDetailData, getStudentsOfAdvisor } = useAdvisorsList();
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
   // const [currentUser, setCurrentUser] = useState<ICurrentUser>();
-  const [advisorData, setAdvisorData] = useState<AdvisorData | null>(null);
   // const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (userRole === 7) {
-      const fetchUserData = async () => {
-        try {
-          const roleResponse = await axios.get(`${BASE_API_URL}/api/auth/current-user/`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-          const userData = roleResponse.data;
-          // setCurrentUser(userData); // Set the user information
-          setUserRole(userData.role); // Update the user role in the store
-
-          // Fetch advisor data based on user ID
-          const advisorResponse = await axios.get(`${BASE_API_URL}/api/advisor/advisor/from-user/${userData.id}/`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-          setAdvisorData(advisorResponse.data); // Set the advisor data
-        } catch (error) {
-          console.error("Error fetching user/advisor data:", error);
-          navigate("/unauthorized"); // Redirect if there is an error fetching user data
-        }
-      };
-      fetchUserData();
-    }
-  }, [navigate, userRole, accessToken, setUserRole]);
   // console.table(currentUser);
 
   useEffect(() => {
     if (advisorId) {
       getStudentsOfAdvisor(advisorId);
     }
-    if (userRole === 7 && advisorData) {
-      getStudentsOfAdvisor(String(advisorData?.id));
-    }
-  }, [advisorData, advisorId, getStudentsOfAdvisor, userRole]);
+  }, [advisorId, getStudentsOfAdvisor]);
 
   useEffect(() => {
     if (advisorDetailData) {
@@ -106,9 +46,6 @@ const AdvisorDetail = () => {
 
   const goToAdisors = () => {
     navigate("/dashboard/advisors");
-    if (userRole === 7) {
-      navigate("/dashboard");
-    }
   };
 
   if (!advisorId) {
@@ -124,7 +61,7 @@ const AdvisorDetail = () => {
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
-      <AdvisorInfo advisorId={advisorId} advisorData={advisorData} userRole={userRole} />
+      <AdvisorInfo advisorId={advisorId} />
       <Tabs defaultValue="studentTable" className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger value="studentTable" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">

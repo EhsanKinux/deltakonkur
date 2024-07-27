@@ -8,17 +8,8 @@ import personCard from "@/assets/icons/person-card.svg";
 import callIcon from "@/assets/icons/call.svg";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { useEffect } from "react";
-import { AdvisorData } from "../../AdvisorDetail";
 
-const AdvisorInfo = ({
-  advisorId,
-  advisorData,
-  userRole,
-}: {
-  advisorId: string;
-  advisorData: AdvisorData | null;
-  userRole: number | null;
-}) => {
+const AdvisorInfo = ({ advisorId }: { advisorId: string }) => {
   const advisorInfo = appStore((state) => state.advisorInfo);
   const { fetchAdvisorInfo } = useAdvisorsList();
 
@@ -26,10 +17,7 @@ const AdvisorInfo = ({
     if (advisorId) {
       fetchAdvisorInfo(advisorId);
     }
-    if (userRole === 7 && advisorData) {
-      fetchAdvisorInfo(String(advisorData?.id));
-    }
-  }, [advisorData, advisorId, fetchAdvisorInfo, userRole]);
+  }, [advisorId, fetchAdvisorInfo]);
 
   const calculateActivePercentage = (active: number, stopped: number, canceled: number) => {
     const total = active + stopped + canceled;
