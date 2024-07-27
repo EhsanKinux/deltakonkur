@@ -10,6 +10,11 @@ type Option = {
   label: string;
 };
 
+type SelectedAdvisor = {
+  advisor: string;
+  subject: string;
+};
+
 const SearchAdvisors = ({
   form,
   advisors,
@@ -26,8 +31,7 @@ const SearchAdvisors = ({
   >;
   advisors: Advisor[];
 }) => {
-  const [selectedAdvisors, setSelectedAdvisors] = useState<{ advisor: string; subject: string }[]>([]);
-  const [subject, setsubject] = useState("");
+  const [selectedAdvisors, setSelectedAdvisors] = useState<SelectedAdvisor[]>([]);
 
   const options: Option[] = advisors.map((adv) => ({
     value: String(adv.id),
@@ -38,26 +42,20 @@ const SearchAdvisors = ({
     const selectedOptions = newValue as Option[];
     const newSelectedAdvisors = selectedOptions.map((option) => ({
       advisor: option.value,
-      subject: subject, // Use current subject value for all advisors
+      subject: "",
     }));
     setSelectedAdvisors(newSelectedAdvisors);
     newSelectedAdvisors.forEach((adv, index) => {
       form.setValue(`${index}.advisor`, String(adv.advisor));
-      form.setValue(`${index}.subject`, subject);
+      form.setValue(`${index}.subject`, "");
     });
   };
 
-  const handlesubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newsubject = e.target.value;
-    setsubject(newsubject);
-    const updatedAdvisors = selectedAdvisors.map((adv) => ({
-      ...adv,
-      subject: newsubject,
-    }));
+  const handleSubjectChange = (index: number, newSubject: string) => {
+    const updatedAdvisors = [...selectedAdvisors];
+    updatedAdvisors[index].subject = newSubject;
     setSelectedAdvisors(updatedAdvisors);
-    updatedAdvisors.forEach((_advisor, index) => {
-      form.setValue(`${index}.subject`, newsubject);
-    });
+    form.setValue(`${index}.subject`, newSubject);
   };
 
   return (
@@ -91,18 +89,22 @@ const SearchAdvisors = ({
               }}
             />
           </div>
-          <div className="w-full flex-col inline-flex">
-            <label className="font-light">موضوع</label>
+        </div>
+        {selectedAdvisors.map((advisor, index) => (
+          <div key={index} className="w-full flex-col inline-flex">
+            <label className="font-light">
+              موضوع برای {advisors.find((adv) => String(adv.id) === advisor.advisor)?.first_name}
+            </label>
             <Input
-              name="advisor"
+              name={`advisor${index}`}
               type="text"
               placeholder="موضوع"
-              value={subject}
-              onChange={handlesubjectChange}
+              value={advisor.subject}
+              onChange={(e) => handleSubjectChange(index, e.target.value)}
               className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
             />
           </div>
-        </div>
+        ))}
         <span className="w-full">
           برای این ماه شما در نظر گرفته شده است. لطفا وویس خود را ضبط نموده و طی 5 روز آینده به واحد محتوا تحویل دهید.
         </span>
