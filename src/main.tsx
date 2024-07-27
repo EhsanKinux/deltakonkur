@@ -8,6 +8,12 @@ import Unauthorized from "./components/pages/auth/Unauthorized.tsx";
 import RedirectRoute from "./components/pages/auth/RedirectRoute.tsx";
 
 // Lazy load components
+const JustAdvisorDetail = lazy(
+  () =>
+    import(
+      "./components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/JustAdvisorDetail.tsx"
+    )
+);
 const ContentAdvisorDetail = lazy(
   () =>
     import(
@@ -167,6 +173,19 @@ const router = createBrowserRouter([
                   </Suspense>
                 }
                 requiredRole={[0, 2, 7]}
+              />
+            ),
+          },
+          {
+            path: "advisors/justAdvisor",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <JustAdvisorDetail />
+                  </Suspense>
+                }
+                requiredRole={[7]}
               />
             ),
           },

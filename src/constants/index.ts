@@ -134,7 +134,7 @@ export const sidebarLinks = [
   {
     id: 8,
     imgURL: advisorsListIcon,
-    route: "/dashboard/advisors/:advisorId",
+    route: "/dashboard/advisors/justAdvisor",
     label: "مشاور",
     roles: [7],
   },
