@@ -50,7 +50,7 @@ const JustAdvisorDetail = () => {
     if (userRole === 7) {
       const fetchUserData = async () => {
         try {
-          const roleResponse = await api.get(`${BASE_API_URL}/api/auth/current-user/`, {
+          const roleResponse = await api.get(`${BASE_API_URL}api/auth/current-user/`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
@@ -60,7 +60,7 @@ const JustAdvisorDetail = () => {
           setUserRole(userData.role); // Update the user role in the store
 
           // Fetch advisor data based on user ID
-          const advisorResponse = await axios.get(`${BASE_API_URL}/api/advisor/advisor/from-user/${userData.id}/`, {
+          const advisorResponse = await axios.get(`${BASE_API_URL}api/advisor/advisor/from-user/${userData.id}/`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
