@@ -3,3 +3,11 @@ export interface IContent {
   subject: string;
 }
 [];
+
+export interface IDelivered {
+  id: string;
+  advisor: string;
+  subject: string;
+  is_delivered: true;
+  delivered_at: string;
+}
