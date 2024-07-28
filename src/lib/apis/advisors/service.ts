@@ -20,3 +20,6 @@ export const update_advisor_ifo = ({ advisorId }: { advisorId: string }) =>
 
 export const get_students_of_each_advisor = ({ advisorId }: { advisorId: string }) =>
   fetchInstance(`api/register/advisor/students/${advisorId}/`, { method: "GET" });
+
+export const get_wage_of_advisor = ({ advisorId }: { advisorId: string }) =>
+  fetchInstance(`api/register/calculate-wage/${advisorId}/`, { method: "GET" });
