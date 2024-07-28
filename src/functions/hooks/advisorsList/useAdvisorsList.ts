@@ -6,6 +6,7 @@ import {
   get_advisor_info,
   get_registered_advisors,
   get_students_of_each_advisor,
+  get_wage_of_advisor,
 } from "@/lib/apis/advisors/service";
 import { appStore } from "@/lib/store/appStore";
 import { Advisor } from "@/lib/store/types";
@@ -25,6 +26,8 @@ export const useAdvisorsList = () => {
 
   const [dataLoaded, setDataLoaded] = useState(false);
   const [advisorDetailData, setAdvisorDetailData] = useState<AdvisorDetailEntry[]>();
+  const [wageLoad, setWageLoad] = useState(false);
+  const [wageData, setWageData] = useState();
 
   const getAdvisorsData = useCallback(async () => {
     if (!dataLoaded) {
@@ -124,22 +127,37 @@ export const useAdvisorsList = () => {
     }
   }, [setAdvisorStudent, setError, setLoading]);
 
-  const getStudentsOfAdvisor = useCallback(async (advisorId: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await get_students_of_each_advisor({ advisorId });
-      setAdvisorDetailData(data);
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Failed to fetch student information");
+  const getStudentsOfAdvisor = useCallback(
+    async (advisorId: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await get_students_of_each_advisor({ advisorId });
+        setAdvisorDetailData(data);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to fetch student information");
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [setError, setLoading]);
+    },
+    [setError, setLoading]
+  );
+
+  const getAdvisorWage = useCallback(
+    async (advisorId: string) => {
+      if (!wageLoad) {
+        const data = await get_wage_of_advisor({ advisorId });
+        setWageData(data);
+        setWageLoad(true);
+      }
+    },
+    [wageLoad]
+  );
+
   return {
     getAdvisorsData,
     advisorDelete,
@@ -149,5 +167,7 @@ export const useAdvisorsList = () => {
     getAdvisorsData2,
     getStudentsOfAdvisor,
     advisorDetailData,
+    getAdvisorWage,
+    wageData,
   };
 };
