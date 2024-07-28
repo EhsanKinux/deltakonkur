@@ -4,6 +4,15 @@ import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
 import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
 import { useState } from "react";
 
+interface ITransformedData {
+  paymentID: number;
+  fromAccount: string;
+  toAccount: string;
+  amount: string;
+  firstName: string;
+  lastName: string;
+}
+
 const AccountantExel = () => {
   const { getExelInfo, getTestExelInfo } = useAccounting();
 
@@ -14,7 +23,18 @@ const AccountantExel = () => {
     return convertToShamsi2(today);
   };
 
-  const generateExcel = async (data: IJsonData[], filename: string) => {
+  const transformData = (data: IJsonData[]): ITransformedData[] => {
+    return data.map((item, index) => ({
+      paymentID: 123 + index,
+      fromAccount: item.from_account,
+      toAccount: item.to_account,
+      amount: item.amount,
+      firstName: item.first_name,
+      lastName: item.last_name,
+    }));
+  };
+
+  const generateExcel = async (data: ITransformedData[], filename: string) => {
     const { utils, writeFile } = await import("../parts/ExelXLSX/SheetJSWrapper");
     const worksheet = utils.json_to_sheet(data);
     const workbook = utils.book_new();
@@ -31,8 +51,8 @@ const AccountantExel = () => {
       setLoading(true);
       const data = await fetchFunction();
       if (data && data.length > 0) {
-        // setData(data); // Update state if needed for future use
-        await generateExcel(data, filename);
+        const transformedData = transformData(data);
+        await generateExcel(transformedData, filename);
       } else {
         console.warn("No data available to generate Excel file");
       }
