@@ -1,5 +1,5 @@
-import { IContent } from "@/lib/apis/content/interface";
-import { get_advisor_content, send_content } from "@/lib/apis/content/service";
+import { IContent, IDelivered } from "@/lib/apis/content/interface";
+import { get_advisor_content, send_content, send_content_delivered } from "@/lib/apis/content/service";
 import { useCallback, useState } from "react";
 import { IAdvisorContent } from "./interface";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
@@ -46,7 +46,7 @@ export const useContent = () => {
         const transformedData = data.map((item) => ({
           ...item,
           is_delivered: item.is_delivered ? "بله" : "خیر",
-          delivered_at: convertToShamsi(item.delivered_at),
+          delivered_at: item.delivered_at === null ? "-" : convertToShamsi(item.delivered_at),
           created: convertToShamsi(item.created),
         }));
         setAdvisorContent(transformedData);
@@ -68,5 +68,27 @@ export const useContent = () => {
     [setError, setLoading]
   );
 
-  return { sendContent, loading, error, getAdvisorContent, advisorContent };
+  const sendContentDelivered = useCallback(
+    async (body: IDelivered) => {
+      setLoading(true);
+      setError("");
+      try {
+        const response = await send_content_delivered({ body });
+        if (!response.ok) {
+          setError("Failed to update delivery status");
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to update delivery status");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading]
+  );
+
+  return { sendContent, loading, error, getAdvisorContent, advisorContent, sendContentDelivered };
 };
