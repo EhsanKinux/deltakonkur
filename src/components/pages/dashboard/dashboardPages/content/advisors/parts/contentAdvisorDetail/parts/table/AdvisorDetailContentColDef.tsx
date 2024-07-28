@@ -1,5 +1,6 @@
 import { IAdvisorContent } from "@/functions/hooks/content/interface";
 import { ColumnDef } from "@tanstack/react-table";
+import DialogButton from "./dialogButton/DialogButton";
 
 export const advisorDetailColumn: ColumnDef<IAdvisorContent>[] = [
   {
@@ -22,12 +23,12 @@ export const advisorDetailColumn: ColumnDef<IAdvisorContent>[] = [
     accessorKey: "delivered_at",
     header: "تاریخ ارسال",
   },
-  //   {
-  //     id: "actions",
-  //     cell: ({ row }) => {
-  //       const formData = row.original;
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const data = row.original;
 
-  //       return <AdvisorDialogButtons formData={formData} />;
-  //     },
-  //   },
+      return <DialogButton data={data} />;
+    },
+  },
 ];
