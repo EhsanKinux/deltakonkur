@@ -25,10 +25,10 @@ const AccountantExel = () => {
 
   const transformData = (data: IJsonData[]): ITransformedData[] => {
     return data.map((item, index) => ({
-      paymentID: 123 + index,
       fromAccount: item.from_account,
       toAccount: item.to_account,
       amount: item.amount,
+      paymentID: 123 + index,
       firstName: item.first_name,
       lastName: item.last_name,
     }));
