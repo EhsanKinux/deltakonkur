@@ -9,7 +9,7 @@ import callIcon from "@/assets/icons/call.svg";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { useEffect } from "react";
 
-const AdvisorInfo = ({ advisorId }: { advisorId: string }) => {
+const AdvisorInfo = ({ advisorId, wageData }: { advisorId: string; wageData: any }) => {
   const advisorInfo = appStore((state) => state.advisorInfo);
   const { fetchAdvisorInfo } = useAdvisorsList();
 
@@ -54,6 +54,11 @@ const AdvisorInfo = ({ advisorId }: { advisorId: string }) => {
           <div className="flex gap-2 items-center">
             <h2 className="text-base font-medium">
               درصد رضایت: <span className="text-blue-500 font-semibold">{activePercentage}%</span>
+            </h2>
+          </div>
+          <div className="flex gap-2 items-center">
+            <h2 className="text-base font-medium">
+              دریافتی : <span className="text-blue-500 font-semibold">{wageData?.wage}</span>
             </h2>
           </div>
         </div>

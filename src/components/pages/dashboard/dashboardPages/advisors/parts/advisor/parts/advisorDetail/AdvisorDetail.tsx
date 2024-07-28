@@ -16,7 +16,7 @@ import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
 const AdvisorDetail = () => {
   const { advisorId } = useParams();
   const navigate = useNavigate();
-  const { advisorDetailData, getStudentsOfAdvisor } = useAdvisorsList();
+  const { advisorDetailData, getStudentsOfAdvisor, getAdvisorWage, wageData } = useAdvisorsList();
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
   // const [currentUser, setCurrentUser] = useState<ICurrentUser>();
   // const [loading, setLoading] = useState(true);
@@ -26,8 +26,9 @@ const AdvisorDetail = () => {
   useEffect(() => {
     if (advisorId) {
       getStudentsOfAdvisor(advisorId);
+      getAdvisorWage(advisorId)
     }
-  }, [advisorId, getStudentsOfAdvisor]);
+  }, [advisorId, getAdvisorWage, getStudentsOfAdvisor]);
 
   useEffect(() => {
     if (advisorDetailData) {
@@ -44,6 +45,7 @@ const AdvisorDetail = () => {
   // console.log("advisorDetailData", advisorDetailData);
   // console.log("processedStudentData", processedStudentData);
 
+  // console.log(wageData.wage);
   const goToAdisors = () => {
     navigate("/dashboard/advisors");
   };
@@ -61,7 +63,7 @@ const AdvisorDetail = () => {
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
-      <AdvisorInfo advisorId={advisorId} />
+      <AdvisorInfo advisorId={advisorId} wageData={wageData} />
       <Tabs defaultValue="studentTable" className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger value="studentTable" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">

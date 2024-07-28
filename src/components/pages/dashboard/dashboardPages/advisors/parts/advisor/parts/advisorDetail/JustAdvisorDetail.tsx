@@ -41,7 +41,7 @@ export interface AdvisorData {
 
 const JustAdvisorDetail = () => {
   const { accessToken, userRole, setUserRole } = authStore();
-  const { advisorDetailData, getStudentsOfAdvisor } = useAdvisorsList();
+  const { advisorDetailData, getStudentsOfAdvisor, getAdvisorWage, wageData } = useAdvisorsList();
   const navigate = useNavigate();
   const [advisorData, setAdvisorData] = useState<AdvisorData | null>(null);
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
@@ -78,8 +78,9 @@ const JustAdvisorDetail = () => {
   useEffect(() => {
     if (userRole === 7 && advisorData) {
       getStudentsOfAdvisor(String(advisorData?.id));
+      getAdvisorWage(String(advisorData?.id));
     }
-  }, [advisorData, getStudentsOfAdvisor, userRole]);
+  }, [advisorData, getAdvisorWage, getStudentsOfAdvisor, userRole]);
 
   useEffect(() => {
     if (advisorDetailData) {
@@ -112,7 +113,7 @@ const JustAdvisorDetail = () => {
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
-      <JustAdvisorInfo advisorData={advisorData} userRole={userRole} />
+      <JustAdvisorInfo advisorData={advisorData} userRole={userRole} wageData={wageData} />
       <Tabs defaultValue="studentTable" className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger value="studentTable" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">

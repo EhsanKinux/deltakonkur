@@ -9,7 +9,15 @@ import { appStore } from "@/lib/store/appStore";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { useEffect } from "react";
 
-const JustAdvisorInfo = ({ advisorData, userRole }: { advisorData: AdvisorData | null; userRole: number | null }) => {
+const JustAdvisorInfo = ({
+  advisorData,
+  userRole,
+  wageData,
+}: {
+  advisorData: AdvisorData | null;
+  userRole: number | null;
+  wageData: any;
+}) => {
   const advisorInfo = appStore((state) => state.advisorInfo);
   const { fetchAdvisorInfo } = useAdvisorsList();
 
@@ -54,6 +62,11 @@ const JustAdvisorInfo = ({ advisorData, userRole }: { advisorData: AdvisorData |
           <div className="flex gap-2 items-center">
             <h2 className="text-base font-medium">
               درصد رضایت: <span className="text-blue-500 font-semibold">{activePercentage}%</span>
+            </h2>
+          </div>
+          <div className="flex gap-2 items-center">
+            <h2 className="text-base font-medium">
+              دریافتی : <span className="text-blue-500 font-semibold">{wageData?.wage}</span>
             </h2>
           </div>
         </div>
