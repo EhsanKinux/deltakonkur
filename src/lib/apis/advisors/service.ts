@@ -11,7 +11,7 @@ export const advisors_delete = ({ advisorId }: { advisorId: string }) =>
   fetchInstance(`api/advisor/advisors/${advisorId}/`, { method: "DELETE" });
 
 export const advisor_update = (body: ISubmitAdvisorRegisterService) =>
-  fetchInstance(`api/advisor/advisors/${body.id}/`, { method: "PATCH" });
+  fetchInstance(`api/advisor/advisors/${body.id}/`, { method: "PATCH", body: JSON.stringify(body) });
 
 export const get_advisor_info = ({ advisorId }: { advisorId: string }) =>
   fetchInstance(`api/advisor/advisors/${advisorId}/`, { method: "GET" });

@@ -26,7 +26,7 @@ import { IChangeAdvisor } from "@/functions/hooks/studentsList/interface";
 import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
 
 export function EditStudentDialog({ formData }: { formData: StudentWithDetails }) {
-  const { studentInfo, changeAdvisorOfStudent } = useStudentList();
+  const { changeAdvisorOfStudent } = useStudentList();
   const { getAdvisorsData2 } = useAdvisorsList();
   // const advisors = appStore((state) => state.advisors);
   const [advisors, setAdvisors] = useState<Advisor[]>([]);
