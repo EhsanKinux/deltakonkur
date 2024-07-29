@@ -4,10 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import AccountingAdvisorInfo from "./parts/AccountingAdvisorInfo";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { AdvisorDitailTable } from "@/components/pages/dashboard/dashboardPages/advisors/parts/table/AdvisorDitailTable";
 import { stColumns } from "./parts/ColumnDef";
 import backIcon from "@/assets/icons/back.svg";
 import { AdvisorStudentData, StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
+import { AllAdvisorDetailTable } from "../../../../table/AllAdvisorDetailTable";
 
 const AccountingAdvisorDetail = () => {
   const { advisorId } = useParams();
@@ -58,7 +58,7 @@ const AccountingAdvisorDetail = () => {
       </Button>
       <AccountingAdvisorInfo advisorId={advisorId} advisorDetailData={advisorDetailData} />
       <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-        <AdvisorDitailTable columns={stColumns} data={processedStudentData} />
+        <AllAdvisorDetailTable columns={stColumns} data={processedStudentData} />
       </div>
     </div>
   );

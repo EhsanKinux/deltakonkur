@@ -1,4 +1,3 @@
-
 import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
 import { ColumnDef } from "@tanstack/react-table";
 
