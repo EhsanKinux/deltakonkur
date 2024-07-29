@@ -1,6 +1,6 @@
+import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
 import { useSupervision } from "@/functions/hooks/supervision/useSupervision";
 import { useEffect, useMemo } from "react";
-import { StudentWithDetails } from "../../interface";
 
 const AdvisorAssessment = ({ data }: { data: StudentWithDetails[] }) => {
   const { getAssessments, assassments } = useSupervision();
@@ -12,7 +12,7 @@ const AdvisorAssessment = ({ data }: { data: StudentWithDetails[] }) => {
   // Filter assessments based on the student ID
   const filteredAssessments = useMemo(() => {
     if (assassments) {
-      return assassments?.filter((assessment) => data.some((student) => student.id === assessment.student));
+      return assassments?.filter((assessment) => data.some((student) => String(student.id) === assessment.student));
     }
     return [];
   }, [assassments, data]);

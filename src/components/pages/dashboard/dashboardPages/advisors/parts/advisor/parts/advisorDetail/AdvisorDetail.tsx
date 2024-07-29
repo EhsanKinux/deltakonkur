@@ -9,34 +9,35 @@ import AdvisorInfo from "./parts/Info/AdvisorInfo";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { AdvisorDitailTable } from "../../../table/AdvisorDitailTable";
 import { stColumns } from "./parts/advisorStudentTable/ColumnDef";
-import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
+import { AdvisorStudentData, StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
 
 const AdvisorDetail = () => {
   const { advisorId } = useParams();
   const navigate = useNavigate();
-  const { advisorDetailData, getStudentsOfAdvisor, getAdvisorWage, wageData } = useAdvisorsList();
+  const { advisorDetailData, getStudentsOfAdvisor, getAdvisorWage } = useAdvisorsList();
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
-  // const [currentUser, setCurrentUser] = useState<ICurrentUser>();
-  // const [loading, setLoading] = useState(true);
-
-  // console.table(currentUser);
 
   useEffect(() => {
     if (advisorId) {
       getStudentsOfAdvisor(advisorId);
-      getAdvisorWage(advisorId)
+      getAdvisorWage(advisorId);
     }
   }, [advisorId, getAdvisorWage, getStudentsOfAdvisor]);
 
   useEffect(() => {
-    if (advisorDetailData) {
-      const studentData: StudentWithDetails[] = advisorDetailData.map((entry: AdvisorDetailEntry) => ({
+    if (advisorDetailData && advisorDetailData.data) {
+      const studentData: StudentWithDetails[] = advisorDetailData.data.map((entry: AdvisorStudentData) => ({
         ...entry.student,
-        status: entry.status,
-        started_date: entry.started_date ? convertToShamsi(entry.started_date) : "-",
-        ended_date: entry.ended_date ? convertToShamsi(entry.ended_date) : "-",
+        status: "status_value", // Assuming you have a way to get the status, replace accordingly
+        started_date: entry.start_date ? convertToShamsi(entry.start_date) : "-",
+        ended_date: entry.end_date ? convertToShamsi(entry.end_date) : "-",
+        duration: entry.duration,
+        start_date: entry.start_date,
+        end_date: entry.end_date,
+        wage: entry.wage,
       }));
       setProcessedStudentData(studentData);
     }
@@ -45,7 +46,6 @@ const AdvisorDetail = () => {
   // console.log("advisorDetailData", advisorDetailData);
   // console.log("processedStudentData", processedStudentData);
 
-  // console.log(wageData.wage);
   const goToAdisors = () => {
     navigate("/dashboard/advisors");
   };
@@ -63,7 +63,7 @@ const AdvisorDetail = () => {
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
-      <AdvisorInfo advisorId={advisorId} wageData={wageData} />
+      <AdvisorInfo advisorId={advisorId} advisorDetailData={advisorDetailData} />
       <Tabs defaultValue="studentTable" className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger value="studentTable" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">

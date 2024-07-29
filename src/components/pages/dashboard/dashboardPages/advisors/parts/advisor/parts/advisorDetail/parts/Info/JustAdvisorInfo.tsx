@@ -8,15 +8,16 @@ import { AdvisorData } from "../../JustAdvisorDetail";
 import { appStore } from "@/lib/store/appStore";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { useEffect } from "react";
+import { AdvisorDataResponse } from "@/functions/hooks/advisorsList/interface";
 
 const JustAdvisorInfo = ({
   advisorData,
   userRole,
-  wageData,
+  advisorDetailData,
 }: {
   advisorData: AdvisorData | null;
   userRole: number | null;
-  wageData: any;
+  advisorDetailData: AdvisorDataResponse | null;
 }) => {
   const advisorInfo = appStore((state) => state.advisorInfo);
   const { fetchAdvisorInfo } = useAdvisorsList();
@@ -66,7 +67,7 @@ const JustAdvisorInfo = ({
           </div>
           <div className="flex gap-2 items-center">
             <h2 className="text-base font-medium">
-              دریافتی : <span className="text-blue-500 font-semibold">{wageData?.wage}</span>
+              دریافتی کل : <span className="text-blue-500 font-semibold">{advisorDetailData?.total_wage}</span>
             </h2>
           </div>
         </div>

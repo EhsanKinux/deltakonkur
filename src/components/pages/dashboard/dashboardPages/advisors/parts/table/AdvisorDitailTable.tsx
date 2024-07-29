@@ -10,10 +10,11 @@ import {
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { StudentWithDetails } from "../advisor/parts/advisorDetail/interface";
+
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import SearchIcon from "@/assets/icons/search.svg";
+import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
 
 interface AdvisorDitailTableProps {
   columns: ColumnDef<StudentWithDetails>[];
@@ -40,11 +41,11 @@ export function AdvisorDitailTable({ columns, data }: AdvisorDitailTableProps) {
     },
   });
 
-  const getRowBgColor = (status: string | null) => {
-    if (status === "active") return "bg-green-200";
-    if (status === "stop") return "bg-orange-200";
-    return "bg-red-200";
-  };
+  // const getRowBgColor = (status: string | null) => {
+  //   if (status === "active") return "bg-green-200";
+  //   if (status === "stop") return "bg-orange-200";
+  //   return "bg-red-200";
+  // };
 
   return (
     <div className="w-full overflow-hidden p-10 absolute top-0 right-0 left-0 bottom-0">
@@ -86,7 +87,8 @@ export function AdvisorDitailTable({ columns, data }: AdvisorDitailTableProps) {
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
-                className={`hover:bg-slate-200 border-b-slate-400 ${getRowBgColor(row.original.status)}`}
+                className={`hover:bg-slate-200 border-b-slate-400`}
+                // className={`hover:bg-slate-200 border-b-slate-400 ${getRowBgColor(row.original.status)}`}
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >

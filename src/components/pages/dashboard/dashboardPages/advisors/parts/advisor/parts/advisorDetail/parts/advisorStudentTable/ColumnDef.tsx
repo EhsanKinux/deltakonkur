@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { StudentWithDetails } from "../../interface";
-import StudentDialogButtons from "./DialogButtons";
+// import StudentDialogButtons from "./DialogButtons";
+import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
 
 export const stColumns: ColumnDef<StudentWithDetails>[] = [
   {
@@ -48,12 +48,16 @@ export const stColumns: ColumnDef<StudentWithDetails>[] = [
     header: "تاریخ پایان",
   },
   {
-    id: "actions",
-    cell: ({ row }) => {
-      const formData = row.original;
-      return <StudentDialogButtons formData={formData} />;
-    },
+    accessorKey: "wage",
+    header: "دریافتی",
   },
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => {
+  //     const formData = row.original;
+  //     return <StudentDialogButtons formData={formData} />;
+  //   },
+  // },
 ];
 
 // Conditionally add action column if userRole is 7

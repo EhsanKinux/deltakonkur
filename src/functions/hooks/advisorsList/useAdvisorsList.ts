@@ -1,4 +1,3 @@
-import { AdvisorDetailEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/interface";
 import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/table/interfaces";
 import {
   advisor_students,
@@ -12,6 +11,7 @@ import { appStore } from "@/lib/store/appStore";
 import { Advisor } from "@/lib/store/types";
 // import { Advisor } from "@/lib/store/types";
 import { useCallback, useState } from "react";
+import { AdvisorDataResponse } from "./interface";
 
 export const useAdvisorsList = () => {
   const deleteAdvisor = appStore((state) => state.deleteAdvisor);
@@ -25,9 +25,45 @@ export const useAdvisorsList = () => {
   const setError = appStore((state) => state.setError);
 
   const [dataLoaded, setDataLoaded] = useState(false);
-  const [advisorDetailData, setAdvisorDetailData] = useState<AdvisorDetailEntry[]>();
+  const [advisorDetailData, setAdvisorDetailData] = useState<AdvisorDataResponse | null>(null);
   const [wageLoad, setWageLoad] = useState(false);
   const [wageData, setWageData] = useState();
+
+  const processData = (response: any): AdvisorDataResponse => {
+    const result: AdvisorDataResponse = {
+      data: [],
+      total_wage: 0,
+    };
+
+    if (response && response.data) {
+      result.data = response.data.map((item: any) => ({
+        student: {
+          id: item.student.id,
+          first_name: item.student.first_name,
+          last_name: item.student.last_name,
+          date_of_birth: item.student.date_of_birth,
+          phone_number: item.student.phone_number,
+          parent_phone: item.student.parent_phone,
+          home_phone: item.student.home_phone,
+          school: item.student.school,
+          field: item.student.field,
+          grade: item.student.grade,
+          created: item.student.created,
+          created_at: item.student.created_at,
+          solar_date_day: item.student.solar_date_day,
+          solar_date_month: item.student.solar_date_month,
+          solar_date_year: item.student.solar_date_year,
+        },
+        duration: item.duration,
+        start_date: item.start_date,
+        end_date: item.end_date,
+        wage: item.wage,
+      }));
+      result.total_wage = response.total_wage;
+    }
+
+    return result;
+  };
 
   const getAdvisorsData = useCallback(async () => {
     if (!dataLoaded) {
@@ -133,7 +169,8 @@ export const useAdvisorsList = () => {
       setError(null);
       try {
         const data = await get_students_of_each_advisor({ advisorId });
-        setAdvisorDetailData(data);
+        const processedData = processData(data);
+        setAdvisorDetailData(processedData);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);

@@ -3,14 +3,11 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AccountingAdvisorInfo from "./parts/AccountingAdvisorInfo";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import {
-  AdvisorDetailEntry,
-  StudentWithDetails,
-} from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/interface";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { AdvisorDitailTable } from "@/components/pages/dashboard/dashboardPages/advisors/parts/table/AdvisorDitailTable";
 import { stColumns } from "./parts/ColumnDef";
 import backIcon from "@/assets/icons/back.svg";
+import { AdvisorStudentData, StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
 
 const AccountingAdvisorDetail = () => {
   const { advisorId } = useParams();
@@ -25,12 +22,16 @@ const AccountingAdvisorDetail = () => {
   }, [advisorId, getStudentsOfAdvisor]);
 
   useEffect(() => {
-    if (advisorDetailData) {
-      const studentData: StudentWithDetails[] = advisorDetailData.map((entry: AdvisorDetailEntry) => ({
+    if (advisorDetailData && advisorDetailData.data) {
+      const studentData: StudentWithDetails[] = advisorDetailData.data.map((entry: AdvisorStudentData) => ({
         ...entry.student,
-        status: entry.status,
-        started_date: entry.started_date ? convertToShamsi(entry.started_date) : "-",
-        ended_date: entry.ended_date ? convertToShamsi(entry.ended_date) : "-",
+        status: "status_value", // Assuming you have a way to get the status, replace accordingly
+        started_date: entry.start_date ? convertToShamsi(entry.start_date) : "-",
+        ended_date: entry.end_date ? convertToShamsi(entry.end_date) : "-",
+        duration: entry.duration,
+        start_date: entry.start_date,
+        end_date: entry.end_date,
+        wage: entry.wage,
       }));
       setProcessedStudentData(studentData);
     }

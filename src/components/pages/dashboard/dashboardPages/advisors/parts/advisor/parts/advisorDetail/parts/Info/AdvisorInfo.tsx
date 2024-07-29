@@ -8,8 +8,15 @@ import personCard from "@/assets/icons/person-card.svg";
 import callIcon from "@/assets/icons/call.svg";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { useEffect } from "react";
+import { AdvisorDataResponse } from "@/functions/hooks/advisorsList/interface";
 
-const AdvisorInfo = ({ advisorId, wageData }: { advisorId: string; wageData: any }) => {
+const AdvisorInfo = ({
+  advisorId,
+  advisorDetailData,
+}: {
+  advisorId: string;
+  advisorDetailData: AdvisorDataResponse | null;
+}) => {
   const advisorInfo = appStore((state) => state.advisorInfo);
   const { fetchAdvisorInfo } = useAdvisorsList();
 
@@ -58,7 +65,7 @@ const AdvisorInfo = ({ advisorId, wageData }: { advisorId: string; wageData: any
           </div>
           <div className="flex gap-2 items-center">
             <h2 className="text-base font-medium">
-              دریافتی : <span className="text-blue-500 font-semibold">{wageData?.wage}</span>
+              دریافتی کل : <span className="text-blue-500 font-semibold">{advisorDetailData?.total_wage}</span>
             </h2>
           </div>
         </div>

@@ -10,10 +10,10 @@ import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdvisorDitailTable } from "../../../table/AdvisorDitailTable";
 import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
-import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { stColumns } from "./parts/advisorStudentTable/ColumnDef";
 import JustAdvisorInfo from "./parts/Info/JustAdvisorInfo";
+import { AdvisorStudentData, StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
 
 export interface ICurrentUser {
   id: number;
@@ -41,7 +41,7 @@ export interface AdvisorData {
 
 const JustAdvisorDetail = () => {
   const { accessToken, userRole, setUserRole } = authStore();
-  const { advisorDetailData, getStudentsOfAdvisor, getAdvisorWage, wageData } = useAdvisorsList();
+  const { advisorDetailData, getStudentsOfAdvisor, getAdvisorWage } = useAdvisorsList();
   const navigate = useNavigate();
   const [advisorData, setAdvisorData] = useState<AdvisorData | null>(null);
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
@@ -83,12 +83,16 @@ const JustAdvisorDetail = () => {
   }, [advisorData, getAdvisorWage, getStudentsOfAdvisor, userRole]);
 
   useEffect(() => {
-    if (advisorDetailData) {
-      const studentData: StudentWithDetails[] = advisorDetailData.map((entry: AdvisorDetailEntry) => ({
+    if (advisorDetailData && advisorDetailData.data) {
+      const studentData: StudentWithDetails[] = advisorDetailData.data.map((entry: AdvisorStudentData) => ({
         ...entry.student,
-        status: entry.status,
-        started_date: entry.started_date ? convertToShamsi(entry.started_date) : "-",
-        ended_date: entry.ended_date ? convertToShamsi(entry.ended_date) : "-",
+        status: "status_value", // Assuming you have a way to get the status, replace accordingly
+        started_date: entry.start_date ? convertToShamsi(entry.start_date) : "-",
+        ended_date: entry.end_date ? convertToShamsi(entry.end_date) : "-",
+        duration: entry.duration,
+        start_date: entry.start_date,
+        end_date: entry.end_date,
+        wage: entry.wage,
       }));
       setProcessedStudentData(studentData);
     }
@@ -113,7 +117,7 @@ const JustAdvisorDetail = () => {
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
-      <JustAdvisorInfo advisorData={advisorData} userRole={userRole} wageData={wageData} />
+      <JustAdvisorInfo advisorData={advisorData} userRole={userRole} advisorDetailData={advisorDetailData} />
       <Tabs defaultValue="studentTable" className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger value="studentTable" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">

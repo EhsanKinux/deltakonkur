@@ -6,9 +6,10 @@ import userEditIcon from "@/assets/icons/userEdit.svg";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { EditStudentDialog } from "./EditDialog";
 // import DeleteConfirmationDialog from "../../../../../student/table/parts/delete/DeleteConfirmationDialog";
-import { FormEntry } from "../../../../../student/table/interfaces";
+// import { FormEntry } from "../../../../../student/table/interfaces";
+import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
 
-const StudentDialogButtons = ({ formData }: { formData: FormEntry }) => {
+const StudentDialogButtons = ({ formData }: { formData: StudentWithDetails }) => {
   //   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { fetchStudentInfo } = useStudentList();
@@ -21,7 +22,7 @@ const StudentDialogButtons = ({ formData }: { formData: FormEntry }) => {
   const handleOpenEditDialog = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setEditDialogOpen(true);
-    await fetchStudentInfo(formData?.id);
+    await fetchStudentInfo(String(formData?.id));
   };
 
   return (
