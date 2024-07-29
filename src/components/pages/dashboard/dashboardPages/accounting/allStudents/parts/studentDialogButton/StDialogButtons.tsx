@@ -3,23 +3,32 @@ import { Dialog } from "@/components/ui/dialog";
 import { useState } from "react";
 import refreshIcon from "@/assets/icons/refresh.svg";
 import stopIcon from "@/assets/icons/stop-circle.svg";
+import restartIcon from "@/assets/icons/restart.svg";
 import { IFormattedStudentAdvisor } from "../interfaces";
 import StopDialog from "./stopping/StopDialog";
 import Restart from "./restart/Restart";
+import RealRestart from "./restart/RealRestart";
 
 const StDialogButtons = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [restartDialogOpen, setRestartDialogOpen] = useState(false);
   const [stopDialog, setStopDialog] = useState(false);
+  const [realRestartDialog, setRealResatartDialog] = useState(false);
   //   const { fetchStudentInfo } = useStudentList();
 
   const handleRefreshStudent = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setDeleteDialogOpen(true);
+    setRestartDialogOpen(true);
   };
 
   const handleStopStudent = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setStopDialog(true);
+    // await rowData;
+  };
+
+  const handleRealRestartStudent = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setRealResatartDialog(true);
     // await rowData;
   };
 
@@ -34,12 +43,22 @@ const StDialogButtons = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => 
           <img className="w-5" src={stopIcon} alt="userEditIcon" />
           <span>توقف</span>
         </Button>
+        <Button
+          className="cursor-pointer flex gap-2 hover:!bg-orange-200 rounded-[5px]"
+          onClick={handleRealRestartStudent}
+        >
+          <img className="w-5" src={restartIcon} alt="userEditIcon" />
+          <span>ادامه</span>
+        </Button>
       </div>
       <Dialog open={stopDialog} onOpenChange={setStopDialog}>
-        <StopDialog rowData={rowData} />
+        <StopDialog rowData={rowData} setStopDialog={setStopDialog} />
       </Dialog>
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+      <Dialog open={restartDialogOpen} onOpenChange={setRestartDialogOpen}>
         <Restart rowData={rowData} />
+      </Dialog>
+      <Dialog open={realRestartDialog} onOpenChange={setRealResatartDialog}>
+        <RealRestart rowData={rowData} />
       </Dialog>
     </>
   );

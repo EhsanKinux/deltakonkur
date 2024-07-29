@@ -15,6 +15,12 @@ export const stop_student_advisor = (body: IStopStudent) =>
   fetchInstance(`api/register/student-advisors/${body.id}/`, { method: "PATCH", body: JSON.stringify(body) });
 
 export const reset_student = (body: IRestartStudent) =>
+  fetchInstance(`api/register/student-advisors/${body.id}/`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+
+export const restart_student = (body: IRestartStudent) =>
   fetchInstance(`api/register/student-advisors/restart/${body.id}/`, {
     method: "POST",
     body: JSON.stringify(body),

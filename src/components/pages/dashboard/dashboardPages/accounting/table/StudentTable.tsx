@@ -32,7 +32,7 @@ export function StudentTable({ columns, data }: StudentTableProps) {
     getFilteredRowModel: getFilteredRowModel(),
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize: 8,
       },
     },
     state: {

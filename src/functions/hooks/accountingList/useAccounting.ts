@@ -5,6 +5,7 @@ import {
   get_exel_info_test,
   get_students_with_advisors,
   reset_student,
+  restart_student,
   stop_student_advisor,
 } from "@/lib/apis/accounting/service";
 import { accountingStore } from "@/lib/store/accountingStore";
@@ -116,6 +117,28 @@ export const useAccounting = () => {
     [setError, setLoading]
   );
 
+  const restartStudent = useCallback(
+    async (body: IRestartStudent) => {
+      setLoading(true);
+      setError("");
+      try {
+        await restart_student(body);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+          throw err; // rethrow the error to be caught by the caller
+        } else {
+          const customError = new Error("Failed to reset student advisor");
+          setError(customError.message);
+          throw customError; // rethrow the custom error to be caught by the caller
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading]
+  );
+
   return {
     getAllStudents,
     getExelInfo,
@@ -131,5 +154,6 @@ export const useAccounting = () => {
     loading,
     error,
     resetStudent,
+    restartStudent,
   };
 };

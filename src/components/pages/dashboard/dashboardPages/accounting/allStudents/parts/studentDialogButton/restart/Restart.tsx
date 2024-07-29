@@ -16,6 +16,7 @@ import { z } from "zod";
 import { IFormattedStudentAdvisor } from "../../interfaces";
 import { IRestartStudent } from "@/lib/apis/accounting/interface";
 import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
+import { useNavigate } from "react-router-dom";
 
 const restartInput = () =>
   z.object({
@@ -31,6 +32,7 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
   });
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const { resetStudent } = useAccounting(); // Get the resetStudent function
 
@@ -40,8 +42,8 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
       const expireDate = new Date(now);
       expireDate.setDate(expireDate.getDate() + parseInt(data.day, 10));
 
-      if (!rowData?.stop_date) {
-        setWarning("دانش‌آموز متوقف نشده است، ابتدا متوقف کنید سپس برای دانش‌آموز روز تمدید کنید.");
+      if (rowData?.stop_date && rowData?.status === "stop") {
+        setWarning("دانش‌آموز متوقف شده است، ابتدا روی ادامه کلیک کنید سپس برای دانش‌آموز روز تمدید کنید.");
         return;
       }
 
@@ -54,12 +56,13 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
         solar_date_month: String(rowData?.solar_date_month),
         solar_date_year: String(rowData?.solar_date_year),
         expire_date: expireDate.toISOString(),
-        stop_date: String(rowData?.stop_date), // assuming no stop date in this case
+        stop_date: rowData?.stop_date, // assuming no stop date in this case
       };
 
       await resetStudent(body);
       console.log(body);
       dialogCloseRef.current?.click(); // Close the dialog
+      navigate("/dashboard/accounting/allStudents");
     } catch (error) {
       console.error("Failed to reset student:", error);
     }
@@ -70,7 +73,7 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
     if (warning) {
       timer = setTimeout(() => {
         setWarning(null); // Clear the warning after 5 seconds
-      }, 3000);
+      }, 5000);
     }
 
     return () => {

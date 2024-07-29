@@ -10,6 +10,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import CustomEditAdvisorInput from "./parts/CustomEditAdvisorInput";
 import SelectField from "./parts/field/SelectField";
+import LevelSelect from "./parts/level/LevelSelect";
 
 const EditAdvisorDialog = ({
   setEditDialogOpen,
@@ -30,19 +31,21 @@ const EditAdvisorDialog = ({
       field: "",
       bank_account: "",
       national_id: "",
+      level: "",
     },
   });
 
   useEffect(() => {
     if (advisorInfo) {
       form.reset({
-        id: "",
+        id: String(advisorInfo.id),
         first_name: advisorInfo?.first_name,
         last_name: advisorInfo?.last_name,
         phone_number: advisorInfo?.phone_number,
         field: advisorInfo?.field,
         national_id: advisorInfo?.national_id,
         bank_account: advisorInfo?.bank_account,
+        level: String(advisorInfo?.level),
       });
     }
   }, [advisorInfo, form]);
@@ -60,7 +63,7 @@ const EditAdvisorDialog = ({
     }
   };
 
-  //   if (loading) return <div>Loading...</div>;
+  //  if (loading) return <div>Loading...</div>;
   // if (error) return <div>Error: {error}</div>;
 
   return (
@@ -106,6 +109,9 @@ const EditAdvisorDialog = ({
                 <div className="flex flex-col md:flex-row justify-between gap-5">
                   <div className="w-full">
                     <SelectField form={form} />
+                  </div>
+                  <div className="w-full">
+                    <LevelSelect form={form} />
                   </div>
                 </div>
                 <DialogFooter>

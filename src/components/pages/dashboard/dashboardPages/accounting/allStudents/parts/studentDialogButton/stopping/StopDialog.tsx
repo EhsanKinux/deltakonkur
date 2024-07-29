@@ -10,34 +10,58 @@ import {
 import { toast } from "sonner";
 import { IFormattedStudentAdvisor } from "../../interfaces";
 import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const StopDialog = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
+const StopDialog = ({
+  rowData,
+  setStopDialog,
+}: {
+  rowData: IFormattedStudentAdvisor;
+  setStopDialog: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const navigate = useNavigate();
   const { stopStudent } = useAccounting();
+  const [warning, setWarning] = useState<string | null>(null);
 
   const handleStopStudent = () => {
-    // Check if the endDate exists and is not null
-    if (rowData?.ended_date) {
-      toast.warning(`دانش‌آموز ${rowData?.first_name} ${rowData?.last_name} قبلا متوقف شده است!`, {
-        duration: 3000, // Display warning for 3 seconds
-      });
+    // First, check if the student has already stopped
+    if (rowData?.stop_date && rowData?.status === "stop") {
+      toast.warning(`دانش‌آموز ${rowData?.first_name} ${rowData?.last_name} قبلا متوقف شده است!`);
       return; // Exit the function early
     }
-
-    toast.promise(
-      stopStudent({
-        id: rowData?.id,
-        studentId: rowData?.studentId,
-        advisorId: rowData?.advisor,
-      }),
-      {
-        loading: "در حال توقف...",
-        success: `توقف ${rowData?.first_name} ${rowData?.last_name} با موفقیت انجام شد!`,
-        error: "خطایی رخ داده است!",
-      }
-    );
-    // setDeleteDialogOpen(false);
+    // Check if the status is not "stop" to perform the stop operation
+    if (rowData?.status !== "stop") {
+      toast.promise(
+        stopStudent({
+          id: rowData?.id,
+          studentId: rowData?.studentId,
+          advisorId: rowData?.advisor,
+        }),
+        {
+          loading: "در حال توقف...",
+          success: `توقف ${rowData?.first_name} ${rowData?.last_name} با موفقیت انجام شد!`,
+          error: "خطایی رخ داده است!",
+        }
+      );
+    }
+    setStopDialog(false);
+    navigate("/dashboard/accounting/allStudents");
     console.log(rowData?.studentId);
   };
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (warning) {
+      timer = setTimeout(() => {
+        setWarning(null); // Clear the warning after 5 seconds
+      }, 5000);
+    }
+
+    return () => {
+      clearTimeout(timer); // Clear the timer if the component unmounts or warning changes
+    };
+  }, [warning]);
 
   return (
     <DialogContent className="bg-slate-100 !rounded-[10px]">

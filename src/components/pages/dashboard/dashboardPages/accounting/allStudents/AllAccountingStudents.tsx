@@ -45,6 +45,7 @@ const AllAccountingStudents = () => {
         solar_date_year: item.student.solar_date_year,
         stop_date: item.stop_date,
         ended_date: item.ended_date,
+        status: item.status,
       }));
       setFormattedData(formatted);
     }
