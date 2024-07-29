@@ -14,7 +14,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { editStudentFormSchema } from "@/lib/schema/Schema";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { useEffect, useRef, useState } from "react";
-import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { Advisor } from "@/lib/store/types";
 import CustomEditInput from "./parts/CustomEditInput";
@@ -22,9 +21,12 @@ import FieldGrade from "./parts/fieldAndGrade/FieldGrade";
 import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
 import DateAndTime2 from "./parts/DateAndTime2";
 import { toast } from "sonner";
+import { StudentWithDetails } from "../../interface";
+import { IChangeAdvisor } from "@/functions/hooks/studentsList/interface";
+import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
 
-export function EditStudentDialog() {
-  const { studentInfo, updateStudentInfo, setAdvisorForStudent } = useStudentList();
+export function EditStudentDialog({ formData }: { formData: StudentWithDetails }) {
+  const { studentInfo, changeAdvisorOfStudent } = useStudentList();
   const { getAdvisorsData2 } = useAdvisorsList();
   // const advisors = appStore((state) => state.advisors);
   const [advisors, setAdvisors] = useState<Advisor[]>([]);
@@ -60,51 +62,57 @@ export function EditStudentDialog() {
     },
   });
 
+  form.watch()
   useEffect(() => {
-    if (studentInfo) {
+    if (formData) {
       form.reset({
-        id: String(studentInfo.id),
-        date_of_birth: studentInfo.date_of_birth,
-        first_name: studentInfo.first_name,
-        last_name: studentInfo.last_name,
-        school: studentInfo.school,
-        phone_number: studentInfo.phone_number,
-        home_phone: studentInfo.home_phone,
-        parent_phone: studentInfo.parent_phone,
-        field: studentInfo.field,
-        grade: String(studentInfo.grade),
-        created: studentInfo.created,
-        advisor: "",
+        id: "",
+        date_of_birth: String(formData.date_of_birth),
+        first_name: String(formData.first_name),
+        last_name: String(formData.last_name),
+        school: String(formData.school),
+        phone_number: String(formData.phone_number),
+        home_phone: String(formData.home_phone),
+        parent_phone: String(formData.parent_phone),
+        field: String(formData.field),
+        grade: String(formData.grade),
+        created: String(formData.created),
+        advisor: String(formData.advisor),
       });
     }
     // console.log(advisor);
-  }, [studentInfo, form]);
+  }, [form, formData]);
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
-  // console.log(studentInfo);
+  // console.log(formData);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const loadingToastId = toast.loading("در حال انجام عملیات ثبت...");
+    // const loadingToastId = toast.loading("در حال انجام عملیات ثبت...");
     try {
-      if (data && studentInfo) {
-        const { advisor, ...restData } = data;
-        const modifiedData: ISubmitStudentRegisterService = {
-          ...restData,
-          id: String(studentInfo.id),
-          created: String(data.created),
+      if (data) {
+        const currentISODate = new Date().toISOString();
+        const currentShamsiDate = convertToShamsi2(currentISODate);
+        const [shamsiYear, shamsiMonth, shamsiDay] = currentShamsiDate.split("-");
+
+        const modifiedData: IChangeAdvisor = {
+          id: formData.wholeId,
+          advisor_id: String(data.advisor),
+          solar_date_day: shamsiDay,
+          solar_date_month: shamsiMonth,
+          solar_date_year: shamsiYear,
         };
+
         console.table(modifiedData);
-        if (advisor) {
-          await setAdvisorForStudent({ studentId: studentInfo.id, advisorId: advisor });
+        if (formData.status === "active") {
+          await changeAdvisorOfStudent(modifiedData);
         }
-        await updateStudentInfo(modifiedData);
 
         dialogCloseRef.current?.click();
-        toast.dismiss(loadingToastId);
+        // toast.dismiss(loadingToastId);
         toast.success("ویرایش اطلاعات دانش آموز با موفقیت انجام شد.");
       }
     } catch (error) {
-      toast.dismiss(loadingToastId);
+      // toast.dismiss(loadingToastId);
       let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";
       if (error instanceof Error) {
         if (error.message.includes("integrity error! student has another advisor!")) {
@@ -136,12 +144,7 @@ export function EditStudentDialog() {
                 label="شماره همراه والدین"
                 customclass="w-[90%]"
               />
-              <CustomEditInput
-                control={form.control}
-                name="phone_number"
-                label="شماره تلفن منزل"
-                customclass="w-[90%]"
-              />
+              <CustomEditInput control={form.control} name="home_phone" label="شماره تلفن منزل" customclass="w-[90%]" />
               <CustomEditInput control={form.control} name="school" label="نام مدرسه" customclass="w-[90%]" />
               <FieldGrade form={form} />
               <div className="flex gap-5">

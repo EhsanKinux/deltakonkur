@@ -62,7 +62,7 @@ export const editAdvisorFormSchema = () =>
 
 export const editStudentFormSchema = () =>
   z.object({
-    id: z.string(),
+    // id: z.string(),
     first_name: z.string(),
     last_name: z.string(),
     school: z.string(),

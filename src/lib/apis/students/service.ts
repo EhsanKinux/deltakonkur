@@ -1,3 +1,4 @@
+import { IChangeAdvisor } from "@/functions/hooks/studentsList/interface";
 import { fetchInstance } from "../fetch-config";
 import { ISubmitStudentRegisterService } from "../reserve/interface";
 import { ISetStudentAdvisor } from "./interface";
@@ -15,3 +16,9 @@ export const update_student_info = (body: ISubmitStudentRegisterService) =>
 
 export const set_student_advisor = (body: ISetStudentAdvisor) =>
   fetchInstance(`api/register/student-advisors/`, { method: "POST", body: JSON.stringify(body) });
+
+export const change_advisor_of_student = (body: IChangeAdvisor) =>
+  fetchInstance(`api/register/student-advisors/change-advisor/${body.id}/`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });

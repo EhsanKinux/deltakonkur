@@ -11,9 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdvisorDitailTable } from "../../../table/AdvisorDitailTable";
 import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { stColumns } from "./parts/advisorStudentTable/ColumnDef";
 import JustAdvisorInfo from "./parts/Info/JustAdvisorInfo";
 import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
+import { JustAdvisorColumnDef } from "./parts/advisorStudentTable/JustAdvisorColumnDef";
 
 export interface ICurrentUser {
   id: number;
@@ -85,6 +85,8 @@ const JustAdvisorDetail = () => {
     if (advisorDetailStudent) {
       const studentData: StudentWithDetails[] = advisorDetailStudent.map((entry: AdvisorDetailEntry) => ({
         ...entry.student,
+        advisor: entry.advisor,
+        wholeId: entry.id,
         status: entry.status,
         started_date: entry.started_date ? convertToShamsi(entry.started_date) : "-",
         ended_date: entry.ended_date ? convertToShamsi(entry.ended_date) : "-",
@@ -124,7 +126,7 @@ const JustAdvisorDetail = () => {
         </TabsList>
         <TabsContent value="studentTable">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-            <AdvisorDitailTable columns={stColumns} data={processedStudentData} />
+            <AdvisorDitailTable columns={JustAdvisorColumnDef} data={processedStudentData} />
           </div>
         </TabsContent>
         <TabsContent value="assessment">

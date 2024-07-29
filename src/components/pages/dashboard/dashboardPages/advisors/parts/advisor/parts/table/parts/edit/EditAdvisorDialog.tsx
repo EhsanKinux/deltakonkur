@@ -45,7 +45,7 @@ const EditAdvisorDialog = ({
         field: advisorInfo?.field,
         national_id: advisorInfo?.national_id,
         bank_account: advisorInfo?.bank_account,
-        level: advisorInfo?.level,
+        level: String(advisorInfo?.level),
       });
     }
   }, [advisorInfo, form]);
@@ -53,12 +53,16 @@ const EditAdvisorDialog = ({
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // console.log("Form submitted with data:", data);
     if (data && advisorInfo) {
-      const modifiedData: Advisor = {
-        ...data,
-        id: String(advisorInfo.id),
-      };
-      await updatAdvisor(modifiedData)
-      console.table(modifiedData);
+      try {
+        const modifiedData: Advisor = {
+          ...data,
+          id: String(advisorInfo.id),
+        };
+        await updatAdvisor(data);
+        console.table(modifiedData);
+      } catch (error) {
+        console.log(error);
+      }
 
       setEditDialogOpen(false);
     }

@@ -14,6 +14,7 @@ const CustomEditAdvisorInput = ({
   label: string;
   placeHolder: string;
 }) => {
+  const isDisabled = name === "national_id" || name === "phone_number";
   return (
     <FormField
       control={control}
@@ -27,6 +28,7 @@ const CustomEditAdvisorInput = ({
               className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-400"
               type="text"
               placeholder={placeHolder}
+              disabled={isDisabled}
               {...field}
             />
           </FormControl>

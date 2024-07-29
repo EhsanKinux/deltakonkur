@@ -27,6 +27,8 @@ const AdvisorDetail = () => {
     if (advisorDetailStudent) {
       const studentData: StudentWithDetails[] = advisorDetailStudent.map((entry: AdvisorDetailEntry) => ({
         ...entry.student,
+        advisor: entry.advisor,
+        wholeId: entry.id,
         status: entry.status,
         started_date: entry.started_date ? convertToShamsi(entry.started_date) : "-",
         ended_date: entry.ended_date ? convertToShamsi(entry.ended_date) : "-",

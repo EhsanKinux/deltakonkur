@@ -4,6 +4,7 @@ import { appStore } from "@/lib/store/appStore";
 import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/student/table/interfaces";
 import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 import {
+  change_advisor_of_student,
   get_registered_students,
   get_student_info,
   set_student_advisor,
@@ -11,6 +12,7 @@ import {
   update_student_info,
 } from "@/lib/apis/students/service";
 import { ISetStudentAdvisor } from "@/lib/apis/students/interface";
+import { IChangeAdvisor } from "./interface";
 
 export const useStudentList = () => {
   const addFormData = appStore((state) => state.addFormData);
@@ -149,6 +151,31 @@ export const useStudentList = () => {
     }
   }, []);
 
+  const changeAdvisorOfStudent = useCallback(
+    async (body: IChangeAdvisor) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await change_advisor_of_student(body);
+        if (!response.ok) {
+          throw new Error(`Failed to change advisor: ${response.statusText}`);
+        }
+        const updatedInfo = await response.json();
+        setStudentInfo(updatedInfo);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to change advisor");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading, setStudentInfo]
+  );
+
+
   return {
     deleteStudent,
     getData,
@@ -160,5 +187,6 @@ export const useStudentList = () => {
     setAdvisorForStudent,
     fetchStudentInformation,
     studentInformation,
+    changeAdvisorOfStudent
   };
 };

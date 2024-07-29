@@ -43,6 +43,8 @@ export interface AdvisorDetailEntry {
 }
 
 export interface StudentWithDetails extends Student {
+  advisor:string;
+  wholeId: string;
   status: string;
   started_date: string;
   ended_date: string | null;

@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { StudentWithDetails } from "../../interface";
-import StudentDialogButtons from "./DialogButtons";
+// import StudentDialogButtons from "./DialogButtons";
 
 
-export const stColumns: ColumnDef<StudentWithDetails>[] = [
+export const JustAdvisorColumnDef: ColumnDef<StudentWithDetails>[] = [
   {
     accessorKey: "first_name",
     header: "نام",
@@ -52,13 +52,13 @@ export const stColumns: ColumnDef<StudentWithDetails>[] = [
   //   accessorKey: "wage",
   //   header: "دریافتی",
   // },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const formData = row.original;
-      return <StudentDialogButtons formData={formData} />;
-    },
-  },
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => {
+  //     const formData = row.original;
+  //     return <StudentDialogButtons formData={formData} />;
+  //   },
+  // },
 ];
 
 // Conditionally add action column if userRole is 7

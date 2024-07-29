@@ -62,7 +62,7 @@ const Reserve = () => {
       solar_date_year: year.toString(),
     };
     if (data) {
-      console.table(transformedData);
+      // console.table(transformedData);
       await toast.promise(
         submit_student_register_service(transformedData).then(() => {
           form.reset();
