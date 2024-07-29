@@ -1,5 +1,6 @@
 import { FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ISubmitAdvisorRegisterService } from "@/lib/apis/advisors/interface";
 import { Control } from "react-hook-form";
 
 const CustomEditAdvisorInput = ({
@@ -8,18 +9,7 @@ const CustomEditAdvisorInput = ({
   label,
   placeHolder,
 }: {
-  control: Control<
-    {
-      id: string;
-      first_name: string;
-      last_name: string;
-      field: string;
-      phone_number: string;
-      national_id: string;
-      bank_account: string;
-    },
-    undefined
-  >;
+  control: Control<ISubmitAdvisorRegisterService, undefined>;
   name: "first_name" | "last_name" | "field" | "phone_number" | "national_id" | "bank_account";
   label: string;
   placeHolder: string;

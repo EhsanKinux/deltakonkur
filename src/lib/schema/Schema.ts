@@ -57,6 +57,7 @@ export const editAdvisorFormSchema = () =>
     field: z.string(),
     bank_account: z.string(),
     national_id: z.string(),
+    level: z.string(),
   });
 
 export const editStudentFormSchema = () =>

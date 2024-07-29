@@ -1,6 +1,7 @@
 import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/table/interfaces";
 import {
   advisor_students,
+  advisor_update,
   advisors_delete,
   get_advisor_info,
   get_registered_advisors,
@@ -12,6 +13,7 @@ import { Advisor } from "@/lib/store/types";
 // import { Advisor } from "@/lib/store/types";
 import { useCallback, useState } from "react";
 import { AdvisorDataResponse } from "./interface";
+import { ISubmitAdvisorRegisterService } from "@/lib/apis/advisors/interface";
 
 export const useAdvisorsList = () => {
   const deleteAdvisor = appStore((state) => state.deleteAdvisor);
@@ -125,6 +127,14 @@ export const useAdvisorsList = () => {
     }
   };
 
+  const updatAdvisor = async (body: ISubmitAdvisorRegisterService) => {
+    try {
+      await advisor_update(body);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const fetchAdvisorInfo = useCallback(
     async (advisorId: string) => {
       setLoading(true);
@@ -206,5 +216,6 @@ export const useAdvisorsList = () => {
     advisorDetailData,
     getAdvisorWage,
     wageData,
+    updatAdvisor,
   };
 };

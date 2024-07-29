@@ -17,7 +17,7 @@ const EditAdvisorDialog = ({
 }: {
   setEditDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { advisorInfo } = useAdvisorsList();
+  const { advisorInfo, updatAdvisor } = useAdvisorsList();
   // const setRefresh = appStore((state) => state.setRefresh);
 
   const formSchema = editAdvisorFormSchema();
@@ -31,7 +31,7 @@ const EditAdvisorDialog = ({
       field: "",
       bank_account: "",
       national_id: "",
-      level: "",
+      level: "1",
     },
   });
 
@@ -45,7 +45,7 @@ const EditAdvisorDialog = ({
         field: advisorInfo?.field,
         national_id: advisorInfo?.national_id,
         bank_account: advisorInfo?.bank_account,
-        level: String(advisorInfo?.level),
+        level: advisorInfo?.level,
       });
     }
   }, [advisorInfo, form]);
@@ -57,6 +57,7 @@ const EditAdvisorDialog = ({
         ...data,
         id: String(advisorInfo.id),
       };
+      await updatAdvisor(modifiedData)
       console.table(modifiedData);
 
       setEditDialogOpen(false);

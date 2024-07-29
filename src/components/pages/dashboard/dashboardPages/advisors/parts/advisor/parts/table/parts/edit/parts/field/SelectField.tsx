@@ -1,22 +1,8 @@
 import { useController, UseFormReturn } from "react-hook-form";
 import CustomFieldSelect from "../../../../../advisorRegisteration/parts/customSelect/CustomFieldSelect";
+import { ISubmitAdvisorRegisterService } from "@/lib/apis/advisors/interface";
 
-const SelectField = ({
-  form,
-}: {
-  form: UseFormReturn<
-    {
-      id: string;
-      first_name: string;
-      last_name: string;
-      field: string;
-      phone_number: string;
-      national_id: string;
-      bank_account: string;
-    },
-    undefined
-  >;
-}) => {
+const SelectField = ({ form }: { form: UseFormReturn<ISubmitAdvisorRegisterService, undefined> }) => {
   const { control } = form;
 
   const {

@@ -10,13 +10,12 @@ export const submit_advisors_register_service = ({ ...body }: ISubmitAdvisorRegi
 export const advisors_delete = ({ advisorId }: { advisorId: string }) =>
   fetchInstance(`api/advisor/advisors/${advisorId}/`, { method: "DELETE" });
 
+export const advisor_update = (body: ISubmitAdvisorRegisterService) => fetchInstance(`api/advisor/advisors/${body.id}/`, { method: "PATCH" });
+
 export const get_advisor_info = ({ advisorId }: { advisorId: string }) =>
   fetchInstance(`api/advisor/advisors/${advisorId}/`, { method: "GET" });
 
 export const advisor_students = () => fetchInstance(`api/register/student-advisors/`, { method: "GET" });
-
-export const update_advisor_ifo = ({ advisorId }: { advisorId: string }) =>
-  fetchInstance(`api/advisor/advisors/${advisorId}/`, { method: "PATCH" });
 
 export const get_students_of_each_advisor = ({ advisorId }: { advisorId: string }) =>
   fetchInstance(`api/register/calculate-wage/${advisorId}/`, { method: "GET" });
