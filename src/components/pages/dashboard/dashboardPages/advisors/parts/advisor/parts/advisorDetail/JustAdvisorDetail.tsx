@@ -13,7 +13,7 @@ import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { stColumns } from "./parts/advisorStudentTable/ColumnDef";
 import JustAdvisorInfo from "./parts/Info/JustAdvisorInfo";
-import { AdvisorStudentData, StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
+import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
 
 export interface ICurrentUser {
   id: number;
@@ -41,7 +41,7 @@ export interface AdvisorData {
 
 const JustAdvisorDetail = () => {
   const { accessToken, userRole, setUserRole } = authStore();
-  const { advisorDetailForAdvisors, getStudentsOfAdvisorForAdvisors } = useAdvisorsList();
+  const { advisorDetailStudent, getStudents } = useAdvisorsList();
   const navigate = useNavigate();
   const [advisorData, setAdvisorData] = useState<AdvisorData | null>(null);
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
@@ -77,26 +77,21 @@ const JustAdvisorDetail = () => {
 
   useEffect(() => {
     if (userRole === 7 && advisorData) {
-      getStudentsOfAdvisorForAdvisors(String(advisorData?.id));
+      getStudents(String(advisorData?.id));
     }
-  }, [advisorData, getStudentsOfAdvisorForAdvisors, userRole]);
+  }, [advisorData, getStudents, userRole]);
 
   useEffect(() => {
-    if (advisorDetailForAdvisors) {
-      const studentData: StudentWithDetails[] = advisorDetailForAdvisors.data.map((entry: AdvisorStudentData) => ({
+    if (advisorDetailStudent) {
+      const studentData: StudentWithDetails[] = advisorDetailStudent.map((entry: AdvisorDetailEntry) => ({
         ...entry.student,
-        status: "status_value", // Assuming you have a way to get the status, replace accordingly
-        started_date: entry.start_date ? convertToShamsi(entry.start_date) : "-",
-        ended_date: entry.end_date ? convertToShamsi(entry.end_date) : "-",
-        duration: entry.duration,
-        start_date: entry.start_date,
-        end_date: entry.end_date,
-        wage: entry.wage,
-        // status: entry.status,
+        status: entry.status,
+        started_date: entry.started_date ? convertToShamsi(entry.started_date) : "-",
+        ended_date: entry.ended_date ? convertToShamsi(entry.ended_date) : "-",
       }));
       setProcessedStudentData(studentData);
     }
-  }, [advisorDetailForAdvisors]);
+  }, [advisorDetailStudent]);
 
   const goToAdisors = () => {
     if (userRole === 7) {

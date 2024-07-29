@@ -14,7 +14,8 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import SearchIcon from "@/assets/icons/search.svg";
-import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
+import { StudentWithDetails } from "../advisor/parts/advisorDetail/interface";
+// import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
 
 interface AdvisorDitailTableProps {
   columns: ColumnDef<StudentWithDetails>[];

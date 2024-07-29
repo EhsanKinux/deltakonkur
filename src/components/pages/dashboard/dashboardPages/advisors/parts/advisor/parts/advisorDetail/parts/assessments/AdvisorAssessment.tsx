@@ -1,6 +1,6 @@
-import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
 import { useSupervision } from "@/functions/hooks/supervision/useSupervision";
 import { useEffect, useMemo } from "react";
+import { StudentWithDetails } from "../../interface";
 
 const AdvisorAssessment = ({ data }: { data: StudentWithDetails[] }) => {
   const { getAssessments, assassments } = useSupervision();

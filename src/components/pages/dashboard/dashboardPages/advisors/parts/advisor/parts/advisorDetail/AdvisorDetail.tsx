@@ -1,48 +1,41 @@
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import { Button } from "@/components/ui/button";
 import backIcon from "@/assets/icons/back.svg";
 import AdvisorInfo from "./parts/Info/AdvisorInfo";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { AdvisorDitailTable } from "../../../table/AdvisorDitailTable";
-import { stColumns } from "./parts/advisorStudentTable/ColumnDef";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
-import { AdvisorStudentData, StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
+import { AdvisorDitailTable } from "../../../table/AdvisorDitailTable";
+import { stColumns } from "./parts/advisorStudentTable/ColumnDef";
+import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
 
 const AdvisorDetail = () => {
   const { advisorId } = useParams();
   const navigate = useNavigate();
-  const { advisorDetailForAdvisors, getStudentsOfAdvisorForAdvisors } = useAdvisorsList();
+  const { advisorDetailStudent, getStudents } = useAdvisorsList();
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
 
   useEffect(() => {
     if (advisorId) {
-      getStudentsOfAdvisorForAdvisors(advisorId);
+      getStudents(advisorId);
     }
-  }, [advisorId, getStudentsOfAdvisorForAdvisors]);
+  }, [advisorId, getStudents]);
 
   useEffect(() => {
-    if (advisorDetailForAdvisors) {
-      const studentData: StudentWithDetails[] = advisorDetailForAdvisors.data.map((entry: AdvisorStudentData) => ({
+    if (advisorDetailStudent) {
+      const studentData: StudentWithDetails[] = advisorDetailStudent.map((entry: AdvisorDetailEntry) => ({
         ...entry.student,
-        status: "status_value", // Assuming you have a way to get the status, replace accordingly
-        started_date: entry.start_date ? convertToShamsi(entry.start_date) : "-",
-        ended_date: entry.end_date ? convertToShamsi(entry.end_date) : "-",
-        duration: entry.duration,
-        start_date: entry.start_date,
-        end_date: entry.end_date,
-        wage: entry.wage,
-        // status: entry.status,
+        status: entry.status,
+        started_date: entry.started_date ? convertToShamsi(entry.started_date) : "-",
+        ended_date: entry.ended_date ? convertToShamsi(entry.ended_date) : "-",
       }));
       setProcessedStudentData(studentData);
     }
-  }, [advisorDetailForAdvisors]);
+  }, [advisorDetailStudent]);
 
+  // console.log("advisorDetailData", advisorDetailStudent);
   // console.log("advisorDetailData", advisorDetailData);
   // console.log("processedStudentData", processedStudentData);
 

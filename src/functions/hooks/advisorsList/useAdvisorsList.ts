@@ -5,6 +5,7 @@ import {
   advisors_delete,
   get_advisor_info,
   get_registered_advisors,
+  get_student_of_advisor,
   get_students_of_each_advisor,
   get_wage_of_advisor,
 } from "@/lib/apis/advisors/service";
@@ -14,6 +15,7 @@ import { Advisor } from "@/lib/store/types";
 import { useCallback, useState } from "react";
 import { AdvisorDataResponse } from "./interface";
 import { ISubmitAdvisorRegisterService } from "@/lib/apis/advisors/interface";
+import { AdvisorDetailEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/interface";
 
 export const useAdvisorsList = () => {
   const deleteAdvisor = appStore((state) => state.deleteAdvisor);
@@ -28,7 +30,7 @@ export const useAdvisorsList = () => {
 
   const [dataLoaded, setDataLoaded] = useState(false);
   const [advisorDetailData, setAdvisorDetailData] = useState<AdvisorDataResponse | null>(null);
-  const [advisorDetailForAdvisors, setAdvisorDetailForAdvisors] = useState<AdvisorDataResponse | null>(null);
+  const [advisorDetailStudent, setAdvisorDetailStudent] = useState<AdvisorDetailEntry[]>();useState<AdvisorDataResponse | null>(null);
   const [wageLoad, setWageLoad] = useState(false);
   const [wageData, setWageData] = useState();
 
@@ -174,22 +176,25 @@ export const useAdvisorsList = () => {
     }
   }, [setAdvisorStudent, setError, setLoading]);
 
-  const getStudentsOfAdvisorForAdvisors = useCallback(async (advisorId: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await get_students_of_each_advisor({ advisorId });
-      setAdvisorDetailForAdvisors(data);
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Failed to fetch student information");
+  const getStudents = useCallback(
+    async (advisorId: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await get_student_of_advisor({ advisorId });
+        setAdvisorDetailStudent(data);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to fetch student information");
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [setError, setLoading]);
+    },
+    [setError, setLoading]
+  );
 
   const getStudentsOfAdvisor = useCallback(
     async (advisorId: string) => {
@@ -235,7 +240,7 @@ export const useAdvisorsList = () => {
     getAdvisorWage,
     wageData,
     updatAdvisor,
-    getStudentsOfAdvisorForAdvisors,
-    advisorDetailForAdvisors
+    getStudents,
+    advisorDetailStudent
   };
 };

@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
+import { StudentWithDetails } from "../../interface";
 // import StudentDialogButtons from "./DialogButtons";
-import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
+
 
 export const stColumns: ColumnDef<StudentWithDetails>[] = [
   {
