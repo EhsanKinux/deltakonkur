@@ -17,19 +17,18 @@ import { AdvisorStudentData, StudentWithDetails } from "@/functions/hooks/adviso
 const AdvisorDetail = () => {
   const { advisorId } = useParams();
   const navigate = useNavigate();
-  const { advisorDetailData, getStudentsOfAdvisor, getAdvisorWage } = useAdvisorsList();
+  const { advisorDetailForAdvisors, getStudentsOfAdvisorForAdvisors } = useAdvisorsList();
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
 
   useEffect(() => {
     if (advisorId) {
-      getStudentsOfAdvisor(advisorId);
-      getAdvisorWage(advisorId);
+      getStudentsOfAdvisorForAdvisors(advisorId);
     }
-  }, [advisorId, getAdvisorWage, getStudentsOfAdvisor]);
+  }, [advisorId, getStudentsOfAdvisorForAdvisors]);
 
   useEffect(() => {
-    if (advisorDetailData && advisorDetailData.data) {
-      const studentData: StudentWithDetails[] = advisorDetailData.data.map((entry: AdvisorStudentData) => ({
+    if (advisorDetailForAdvisors) {
+      const studentData: StudentWithDetails[] = advisorDetailForAdvisors.data.map((entry: AdvisorStudentData) => ({
         ...entry.student,
         status: "status_value", // Assuming you have a way to get the status, replace accordingly
         started_date: entry.start_date ? convertToShamsi(entry.start_date) : "-",
@@ -38,10 +37,11 @@ const AdvisorDetail = () => {
         start_date: entry.start_date,
         end_date: entry.end_date,
         wage: entry.wage,
+        // status: entry.status,
       }));
       setProcessedStudentData(studentData);
     }
-  }, [advisorDetailData]);
+  }, [advisorDetailForAdvisors]);
 
   // console.log("advisorDetailData", advisorDetailData);
   // console.log("processedStudentData", processedStudentData);
@@ -63,7 +63,7 @@ const AdvisorDetail = () => {
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
-      <AdvisorInfo advisorId={advisorId} advisorDetailData={advisorDetailData} />
+      <AdvisorInfo advisorId={advisorId} />
       <Tabs defaultValue="studentTable" className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger value="studentTable" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">

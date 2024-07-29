@@ -47,10 +47,10 @@ export const stColumns: ColumnDef<StudentWithDetails>[] = [
     accessorKey: "ended_date",
     header: "تاریخ پایان",
   },
-  {
-    accessorKey: "wage",
-    header: "دریافتی",
-  },
+  // {
+  //   accessorKey: "wage",
+  //   header: "دریافتی",
+  // },
   // {
   //   id: "actions",
   //   cell: ({ row }) => {

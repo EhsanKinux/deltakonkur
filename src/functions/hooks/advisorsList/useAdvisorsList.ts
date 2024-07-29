@@ -28,6 +28,7 @@ export const useAdvisorsList = () => {
 
   const [dataLoaded, setDataLoaded] = useState(false);
   const [advisorDetailData, setAdvisorDetailData] = useState<AdvisorDataResponse | null>(null);
+  const [advisorDetailForAdvisors, setAdvisorDetailForAdvisors] = useState<AdvisorDataResponse | null>(null);
   const [wageLoad, setWageLoad] = useState(false);
   const [wageData, setWageData] = useState();
 
@@ -127,13 +128,13 @@ export const useAdvisorsList = () => {
     }
   };
 
-  const updatAdvisor = async (body: ISubmitAdvisorRegisterService) => {
+  const updatAdvisor = useCallback(async (body: ISubmitAdvisorRegisterService) => {
     try {
       await advisor_update(body);
     } catch (error) {
       console.log(error);
     }
-  };
+  }, []);
 
   const fetchAdvisorInfo = useCallback(
     async (advisorId: string) => {
@@ -172,6 +173,23 @@ export const useAdvisorsList = () => {
       setLoading(false);
     }
   }, [setAdvisorStudent, setError, setLoading]);
+
+  const getStudentsOfAdvisorForAdvisors = useCallback(async (advisorId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await get_students_of_each_advisor({ advisorId });
+      setAdvisorDetailForAdvisors(data);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Failed to fetch student information");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [setError, setLoading]);
 
   const getStudentsOfAdvisor = useCallback(
     async (advisorId: string) => {
@@ -217,5 +235,7 @@ export const useAdvisorsList = () => {
     getAdvisorWage,
     wageData,
     updatAdvisor,
+    getStudentsOfAdvisorForAdvisors,
+    advisorDetailForAdvisors
   };
 };

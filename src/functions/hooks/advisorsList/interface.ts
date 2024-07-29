@@ -22,6 +22,7 @@ export interface AdvisorStudentData {
   start_date: string;
   end_date: string;
   wage: number;
+  status: string;
 }
 
 export interface AdvisorDataResponse {
