@@ -7,8 +7,15 @@ import studentCancel from "@/assets/icons/student-cancel.svg";
 import studentStop from "@/assets/icons/student-stop.svg";
 import personCard from "@/assets/icons/person-card.svg";
 import callIcon from "@/assets/icons/call.svg";
+import { AdvisorDataResponse } from "@/functions/hooks/advisorsList/interface";
 
-const AccountingAdvisorInfo = ({ advisorId }: { advisorId: string }) => {
+const AccountingAdvisorInfo = ({
+  advisorId,
+  advisorDetailData,
+}: {
+  advisorId: string;
+  advisorDetailData: AdvisorDataResponse | null;
+}) => {
   const advisorInfo = appStore((state) => state.advisorInfo);
   const { fetchAdvisorInfo } = useAdvisorsList();
 
@@ -38,6 +45,11 @@ const AccountingAdvisorInfo = ({ advisorId }: { advisorId: string }) => {
           <div className="flex gap-2 items-center">
             <img src={personCard} width={25} />
             <h1 className="text-lg font-medium">کد ملی: {advisorInfo?.national_id}</h1>
+          </div>
+          <div className="flex gap-2 items-center">
+            <h2 className="text-base font-medium">
+              دریافتی کل : <span className="text-blue-500 font-semibold">{advisorDetailData?.total_wage}</span>
+            </h2>
           </div>
         </div>
       </div>

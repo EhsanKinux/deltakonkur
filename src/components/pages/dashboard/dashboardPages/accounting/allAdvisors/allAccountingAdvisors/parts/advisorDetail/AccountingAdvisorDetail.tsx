@@ -56,7 +56,7 @@ const AccountingAdvisorDetail = () => {
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
-      <AccountingAdvisorInfo advisorId={advisorId} />
+      <AccountingAdvisorInfo advisorId={advisorId} advisorDetailData={advisorDetailData} />
       <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
         <AdvisorDitailTable columns={stColumns} data={processedStudentData} />
       </div>
