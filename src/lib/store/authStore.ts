@@ -15,12 +15,12 @@ export const authStore = create<AuthState>((set) => ({
   refreshToken: Cookies.get("refreshToken") || null,
   userRole: Cookies.get("userRole") ? parseInt(Cookies.get("userRole") as string, 10) : null,
   setTokens: (access, refresh) => {
-    Cookies.set("accessToken", access, { secure: true, sameSite: "strict" });
-    Cookies.set("refreshToken", refresh, { secure: true, sameSite: "strict" });
+    Cookies.set("accessToken", access, { sameSite: "strict" });
+    Cookies.set("refreshToken", refresh, { sameSite: "strict" });
     set({ accessToken: access, refreshToken: refresh });
   },
   setUserRole: (role) => {
-    Cookies.set("userRole", role.toString(), { secure: true, sameSite: "strict" });
+    Cookies.set("userRole", role.toString(), { sameSite: "strict" });
     set({ userRole: role });
   },
   clearAuth: () => {

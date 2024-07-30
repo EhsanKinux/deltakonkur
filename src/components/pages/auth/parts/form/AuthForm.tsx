@@ -66,8 +66,8 @@ const AuthForm = () => {
         const { access, refresh } = response.data;
         setTokens(access, refresh);
 
-        Cookies.set("username", data.tell, { secure: true, sameSite: "strict" });
-        Cookies.set("password", data.password, { secure: true, sameSite: "strict" });
+        Cookies.set("username", data.tell, { sameSite: "strict" });
+        Cookies.set("password", data.password, { sameSite: "strict" });
 
         await fetchUserRole(access);
 
