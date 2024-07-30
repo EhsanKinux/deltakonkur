@@ -2,9 +2,9 @@ import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList"
 import { appStore } from "@/lib/store/appStore";
 import { useEffect } from "react";
 import counselorProfile from "@/assets/icons/work.svg";
-import studentActive from "@/assets/icons/student-active.svg";
-import studentCancel from "@/assets/icons/student-cancel.svg";
-import studentStop from "@/assets/icons/student-stop.svg";
+// import studentActive from "@/assets/icons/student-active.svg";
+// import studentCancel from "@/assets/icons/student-cancel.svg";
+// import studentStop from "@/assets/icons/student-stop.svg";
 import personCard from "@/assets/icons/person-card.svg";
 import callIcon from "@/assets/icons/call.svg";
 import { AdvisorDataResponse } from "@/functions/hooks/advisorsList/interface";
@@ -55,7 +55,7 @@ const AccountingAdvisorInfo = ({
       </div>
 
       {/* students status */}
-      <div className="flex gap-2 justify-between items-center w-full xl:w-1/2 bg-slate-200 rounded-xl p-3">
+      {/* <div className="flex gap-2 justify-between items-center w-full xl:w-1/2 bg-slate-200 rounded-xl p-3">
         <div className="flex flex-col gap-2 items-center w-1/3">
           <img
             src={studentActive}
@@ -92,7 +92,7 @@ const AccountingAdvisorInfo = ({
             دانش آموزان متوقف شده: <span className="text-red-500 font-semibold">{advisorInfo?.stopped_students}</span>
           </h2>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

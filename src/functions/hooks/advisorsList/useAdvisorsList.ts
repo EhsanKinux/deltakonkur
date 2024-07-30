@@ -62,6 +62,7 @@ export const useAdvisorsList = () => {
           solar_date_month: item.student.solar_date_month,
           solar_date_year: item.student.solar_date_year,
         },
+        status: item.status,
         duration: item.duration,
         start_date: item.start_date,
         end_date: item.end_date,
@@ -142,7 +143,7 @@ export const useAdvisorsList = () => {
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
-          throw err
+          throw err;
         } else {
           setError("Failed to fetch student information");
         }
