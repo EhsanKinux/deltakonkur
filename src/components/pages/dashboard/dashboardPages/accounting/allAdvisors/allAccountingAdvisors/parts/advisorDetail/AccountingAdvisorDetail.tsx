@@ -9,6 +9,12 @@ import backIcon from "@/assets/icons/back.svg";
 import { AdvisorStudentData, StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
 import { AllAdvisorDetailTable } from "../../../../table/AllAdvisorDetailTable";
 
+const formatNumber = (number: string): string => {
+  const num = parseFloat(number);
+  if (isNaN(num)) return "0";
+  return new Intl.NumberFormat("en-US").format(num);
+};
+
 const AccountingAdvisorDetail = () => {
   const { advisorId } = useParams();
   const navigate = useNavigate();
@@ -31,7 +37,7 @@ const AccountingAdvisorDetail = () => {
         duration: entry.duration,
         start_date: entry.start_date,
         end_date: entry.end_date,
-        wage: entry.wage,
+        wage: formatNumber(entry.wage),
       }));
       setProcessedStudentData(studentData);
     }

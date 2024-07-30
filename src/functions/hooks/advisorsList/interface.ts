@@ -21,7 +21,7 @@ export interface AdvisorStudentData {
   duration: number;
   start_date: string;
   end_date: string;
-  wage: number;
+  wage: string;
   status: string;
 }
 
@@ -37,5 +37,5 @@ export interface StudentWithDetails extends Student {
   duration: number;
   start_date: string;
   end_date: string;
-  wage: number;
+  wage: string;
 }
