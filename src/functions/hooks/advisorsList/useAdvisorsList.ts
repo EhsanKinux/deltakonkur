@@ -27,10 +27,13 @@ export const useAdvisorsList = () => {
   const addAdvisor = appStore((state) => state.addAdvisor);
   const setLoading = appStore((state) => state.setLoading);
   const setError = appStore((state) => state.setError);
+  const error = appStore((state) => state.error);
+  const loading = appStore((state) => state.loading);
 
   const [dataLoaded, setDataLoaded] = useState(false);
   const [advisorDetailData, setAdvisorDetailData] = useState<AdvisorDataResponse | null>(null);
-  const [advisorDetailStudent, setAdvisorDetailStudent] = useState<AdvisorDetailEntry[]>();useState<AdvisorDataResponse | null>(null);
+  const [advisorDetailStudent, setAdvisorDetailStudent] = useState<AdvisorDetailEntry[]>();
+  useState<AdvisorDataResponse | null>(null);
   const [wageLoad, setWageLoad] = useState(false);
   const [wageData, setWageData] = useState();
 
@@ -130,13 +133,25 @@ export const useAdvisorsList = () => {
     }
   };
 
-  const updatAdvisor = useCallback(async (body: ISubmitAdvisorRegisterService) => {
-    try {
-      await advisor_update(body);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+  const updatAdvisor = useCallback(
+    async (body: ISubmitAdvisorRegisterService) => {
+      setLoading(true);
+      setError(null);
+      try {
+        await advisor_update(body);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+          throw err
+        } else {
+          setError("Failed to fetch student information");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading]
+  );
 
   const fetchAdvisorInfo = useCallback(
     async (advisorId: string) => {
@@ -241,6 +256,8 @@ export const useAdvisorsList = () => {
     wageData,
     updatAdvisor,
     getStudents,
-    advisorDetailStudent
+    advisorDetailStudent,
+    error,
+    loading,
   };
 };

@@ -4,13 +4,22 @@ import { useForm } from "react-hook-form";
 import { editAdvisorFormSchema } from "@/lib/schema/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Advisor } from "@/lib/store/types";
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+// import { Advisor } from "@/lib/store/types";
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import CustomEditAdvisorInput from "./parts/CustomEditAdvisorInput";
 import SelectField from "./parts/field/SelectField";
 import LevelSelect from "./parts/level/LevelSelect";
+// import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const EditAdvisorDialog = ({
   setEditDialogOpen,
@@ -18,6 +27,7 @@ const EditAdvisorDialog = ({
   setEditDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { advisorInfo, updatAdvisor } = useAdvisorsList();
+  // const navigate = useNavigate();
   // const setRefresh = appStore((state) => state.setRefresh);
 
   const formSchema = editAdvisorFormSchema();
@@ -53,15 +63,25 @@ const EditAdvisorDialog = ({
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // console.log("Form submitted with data:", data);
     if (data && advisorInfo) {
+      const loadingToastId = toast.loading("در حال انجام عملیات ویرایش...", {duration:3000});
       try {
-        const modifiedData: Advisor = {
-          ...data,
-          id: String(advisorInfo.id),
-        };
+        // const modifiedData: Advisor = {
+        //   ...data,
+        //   id: String(advisorInfo.id),
+        // };
         await updatAdvisor(data);
-        console.table(modifiedData);
+        // console.table(modifiedData);
+        // navigate("/dashboard/advisors");
+        toast.dismiss(loadingToastId);
+        toast.success("ویرایش اظلاعات با موفقیت انجام شد.");
+        window.location.reload();
       } catch (error) {
-        console.log(error);
+        toast.dismiss(loadingToastId);
+        let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+        toast.error(errorMessage);
       }
 
       setEditDialogOpen(false);
@@ -124,15 +144,11 @@ const EditAdvisorDialog = ({
                     <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2">
                       ثبت ویرایش
                     </Button>
-                    <Button
-                      className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditDialogOpen(false);
-                      }}
-                    >
-                      لغو
-                    </Button>
+                    <DialogClose>
+                      <Button className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2">
+                        لغو
+                      </Button>
+                    </DialogClose>
                   </div>
                 </DialogFooter>
               </div>
