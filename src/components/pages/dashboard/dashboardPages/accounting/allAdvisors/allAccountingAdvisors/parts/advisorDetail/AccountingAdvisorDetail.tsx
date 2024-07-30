@@ -25,7 +25,7 @@ const AccountingAdvisorDetail = () => {
     if (advisorDetailData && advisorDetailData.data) {
       const studentData: StudentWithDetails[] = advisorDetailData.data.map((entry: AdvisorStudentData) => ({
         ...entry.student,
-        status: "status_value", // Assuming you have a way to get the status, replace accordingly
+        status: entry.status, // Assuming you have a way to get the status, replace accordingly
         started_date: entry.start_date ? convertToShamsi(entry.start_date) : "-",
         ended_date: entry.end_date ? convertToShamsi(entry.end_date) : "-",
         duration: entry.duration,
