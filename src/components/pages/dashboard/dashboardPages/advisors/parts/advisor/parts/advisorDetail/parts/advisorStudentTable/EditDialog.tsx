@@ -62,7 +62,7 @@ export function EditStudentDialog({ formData }: { formData: StudentWithDetails }
     },
   });
 
-  form.watch()
+  form.watch();
   useEffect(() => {
     if (formData) {
       form.reset({
@@ -110,6 +110,7 @@ export function EditStudentDialog({ formData }: { formData: StudentWithDetails }
         dialogCloseRef.current?.click();
         // toast.dismiss(loadingToastId);
         toast.success("ویرایش اطلاعات دانش آموز با موفقیت انجام شد.");
+        window.location.reload();
       }
     } catch (error) {
       // toast.dismiss(loadingToastId);
