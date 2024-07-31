@@ -87,14 +87,14 @@ export function EditStudentDialog() {
         created: String(data.created),
       };
       console.table(modifiedData);
-      await updateStudentInfo(modifiedData);
       if (advisor) {
         // console.log("stID:", studentInfo.id, "advID:", advisor);
+        await updateStudentInfo(modifiedData);
         await setAdvisorForStudent({ studentId: studentInfo.id, advisorId: advisor });
       }
-
-      dialogCloseRef.current?.click(); // Trigger dialog close
     }
+    window.location.reload();
+    dialogCloseRef.current?.click(); // Trigger dialog close
   };
 
   return (
