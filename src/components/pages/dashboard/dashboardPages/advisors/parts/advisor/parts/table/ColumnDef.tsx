@@ -32,6 +32,10 @@ export const columns: ColumnDef<FormEntry>[] = [
     header: "درصد رضایت",
   },
   {
+    accessorKey: "level",
+    header: "سطح",
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const formData = row.original;

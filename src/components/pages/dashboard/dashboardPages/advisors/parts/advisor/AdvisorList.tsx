@@ -20,6 +20,14 @@ const AdvisorList = () => {
   };
 
   const memoizedAdvisors: Advisor[] = useMemo(() => {
+    const levelMapping: { [key: string]: string } = {
+      "1": "سطح 1",
+      "2": "سطح 2",
+      "3": "سطح 3",
+      "4": "ارشد 1",
+      "5": "ارشد 2",
+    };
+
     return advisors.map((advisor) => ({
       ...advisor,
       activePercentage: parseFloat(
@@ -29,6 +37,7 @@ const AdvisorList = () => {
           parseInt(advisor.cancelled_students ?? "0")
         )
       ),
+      level: levelMapping[advisor.level.toString()] || advisor.level,
     }));
   }, [advisors]);
 
