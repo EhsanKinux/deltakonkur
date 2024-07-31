@@ -20,6 +20,11 @@ const AccountingAdvisorDetail = () => {
   const navigate = useNavigate();
   const { advisorDetailData, getStudentsOfAdvisor } = useAdvisorsList();
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
+  const [statusCounts, setStatusCounts] = useState({
+    active: 0,
+    stop: 0,
+    cancel: 0,
+  });
 
   useEffect(() => {
     if (advisorId) {
@@ -40,6 +45,16 @@ const AccountingAdvisorDetail = () => {
         wage: formatNumber(entry.wage),
       }));
       setProcessedStudentData(studentData);
+      const counts = studentData.reduce(
+        (acc, student) => {
+          if (student.status === "active") acc.active += 1;
+          if (student.status === "stop") acc.stop += 1;
+          if (student.status === "cancel") acc.cancel += 1;
+          return acc;
+        },
+        { active: 0, stop: 0, cancel: 0 }
+      );
+      setStatusCounts(counts);
     }
   }, [advisorDetailData]);
 
@@ -62,7 +77,7 @@ const AccountingAdvisorDetail = () => {
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
-      <AccountingAdvisorInfo advisorId={advisorId} advisorDetailData={advisorDetailData} />
+      <AccountingAdvisorInfo advisorId={advisorId} advisorDetailData={advisorDetailData} statusCounts={statusCounts} />
       <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
         <AllAdvisorDetailTable columns={stColumns} data={processedStudentData} />
       </div>

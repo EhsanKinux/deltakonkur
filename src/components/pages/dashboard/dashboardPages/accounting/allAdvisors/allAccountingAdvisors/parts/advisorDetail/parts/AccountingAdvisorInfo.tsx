@@ -17,9 +17,15 @@ const formatNumber = (number: number | undefined): string => {
 const AccountingAdvisorInfo = ({
   advisorId,
   advisorDetailData,
+  statusCounts,
 }: {
   advisorId: string;
   advisorDetailData: AdvisorDataResponse | null;
+  statusCounts: {
+    active: number;
+    stop: number;
+    cancel: number;
+  };
 }) => {
   const advisorInfo = appStore((state) => state.advisorInfo);
   const { fetchAdvisorInfo } = useAdvisorsList();
@@ -71,7 +77,7 @@ const AccountingAdvisorInfo = ({
             }}
           />
           <h2 className="text-base font-medium">
-            دانش ‌آموزان فعال: <span className="text-green-500 font-semibold">{advisorInfo?.active_students}</span>
+            دانش ‌آموزان فعال: <span className="text-green-500 font-semibold">{statusCounts.active}</span>
           </h2>
         </div>
         <div className="flex flex-col gap-2 items-center w-1/3">
@@ -83,7 +89,7 @@ const AccountingAdvisorInfo = ({
             }}
           />
           <h2 className="text-base font-medium">
-            دانش آموزان کنسلی: <span className="text-red-500 font-semibold">{advisorInfo?.cancelled_students}</span>
+            دانش آموزان کنسلی: <span className="text-red-500 font-semibold">{statusCounts.cancel}</span>
           </h2>
         </div>
         <div className="flex flex-col gap-2 items-center w-1/3">
@@ -95,8 +101,7 @@ const AccountingAdvisorInfo = ({
             }}
           />
           <h2 className="text-base font-medium">
-            دانش آموزان متوقف شده:{" "}
-            <span className="text-orange-500 font-semibold">{advisorInfo?.stopped_students}</span>
+            دانش آموزان متوقف شده: <span className="text-orange-500 font-semibold">{statusCounts.stop}</span>
           </h2>
         </div>
       </div>
