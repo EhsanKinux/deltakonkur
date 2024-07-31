@@ -51,13 +51,13 @@ export const studentAssessment = () =>
 export const editAdvisorFormSchema = () =>
   z.object({
     id: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
+    first_name: z.string().min(1, { message: "سطح مشاور را تعیین کنید" }),
+    last_name: z.string().min(1, { message: "سطح مشاور را تعیین کنید" }),
     phone_number: z.string(),
-    field: z.string(),
-    bank_account: z.string(),
+    field: z.string().min(1, { message: "سطح مشاور را تعیین کنید" }),
+    bank_account: z.string().min(1, { message: "سطح مشاور را تعیین کنید" }),
     national_id: z.string(),
-    level: z.string(),
+    level: z.string().min(1, { message: "سطح مشاور را تعیین کنید" }),
   });
 
 export const editStudentFormSchema = () =>
