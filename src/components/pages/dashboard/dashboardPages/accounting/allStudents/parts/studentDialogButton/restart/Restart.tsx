@@ -16,7 +16,7 @@ import { z } from "zod";
 import { IFormattedStudentAdvisor } from "../../interfaces";
 import { IRestartStudent } from "@/lib/apis/accounting/interface";
 import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const restartInput = () =>
   z.object({
@@ -32,7 +32,7 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
   });
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { resetStudent } = useAccounting(); // Get the resetStudent function
 
@@ -62,7 +62,8 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
       await resetStudent(body);
       console.log(body);
       dialogCloseRef.current?.click(); // Close the dialog
-      navigate("/dashboard/accounting/allStudents");
+      // navigate("/dashboard/accounting/allStudents");
+      window.location.reload();
     } catch (error) {
       console.error("Failed to reset student:", error);
     }

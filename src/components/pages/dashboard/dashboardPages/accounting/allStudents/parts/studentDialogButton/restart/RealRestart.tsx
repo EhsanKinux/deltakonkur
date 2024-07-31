@@ -11,12 +11,12 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { IRestartStudent } from "@/lib/apis/accounting/interface";
 import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const RealRestart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
   const [warning, setWarning] = useState<string | null>(null);
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { restartStudent } = useAccounting();
 
@@ -44,7 +44,8 @@ const RealRestart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
       await restartStudent(body);
       console.log(body);
       dialogCloseRef.current?.click(); // Close the dialog
-      navigate("/dashboard/accounting/allStudents");
+      // navigate("/dashboard/accounting/allStudents");
+      window.location.reload();
     } catch (error) {
       console.error("Failed to reset student:", error);
     }

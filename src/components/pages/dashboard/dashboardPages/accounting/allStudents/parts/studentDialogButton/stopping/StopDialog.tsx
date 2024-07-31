@@ -10,7 +10,7 @@ import {
 import { toast } from "sonner";
 import { IFormattedStudentAdvisor } from "../../interfaces";
 import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const StopDialog = ({
@@ -20,7 +20,7 @@ const StopDialog = ({
   rowData: IFormattedStudentAdvisor;
   setStopDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { stopStudent } = useAccounting();
   const [warning, setWarning] = useState<string | null>(null);
 
@@ -46,7 +46,8 @@ const StopDialog = ({
       );
     }
     setStopDialog(false);
-    navigate("/dashboard/accounting/allStudents");
+    // navigate("/dashboard/accounting/allStudents");
+    window.location.reload();
     console.log(rowData?.studentId);
   };
 
