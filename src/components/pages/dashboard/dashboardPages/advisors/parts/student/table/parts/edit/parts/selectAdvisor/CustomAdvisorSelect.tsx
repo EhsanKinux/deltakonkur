@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 type OptionType = {
   value: string;
@@ -15,10 +16,15 @@ interface CustomAdvisorSelectProps {
 
 const CustomAdvisorSelect = React.forwardRef<HTMLButtonElement, CustomAdvisorSelectProps>((props, ref) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const filteredOptions = props.options.filter((option) =>
-    option.label.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredOptions = props.options.filter((option) => option.label.includes(searchTerm));
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [searchTerm]);
 
   return (
     <Select {...props}>
@@ -31,7 +37,8 @@ const CustomAdvisorSelect = React.forwardRef<HTMLButtonElement, CustomAdvisorSel
       <SelectContent className="bg-slate-100 rounded-xl shadow-lg mt-2">
         <SelectGroup>
           <div className="p-2">
-            <input
+            <Input
+              ref={inputRef}
               type="text"
               placeholder="جستجو..."
               className="w-full p-2 rounded-lg border border-slate-300"
