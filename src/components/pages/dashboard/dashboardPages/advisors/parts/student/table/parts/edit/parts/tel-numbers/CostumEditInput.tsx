@@ -2,7 +2,7 @@ import { FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/
 import { Input } from "@/components/ui/input";
 import { Control } from "react-hook-form";
 
-const CustomEditInput = ({
+const CustomEditInput2 = ({
   control,
   name,
   label,
@@ -38,7 +38,7 @@ const CustomEditInput = ({
           <FormLabel className="pt-2 font-bold text-slate-500">{label}</FormLabel>
           <FormControl className="">
             <Input
-              // disabled
+              disabled
               id={name}
               className="w-full text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
               type="text"
@@ -52,4 +52,4 @@ const CustomEditInput = ({
   );
 };
 
-export default CustomEditInput;
+export default CustomEditInput2;
