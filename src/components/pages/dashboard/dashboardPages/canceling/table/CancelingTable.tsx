@@ -23,7 +23,7 @@ export function CancelingTable({ columns, data }: CancelingTableProps) {
   });
 
   return (
-    <div className="w-full overflow-hidden p-10 absolute top-0 right-0 left-0 bottom-0">
+    <div className="w-full overflow-auto p-10 absolute top-0 right-0 left-0 bottom-0">
       <Table className="!rounded-xl border">
         <TableHeader className="bg-slate-300">
           {table.getHeaderGroups().map((headerGroup) => (

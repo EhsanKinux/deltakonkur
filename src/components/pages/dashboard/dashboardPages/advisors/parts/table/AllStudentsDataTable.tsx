@@ -40,7 +40,7 @@ export function AllStudentsDataTable<TData, TValue>({ columns, data }: AllStuden
   });
 
   return (
-    <div className="w-full overflow-hidden p-10 absolute top-0 right-0 left-0 bottom-0">
+    <div className="w-full overflow-auto p-10 absolute top-0 right-0 left-0 bottom-0">
       <div className="flex flex-col items-center xl:flex-row gap-2 py-4">
         <div className="relative flex items-center w-full text-14 rounded-[8px]">
           <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
