@@ -164,6 +164,7 @@ export const useAdvisorsList = () => {
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
+          throw err.message
         } else {
           setError("Failed to fetch student information");
         }
