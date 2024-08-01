@@ -41,7 +41,7 @@ const SelectStudentAdvisor = ({
             value={advisorValue}
             onValueChange={(value: string) => setValue("advisor", value)}
             placeholder="انتخاب مشاور"
-            options={memoizedAdvisors.map((advisor) => ({
+            options={memoizedAdvisors.map(advisor => ({
               value: String(advisor.id),
               label: `${advisor.first_name} ${advisor.last_name}`,
             }))}
