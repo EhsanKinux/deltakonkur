@@ -63,7 +63,7 @@ const EditAdvisorDialog = ({
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // console.log("Form submitted with data:", data);
     if (data && advisorInfo) {
-      const loadingToastId = toast.loading("در حال انجام عملیات ویرایش...", {duration:3000});
+      const loadingToastId = toast.loading("در حال انجام عملیات ویرایش...", { duration: 3000 });
       try {
         // const modifiedData: Advisor = {
         //   ...data,
@@ -145,7 +145,10 @@ const EditAdvisorDialog = ({
                       ثبت ویرایش
                     </Button>
                     <DialogClose>
-                      <Button className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2">
+                      <Button
+                        type="button"
+                        className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
+                      >
                         لغو
                       </Button>
                     </DialogClose>
