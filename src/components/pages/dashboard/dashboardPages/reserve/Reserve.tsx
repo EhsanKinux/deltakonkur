@@ -20,6 +20,15 @@ import BirthDate from "./form/topright/BirthDate";
 import { convertToShamsi, convertToShamsi2 } from "@/lib/utils/date/convertDate";
 import PlansType from "./form/down/PlansType";
 
+interface CustomError extends Error {
+  response?: {
+    status: number;
+    data: {
+      non_field_errors: string[];
+    };
+  };
+}
+
 const Reserve = () => {
   const [isloading, setIsloading] = useState(false);
 
@@ -61,21 +70,59 @@ const Reserve = () => {
       solar_date_month: month.toString(),
       solar_date_year: year.toString(),
     };
-    if (data) {
-      // console.table(transformedData);
-      await toast.promise(
-        submit_student_register_service(transformedData).then(() => {
-          form.reset();
-        }),
-        {
-          loading: "در حال ثبت نام...",
-          success: "ثبت نام با موفقیت انجام شد!",
-          error: "خطایی رخ داده است!",
+
+    const loadingToastId = toast.loading("در حال انجام عملیات ثبت...");
+
+    try {
+      await submit_student_register_service(transformedData);
+
+      // Reset form on successful registration
+      form.reset();
+
+      toast.dismiss(loadingToastId);
+      toast.success("ثبت نام با موفقیت انجام شد!");
+    } catch (error) {
+      toast.dismiss(loadingToastId);
+      // console.error("API call failed:", error);
+
+      // Parsing the error message
+      let errorMessage = "خطا در ثبت نام، لطفا دوباره تلاش کنید";
+
+      if (error instanceof Error) {
+        // Cast error to CustomError type
+        const customError = error as CustomError;
+
+        if (customError.response) {
+          const { data } = customError.response;
+          if (
+            data.non_field_errors &&
+            data.non_field_errors.includes("The fields first_name, last_name, phone_number must make a unique set.")
+          ) {
+            errorMessage = "این دانش آموز با این نام و شماره موجود است";
+          }
+        } else {
+          try {
+            const errorJson = JSON.parse(error.message);
+            if (
+              errorJson.non_field_errors &&
+              errorJson.non_field_errors.includes(
+                "The fields first_name, last_name, phone_number must make a unique set."
+              )
+            ) {
+              errorMessage = "این دانش آموز با این نام و شماره موجود است";
+            }
+          } catch (parseError) {
+            console.error("Error parsing the error message:", parseError);
+          }
         }
-      );
+      }
+
+      toast.error(errorMessage);
+    } finally {
+      setIsloading(false);
     }
-    setIsloading(false);
   };
+
   return (
     <section className="flex flex-col items-center justify-center bg-slate-100 rounded-xl shadow-form px-5 py-10 xl:p-5">
       {/* <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">ثبت نام</h1> */}
