@@ -55,11 +55,11 @@ const EditAdvisorDialog = ({
         field: advisorInfo?.field,
         national_id: advisorInfo?.national_id,
         bank_account: advisorInfo?.bank_account,
-        level: String(advisorInfo?.level) || "1",
+        level: advisorInfo?.level !== undefined ? String(advisorInfo.level) : "1",
       });
     }
   }, [advisorInfo, form]);
-  
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // console.log("Form submitted with data:", data);
     if (data && advisorInfo) {
@@ -147,13 +147,13 @@ const EditAdvisorDialog = ({
                       ثبت ویرایش
                     </Button>
                     {/* <DialogClose> */}
-                      <Button
-                        type="button"
-                        onClick={() => setEditDialogOpen(false)}
-                        className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
-                      >
-                        لغو
-                      </Button>
+                    <Button
+                      type="button"
+                      onClick={() => setEditDialogOpen(false)}
+                      className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
+                    >
+                      لغو
+                    </Button>
                     {/* </DialogClose> */}
                   </div>
                 </DialogFooter>

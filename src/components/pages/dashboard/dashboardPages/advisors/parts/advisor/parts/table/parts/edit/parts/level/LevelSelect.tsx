@@ -12,6 +12,7 @@ const LevelSelect = ({ form }: { form: UseFormReturn<ISubmitAdvisorRegisterServi
   } = useController({
     name: "level",
     control,
+    defaultValue: "1",
   });
 
   return (
@@ -19,7 +20,7 @@ const LevelSelect = ({ form }: { form: UseFormReturn<ISubmitAdvisorRegisterServi
       {/* <FormLabel>سطح مشاور</FormLabel> */}
       <FormControl>
         <CustomFieldSelect
-          value={value}
+          value={value ?? "1"}
           onValueChange={(value: string) => onChange(value)}
           placeholder="سطح مشاور"
           options={[
