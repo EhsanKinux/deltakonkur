@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 // import { Advisor } from "@/lib/store/types";
 import {
-  DialogClose,
+  // DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -55,11 +55,11 @@ const EditAdvisorDialog = ({
         field: advisorInfo?.field,
         national_id: advisorInfo?.national_id,
         bank_account: advisorInfo?.bank_account,
-        level: String(advisorInfo?.level),
+        level: String(advisorInfo?.level) || "1",
       });
     }
   }, [advisorInfo, form]);
-
+  
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // console.log("Form submitted with data:", data);
     if (data && advisorInfo) {
@@ -70,11 +70,13 @@ const EditAdvisorDialog = ({
         //   id: String(advisorInfo.id),
         // };
         await updatAdvisor(data);
-        // console.table(modifiedData);
-        // navigate("/dashboard/advisors");
         toast.dismiss(loadingToastId);
         toast.success("ویرایش اظلاعات با موفقیت انجام شد.");
-        window.location.reload();
+
+        // Set a timeout before reloading the page
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000); // 3-second delay
       } catch (error) {
         toast.dismiss(loadingToastId);
         let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";
@@ -144,14 +146,15 @@ const EditAdvisorDialog = ({
                     <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2">
                       ثبت ویرایش
                     </Button>
-                    <DialogClose>
+                    {/* <DialogClose> */}
                       <Button
                         type="button"
+                        onClick={() => setEditDialogOpen(false)}
                         className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
                       >
                         لغو
                       </Button>
-                    </DialogClose>
+                    {/* </DialogClose> */}
                   </div>
                 </DialogFooter>
               </div>
