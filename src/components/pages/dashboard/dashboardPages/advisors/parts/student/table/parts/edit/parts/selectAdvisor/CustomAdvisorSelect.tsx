@@ -26,6 +26,11 @@ const CustomAdvisorSelect = React.forwardRef<HTMLButtonElement, CustomAdvisorSel
     }
   }, [searchTerm]);
 
+  // Function to prevent default touch behavior
+  const preventTouchClose = (event: React.TouchEvent) => {
+    event.stopPropagation();
+  };
+
   return (
     <Select {...props}>
       <SelectTrigger
@@ -34,16 +39,17 @@ const CustomAdvisorSelect = React.forwardRef<HTMLButtonElement, CustomAdvisorSel
       >
         <SelectValue placeholder={props.placeholder} />
       </SelectTrigger>
-      <SelectContent className="bg-slate-100 rounded-xl shadow-lg mt-2">
+      <SelectContent className="bg-slate-100 rounded-xl shadow-lg mt-2" onTouchStart={preventTouchClose}>
         <SelectGroup>
           <div className="p-2">
             <Input
               ref={inputRef}
               type="text"
               placeholder="جستجو..."
-              className="w-full p-2 rounded-lg border border-slate-300"
+              className="w-full p-2 rounded-xl border border-slate-300"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onTouchStart={preventTouchClose}
             />
           </div>
           {filteredOptions.map((option) => (
