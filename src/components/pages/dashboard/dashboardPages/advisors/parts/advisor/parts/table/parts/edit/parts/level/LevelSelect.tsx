@@ -12,7 +12,6 @@ const LevelSelect = ({ form }: { form: UseFormReturn<ISubmitAdvisorRegisterServi
   } = useController({
     name: "level",
     control,
-    defaultValue: "1",
   });
 
   return (
