@@ -90,12 +90,12 @@ export function AdvisorTable({ columns, data }: AdvisorTableProps) {
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row, index) => (
+            table.getRowModel().rows.map((row) => (
               <TableRow
                 className="hover:bg-slate-200 hover:cursor-pointer"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                onClick={(e) => handleRowClick(data[index].id, e)}
+                onClick={(e) => handleRowClick(row.original.id, e)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell className="!text-center" key={cell.id}>
