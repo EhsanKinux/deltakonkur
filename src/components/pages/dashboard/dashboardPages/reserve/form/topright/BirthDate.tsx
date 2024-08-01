@@ -47,7 +47,7 @@ const BirthDate = ({ form }: { form: UseFormReturn<IRegisterStudentService, unde
               />
             </PopoverContent>
           </Popover>
-          <FormMessage />
+          <FormMessage className="form-message mt-2" />
         </FormItem>
       )}
     />
