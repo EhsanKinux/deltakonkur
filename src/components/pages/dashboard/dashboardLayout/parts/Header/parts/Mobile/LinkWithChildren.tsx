@@ -24,7 +24,7 @@ const LinkWithChildren = ({
             <div className="relative size-6">
               <img src={menuItem.imgURL} alt={menuItem.label} className={cn("brightness-[100] invert-0")} />
             </div>
-            <p className={"text-[12px] text-gray-100"}>{menuItem.label}</p>
+            <p className={"text-gray-100"}>{menuItem.label}</p>
           </div>
         </AccordionTrigger>
         <AccordionContent className="flex flex-col gap-3 mt-3 bg-slate-700 rounded-xl">

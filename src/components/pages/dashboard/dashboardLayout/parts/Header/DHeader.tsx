@@ -26,7 +26,7 @@ export default function DHeader() {
     <div className="p-8 w-full border-b-2 border-slate-300 h-10 flex justify-between items-center mt-5 mr-0 ml-8">
       <div className="flex gap-2 items-center">
         <MobileNav />
-        <span className="text-black text-nowrap font-light">
+        <span className="text-black text-nowrap font-light hidden lg:block">
           سلام {user?.first_name} {user?.last_name}
         </span>
       </div>

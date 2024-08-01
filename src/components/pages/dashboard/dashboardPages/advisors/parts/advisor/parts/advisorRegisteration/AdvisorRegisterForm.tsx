@@ -78,12 +78,12 @@ const AdvisorRegisterForm = () => {
     <section className="mt-8 flex flex-col items-center justify-center bg-slate-100 rounded-xl overflow-hidden pb-10 shadow-form">
       <div className="w-full bg-slate-400 rounded-b-full flex justify-center items-center gap-3 flex-col p-5">
         <img src={AddAdvisor} width={500} />
-        <h3 className="text-3xl text-white font-bold">افزودن مشاور جدید</h3>
+        <h3 className="text-xl md:text-2xl lg:text-3xl text-white font-bold">افزودن مشاور جدید</h3>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 w-3/4 px-8">
-          <div className="flex flex-col gap-5">
-            <div className="flex flex-col md:flex-row justify-between gap-5">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 w-full px-5 lg:w-3/4 lg:px-8">
+          <div className="w-full flex flex-col gap-5">
+            <div className="w-full flex flex-col md:flex-row justify-between gap-5">
               <CustomAdvisorInput control={form.control} name="first_name" label="نام" placeHolder="اصغر" />
               <CustomAdvisorInput control={form.control} name="last_name" label="نام خانوادگی" placeHolder="فرهادی" />
             </div>

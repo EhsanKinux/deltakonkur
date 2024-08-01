@@ -43,15 +43,15 @@ const MobileNav = () => {
     <section className="w-full md:hidden">
       <Sheet>
         <SheetTrigger>
-          <img src={HamIcon} width={30} height={30} alt="menu" className="cursor-pointer" />
+          <img src={HamIcon} width={30} height={30} alt="menu" className="cursor-pointer"  />
         </SheetTrigger>
-        <SheetContent side="right" className="border-none bg-black !w-1/2 !max-w-[20rem]">
-          <Link to="/dashboard" className="flex px-4 cursor-pointer items-center gap-2">
+        <SheetContent side="right" className="border-none bg-black w-3/4">
+          <Link to="/dashboard" className="mx-auto w-fit flex px-4 cursor-pointer items-center gap-2">
             {/* <img src="/icons/logo.svg" width={34} height={34} alt="Kinux-Logo" /> */}
-            <h1 className="text-26 font-ibm-plex-serif font-bold text-black-1">دلتا کنکور</h1>
+            <h1 className="text-26 font-ibm-plex-serif text-white font-semibold text-center">دلتا کنکور</h1>
           </Link>
           <div className="mobilenav-sheet">
-            <nav className="flex h-full flex-col gap-10 pt-16 text-white">
+            <nav className="flex h-full overflow-y-auto flex-col gap-10 pt-16 my-3 text-white">
               {filteredLinks.map((item: SidebarLink) => {
                 const isActive = location.pathname === item.route || location.pathname.startsWith(`${item.route}/`);
                 return item.children ? (
@@ -71,13 +71,13 @@ const MobileNav = () => {
                             : "invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(1) contrast(1)",
                         }}
                       />
-                      <p className={cn("!text-[12px] text-slate-100", { "text-black": isActive })}>{item.label}</p>
+                      <p className={cn("text-slate-100", { "text-black": isActive })}>{item.label}</p>
                     </Link>
                   </SheetClose>
                 );
               })}
             </nav>
-            <div className="flex flex-col overflow-y-auto no-scrollbar rounded-xl  border-2 border-slate-500 justify-center">
+            <div className="flex flex-col overflow-y-auto no-scrollbar rounded-xl  border-2 border-slate-500 justify-center mt-5">
               <Button className={cn("sidebar-link")} onClick={handleLogout}>
                 <div className="relative size-6">
                   <img src={logOutIcon} alt={"خروج از حساب"} className={cn("brightness-[100] invert-0")} />

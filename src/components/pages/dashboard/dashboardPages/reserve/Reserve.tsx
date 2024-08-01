@@ -86,7 +86,7 @@ const Reserve = () => {
             <div className="flex flex-col xl:flex-row w-full gap-2 xl:gap-10">
               <div className="w-full xl:w-1/2 flex gap-2 justify-center">
                 {/* pic */}
-                <img src={studentPic} width={300} />
+                <img src={studentPic} className="w-1/2" />
                 <h1 className="text-4xl">ثبت نام</h1>
               </div>
 
