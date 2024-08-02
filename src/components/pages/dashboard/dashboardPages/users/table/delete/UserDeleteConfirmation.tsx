@@ -31,10 +31,10 @@ const UserDeleteConfirmation = ({
     setDeleteDialogOpen(false);
   };
 
-  const handleDeleteCancel = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setDeleteDialogOpen(false);
-  };
+  // const handleDeleteCancel = (e: React.MouseEvent) => {
+  //   e.stopPropagation();
+  //   setDeleteDialogOpen(false);
+  // };
 
   return (
     <DialogContent
