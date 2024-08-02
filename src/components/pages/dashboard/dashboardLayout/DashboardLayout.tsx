@@ -8,7 +8,10 @@ const DashboardLayout = () => {
       <Sidebar />
       <div className="flex flex-col max-h-screen flex-1">
         <DHeader />
-        <div className="flex-grow p-5 max-h-screen overflow-y-auto custom-scrollbar">
+        <div
+          id="dashboard-content"
+          className="flex-grow p-5 max-h-screen overflow-y-auto custom-scrollbar"
+        >
           <Outlet />
         </div>
       </div>

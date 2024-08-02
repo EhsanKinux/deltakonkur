@@ -1,18 +1,20 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { get_students_by_name } from "@/lib/apis/supervision/service";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { FormEntry } from "../advisors/parts/student/table/interfaces";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { stColumns } from "./table/CancelingColumnDef";
 import { CancelingTable } from "./table/CancelingTable";
-import { useSearchParams } from "react-router-dom";
 
 const Canceling = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [firstName, setFirstName] = useState(searchParams.get("first_name") || "");
+  const [firstName, setFirstName] = useState(
+    searchParams.get("first_name") || ""
+  );
   const [lastName, setLastName] = useState(searchParams.get("last_name") || "");
   const [students, setStudents] = useState([]);
 
@@ -81,7 +83,9 @@ const Canceling = () => {
 
   return (
     <div className="flex flex-col">
-      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl mb-4">کنسلی</h1>
+      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl mb-4">
+        کنسلی
+      </h1>
       <div className="flex flex-col-reverse gap-4 xl:flex-row xl:items-end w-full xl:gap-2 p-4 mt-4 rounded-xl shadow-form bg-slate-100">
         <Button
           className="bg-blue-600 text-slate-100 hover:bg-blue-700 hover:text-white rounded-xl pt-2"
