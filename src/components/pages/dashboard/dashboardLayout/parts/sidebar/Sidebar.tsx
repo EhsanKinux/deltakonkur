@@ -66,7 +66,7 @@ const Sidebar = () => {
           {/* scroll shadow */}
           <div className="h-10 absolute bottom-0 w-full bg-gradient-to-t from-black to-transparent z-10"></div>
           <div className="h-10 absolute top-0 w-full bg-gradient-to-b from-black to-transparent z-10"></div>
-          <div className="relative flex flex-col gap-3 overflow-y-auto max-h-[68vh] no-scrollbar py-4">
+          <div className="relative flex flex-col gap-3 overflow-y-auto max-h-[68vh] no-scrollbar py-10">
             {filteredLinks.map((item: SidebarLink) => {
               const isActive =
                 location.pathname === item.route ||
