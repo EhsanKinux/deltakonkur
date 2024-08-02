@@ -21,13 +21,23 @@ const DeleteConfirmationDialog = ({
 }) => {
   const { deleteStudent } = useStudentList();
 
-  const handleDeleteConfirm = () => {
-    toast.promise(deleteStudent(formData?.id), {
-      loading: "در حال حذف...",
-      success: `حذف ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`,
-      error: "خطایی رخ داده است!",
-    });
-    setDeleteDialogOpen(false);
+  const handleDeleteConfirm = async () => {
+    const loadingToastId = toast.loading("در حال حذف کردن...");
+    try {
+      await deleteStudent(formData?.id);
+      toast.dismiss(loadingToastId);
+      toast.success(`حذف کردن ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`);
+      setTimeout(() => {
+        setDeleteDialogOpen(false);
+        window.location.reload();
+      }, 2000);
+    } catch (error) {
+      toast.dismiss(loadingToastId);
+      toast.error("خطایی رخ داده است");
+      // toast.error(error);
+    } finally {
+      setDeleteDialogOpen(false);
+    }
   };
 
   return (

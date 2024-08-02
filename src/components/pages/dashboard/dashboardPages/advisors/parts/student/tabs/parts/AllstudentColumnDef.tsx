@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { FormEntry } from "../../table/interfaces";
+import StudentDialogButtons from "../../table/parts/StudentDialogButtons";
 
 export const stColumns: ColumnDef<FormEntry>[] = [
   {
@@ -42,11 +43,11 @@ export const stColumns: ColumnDef<FormEntry>[] = [
     accessorKey: "created",
     header: "تاریخ ثبت",
   },
-  // {
-  //   id: "actions",
-  //   cell: ({ row }) => {
-  //     const formData = row.original;
-  //     return <StudentDialogButtons formData={formData} />;
-  //   },
-  // },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const formData = row.original;
+      return <StudentDialogButtons formData={formData} />;
+    },
+  },
 ];
