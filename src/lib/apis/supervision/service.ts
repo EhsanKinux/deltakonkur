@@ -3,7 +3,7 @@ import { IPostStudentAssessment } from "./interface";
 
 export const get_students_by_name = ({ first_name, last_name }: { first_name: string; last_name: string }) =>
   fetchInstance(
-    `api/register/students/?first_name=${encodeURIComponent(first_name)}&last_name=${encodeURIComponent(last_name)}`,
+    `api/register/students/?first_name__icontains=${encodeURIComponent(first_name)}&last_name__icontains=${encodeURIComponent(last_name)}`,
     { method: "GET" }
   );
 
