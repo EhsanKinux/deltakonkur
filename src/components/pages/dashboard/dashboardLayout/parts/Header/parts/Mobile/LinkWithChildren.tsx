@@ -1,4 +1,9 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { SheetClose } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils/cn/cn";
 import { Link } from "react-router-dom";
@@ -20,16 +25,22 @@ const LinkWithChildren = ({
     <Accordion type="single" collapsible className="sidebar-link w-full !py-0">
       <AccordionItem value="item-1" className="w-full">
         <AccordionTrigger>
-          <div className="flex justify-center gap-2 w-full">
+          <div className="flex gap-2 w-full">
             <div className="relative size-6">
-              <img src={menuItem.imgURL} alt={menuItem.label} className={cn("brightness-[100] invert-0")} />
+              <img
+                src={menuItem.imgURL}
+                alt={menuItem.label}
+                className={cn("brightness-[100] invert-0")}
+              />
             </div>
             <p className={"text-gray-100"}>{menuItem.label}</p>
           </div>
         </AccordionTrigger>
         <AccordionContent className="flex flex-col gap-3 mt-3 bg-slate-700 rounded-xl">
           {menuItem.children?.map((subMenuItem) => {
-            isActive = location.pathname === subMenuItem.route || location.pathname.endsWith(`${subMenuItem.route}/`);
+            isActive =
+              location.pathname === subMenuItem.route ||
+              location.pathname.endsWith(`${subMenuItem.route}/`);
             return (
               <SheetClose asChild key={subMenuItem.id}>
                 <Link

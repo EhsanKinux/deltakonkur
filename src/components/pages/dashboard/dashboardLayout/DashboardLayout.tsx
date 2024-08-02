@@ -10,7 +10,7 @@ const DashboardLayout = () => {
         <DHeader />
         <div
           id="dashboard-content"
-          className="flex-grow p-5 max-h-screen overflow-y-auto custom-scrollbar"
+          className="flex-grow p-2 md:p-5 max-h-screen overflow-y-auto custom-scrollbar"
         >
           <Outlet />
         </div>
