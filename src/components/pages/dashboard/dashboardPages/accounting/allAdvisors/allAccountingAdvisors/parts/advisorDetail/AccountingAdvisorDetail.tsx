@@ -51,8 +51,8 @@ const AccountingAdvisorDetail = () => {
           start_date: entry.start_date,
           end_date: entry.end_date,
           wage: `${formatNumber(
-            Math.floor(Number(entry.wage)).toString()
-          )} ریال`,
+            Number(entry.wage).toFixed(0)
+          ).toString()} ریال`,
         })
       );
       setProcessedStudentData(studentData);
