@@ -4,7 +4,11 @@ import { FormField, FormMessage } from "@/components/ui/form";
 import { IRegisterStudentService } from "@/lib/apis/reserve/interface";
 
 const Down = ({ form }: { form: UseFormReturn<IRegisterStudentService, undefined> }) => {
-  const { register, setValue } = form;
+  const { setValue, watch } = form;
+  
+  const fieldValue = watch("field");
+  const gradeValue = watch("grade");
+
   return (
     <div className="flex justify-center items-center gap-8 w-full rounded-xl">
       <FormField
@@ -13,7 +17,7 @@ const Down = ({ form }: { form: UseFormReturn<IRegisterStudentService, undefined
         render={() => (
           <div className="flex flex-col w-full">
             <CustomSelect
-              {...register("field")}
+              value={fieldValue}
               onValueChange={(value: string) => setValue("field", value)}
               placeholder="رشته تحصیلی"
               options={[
@@ -32,7 +36,7 @@ const Down = ({ form }: { form: UseFormReturn<IRegisterStudentService, undefined
         render={() => (
           <div className="flex flex-col w-full">
             <CustomSelect
-              {...register("grade")}
+              value={gradeValue}
               onValueChange={(value: string) => setValue("grade", value)}
               placeholder="مقطع تحصیلی"
               options={[
