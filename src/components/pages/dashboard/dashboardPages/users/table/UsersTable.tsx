@@ -92,7 +92,7 @@ export function UsersTable({ columns, data }: UsersTableProps) {
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row, index) => (
+            table.getRowModel().rows.map((row) => (
               <TableRow
                 className="hover:bg-slate-200 hover:cursor-pointer"
                 key={row.id}
