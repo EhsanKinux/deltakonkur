@@ -5,14 +5,26 @@ import { columns } from "./parts/table/ColumnDef";
 import { AdvisorDataTable } from "../table/AdvisorDataTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Advisor } from "@/lib/store/types";
+import { useSearchParams } from "react-router-dom";
 
 const AdvisorList = () => {
   const { getAdvisorsData } = useAdvisorsList();
   const advisors = appStore((state) => state.advisors);
 
+  // Use search params to manage query string
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Extract tab from query params or set default
+  const activeTab = searchParams.get("tab") || "mathAdvisors";
+
   useEffect(() => {
     getAdvisorsData();
   }, [getAdvisorsData]);
+
+  const handleTabChange = (value: string) => {
+    // Update the URL query parameter when the tab changes
+    setSearchParams({ tab: value });
+  };
 
   const calculateActivePercentage = (active: number, stopped: number, canceled: number) => {
     const total = active + stopped + canceled;
@@ -56,7 +68,7 @@ const AdvisorList = () => {
     <section className="max-h-screen">
       <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">مشاوران</h1>
 
-      <Tabs defaultValue="mathAdvisors" className="mt-4">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger value="mathAdvisors" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
             ریاضی
