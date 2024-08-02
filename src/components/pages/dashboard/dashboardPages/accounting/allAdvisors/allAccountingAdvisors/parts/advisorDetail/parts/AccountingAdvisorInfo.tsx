@@ -11,7 +11,7 @@ import { AdvisorDataResponse } from "@/functions/hooks/advisorsList/interface";
 
 const formatNumber = (number: number | undefined): string => {
   if (number === undefined) return "0";
-  return new Intl.NumberFormat("en-US").format(number);
+  return new Intl.NumberFormat("en-US").format(Math.floor(number));
 };
 
 const AccountingAdvisorInfo = ({
@@ -51,16 +51,22 @@ const AccountingAdvisorInfo = ({
           </h1>
           <div className="flex gap-2 items-center">
             <img src={callIcon} width={25} />
-            <h1 className="text-lg font-medium">شماره تلفن: {advisorInfo?.phone_number}</h1>
+            <h1 className="text-lg font-medium">
+              شماره تلفن: {advisorInfo?.phone_number}
+            </h1>
           </div>
           <div className="flex gap-2 items-center">
             <img src={personCard} width={25} />
-            <h1 className="text-lg font-medium">کد ملی: {advisorInfo?.national_id}</h1>
+            <h1 className="text-lg font-medium">
+              کد ملی: {advisorInfo?.national_id}
+            </h1>
           </div>
           <div className="flex gap-2 items-center">
             <h2 className="text-base font-medium">
               دریافتی کل :{" "}
-              <span className="text-blue-500 font-semibold">{formatNumber(advisorDetailData?.total_wage)}</span>
+              <span className="text-blue-500 font-semibold">
+                {formatNumber(advisorDetailData?.total_wage)} ریال
+              </span>
             </h2>
           </div>
         </div>
@@ -73,11 +79,15 @@ const AccountingAdvisorInfo = ({
             src={studentActive}
             width={70}
             style={{
-              filter: "invert(50%) sepia(86%) saturate(4975%) hue-rotate(90deg) brightness(105%) contrast(60%)",
+              filter:
+                "invert(50%) sepia(86%) saturate(4975%) hue-rotate(90deg) brightness(105%) contrast(60%)",
             }}
           />
           <h2 className="text-base font-medium">
-            دانش ‌آموزان فعال: <span className="text-green-500 font-semibold">{statusCounts.active}</span>
+            دانش ‌آموزان فعال:{" "}
+            <span className="text-green-500 font-semibold">
+              {statusCounts.active}
+            </span>
           </h2>
         </div>
         <div className="flex flex-col gap-2 items-center w-1/3">
@@ -85,11 +95,15 @@ const AccountingAdvisorInfo = ({
             src={studentCancel}
             width={70}
             style={{
-              filter: "invert(11%) sepia(97%) saturate(7433%) hue-rotate(1deg) brightness(105%) contrast(70%)",
+              filter:
+                "invert(11%) sepia(97%) saturate(7433%) hue-rotate(1deg) brightness(105%) contrast(70%)",
             }}
           />
           <h2 className="text-base font-medium">
-            دانش آموزان کنسلی: <span className="text-red-500 font-semibold">{statusCounts.cancel}</span>
+            دانش آموزان کنسلی:{" "}
+            <span className="text-red-500 font-semibold">
+              {statusCounts.cancel}
+            </span>
           </h2>
         </div>
         <div className="flex flex-col gap-2 items-center w-1/3">
@@ -97,11 +111,15 @@ const AccountingAdvisorInfo = ({
             src={studentStop}
             width={70}
             style={{
-              filter: "invert(70%) sepia(80%) saturate(600%) hue-rotate(350deg) brightness(90%) contrast(90%)",
+              filter:
+                "invert(70%) sepia(80%) saturate(600%) hue-rotate(350deg) brightness(90%) contrast(90%)",
             }}
           />
           <h2 className="text-base font-medium">
-            دانش آموزان متوقف شده: <span className="text-orange-500 font-semibold">{statusCounts.stop}</span>
+            دانش آموزان متوقف شده:{" "}
+            <span className="text-orange-500 font-semibold">
+              {statusCounts.stop}
+            </span>
           </h2>
         </div>
       </div>

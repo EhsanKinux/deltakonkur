@@ -12,7 +12,9 @@ import { useSearchParams } from "react-router-dom";
 
 const SearchByName = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [firstName, setFirstName] = useState(searchParams.get("first_name") || "");
+  const [firstName, setFirstName] = useState(
+    searchParams.get("first_name") || ""
+  );
   const [lastName, setLastName] = useState(searchParams.get("last_name") || "");
   const [students, setStudents] = useState([]);
 
@@ -58,6 +60,9 @@ const SearchByName = () => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set("first_name", firstName);
     newSearchParams.set("last_name", lastName);
+
+    setFirstName("");
+    setLastName("");
 
     // Update the URL search parameters without removing existing params
     setSearchParams(newSearchParams);
