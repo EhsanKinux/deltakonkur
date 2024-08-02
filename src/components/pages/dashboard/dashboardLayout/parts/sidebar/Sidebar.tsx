@@ -1,11 +1,10 @@
-import FakeLogo from "@/assets/icons/FakeTwichIcon.svg";
+import logOutIcon from "@/assets/icons/logout.svg";
+import { Button } from "@/components/ui/button";
 import { sidebarLinks } from "@/constants";
+import { authStore } from "@/lib/store/authStore";
 import { cn } from "@/lib/utils/cn/cn";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import logOutIcon from "@/assets/icons/logout.svg";
 import LinkWithChildren from "./parts/LinkWithChilderen";
-import { authStore } from "@/lib/store/authStore";
-import { Button } from "@/components/ui/button";
 
 export interface SidebarLink {
   id: number;
