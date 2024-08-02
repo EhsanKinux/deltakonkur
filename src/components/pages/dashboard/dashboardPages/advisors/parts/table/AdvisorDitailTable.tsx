@@ -44,7 +44,7 @@ export function AdvisorDitailTable({ columns, data }: AdvisorDitailTableProps) {
 
   const getRowBgColor = (status: string | null) => {
     if (status === "active") return "bg-green-200";
-    if (status === "stop") return "bg-orange-200";
+    if (status === "stop") return "bg-yellow-200";
     return "bg-red-200";
   };
 
