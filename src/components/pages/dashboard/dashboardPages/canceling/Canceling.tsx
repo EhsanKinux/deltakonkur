@@ -15,8 +15,16 @@ const Canceling = () => {
   const [students, setStudents] = useState([]);
 
   const handleSearch = async () => {
+    if (!firstName && !lastName) {
+      toast.warning("لطفاً حداقل یکی از فیلدها را پر کنید.");
+      return;
+    }
     try {
-      const data = await get_students_by_name({ first_name: firstName, last_name: lastName });
+      // Only include non-empty parameters
+      const data = await get_students_by_name({
+        first_name: firstName,
+        last_name: lastName,
+      });
 
       if (data.length === 0) {
         toast.warning("دانش‌آموزی با این نام یافت نشد");
@@ -40,6 +48,7 @@ const Canceling = () => {
         <Button
           className="bg-blue-600 text-slate-100 hover:bg-blue-700 hover:text-white rounded-xl pt-2"
           onClick={handleSearch}
+          disabled={!firstName && !lastName}
         >
           جستجو
         </Button>

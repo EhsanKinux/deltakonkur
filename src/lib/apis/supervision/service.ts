@@ -1,11 +1,21 @@
 import { fetchInstance } from "../fetch-config";
 import { IPostStudentAssessment } from "./interface";
 
-export const get_students_by_name = ({ first_name, last_name }: { first_name: string; last_name: string }) =>
-  fetchInstance(
-    `api/register/students/?first_name__icontains=${encodeURIComponent(first_name)}&last_name__icontains=${encodeURIComponent(last_name)}`,
-    { method: "GET" }
-  );
+export const get_students_by_name = ({ first_name, last_name }: { first_name: string; last_name: string }) => {
+  let url = "api/register/students/?";
+
+  // Add first name to the query string if it exists
+  if (first_name) {
+    url += `first_name=${encodeURIComponent(first_name)}`;
+  }
+
+  // Add last name to the query string if it exists, with & if needed
+  if (last_name) {
+    url += `${first_name ? "&" : ""}last_name=${encodeURIComponent(last_name)}`;
+  }
+
+  return fetchInstance(url, { method: "GET" });
+};
 
 export const get_students_by_day = ({ solar_date_day }: { solar_date_day: string }) =>
   fetchInstance(`api/register/students/?solar_date_day=${solar_date_day}`, { method: "GET" });
