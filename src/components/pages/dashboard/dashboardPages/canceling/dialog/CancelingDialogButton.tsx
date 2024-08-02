@@ -1,29 +1,34 @@
+import userDeleteIcon from "@/assets/icons/userRemove.svg";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { useState } from "react";
-import userDeleteIcon from "@/assets/icons/userRemove.svg";
-import CancelConfirmation from "./parts/CancelConfirmation";
 import { FormEntry } from "../../advisors/parts/student/table/interfaces";
+import CancelConfirmation from "./parts/CancelConfirmation";
+import useModalHistory from "@/hooks/useBackButton";
 
 const CancelingDialogButton = ({ formData }: { formData: FormEntry }) => {
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  // const { fetchStudentInfo } = useStudentList();
+  const { modalState, openModal, closeModal } = useModalHistory();
 
   const handleOpenCancelDialog = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setDeleteDialogOpen(true);
+    openModal("delete");
   };
 
   return (
     <>
       <div className="flex">
-        <Button className="cursor-pointer flex gap-2 hover:!bg-red-200 rounded-[5px]" onClick={handleOpenCancelDialog}>
+        <Button
+          className="cursor-pointer flex gap-2 hover:!bg-red-200 rounded-[5px]"
+          onClick={handleOpenCancelDialog}
+        >
           <img className="w-5" src={userDeleteIcon} alt="userDeleteIcon" />
           <span>کنسل</span>
         </Button>
       </div>
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <CancelConfirmation setDeleteDialogOpen={setDeleteDialogOpen} formData={formData} />
+      <Dialog open={modalState.delete} onOpenChange={() => closeModal()}>
+        <CancelConfirmation
+          setDeleteDialogOpen={() => modalState.delete}
+          formData={formData}
+        />
       </Dialog>
     </>
   );

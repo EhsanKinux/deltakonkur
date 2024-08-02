@@ -1,16 +1,16 @@
+import userEditIcon from "@/assets/icons/userEdit.svg";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { useState } from "react";
-import userEditIcon from "@/assets/icons/userEdit.svg";
-import DeliveredConfirmationDialog from "./DeliveredConfirmationDialog";
 import { IAdvisorContent } from "@/functions/hooks/content/interface";
+import useModalHistory from "@/hooks/useBackButton";
+import DeliveredConfirmationDialog from "./DeliveredConfirmationDialog";
 
 const DialogButton = ({ data }: { data: IAdvisorContent }) => {
-  const [editDialogOpen, setDeliverDialogOpen] = useState(false);
+  const { modalState, openModal, closeModal } = useModalHistory();
 
   const handleOpenDeliveredDialog = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setDeliverDialogOpen(true);
+    openModal("edit");
   };
 
   return (
@@ -24,7 +24,7 @@ const DialogButton = ({ data }: { data: IAdvisorContent }) => {
           <span>تایید ارسال</span>
         </Button>
       </div>
-      <Dialog open={editDialogOpen} onOpenChange={setDeliverDialogOpen}>
+      <Dialog open={modalState.edit} onOpenChange={() => closeModal()}>
         <DeliveredConfirmationDialog data={data} />
       </Dialog>
     </>

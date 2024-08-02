@@ -69,13 +69,18 @@ const RealRestart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
       <DialogContent className="bg-slate-100 !rounded-[10px]">
         <DialogHeader>
           <DialogTitle>تمدید دانش آموز</DialogTitle>
-          <DialogDescription>برای دوباره ادامه دادن دانش آموز بر روی ری استارت کلیک کنید</DialogDescription>
+          <DialogDescription>
+            برای دوباره ادامه دادن دانش آموز بر روی ری استارت کلیک کنید
+          </DialogDescription>
         </DialogHeader>
         <div className="py-4">
           {warning && <p className="text-red-500">{warning}</p>}
           <DialogFooter>
             <div className="flex justify-between items-center w-full">
-              <Button className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2" onClick={onSubmit}>
+              <Button
+                className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+                onClick={onSubmit}
+              >
                 ری‌استارت
               </Button>
               <DialogClose asChild>

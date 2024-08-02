@@ -1,29 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { useState } from "react";
 // import userDeleteIcon from "@/assets/icons/userRemove.svg";
 import userEditIcon from "@/assets/icons/userEdit.svg";
-import { EditStudentDialog } from "./EditDialog";
+import useModalHistory from "@/hooks/useBackButton";
 import { StudentWithDetails } from "../../interface";
+import { EditStudentDialog } from "./EditDialog";
 
-
-const StudentDialogButtons = ({ formData }: { formData: StudentWithDetails }) => {
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
+const StudentDialogButtons = ({
+  formData,
+}: {
+  formData: StudentWithDetails;
+}) => {
+  const { modalState, openModal, closeModal } = useModalHistory();
 
   const handleOpenEditDialog = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setEditDialogOpen(true);
+    openModal("edit");
   };
 
   return (
     <>
       <div className="flex">
-        <Button className="cursor-pointer flex gap-2 hover:!bg-green-100 rounded-[5px]" onClick={handleOpenEditDialog}>
+        <Button
+          className="cursor-pointer flex gap-2 hover:!bg-green-100 rounded-[5px]"
+          onClick={handleOpenEditDialog}
+        >
           <img className="w-5" src={userEditIcon} alt="userEditIcon" />
           <span>ویرایش</span>
         </Button>
       </div>
-      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+      <Dialog open={modalState.edit} onOpenChange={() => closeModal()}>
         <EditStudentDialog formData={formData} />
       </Dialog>
     </>

@@ -7,7 +7,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
@@ -43,7 +49,9 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
       expireDate.setDate(expireDate.getDate() + parseInt(data.day, 10));
 
       if (rowData?.stop_date && rowData?.status === "stop") {
-        setWarning("دانش‌آموز متوقف شده است، ابتدا روی ادامه کلیک کنید سپس برای دانش‌آموز روز تمدید کنید.");
+        setWarning(
+          "دانش‌آموز متوقف شده است، ابتدا روی ادامه کلیک کنید سپس برای دانش‌آموز روز تمدید کنید."
+        );
         return;
       }
 
@@ -60,7 +68,6 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
       };
 
       await resetStudent(body);
-      console.log(body);
       dialogCloseRef.current?.click(); // Close the dialog
       // navigate("/dashboard/accounting/allStudents");
       window.location.reload();
@@ -87,18 +94,25 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
       <DialogContent className="bg-slate-100 !rounded-[10px]">
         <DialogHeader>
           <DialogTitle>تمدید دانش آموز</DialogTitle>
-          <DialogDescription>مقدار تمدید روز را به عدد وارد کنید و سپس دکمه ی ثبت تمدید را بزنید</DialogDescription>
+          <DialogDescription>
+            مقدار تمدید روز را به عدد وارد کنید و سپس دکمه ی ثبت تمدید را بزنید
+          </DialogDescription>
         </DialogHeader>
         <div className="py-4">
           {warning && <p className="text-red-500">{warning}</p>}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-4"
+            >
               <FormField
                 control={form.control}
                 name="day"
                 render={({ field }) => (
                   <div className={`flex justify-center flex-col w-full gap-2`}>
-                    <FormLabel className="pt-2 font-bold text-slate-500">تعداد روز را اضافه کنید</FormLabel>
+                    <FormLabel className="pt-2 font-bold text-slate-500">
+                      تعداد روز را اضافه کنید
+                    </FormLabel>
                     <FormControl>
                       <Input
                         id="day"
@@ -113,7 +127,10 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
               />
               <DialogFooter>
                 <div className="flex justify-between items-center w-full">
-                  <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2">
+                  <Button
+                    type="submit"
+                    className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+                  >
                     ثبت تمدید
                   </Button>
                   <DialogClose asChild>
