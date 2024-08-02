@@ -8,4 +8,5 @@ export interface IStudentAssessment {
   motivation_score: string;
   exam_score: string;
   advisor_score: string;
+  created: string;
 }

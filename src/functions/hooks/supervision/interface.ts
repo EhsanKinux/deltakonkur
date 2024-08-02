@@ -9,4 +9,5 @@ export interface IAssessments {
   motivation_score: string;
   exam_score: string;
   advisor_score: string;
+  created: string;
 }
