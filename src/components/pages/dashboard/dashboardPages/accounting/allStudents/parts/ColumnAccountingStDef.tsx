@@ -12,6 +12,10 @@ export const accountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] = [
     header: "نام خانوادگی",
   },
   {
+    accessorKey: "advisor_name",
+    header: "نام مشاور",
+  },
+  {
     accessorKey: "school",
     header: "نام مدرسه",
   },

@@ -44,6 +44,7 @@ export interface IStudentAdvisor {
   expire_date: string;
   left_days_to_expire: string;
   stop_date: string;
+  advisor_name: string;
 }
 
 export interface IFormattedStudentAdvisor {
