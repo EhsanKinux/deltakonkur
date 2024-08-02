@@ -1,6 +1,6 @@
 import { get_students_by_name } from "@/lib/apis/supervision/service";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { FormEntry } from "../advisors/parts/student/table/interfaces";
 import { Button } from "@/components/ui/button";
@@ -8,39 +8,77 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { stColumns } from "./table/CancelingColumnDef";
 import { CancelingTable } from "./table/CancelingTable";
+import { useSearchParams } from "react-router-dom";
 
 const Canceling = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [firstName, setFirstName] = useState(searchParams.get("first_name") || "");
+  const [lastName, setLastName] = useState(searchParams.get("last_name") || "");
   const [students, setStudents] = useState([]);
 
-  const handleSearch = async () => {
+  // Fetch students when search parameters change
+  useEffect(() => {
+    const fetchStudents = async () => {
+      const firstNameParam = searchParams.get("first_name");
+      const lastNameParam = searchParams.get("last_name");
+
+      if (firstNameParam || lastNameParam) {
+        try {
+          const data = await get_students_by_name({
+            first_name: firstNameParam || "",
+            last_name: lastNameParam || "",
+          });
+
+          if (data.length === 0) {
+            toast.warning("دانش‌آموزی با این نام یافت نشد");
+          }
+
+          const formattedData = data.map((student: FormEntry) => ({
+            ...student,
+            created: convertToShamsi(student.created),
+          }));
+
+          setStudents(formattedData);
+        } catch (error) {
+          console.error("Error fetching students:", error);
+        }
+      }
+    };
+
+    fetchStudents();
+  }, [searchParams]);
+
+  const handleSearch = () => {
     if (!firstName && !lastName) {
       toast.warning("لطفاً حداقل یکی از فیلدها را پر کنید.");
       return;
     }
-    try {
-      // Only include non-empty parameters
-      const data = await get_students_by_name({
-        first_name: firstName,
-        last_name: lastName,
-      });
 
-      if (data.length === 0) {
-        toast.warning("دانش‌آموزی با این نام یافت نشد");
-      }
+    // Merge new search parameters with existing ones
+    const newSearchParams = new URLSearchParams(searchParams);
+    if (firstName) {
+      newSearchParams.set("first_name", firstName);
+    } else {
+      newSearchParams.delete("first_name");
+    }
 
-      const formattedData = data.map((student: FormEntry) => ({
-        ...student,
-        created: convertToShamsi(student.created),
-      }));
+    if (lastName) {
+      newSearchParams.set("last_name", lastName);
+    } else {
+      newSearchParams.delete("last_name");
+    }
 
-      setStudents(formattedData);
-      // console.log(data);
-    } catch (error) {
-      console.error("Error fetching students:", error);
+    // Update the URL search parameters without removing existing params
+    setSearchParams(newSearchParams);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      // Check for Enter key
+      handleSearch();
     }
   };
+
   return (
     <div className="flex flex-col">
       <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl mb-4">کنسلی</h1>
@@ -60,6 +98,7 @@ const Canceling = () => {
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
+              onKeyDown={handleKeyPress}
               className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
             />
           </div>
@@ -70,6 +109,7 @@ const Canceling = () => {
               type="text"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
+              onKeyDown={handleKeyPress}
               className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
             />
           </div>
