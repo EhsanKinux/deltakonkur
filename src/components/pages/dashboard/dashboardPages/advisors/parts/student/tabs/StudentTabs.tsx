@@ -1,10 +1,22 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StudentsList from "../StudentsList";
 import AllStudentsList from "../AllStudentsList";
+import { useSearchParams } from "react-router-dom";
 
 const StudentTabs = () => {
+  // Use search params to manage query string
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Extract tab from query params or set default
+  const activeTab = searchParams.get("tab") || "noAdvisorStudents";
+
+  const handleTabChange = (value: string) => {
+    // Update the URL query parameter when the tab changes
+    setSearchParams({ tab: value });
+  };
+
   return (
-    <Tabs defaultValue="noAdvisorStudents" className="">
+    <Tabs value={activeTab} onValueChange={handleTabChange} className="">
       <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
         <TabsTrigger value="noAdvisorStudents" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
           دانش‌آموزان تریاژ نشده
