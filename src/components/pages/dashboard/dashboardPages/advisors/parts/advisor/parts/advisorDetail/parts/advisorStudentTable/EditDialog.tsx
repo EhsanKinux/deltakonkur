@@ -136,8 +136,8 @@ export function EditStudentDialog({
 
   return (
     <>
-      <DialogContent className="bg-slate-100 !rounded-[10px] h-screen md:h-fit">
-        <DialogHeader>
+      <DialogContent className="bg-slate-100 !rounded-[10px] h-screen md:h-fit flex flex-col items-center">
+        <DialogHeader className="w-full">
           <DialogTitle>ویرایش اطلاعات</DialogTitle>
           <DialogDescription>
             بعد از انجام ویرایش برای ذخیره اطلاعات روی ثبت ویرایش کلیک کنید
@@ -146,7 +146,7 @@ export function EditStudentDialog({
         <div className="py-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="flex flex-col gap-4 md:max-h-[65vh] overflow-y-scroll py-4">
+              <div className="flex flex-col gap-4 max-h-[65vh] overflow-y-scroll py-4">
                 <div className="flex gap-2">
                   <CustomEditInput
                     control={form.control}

@@ -27,7 +27,8 @@ import Birthdate from "./parts/dateAndTime/Birthdate";
 import { convertToGregorian } from "@/lib/utils/date/convertDate";
 
 export function EditStudentDialog() {
-  const { studentInfo, updateStudentInfo, setAdvisorForStudent } = useStudentList();
+  const { studentInfo, updateStudentInfo, setAdvisorForStudent } =
+    useStudentList();
   const { getAdvisorsData } = useAdvisorsList();
   const advisors = appStore((state) => state.advisors);
 
@@ -61,7 +62,9 @@ export function EditStudentDialog() {
     if (studentInfo) {
       form.reset({
         id: "",
-        date_of_birth: convertToGregorian(studentInfo.date_of_birth),
+        date_of_birth: studentInfo.date_of_birth
+          ? convertToGregorian(studentInfo.date_of_birth)
+          : "",
         first_name: studentInfo.first_name,
         last_name: studentInfo.last_name,
         school: studentInfo.school,
@@ -90,7 +93,10 @@ export function EditStudentDialog() {
       if (advisor) {
         // console.log("stID:", studentInfo.id, "advID:", advisor);
         await updateStudentInfo(modifiedData);
-        await setAdvisorForStudent({ studentId: studentInfo.id, advisorId: advisor });
+        await setAdvisorForStudent({
+          studentId: studentInfo.id,
+          advisorId: advisor,
+        });
       }
     }
     window.location.reload();
@@ -99,28 +105,46 @@ export function EditStudentDialog() {
 
   return (
     <>
-      <DialogContent className="bg-slate-100 !rounded-[10px]">
-        <DialogHeader>
+      <DialogContent className="bg-slate-100 !rounded-[10px] h-screen md:h-fit flex flex-col items-center">
+        <DialogHeader className="w-full">
           <DialogTitle>ویرایش اطلاعات</DialogTitle>
-          <DialogDescription>بعد از انجام ویرایش برای ذخیره اطلاعات روی ثبت ویرایش کلیک کنید</DialogDescription>
+          <DialogDescription>
+            بعد از انجام ویرایش برای ذخیره اطلاعات روی ثبت ویرایش کلیک کنید
+          </DialogDescription>
         </DialogHeader>
-        <div className="py-4">
+        <div className="py-4 w-full">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-              <div className="flex gap-2">
-                <Name form={form} />
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-4 "
+            >
+              <div className="flex flex-col gap-4 max-h-[65vh] overflow-y-scroll py-4">
+                <div className="flex gap-2">
+                  <Name form={form} />
+                </div>
+                <TellNumbers form={form} />
+                <CustomEditInput
+                  control={form.control}
+                  name="school"
+                  label="نام مدرسه"
+                  customclass="w-[90%]"
+                />
+                <FieldGrade form={form} />
+                <div className="flex gap-5 flex-wrap">
+                  <Birthdate form={form} />
+                  <DateAndTime2 form={form} />
+                </div>
+                <SelectStudentAdvisor
+                  form={form}
+                  memoizedAdvisors={memoizedAdvisors}
+                />
               </div>
-              <TellNumbers form={form} />
-              <CustomEditInput control={form.control} name="school" label="نام مدرسه" customclass="w-[90%]" />
-              <FieldGrade form={form} />
-              <div className="flex gap-5">
-                <Birthdate form={form} />
-                <DateAndTime2 form={form} />
-              </div>
-              <SelectStudentAdvisor form={form} memoizedAdvisors={memoizedAdvisors} />
               <DialogFooter>
                 <div className="flex justify-between items-center w-full">
-                  <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2">
+                  <Button
+                    type="submit"
+                    className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+                  >
                     ثبت ویرایش
                   </Button>
                   <DialogClose asChild>

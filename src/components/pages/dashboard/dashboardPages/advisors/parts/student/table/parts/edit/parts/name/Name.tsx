@@ -16,8 +16,8 @@ const Name = ({
       parent_phone: string;
       field: string;
       grade: string;
-      created:string;
-      advisor:string;
+      created: string;
+      advisor: string;
     },
     undefined
   >;
@@ -25,7 +25,11 @@ const Name = ({
   return (
     <>
       <CustomEditInput control={form.control} name="first_name" label="نام" />
-      <CustomEditInput control={form.control} name="last_name" label="نام خانوادگی" />
+      <CustomEditInput
+        control={form.control}
+        name="last_name"
+        label="نام خانوادگی"
+      />
     </>
   );
 };

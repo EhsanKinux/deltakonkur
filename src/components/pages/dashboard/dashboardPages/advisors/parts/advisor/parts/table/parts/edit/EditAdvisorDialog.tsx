@@ -55,7 +55,8 @@ const EditAdvisorDialog = ({
         field: advisorInfo?.field,
         national_id: advisorInfo?.national_id,
         bank_account: advisorInfo?.bank_account,
-        level: advisorInfo?.level !== undefined ? String(advisorInfo.level) : "1",
+        level:
+          advisorInfo?.level !== undefined ? String(advisorInfo.level) : "1",
       });
     }
   }, [advisorInfo, form]);
@@ -63,7 +64,9 @@ const EditAdvisorDialog = ({
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // console.log("Form submitted with data:", data);
     if (data && advisorInfo) {
-      const loadingToastId = toast.loading("در حال انجام عملیات ویرایش...", { duration: 3000 });
+      const loadingToastId = toast.loading("در حال انجام عملیات ویرایش...", {
+        duration: 3000,
+      });
       try {
         // const modifiedData: Advisor = {
         //   ...data,
@@ -95,69 +98,87 @@ const EditAdvisorDialog = ({
 
   return (
     <>
-      <DialogContent className="bg-slate-100 !rounded-[10px]" onClick={(e) => e.stopPropagation()}>
-        <DialogHeader>
+      <DialogContent
+        className="bg-slate-100 !rounded-[10px] h-screen md:h-fit flex flex-col items-center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <DialogHeader className="w-full">
           <DialogTitle>ویرایش اطلاعات</DialogTitle>
-          <DialogDescription>بعد از انجام ویرایش برای ذخیره اطلاعات روی ثبت ویرایش کلیک کنید</DialogDescription>
+          <DialogDescription>
+            بعد از انجام ویرایش برای ذخیره اطلاعات روی ثبت ویرایش کلیک کنید
+          </DialogDescription>
         </DialogHeader>
-        <div className="py-4">
+        <div className="py-4 w-full">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-5">
-                <div className="flex flex-col md:flex-row justify-between gap-5">
-                  <CustomEditAdvisorInput control={form.control} name="first_name" label="نام" placeHolder="اصغر" />
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-4"
+            >
+              <div className="flex flex-col gap-4 max-h-[65vh] overflow-y-scroll py-4">
+                <div className="flex flex-col gap-5">
+                  <div className="flex flex-col md:flex-row justify-between gap-5">
+                    <CustomEditAdvisorInput
+                      control={form.control}
+                      name="first_name"
+                      label="نام"
+                      placeHolder="اصغر"
+                    />
+                    <CustomEditAdvisorInput
+                      control={form.control}
+                      name="last_name"
+                      label="نام خانوادگی"
+                      placeHolder="فرهادی"
+                    />
+                  </div>
                   <CustomEditAdvisorInput
                     control={form.control}
-                    name="last_name"
-                    label="نام خانوادگی"
-                    placeHolder="فرهادی"
+                    name="phone_number"
+                    label="شماره همراه"
+                    placeHolder="09012345678"
                   />
-                </div>
-                <CustomEditAdvisorInput
-                  control={form.control}
-                  name="phone_number"
-                  label="شماره همراه"
-                  placeHolder="09012345678"
-                />
-                <div className="flex flex-col md:flex-row justify-between gap-5">
-                  <CustomEditAdvisorInput
-                    control={form.control}
-                    name="national_id"
-                    label="کد ملی"
-                    placeHolder="31212301234"
-                  />
-                  <CustomEditAdvisorInput
-                    control={form.control}
-                    name="bank_account"
-                    label="شماره حساب"
-                    placeHolder="312123123123"
-                  />
-                </div>
-                <div className="flex flex-col md:flex-row justify-between gap-5">
-                  <div className="w-full">
-                    <SelectField form={form} />
+                  <div className="flex flex-col md:flex-row justify-between gap-5">
+                    <CustomEditAdvisorInput
+                      control={form.control}
+                      name="national_id"
+                      label="کد ملی"
+                      placeHolder="31212301234"
+                    />
+                    <CustomEditAdvisorInput
+                      control={form.control}
+                      name="bank_account"
+                      label="شماره حساب"
+                      placeHolder="312123123123"
+                    />
                   </div>
-                  <div className="w-full">
-                    <LevelSelect form={form} />
+                  <div className="flex flex-col md:flex-row justify-between gap-5">
+                    <div className="w-full">
+                      <SelectField form={form} />
+                    </div>
+                    <div className="w-full">
+                      <LevelSelect form={form} />
+                    </div>
                   </div>
                 </div>
-                <DialogFooter>
-                  <div className="flex justify-between items-center w-full">
-                    <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2">
-                      ثبت ویرایش
-                    </Button>
-                    {/* <DialogClose> */}
-                    <Button
-                      type="button"
-                      onClick={() => setEditDialogOpen(false)}
-                      className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
-                    >
-                      لغو
-                    </Button>
-                    {/* </DialogClose> */}
-                  </div>
-                </DialogFooter>
               </div>
+              <DialogFooter>
+                <div className="flex justify-between items-center w-full">
+                  <Button
+                    type="submit"
+                    className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+                  >
+                    ثبت ویرایش
+                  </Button>
+                  {/* <DialogClose> */}
+                  <Button
+                    type="button"
+                    onClick={() => setEditDialogOpen(false)}
+                    className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
+                  >
+                    لغو
+                  </Button>
+                  {/* </DialogClose> */}
+                </div>
+              </DialogFooter>
             </form>
           </Form>
         </div>
