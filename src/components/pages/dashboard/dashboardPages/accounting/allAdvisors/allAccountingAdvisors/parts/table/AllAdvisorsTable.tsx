@@ -95,7 +95,7 @@ export function AllAdvisorsDataTable({ columns, data }: AllAdvisorsDataTableProp
                 className="hover:bg-slate-200 hover:cursor-pointer"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                onClick={(e) => handleRowClick(data[index].id, e)}
+                onClick={(e) => handleRowClick(row.original.id, e)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell className="!text-center" key={cell.id}>
