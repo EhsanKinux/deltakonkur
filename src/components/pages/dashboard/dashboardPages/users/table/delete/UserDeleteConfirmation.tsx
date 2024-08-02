@@ -1,14 +1,22 @@
 import { toast } from "sonner";
 import { IUserDetail } from "../../userDetail/interface";
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useUsers } from "@/functions/hooks/usersList/useUsers";
 
 const UserDeleteConfirmation = ({
   setDeleteDialogOpen,
+  closeModal,
   formData,
 }: {
   setDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  closeModal: () => void;
   formData: IUserDetail;
 }) => {
   const { deletingUser } = useUsers();
@@ -29,7 +37,10 @@ const UserDeleteConfirmation = ({
   };
 
   return (
-    <DialogContent className="bg-slate-100 !rounded-[10px]" onClick={(e) => e.stopPropagation()}>
+    <DialogContent
+      className="bg-slate-100 !rounded-[10px]"
+      onClick={(e) => e.stopPropagation()}
+    >
       <DialogHeader>
         <DialogTitle>تایید حذف</DialogTitle>
         <DialogDescription>
@@ -38,13 +49,16 @@ const UserDeleteConfirmation = ({
       </DialogHeader>
       <DialogFooter>
         <div className="flex justify-between items-center w-full">
-          <Button className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2" onClick={handleDeleteConfirm}>
+          <Button
+            className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+            onClick={handleDeleteConfirm}
+          >
             حذف مشاور
           </Button>
 
           <Button
             className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
-            onClick={handleDeleteCancel}
+            onClick={() => closeModal()}
           >
             لغو
           </Button>

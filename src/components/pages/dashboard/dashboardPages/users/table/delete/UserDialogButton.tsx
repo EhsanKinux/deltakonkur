@@ -28,6 +28,7 @@ const UserDialogButton = ({ formData }: { formData: IUserDetail }) => {
       <Dialog open={modalState.delete} onOpenChange={() => closeModal()}>
         <UserDeleteConfirmation
           setDeleteDialogOpen={() => modalState.delete}
+          closeModal={closeModal}
           formData={formData}
         />
       </Dialog>
