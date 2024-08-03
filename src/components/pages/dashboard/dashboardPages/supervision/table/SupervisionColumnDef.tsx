@@ -3,7 +3,6 @@ import { FormEntry } from "../../advisors/parts/student/table/interfaces";
 
 // import StudentDialogButtons from "./parts/StudentDialogButtons";
 
-
 export const stColumns: ColumnDef<FormEntry>[] = [
   {
     accessorKey: "first_name",
@@ -12,6 +11,10 @@ export const stColumns: ColumnDef<FormEntry>[] = [
   {
     accessorKey: "last_name",
     header: "نام خانوادگی",
+  },
+  {
+    accessorKey: "advisor_name",
+    header: "نام مشاور",
   },
   {
     accessorKey: "school",
@@ -45,11 +48,11 @@ export const stColumns: ColumnDef<FormEntry>[] = [
     accessorKey: "created",
     header: "تاریخ ثبت",
   },
-//   {
-//     id: "actions",
-//     cell: ({ row }) => {
-//       const formData = row.original;
-//       return <StudentDialogButtons formData={formData} />;
-//     },
-//   },
+  //   {
+  //     id: "actions",
+  //     cell: ({ row }) => {
+  //       const formData = row.original;
+  //       return <StudentDialogButtons formData={formData} />;
+  //     },
+  //   },
 ];

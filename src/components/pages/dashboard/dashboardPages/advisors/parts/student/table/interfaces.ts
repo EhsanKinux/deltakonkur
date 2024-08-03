@@ -10,4 +10,5 @@ export type FormEntry = {
   field: string;
   grade: string;
   created: string;
+  advisor_name: string;
 };
