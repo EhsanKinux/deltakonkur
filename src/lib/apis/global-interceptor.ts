@@ -1,7 +1,8 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 // import Cookies from 'js-cookie';
 
 const api = axios.create({
@@ -35,18 +36,31 @@ api.interceptors.response.use(
             return api(originalRequest);
           } else {
             clearAuth();
-            window.location.href = "/auth/signIn";
+            // window.location.href = "/auth/signIn";
           }
         } catch (authError) {
+          const axiosAuthError = authError as AxiosError;
           clearAuth(); // Clear tokens and redirect to login
-          window.location.href = "/auth/signIn";
+          const errorMessage =
+            typeof axiosAuthError.response?.data === "string"
+              ? axiosAuthError.response?.data
+              : "Session expired, please log in again.";
+          toast.error(errorMessage); // Show the server error message
+          // window.location.href = "/auth/signIn";
           return Promise.reject(authError);
         }
       } else {
-        clearAuth(); // Clear tokens and redirect to login
-        window.location.href = "/auth/signIn";
+        const errorMessage =
+          error.response?.data?.detail ||
+          (typeof error.response?.data === "string" ? error.response.data : "Authentication error, please log in.");
+        toast.error(errorMessage); // Show the server error message
+        // window.location.href = "/auth/signIn";
       }
     }
+    const errorMessage =
+      error.response?.data?.detail ||
+      (typeof error.response?.data === "string" ? error.response.data : "An unexpected error occurred.");
+    toast.error(errorMessage); // Show the server error message
     return Promise.reject(error);
   }
 );

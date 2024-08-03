@@ -12,6 +12,8 @@ import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import api from "@/lib/apis/global-interceptor";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 
 const AuthForm = () => {
   const navigate = useNavigate();
@@ -47,6 +49,10 @@ const AuthForm = () => {
       setUserRole(role);
       return role;
     } catch (error) {
+      const axiosError = error as AxiosError;
+      const errorMessage =
+        typeof axiosError.response?.data === "string" ? axiosError.response.data : "Failed to fetch user role.";
+      toast.error(errorMessage); // Show the server error message
       console.error("Failed to fetch user role:", error);
       return null;
     } finally {
@@ -76,6 +82,10 @@ const AuthForm = () => {
         navigate("/auth/signIn");
       }
     } catch (error) {
+      const axiosError = error as AxiosError;
+      const errorMessage =
+        typeof axiosError.response?.data === "string" ? axiosError.response.data : "Authentication failed.";
+      toast.error(errorMessage);
       console.error("Authentication failed:", error);
     } finally {
       setIsLoading(false);
