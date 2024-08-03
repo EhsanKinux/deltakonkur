@@ -11,7 +11,7 @@ export type Advisor = {
   stopped_students?: string;
   cancelled_students?: string;
   activePercentage?: number;
-  level:string;
+  level: string;
 };
 
 export type FormData = {
@@ -74,6 +74,7 @@ export type IallStudents = {
   field: string;
   grade: string;
   created: string;
+  advisor_name: string;
 };
 
 export type IallAdvisors = {
