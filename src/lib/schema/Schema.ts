@@ -63,15 +63,15 @@ export const editAdvisorFormSchema = () =>
 export const editStudentFormSchema = () =>
   z.object({
     // id: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
+    first_name: z.string().min(1, { message: "نام دانش آموز را تعیین کنید!" }),
+    last_name: z.string().min(1, { message: "نام خانوادگی دانش آموز را تعیین کنید!" }),
     school: z.string(),
     phone_number: z.string(),
     home_phone: z.string(),
     parent_phone: z.string(),
-    field: z.string(),
-    grade: z.string(),
-    created: z.string(),
+    field: z.string().min(1, { message: "رشته تحصیلی دانش آموز را تعیین کنید!" }),
+    grade: z.string().min(1, { message: "مقطع تحصیلی دانش آموز را تعیین کنید!" }),
+    created: z.string().min(1, { message: "تاریخ ثبت دانش آموز را تعیین کنید!" }),
     advisor: z.string().min(1, { message: "مشاور دانش آموز را تعیین کنید!" }),
     date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
   });

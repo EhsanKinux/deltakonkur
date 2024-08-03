@@ -13,7 +13,7 @@ import { faIR } from "date-fns-jalali/locale";
 const Birthdate = ({
   form,
 }: {
-    form: UseFormReturn<
+  form: UseFormReturn<
     {
       id: string;
       date_of_birth: string;
@@ -26,7 +26,7 @@ const Birthdate = ({
       field: string;
       grade: string;
       created: string;
-      advisor:string;
+      advisor: string;
     },
     undefined
   >;
@@ -66,7 +66,7 @@ const Birthdate = ({
               />
             </PopoverContent>
           </Popover>
-          <FormMessage />
+          <FormMessage className="form-message mt-2" />
         </FormItem>
       )}
     />

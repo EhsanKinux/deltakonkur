@@ -25,11 +25,7 @@ import { StudentWithDetails } from "../../interface";
 import { IChangeAdvisor } from "@/functions/hooks/studentsList/interface";
 import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
 
-export function EditStudentDialog({
-  formData,
-}: {
-  formData: StudentWithDetails;
-}) {
+export function EditStudentDialog({ formData }: { formData: StudentWithDetails }) {
   const { changeAdvisorOfStudent } = useStudentList();
   const { getAdvisorsData2 } = useAdvisorsList();
   // const advisors = appStore((state) => state.advisors);
@@ -96,8 +92,7 @@ export function EditStudentDialog({
       if (data) {
         const currentISODate = new Date().toISOString();
         const currentShamsiDate = convertToShamsi2(currentISODate);
-        const [shamsiYear, shamsiMonth, shamsiDay] =
-          currentShamsiDate.split("-");
+        const [shamsiYear, shamsiMonth, shamsiDay] = currentShamsiDate.split("-");
 
         const modifiedData: IChangeAdvisor = {
           id: formData.wholeId,
@@ -121,13 +116,8 @@ export function EditStudentDialog({
       // toast.dismiss(loadingToastId);
       let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";
       if (error instanceof Error) {
-        if (
-          error.message.includes(
-            "integrity error! student has another advisor!"
-          )
-        ) {
-          errorMessage =
-            "امکان تعویض مشاور نیست. لطفا ابتدا در واحد حسابداری دانش آموز را متوقف کنید!";
+        if (error.message.includes("integrity error! student has another advisor!")) {
+          errorMessage = "امکان تعویض مشاور نیست. لطفا ابتدا در واحد حسابداری دانش آموز را متوقف کنید!";
         }
       }
       toast.error(errorMessage);
@@ -139,32 +129,17 @@ export function EditStudentDialog({
       <DialogContent className="bg-slate-100 !rounded-[10px] h-screen md:h-fit flex flex-col items-center">
         <DialogHeader className="w-full">
           <DialogTitle>ویرایش اطلاعات</DialogTitle>
-          <DialogDescription>
-            بعد از انجام ویرایش برای ذخیره اطلاعات روی ثبت ویرایش کلیک کنید
-          </DialogDescription>
+          <DialogDescription>بعد از انجام ویرایش برای ذخیره اطلاعات روی ثبت ویرایش کلیک کنید</DialogDescription>
         </DialogHeader>
         <div className="py-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="flex flex-col gap-4 max-h-[65vh] overflow-y-scroll py-4">
                 <div className="flex gap-2">
-                  <CustomEditInput
-                    control={form.control}
-                    name="first_name"
-                    label="نام"
-                  />
-                  <CustomEditInput
-                    control={form.control}
-                    name="last_name"
-                    label="نام خانوادگی"
-                  />
+                  <CustomEditInput control={form.control} name="first_name" label="نام" />
+                  <CustomEditInput control={form.control} name="last_name" label="نام خانوادگی" />
                 </div>
-                <CustomEditInput
-                  control={form.control}
-                  name="phone_number"
-                  label="شماره همراه"
-                  customclass="w-[90%]"
-                />
+                <CustomEditInput control={form.control} name="phone_number" label="شماره همراه" customclass="w-[90%]" />
                 <CustomEditInput
                   control={form.control}
                   name="parent_phone"
@@ -177,27 +152,14 @@ export function EditStudentDialog({
                   label="شماره تلفن منزل"
                   customclass="w-[90%]"
                 />
-                <CustomEditInput
-                  control={form.control}
-                  name="school"
-                  label="نام مدرسه"
-                  customclass="w-[90%]"
-                />
+                <CustomEditInput control={form.control} name="school" label="نام مدرسه" customclass="w-[90%]" />
                 <FieldGrade form={form} />
-                <div className="flex gap-5">
-                  <SelectStudentAdvisor
-                    form={form}
-                    memoizedAdvisors={advisors}
-                  />
-                  <DateAndTime2 form={form} />
-                </div>
+                <DateAndTime2 form={form} />
+                <SelectStudentAdvisor form={form} memoizedAdvisors={advisors} />
               </div>
               <DialogFooter>
                 <div className="flex justify-between items-center w-full pt-4">
-                  <Button
-                    type="submit"
-                    className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
-                  >
+                  <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2">
                     ثبت ویرایش
                   </Button>
                   <DialogClose asChild>
