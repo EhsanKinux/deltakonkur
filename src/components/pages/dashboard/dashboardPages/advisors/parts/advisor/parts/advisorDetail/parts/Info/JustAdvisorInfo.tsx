@@ -13,14 +13,22 @@ import { useEffect } from "react";
 const JustAdvisorInfo = ({
   advisorData,
   userRole,
-  // advisorDetailData,
-}: {
+}: // advisorDetailData,
+{
   advisorData: AdvisorData | null;
   userRole: number | null;
   // advisorDetailData: AdvisorDataResponse | null;
 }) => {
   const advisorInfo = appStore((state) => state.advisorInfo);
   const { fetchAdvisorInfo } = useAdvisorsList();
+
+  const levelMapping: { [key in "1" | "2" | "3" | "4" | "5"]: string } = {
+    "1": "سطح 1",
+    "2": "سطح 2",
+    "3": "سطح 3",
+    "4": "ارشد 1",
+    "5": "ارشد 2",
+  };
 
   useEffect(() => {
     if (userRole === 7 && advisorData) {
@@ -38,6 +46,8 @@ const JustAdvisorInfo = ({
     parseInt(advisorInfo?.stopped_students ?? "0"),
     parseInt(advisorInfo?.cancelled_students ?? "0")
   );
+
+  const levelLabel = advisorInfo?.level && levelMapping[advisorInfo.level as keyof typeof levelMapping];
 
   return (
     <div className="flex flex-col xl:flex-row justify-between w-full gap-3 p-4 mt-4 rounded-xl shadow-form relative bg-slate-100">
@@ -63,6 +73,11 @@ const JustAdvisorInfo = ({
           <div className="flex gap-2 items-center">
             <h2 className="text-base font-medium">
               درصد رضایت: <span className="text-blue-500 font-semibold">{activePercentage}%</span>
+            </h2>
+          </div>
+          <div className="flex gap-2 items-center">
+            <h2 className="text-base font-medium">
+              سطج مشاور : <span className="text-blue-500 font-semibold">{levelLabel}</span>
             </h2>
           </div>
           {/* <div className="flex gap-2 items-center">
