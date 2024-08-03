@@ -30,18 +30,21 @@ const CancelConfirmation = ({
         await cancelStudent(response.id);
         toast.dismiss(cancelToastId);
         toast.success(`کنسل کردن ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       } else {
         toast.dismiss(loadingToastId);
         toast.error("این دانش‌آموز مشاور ندارد!");
       }
       if (response?.detail === "student-advisor not found") {
         toast.error("این دانش‌آموز مشاور ندارد!");
-      } 
+      }
     } catch (error) {
       toast.dismiss(loadingToastId);
       if (error) {
         toast.error("این دانش‌آموز مشاور ندارد!");
-      }else {
+      } else {
         toast.error("خطایی رخ داده است!");
       }
     } finally {

@@ -1,9 +1,14 @@
 import { cancel_student, check_student_is_active } from "@/lib/apis/canceling/service";
+import { CancelStudentBody } from "./interface";
 
 export const useCanceling = () => {
   const cancelStudent = async (studentId: string) => {
     try {
-      const response = await cancel_student({ studentId });
+      const body: CancelStudentBody = {
+        ended_date: new Date().toISOString(), // Current time in ISO format
+      };
+
+      const response = await cancel_student({ studentId, body });
       if (response === null || response.ok) {
         // deleteFormData(studentId);
       } else {
@@ -11,6 +16,7 @@ export const useCanceling = () => {
       }
     } catch (error) {
       console.error("Failed to delete student:", error);
+      throw error;
     }
   };
 
