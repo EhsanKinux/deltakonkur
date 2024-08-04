@@ -2,10 +2,10 @@ import { cancel_student, check_student_is_active } from "@/lib/apis/canceling/se
 import { CancelStudentBody } from "./interface";
 
 export const useCanceling = () => {
-  const cancelStudent = async (studentId: string) => {
+  const cancelStudent = async (studentId: string, cancelDate: string) => {
     try {
       const body: CancelStudentBody = {
-        ended_date: new Date().toISOString(), // Current time in ISO format
+        ended_date: cancelDate ? cancelDate : new Date().toISOString(),
       };
 
       const response = await cancel_student({ studentId, body });
