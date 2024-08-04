@@ -49,6 +49,7 @@ export const useStudentList = () => {
       }
     } catch (error) {
       console.error("Failed to delete student:", error);
+      throw error;
     }
   };
 
@@ -175,7 +176,6 @@ export const useStudentList = () => {
     [setError, setLoading, setStudentInfo]
   );
 
-
   return {
     deleteStudent,
     getData,
@@ -187,6 +187,6 @@ export const useStudentList = () => {
     setAdvisorForStudent,
     fetchStudentInformation,
     studentInformation,
-    changeAdvisorOfStudent
+    changeAdvisorOfStudent,
   };
 };
