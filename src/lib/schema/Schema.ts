@@ -72,7 +72,7 @@ export const editStudentFormSchema = () =>
     field: z.string().min(1, { message: "رشته تحصیلی دانش آموز را تعیین کنید!" }),
     grade: z.string().min(1, { message: "مقطع تحصیلی دانش آموز را تعیین کنید!" }),
     created: z.string().min(1, { message: "تاریخ ثبت دانش آموز را تعیین کنید!" }),
-    advisor: z.string().min(1, { message: "مشاور دانش آموز را تعیین کنید!" }),
+    advisor: z.string().optional(),
     date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
   });
 

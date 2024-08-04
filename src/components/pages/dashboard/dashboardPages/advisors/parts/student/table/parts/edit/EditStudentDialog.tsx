@@ -24,7 +24,8 @@ import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { appStore } from "@/lib/store/appStore";
 import Birthdate from "./parts/dateAndTime/Birthdate";
-import { convertToGregorian } from "@/lib/utils/date/convertDate";
+import { convertToGregorian, convertToShamsi2 } from "@/lib/utils/date/convertDate";
+import { toast } from "sonner";
 
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo, setAdvisorForStudent } = useStudentList();
@@ -78,26 +79,44 @@ export function EditStudentDialog() {
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    // console.log("Form submitted with data:", data);
-    if (data && studentInfo) {
-      const { advisor, ...restData } = data;
-      const modifiedData: ISubmitStudentRegisterService = {
-        ...restData,
-        id: String(studentInfo.id),
-        created: String(data.created),
-      };
-      console.table(modifiedData);
-      if (advisor) {
-        // console.log("stID:", studentInfo.id, "advID:", advisor);
+    // console.log("Form submitted with data:", data.date_of_birth);
+    const loadingToastId = toast.loading("در حال ثبت اطلاعات...");
+    try {
+      if (data && studentInfo) {
+        const { advisor, ...restData } = data;
+        const modifiedData: ISubmitStudentRegisterService = {
+          ...restData,
+          id: String(studentInfo.id),
+          date_of_birth: convertToShamsi2(data.date_of_birth),
+          created: String(data.created),
+        };
+
+        // console.table(modifiedData);
+
+        // Update student information
         await updateStudentInfo(modifiedData);
-        await setAdvisorForStudent({
-          studentId: studentInfo.id,
-          advisorId: advisor,
-        });
+
+        // Conditionally set advisor if selected
+        if (advisor) {
+          await setAdvisorForStudent({
+            studentId: studentInfo.id,
+            advisorId: advisor,
+          });
+        }
+
+        toast.dismiss(loadingToastId);
+        toast.success("ویرایش اطلاعات با موفقیت انجام شد!");
+
+        setTimeout(() => {
+          window.location.reload();
+          dialogCloseRef.current?.click(); // Trigger dialog close
+        }, 2000);
       }
+    } catch (error) {
+      toast.dismiss(loadingToastId);
+      toast.error("خطا در ویرایش اطلاعات. لطفا دوباره تلاش کنید.");
+      console.error(error);
     }
-    window.location.reload();
-    dialogCloseRef.current?.click(); // Trigger dialog close
   };
 
   return (

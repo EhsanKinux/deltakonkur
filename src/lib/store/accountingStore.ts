@@ -12,7 +12,8 @@ export const accountingStore = create<IAccountStore>((set) => ({
   addAllstudents: (student: IallStudents) => {
     const convertedData = {
       ...student,
-      created: student.created ? convertToShamsi(student.created) : student.created,
+      created: student.created ? convertToShamsi(student.created) : "-",
+      date_of_birth: student.date_of_birth ? student.date_of_birth : "-",
     };
 
     set((state) => {
