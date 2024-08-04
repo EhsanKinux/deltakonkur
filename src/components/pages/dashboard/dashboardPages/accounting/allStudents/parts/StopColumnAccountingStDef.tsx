@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { IFormattedStudentAdvisor } from "./interfaces";
-import StDialogButtons from "./studentDialogButton/StDialogButtons";
+import StopStDialogButtons from "./studentDialogButton/StopStDialogButtons";
 
-export const accountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] = [
+export const stopAccountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] = [
   {
     accessorKey: "first_name",
     header: "نام",
@@ -59,7 +59,7 @@ export const accountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] = [
     id: "actions",
     cell: ({ row }) => {
       const rowData = row.original;
-      return <StDialogButtons rowData={rowData} />;
+      return <StopStDialogButtons rowData={rowData} />;
     },
   },
 ];
