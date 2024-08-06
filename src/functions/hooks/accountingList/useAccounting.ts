@@ -64,19 +64,26 @@ export const useAccounting = () => {
   }, []);
 
   const stopStudent = useCallback(
-    async ({ id, studentId, advisorId }: { id: string; studentId: string; advisorId: string }) => {
+    async ({
+      id,
+      studentId,
+      advisorId,
+      stopDate,
+    }: {
+      id: string;
+      studentId: string;
+      advisorId: string;
+      stopDate: string;
+    }) => {
       setLoading(true);
       setError("");
       try {
-        const now = new Date();
-        const stopDate = new Date(now);
-
         const body: IStopStudent = {
           id: String(id),
           student: String(studentId),
           advisor: String(advisorId),
           status: "stop",
-          stop_date: stopDate.toISOString(),
+          stop_date: stopDate,
         };
         await stop_student_advisor(body);
       } catch (err) {
