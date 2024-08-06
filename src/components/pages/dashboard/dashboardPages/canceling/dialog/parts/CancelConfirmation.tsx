@@ -25,9 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 export const cancelFormSchema = () =>
   z.object({
-    cancelDate: z.string().min(1, {
-      message: "تاریخ کنسلی نمی‌تواند خالی باشد.",
-    }),
+    cancelDate: z.string().optional(),
   });
 
 const CancelConfirmation = ({
@@ -54,7 +52,10 @@ const CancelConfirmation = ({
       if (response?.status === "active") {
         toast.dismiss(loadingToastId);
         const cancelToastId = toast.loading("در حال کنسل کردن...");
-        await cancelStudent(response.id, data.cancelDate);
+
+        const cancelDate = data.cancelDate || new Date().toISOString();
+
+        await cancelStudent(response.id, cancelDate);
         toast.dismiss(cancelToastId);
         toast.success(`کنسل کردن ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`);
         setTimeout(() => {
