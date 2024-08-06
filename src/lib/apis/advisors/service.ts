@@ -26,3 +26,9 @@ export const get_students_of_each_advisor = ({ advisorId }: { advisorId: string 
 
 export const get_wage_of_advisor = ({ advisorId }: { advisorId: string }) =>
   fetchInstance(`api/register/calculate-wage/${advisorId}/`, { method: "GET" });
+
+export const get_student_advisor_data = (studentId: string) =>
+  fetchInstance(`api/register/student-advisors/student/${studentId}/`, { method: "GET" });
+
+export const delete_student_advisro = (id: string) =>
+  fetchInstance(`api/register/student-advisors/${id}/`, { method: "DELETE" });

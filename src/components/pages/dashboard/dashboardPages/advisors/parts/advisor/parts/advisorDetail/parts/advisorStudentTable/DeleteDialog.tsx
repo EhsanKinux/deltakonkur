@@ -10,6 +10,26 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
+import { useEffect } from "react";
+import { toast } from "sonner";
+
+interface StudentAdvisorEntry {
+  id: string;
+  student: string;
+  advisor: string;
+  status: string;
+  started_date: string;
+  ended_date: string | null;
+  solar_date_day: number;
+  solar_date_month: number;
+  solar_date_year: number;
+  expire_date: string;
+  stop_date: string | null;
+}
+
+// Type for the entire student advisor data array
+type StudentAdvisorData = StudentAdvisorEntry[];
 
 const DeleteDialog = ({
   setDeleteDialogOpen,
@@ -18,27 +38,46 @@ const DeleteDialog = ({
   setDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   formData: StudentWithDetails;
 }) => {
-  //   const { deleteStudent } = useStudentList();
+  const { fetchStudentAdvisorData, studentAdvisorData, deleteStudentAdvisor } = useAdvisorsList();
+
+  useEffect(() => {
+    fetchStudentAdvisorData(formData.id);
+  }, [fetchStudentAdvisorData, formData.id]);
 
   const handleDeleteConfirm = async () => {
     console.log(formData);
-    // const loadingToastId = toast.loading("در حال حذف کردن...");
-    // try {
-    //   await deleteStudent(formData?.id);
-    //   toast.dismiss(loadingToastId);
-    //   toast.success(`حذف کردن ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`);
-    //   setTimeout(() => {
-    //     setDeleteDialogOpen(false);
-    //     window.location.reload();
-    //   }, 2000);
-    // } catch (error) {
-    //   toast.dismiss(loadingToastId);
-    //   toast.error("خطایی رخ داده است");
-    //   // toast.error(error);
-    // } finally {
-    //   setDeleteDialogOpen(false);
-    // }
-    setDeleteDialogOpen(false);
+    if (!studentAdvisorData) {
+      console.error("No student advisor data available.");
+      return;
+    }
+
+    // Find the student advisor with "active" status and matching advisor ID
+    const activeAdvisor = (studentAdvisorData as StudentAdvisorData).find(
+      (advisor) => advisor.advisor === formData.advisor
+    );
+
+    if (!activeAdvisor) {
+      console.error("No active student advisor found with matching advisor ID.");
+      return;
+    }
+
+    try {
+      // Call the delete function with the id of the active advisor
+      await deleteStudentAdvisor(activeAdvisor.id);
+      console.log(activeAdvisor);
+      console.log("Active student advisor deleted successfully.");
+      toast.success(`حذف با موفقیت انجام شد!`);
+
+      setTimeout(() => {
+        setDeleteDialogOpen(false);
+        window.location.reload();
+      }, 2000);
+    } catch (error) {
+      console.error("Failed to delete student advisor:", error);
+      toast.error("خطایی رخ داده است");
+    } finally {
+      setDeleteDialogOpen(false);
+    }
   };
 
   return (

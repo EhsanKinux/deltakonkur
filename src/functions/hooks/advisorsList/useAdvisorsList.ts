@@ -3,8 +3,10 @@ import {
   advisor_students,
   advisor_update,
   advisors_delete,
+  delete_student_advisro,
   get_advisor_info,
   get_registered_advisors,
+  get_student_advisor_data,
   get_student_of_advisor,
   get_students_of_each_advisor,
   get_wage_of_advisor,
@@ -36,6 +38,7 @@ export const useAdvisorsList = () => {
   useState<AdvisorDataResponse | null>(null);
   const [wageLoad, setWageLoad] = useState(false);
   const [wageData, setWageData] = useState();
+  const [studentAdvisorData, setStudentAdvisorData] = useState(null);
 
   const processData = (response: any): AdvisorDataResponse => {
     const result: AdvisorDataResponse = {
@@ -164,7 +167,7 @@ export const useAdvisorsList = () => {
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
-          throw err.message
+          throw err.message;
         } else {
           setError("Failed to fetch student information");
         }
@@ -245,6 +248,51 @@ export const useAdvisorsList = () => {
     [wageLoad]
   );
 
+  const fetchStudentAdvisorData = useCallback(
+    async (studentId: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await get_student_advisor_data(studentId);
+        setStudentAdvisorData(data);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to fetch student advisor data");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading]
+  );
+
+  const deleteStudentAdvisor = useCallback(
+    async (id: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await delete_student_advisro(id);
+        if (response === null || response.ok) {
+          // Optionally, update your local state to remove the deleted advisor if needed
+          console.log("Student advisor deleted successfully.");
+        } else {
+          console.error("Failed to delete student advisor: ", response.statusText);
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to delete student advisor");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading]
+  );
+
   return {
     getAdvisorsData,
     advisorDelete,
@@ -261,5 +309,8 @@ export const useAdvisorsList = () => {
     advisorDetailStudent,
     error,
     loading,
+    studentAdvisorData,
+    fetchStudentAdvisorData,
+    deleteStudentAdvisor,
   };
 };
