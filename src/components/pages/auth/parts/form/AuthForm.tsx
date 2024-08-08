@@ -17,7 +17,7 @@ import { AxiosError } from "axios";
 
 const AuthForm = () => {
   const navigate = useNavigate();
-  const { setTokens, setUserRole, userRole } = authStore();
+  const { setTokens, setUserRoles, userRoles } = authStore();
   const [isloading, setIsLoading] = useState(false);
   const [isRoleFetching, setIsRoleFetching] = useState(false);
 
@@ -31,10 +31,10 @@ const AuthForm = () => {
   });
 
   useEffect(() => {
-    if (!isRoleFetching && userRole) {
+    if (!isRoleFetching && userRoles && userRoles.length > 0) {
       navigate("/dashboard");
     }
-  }, [isRoleFetching, userRole, navigate]);
+  }, [isRoleFetching, userRoles, navigate]);
 
   const fetchUserRole = async (access: string) => {
     setIsRoleFetching(true);
@@ -45,9 +45,9 @@ const AuthForm = () => {
         },
       });
 
-      const { role } = roleResponse.data;
-      setUserRole(role);
-      return role;
+      const { roles } = roleResponse.data;
+      setUserRoles(roles);
+      return roles;
     } catch (error) {
       const axiosError = error as AxiosError;
       const errorMessage =

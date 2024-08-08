@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 import { BASE_API_URL } from "@/lib/variables/variables";
 
 const RedirectRoute: React.FC = () => {
-  const { userRole, setUserRole, setTokens } = authStore();
+  const { userRoles, setUserRoles, setTokens } = authStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,8 +21,8 @@ const RedirectRoute: React.FC = () => {
               Authorization: `Bearer ${access}`,
             },
           });
-          const { role } = roleResponse.data;
-          setUserRole(role);
+          const { roles } = roleResponse.data;
+          setUserRoles(roles);
           setTokens(access, refresh);
           navigate("/dashboard");
         } catch (error) {
@@ -34,9 +34,9 @@ const RedirectRoute: React.FC = () => {
       }
     };
     checkAuth();
-  }, [navigate, setTokens, setUserRole]);
+  }, [navigate, setTokens, setUserRoles]);
 
-  if (userRole !== null) {
+  if (userRoles !== null && userRoles.length > 0) {
     return <Navigate to="/dashboard" />;
   } else {
     return <Navigate to="/auth/signIn" />;

@@ -4,29 +4,29 @@ import Cookies from "js-cookie";
 interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
-  userRole: number | null;
+  userRoles: number[] | null;
   setTokens: (access: string, refresh: string) => void;
-  setUserRole: (role: number) => void;
+  setUserRoles: (roles: number[]) => void;
   clearAuth: () => void;
 }
 
 export const authStore = create<AuthState>((set) => ({
   accessToken: Cookies.get("accessToken") || null,
   refreshToken: Cookies.get("refreshToken") || null,
-  userRole: Cookies.get("userRole") ? parseInt(Cookies.get("userRole") as string, 10) : null,
+  userRoles: Cookies.get("userRoles") ? JSON.parse(Cookies.get("userRoles") as string) : null,
   setTokens: (access, refresh) => {
     Cookies.set("accessToken", access, { sameSite: "strict" });
     Cookies.set("refreshToken", refresh, { sameSite: "strict" });
     set({ accessToken: access, refreshToken: refresh });
   },
-  setUserRole: (role) => {
-    Cookies.set("userRole", role.toString(), { sameSite: "strict" });
-    set({ userRole: role });
+  setUserRoles: (roles) => {
+    Cookies.set("userRoles", JSON.stringify(roles), { sameSite: "strict" });
+    set({ userRoles: roles });
   },
   clearAuth: () => {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
-    Cookies.remove("userRole");
-    set({ accessToken: null, refreshToken: null, userRole: null });
+    Cookies.remove("userRoles");
+    set({ accessToken: null, refreshToken: null, userRoles: null });
   },
 }));

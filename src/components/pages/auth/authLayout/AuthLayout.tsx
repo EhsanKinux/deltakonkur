@@ -9,7 +9,7 @@ import { BASE_API_URL } from "@/lib/variables/variables";
 // import Wallpaper from "@/assets/images/bgwallpaper.png";
 
 const AuthLayout = () => {
-  const { setUserRole, setTokens } = authStore();
+  const { setUserRoles, setTokens } = authStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,8 +24,8 @@ const AuthLayout = () => {
               Authorization: `Bearer ${access}`,
             },
           });
-          const { role } = roleResponse.data;
-          setUserRole(role);
+          const { roles } = roleResponse.data;
+          setUserRoles(roles);
           setTokens(access, refresh);
           navigate("/dashboard");
         } catch (error) {
@@ -37,7 +37,7 @@ const AuthLayout = () => {
       }
     };
     checkAuth();
-  }, [navigate, setTokens, setUserRole]);
+  }, [navigate, setTokens, setUserRoles]);
   return (
     <div className="w-full h-screen flex justify-center items-center bg-slate-300 relative">
       <div className="min-h-screen flex justify-center items-center z-10 w-full absolute left-0 right-0">

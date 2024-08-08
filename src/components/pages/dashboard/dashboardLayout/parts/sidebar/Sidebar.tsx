@@ -18,30 +18,31 @@ export interface SidebarLink {
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { userRole } = authStore();
+  const { userRoles } = authStore();
   const clearAuth = authStore((state) => state.clearAuth);
 
-  const filterLinksByRole = (
+  // Function to filter links based on user roles
+  const filterLinksByRoles = (
     links: SidebarLink[],
-    role: number | null
+    roles: number[] | null
   ): SidebarLink[] => {
-    if (role === null) {
+    if (roles === null) {
       return [];
     }
     return links
-      .filter((link) => link.roles.includes(role)) // Filter based on the role
+      .filter((link) => link.roles.some((role) => roles.includes(role))) // Filter based on any matching role
       .map((link) => {
         if (link.children) {
           return {
             ...link,
-            children: filterLinksByRole(link.children, role),
+            children: filterLinksByRoles(link.children, roles),
           };
         }
         return link;
       });
   };
 
-  const filteredLinks = filterLinksByRole(sidebarLinks, userRole);
+  const filteredLinks = filterLinksByRoles(sidebarLinks, userRoles);
 
   const handleLogout = () => {
     clearAuth();

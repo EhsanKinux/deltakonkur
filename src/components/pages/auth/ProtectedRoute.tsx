@@ -8,13 +8,13 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, requiredRole = [] }) => {
-  const { accessToken, userRole } = authStore();
+  const { accessToken, userRoles } = authStore();
 
   if (!accessToken) {
     return <Navigate to="/auth/signIn" />;
   }
 
-  if (userRole === null || !requiredRole?.includes(userRole)) {
+  if (userRoles === null || !userRoles.some((role) => requiredRole.includes(role))) {
     return <Navigate to="/unauthorized" />;
   }
 
