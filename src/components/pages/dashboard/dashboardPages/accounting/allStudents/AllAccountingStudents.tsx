@@ -67,7 +67,15 @@ const AllAccountingStudents = () => {
   }, [dataLoaded, studentAdvisorData]);
 
   const activeStudents = formattedData.filter((student) => student.status === "active");
-  const canceledStudents = formattedData.filter((student) => student.status === "cancel");
+  const canceledStudents = formattedData
+    .filter((student) => student.status === "cancel")
+    .map((student) => {
+      const daysLeft = parseInt(student.left_days_to_expire, 10);
+      return {
+        ...student,
+        left_days_to_expire: isNaN(daysLeft) || daysLeft < 0 ? "-" : student.left_days_to_expire,
+      };
+    });
   const stoppedStudents = formattedData.filter((student) => student.status === "stop");
 
   if (!dataLoaded) {
