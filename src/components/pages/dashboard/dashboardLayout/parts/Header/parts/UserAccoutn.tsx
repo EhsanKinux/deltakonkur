@@ -10,7 +10,7 @@ import exitIcon from "@/assets/icons/exit.svg";
 import profileIcon from "@/assets/icons/profile.svg";
 import downIcon from "@/assets/icons/down.svg";
 import { IUserDetail } from "@/components/pages/dashboard/dashboardPages/users/userDetail/interface";
-import { getRoleName } from "@/lib/utils/roles/Roles";
+// import { getRoleName } from "@/lib/utils/roles/Roles";
 import { useNavigate } from "react-router-dom";
 import { authStore } from "@/lib/store/authStore";
 import Avvvatars from "avvvatars-react";
@@ -21,7 +21,7 @@ const UserAccoutn = ({ user }: { user: IUserDetail | undefined }) => {
 
   // Helper function to get initials from names
   // Determine the role name based on user's role
-  const roleName = user ? getRoleName(user.role) : "نامشخص";
+  // const roleName = user ? getRoleName(user.role) : "نامشخص";
 
   const goToProfile = () => {
     navigate("/dashboard");
@@ -40,7 +40,7 @@ const UserAccoutn = ({ user }: { user: IUserDetail | undefined }) => {
             <span>
               {user?.first_name} {user?.last_name}
             </span>
-            <span className="text-black text-sm font-light">{roleName}</span>
+            {/* <span className="text-black text-sm font-light">{roleName}</span> */}
           </div>
 
           <Avvvatars value={user ? `${user.first_name} ${user.last_name}` : "?"} style="shape" size={45} border />

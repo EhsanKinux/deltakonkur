@@ -40,14 +40,14 @@ export interface AdvisorData {
 }
 
 const JustAdvisorDetail = () => {
-  const { accessToken, userRole, setUserRole } = authStore();
+  const { accessToken, userRoles } = authStore();
   const { advisorDetailStudent, getStudents } = useAdvisorsList();
   const navigate = useNavigate();
   const [advisorData, setAdvisorData] = useState<AdvisorData | null>(null);
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
 
   useEffect(() => {
-    if (userRole === 7) {
+    if (userRoles && userRoles.includes(7)) {
       const fetchUserData = async () => {
         try {
           const roleResponse = await api.get(`${BASE_API_URL}api/auth/current-user/`, {
@@ -56,8 +56,6 @@ const JustAdvisorDetail = () => {
             },
           });
           const userData = roleResponse.data;
-          // setCurrentUser(userData); // Set the user information
-          setUserRole(userData.role); // Update the user role in the store
 
           // Fetch advisor data based on user ID
           const advisorResponse = await axios.get(`${BASE_API_URL}api/advisor/advisor/from-user/${userData.id}/`, {
@@ -73,13 +71,13 @@ const JustAdvisorDetail = () => {
       };
       fetchUserData();
     }
-  }, [navigate, userRole, accessToken, setUserRole]);
+  }, [navigate, userRoles, accessToken]);
 
   useEffect(() => {
-    if (userRole === 7 && advisorData) {
+    if (userRoles && userRoles.includes(7) && advisorData) {
       getStudents(String(advisorData?.id));
     }
-  }, [advisorData, getStudents, userRole]);
+  }, [advisorData, getStudents, userRoles]);
 
   useEffect(() => {
     if (advisorDetailStudent) {
@@ -95,13 +93,13 @@ const JustAdvisorDetail = () => {
     }
   }, [advisorDetailStudent]);
 
-  const goToAdisors = () => {
-    if (userRole === 7) {
+  const goToAdvisors = () => {
+    if (userRoles && userRoles.includes(7)) {
       navigate("/dashboard");
     }
   };
 
-  if (!userRole) {
+  if (!userRoles) {
     return <div>Loading...</div>;
   }
 
@@ -109,12 +107,12 @@ const JustAdvisorDetail = () => {
     <div className="h-screen">
       <Button
         className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600"
-        onClick={goToAdisors}
+        onClick={goToAdvisors}
       >
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
-      <JustAdvisorInfo advisorData={advisorData} userRole={userRole} />
+      <JustAdvisorInfo advisorData={advisorData} userRole={7} />
       <Tabs defaultValue="studentTable" className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger value="studentTable" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">

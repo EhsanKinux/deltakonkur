@@ -6,20 +6,20 @@ import { useEffect, useState } from "react";
 import { IUserDetail } from "../../../dashboardPages/users/userDetail/interface";
 
 export default function DHeader() {
-  const { userRole } = authStore();
+  const { userRoles } = authStore();
   const { fetchUserData } = useAuth();
   const [user, setUser] = useState<IUserDetail>();
 
   useEffect(() => {
     const fetchData = async () => {
-      if (String(userRole)) {
+      if (userRoles) {
         const userdata = await fetchUserData();
         setUser(userdata);
       }
     };
 
     fetchData();
-  }, [fetchUserData, userRole]);
+  }, [fetchUserData, userRoles]);
 
   // console.log(userRole);
   return (

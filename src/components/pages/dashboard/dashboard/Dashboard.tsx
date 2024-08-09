@@ -3,11 +3,11 @@ import { authStore } from "@/lib/store/authStore";
 import { useEffect, useState } from "react";
 import { IUserDetail } from "../dashboardPages/users/userDetail/interface";
 import profileCover from "@/assets/images/cover-01.png";
-import { getRoleName } from "@/lib/utils/roles/Roles";
+// import { getRoleName } from "@/lib/utils/roles/Roles";
 import { useProfile } from "@/functions/hooks/profile/useProfile";
 
 const Dashboard = () => {
-  const { userRole } = authStore();
+  const { userRoles } = authStore();
   const { fetchUserData } = useAuth();
   const [user, setUser] = useState<IUserDetail>();
 
@@ -15,7 +15,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (String(userRole)) {
+      if (userRoles) {
         const userdata = await fetchUserData();
         setUser(userdata);
       }
@@ -24,9 +24,9 @@ const Dashboard = () => {
     fetchData();
     getCountingStudents();
     getTotalStudent();
-  }, [fetchUserData, userRole, getCountingStudents, getTotalStudent]);
+  }, [fetchUserData, userRoles, getCountingStudents, getTotalStudent]);
 
-  const roleName = user ? getRoleName(user?.role) : "نامشخص";
+  // const roleName = user ? getRoleName(user?.roles) : "نامشخص";
 
   return (
     <div className="flex flex-col justify-center">
@@ -43,11 +43,11 @@ const Dashboard = () => {
           <span className="text-black text-nowrap text-2xl">
             {user?.first_name} {user?.last_name}
           </span>
-          <span className="text-black text-xl font-light">{roleName}</span>
+          {/* <span className="text-black text-xl font-light">{roleName}</span> */}
           <span className="text-black text-nowrap font-thin">شماره همراه : {user?.phone_number}</span>
         </div>
       </div>
-      {userRole === 0 && (
+      {userRoles && userRoles.includes(0) && (
         <div className="mt-8 flex justify-center gap-8">
           <div className="flex flex-col items-center bg-blue-100 p-4 rounded-lg shadow-lg">
             <span className="text-4xl font-bold text-blue-600">{totalStudents}</span>
