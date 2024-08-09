@@ -6,7 +6,7 @@ const CustomUserInput = ({
   control,
   name,
   label,
-//   customclass,
+  //   customclass,
   placeHolder,
 }: {
   control: Control<
@@ -16,13 +16,12 @@ const CustomUserInput = ({
       last_name: string;
       national_id: string;
       phone_number: string;
-      role: string;
     },
     undefined
   >;
-  name: "first_name" | "last_name" | "phone_number" | "national_id" | "role";
+  name: "first_name" | "last_name" | "phone_number" | "national_id";
   label: string;
-//   customclass?: string;
+  //   customclass?: string;
   placeHolder: string;
 }) => {
   return (

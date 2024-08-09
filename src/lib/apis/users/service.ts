@@ -1,11 +1,23 @@
 import { IUserDetail } from "@/components/pages/dashboard/dashboardPages/users/userDetail/interface";
 import { fetchInstance } from "../fetch-config";
-import { ISubmitUserRegisteration } from "./interface";
+import { ISubmitUserRegisteration, RoleChangeParams } from "./interface";
 
 export const get_all_users = () => fetchInstance(`api/auth/users/`, { method: "GET" });
 
 export const submit_user_register_form = (body: ISubmitUserRegisteration) =>
   fetchInstance(`api/auth/users/`, { method: "POST", body: JSON.stringify(body) });
+
+export const submit_user_roles = ({ userId, body }: RoleChangeParams) =>
+  fetchInstance(`api/auth/role/add/${userId}/`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+
+export const remove_user_roles = ({ userId, body }: RoleChangeParams) =>
+  fetchInstance(`api/auth/role/remove/${userId}/`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
 
 export const delete_user = (userId: string) => fetchInstance(`api/auth/users/${userId}`, { method: "DELETE" });
 
