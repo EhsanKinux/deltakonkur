@@ -36,7 +36,6 @@ const UserDetails = () => {
       last_name: "",
       national_id: "",
       phone_number: "",
-      role: "",
     },
   });
 
@@ -48,7 +47,6 @@ const UserDetails = () => {
         last_name: userInfo.last_name,
         national_id: userInfo.national_id,
         phone_number: userInfo.phone_number,
-        role: userInfo.role,
       });
     }
   }, [form, userInfo]);
@@ -108,7 +106,7 @@ const UserDetails = () => {
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
-      <section className="mt-8 flex flex-col items-center justify-center bg-slate-100 rounded-xl overflow-hidden pb-10 shadow-form">
+      <section className="mt-8 flex flex-col items-center justify-center bg-slate-100 rounded-xl pb-10 shadow-form">
         <div className="w-full bg-slate-400 rounded-b-full flex justify-center items-center gap-3 flex-col p-5">
           {/* <img src={AddAdvisor} width={500} /> */}
           <h3 className="text-3xl text-white font-bold">
@@ -137,7 +135,10 @@ const UserDetails = () => {
                 label="شماره همراه"
                 placeHolder="شماره همراه کاربر"
               />
-              <UserDetailSelectRoles form={form} />
+              <UserDetailSelectRoles
+                userId={userInfo?.id ? Number(userInfo.id) : null}
+                initialRoles={userInfo?.roles || []}
+              />
             </div>
 
             <div className="flex justify-center items-center w-full mt-4 gap-4">

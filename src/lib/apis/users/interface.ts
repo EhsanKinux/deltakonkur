@@ -3,5 +3,11 @@ export interface ISubmitUserRegisteration {
   last_name: string;
   national_id: string;
   phone_number: string;
-  role: string;
+}
+
+export interface RoleChangeParams {
+  userId: number;
+  body: {
+    role: number;
+  };
 }
