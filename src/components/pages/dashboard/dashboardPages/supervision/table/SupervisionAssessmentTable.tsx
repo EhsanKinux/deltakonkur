@@ -3,6 +3,7 @@ import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, Colu
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { IStudentAssessment } from "../assess/interface";
+import { useNavigate } from "react-router-dom";
 
 interface SupervisionAssessmentTableProps {
   columns: ColumnDef<IStudentAssessment>[];
@@ -10,6 +11,7 @@ interface SupervisionAssessmentTableProps {
 }
 
 export function SupervisionAssessmentTable({ columns, data }: SupervisionAssessmentTableProps) {
+  const navigate = useNavigate();
   const table = useReactTable({
     data,
     columns,
@@ -22,6 +24,14 @@ export function SupervisionAssessmentTable({ columns, data }: SupervisionAssessm
     },
   });
 
+  const handleRowClick = (studentId: string) => {
+    // if (
+    //   (e.target as HTMLElement).tagName.toLowerCase() !== "button" &&
+    //   (e.target as HTMLElement).tagName.toLowerCase() !== "input"
+    // ) {
+    // }
+    navigate(`/dashboard/supervision/${studentId}`);
+  };
 
   return (
     <div className="w-full overflow-auto p-10 absolute top-0 right-0 left-0 bottom-0">
@@ -46,6 +56,7 @@ export function SupervisionAssessmentTable({ columns, data }: SupervisionAssessm
                 className="hover:bg-slate-200 hover:cursor-pointer"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
+                onClick={() => handleRowClick(row.original.student)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell className="!text-center" key={cell.id}>
