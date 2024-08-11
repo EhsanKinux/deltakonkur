@@ -141,7 +141,7 @@ const UserDetails = () => {
               />
             </div>
 
-            <div className="flex justify-center items-center w-full mt-4 gap-4">
+            <div className="flex justify-center items-center flex-col md:flex-row w-full pt-4 gap-4">
               <Button type="submit" className="form-btn w-full hover:bg-blue-800">
                 {isloading ? (
                   <>
