@@ -70,10 +70,9 @@ const AllAccountingStudents = () => {
   const canceledStudents = formattedData
     .filter((student) => student.status === "cancel")
     .map((student) => {
-      const daysLeft = parseInt(student.left_days_to_expire, 10);
       return {
         ...student,
-        left_days_to_expire: isNaN(daysLeft) || daysLeft < 0 ? "-" : student.left_days_to_expire,
+        left_days_to_expire: "-",
       };
     });
   const stoppedStudents = formattedData.filter((student) => student.status === "stop");
