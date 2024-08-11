@@ -16,11 +16,12 @@ import { toast } from "sonner";
 
 const StudentAssessment = () => {
   const { studentId } = useParams();
-  const { submitAssassmentForm } = useSupervision();
+  const { submitAssassmentForm, handleStudentCallAnswering } = useSupervision();
   const { fetchStudentInfo, studentInfo } = useStudentList();
   const navigate = useNavigate();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isloading, setIsloading] = useState(false);
 
   useEffect(() => {
     if (studentId) {
@@ -74,6 +75,20 @@ const StudentAssessment = () => {
         toast.error("خطایی در ثبت نظرسنجی رخ داده است!");
       } finally {
         setIsSubmitting(false);
+      }
+    }
+  };
+
+  const handleNonResponsive = async () => {
+    if (studentId) {
+      setIsloading(true);
+      try {
+        await handleStudentCallAnswering(parseInt(studentId, 10));
+        toast.success("ثبت عدم پاسخگویی اول با موفقیت انجام شد!");
+      } catch (error) {
+        toast.error("خطایی در ثبت عدم پاسخگویی رخ داده است!");
+      } finally {
+        setIsloading(false);
       }
     }
   };
@@ -165,7 +180,7 @@ const StudentAssessment = () => {
               min={0}
               max={20}
             />
-            <div className="flex flex-col justify-center items-center w-full mt-5">
+            <div className="flex gap-2 justify-center items-center w-full mt-5">
               <Button type="submit" className="form-btn w-full hover:bg-blue-800" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
@@ -174,6 +189,21 @@ const StudentAssessment = () => {
                   </>
                 ) : (
                   "ثبت نظرسنجی"
+                )}
+              </Button>
+              <Button
+                type="reset"
+                className="w-full bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
+                onClick={handleNonResponsive}
+                disabled={isloading}
+              >
+                {isloading ? (
+                  <>
+                    <Loader2 size={20} className="animate-spin" />
+                    &nbsp; در حال ثبت...
+                  </>
+                ) : (
+                  "عدم پاسخگویی اول"
                 )}
               </Button>
             </div>
