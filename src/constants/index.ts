@@ -9,6 +9,8 @@ import contentIcon from "@/assets/icons/document-text.svg";
 import usersIcon from "@/assets/icons/profile-2user.svg";
 import addSquareIcon from "@/assets/icons/addSquare.svg";
 import sendMessageIcon from "@/assets/icons/sendmsg.svg";
+import followUpIcon from "@/assets/icons/followup.svg";
+import supervisionIcon from "@/assets/icons/box-search.svg";
 
 export const sidebarLinks = [
   {
@@ -77,6 +79,22 @@ export const sidebarLinks = [
     route: "/dashboard/supervision",
     label: "نظارت",
     roles: [0, 4],
+    children: [
+      {
+        id: 41,
+        imgURL: supervisionIcon,
+        route: "/dashboard/supervision",
+        label: "نظارت",
+        roles: [0, 3],
+      },
+      {
+        id: 42,
+        imgURL: followUpIcon,
+        route: "/dashboard/supervision/followup",
+        label: "پیگیری",
+        roles: [0, 3],
+      },
+    ],
   },
   {
     id: 5,
