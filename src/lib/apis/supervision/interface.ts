@@ -9,3 +9,12 @@ export interface IPostStudentAssessment {
   exam_score: string;
   advisor_score: string;
 }
+
+export type StudentCallAnsweringBody = {
+  student: number;
+  first_call: boolean;
+  first_call_time: string;
+  second_call: boolean;
+  second_call_time: string | null;
+  completed_time: string | null;
+};
