@@ -9,4 +9,5 @@ export interface IStudentAssessment {
   exam_score: string;
   advisor_score: string;
   created: string;
+  description: string;
 }
