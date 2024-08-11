@@ -10,4 +10,5 @@ export interface IAssessments {
   exam_score: string;
   advisor_score: string;
   created: string;
+  description: string;
 }
