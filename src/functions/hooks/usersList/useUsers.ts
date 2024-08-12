@@ -20,9 +20,7 @@ export const useUsers = () => {
 
       const transformedData = data.map((user) => {
         const roleNames = getRoleNames(user.roles);
-  
-        console.log(`User ID: ${user.id}, Role Names: ${roleNames}`);
-  
+
         return {
           ...user,
           roles: roleNames, // Change role to roles
