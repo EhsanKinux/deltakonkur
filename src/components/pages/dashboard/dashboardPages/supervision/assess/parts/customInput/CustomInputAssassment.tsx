@@ -13,6 +13,7 @@ interface FormValues {
   motivation_score: string;
   exam_score: string;
   advisor_score: string;
+  description: string;
 }
 
 const CustomInputAssassment = ({
@@ -34,6 +35,7 @@ const CustomInputAssassment = ({
       motivation_score: string;
       exam_score: string;
       advisor_score: string;
+      description: string;
     },
     undefined
   >;

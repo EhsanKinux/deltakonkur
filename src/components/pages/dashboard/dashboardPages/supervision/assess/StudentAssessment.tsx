@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import CustomInputAssassment from "./parts/customInput/CustomInputAssassment";
-import { Form } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useSupervision } from "@/functions/hooks/supervision/useSupervision";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -13,6 +13,7 @@ import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { useEffect, useState } from "react";
 import RecentAssassments from "./parts/recentAssassments/RecentAssassments";
 import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 
 const StudentAssessment = () => {
   const { studentId } = useParams();
@@ -42,6 +43,7 @@ const StudentAssessment = () => {
       motivation_score: "",
       exam_score: "",
       advisor_score: "",
+      description: "",
     },
   });
 
@@ -58,6 +60,7 @@ const StudentAssessment = () => {
         motivation_score: data.motivation_score,
         exam_score: data.exam_score,
         advisor_score: data.advisor_score,
+        description: data.description,
       };
       try {
         setIsSubmitting(true);
@@ -179,6 +182,23 @@ const StudentAssessment = () => {
               placeHolder="یک عدد بین 0 تا 20 وارد کنید..."
               min={0}
               max={20}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="pr-5 font-semibold">توضیحات</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="بیشتر از 4092 کاراکتر مجاز به نوشتن نیستید."
+                      className="resize-none text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-400"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
             <div className="flex gap-2 justify-center items-center w-full mt-5">
               <Button type="submit" className="form-btn w-full hover:bg-blue-800" disabled={isSubmitting}>
