@@ -108,6 +108,7 @@ export const useSupervision = () => {
           setError("Failed to update student call answering");
         }
         // console.log("response", response);
+        return response;
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
