@@ -10,6 +10,7 @@ import ScrollToTop from "./lib/utils/ScrollToTop.tsx";
 import { DescriptionPage } from "./components/pages/dashboard/dashboardPages/supervision/assess/parts/recentAssassments/DescriptionPage.tsx";
 
 // Lazy load components
+const ExternalForm = lazy(() => import("./components/pages/externalStudentForm/ExternalForm.tsx"));
 const SupervisionFollowUp = lazy(
   () => import("./components/pages/dashboard/dashboardPages/supervision/followUp/SupervisionFollowUp.tsx")
 );
@@ -414,11 +415,10 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "externalForm",
+        path: "externalForm/:token",
         element: (
           <Suspense fallback={<Loading />}>
-            {/* <ExternalForm /> */}
-            <div>new external route</div>
+            <ExternalForm />
           </Suspense>
         ),
       },

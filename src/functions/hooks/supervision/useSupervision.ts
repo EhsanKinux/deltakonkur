@@ -1,6 +1,5 @@
 import { IPostStudentAssessment } from "@/lib/apis/supervision/interface";
 import {
-  followup_complete,
   get_not_completed_followup_students,
   get_students_assassments,
   post_student_assassment,
@@ -173,27 +172,6 @@ export const useSupervision = () => {
     }
   }, []);
 
-  const completeFollowup = useCallback(
-    async (token: string) => {
-      setLoading(true);
-      setError("");
-      try {
-        const response = await followup_complete(token);
-        if (!response.ok) {
-          setError("Failed to complete follow-up.");
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An error occurred while completing follow-up.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    },
-    [setError, setLoading]
-  );
 
   const handleSecondStudentCallAnswering = useCallback(
     async ({ id, studentId, firstCall, firstCallTime }: StudentCallAnsweringParams) => {
@@ -260,7 +238,6 @@ export const useSupervision = () => {
     handleStudentCallAnswering2,
     fetchFollowUpStudents,
     followUpStudents,
-    completeFollowup,
     handleSecondStudentCallAnswering,
     sendNotif,
   };

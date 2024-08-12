@@ -37,5 +37,5 @@ export const get_not_completed_followup_students = () =>
 export const send_notification = (token: string) =>
   fetchInstance(`api/register/followups/sendnotif/${token}/`, { method: "GET" });
 
-export const followup_complete = (token: string) =>
-  fetchInstance(`api/register/followups/complete/${token}/`, { method: "POST" });
+export const followup_complete = (token: string, body: any) =>
+  fetchInstance(`api/register/followups/complete/${token}/`, { method: "POST", body: JSON.stringify(body) });
