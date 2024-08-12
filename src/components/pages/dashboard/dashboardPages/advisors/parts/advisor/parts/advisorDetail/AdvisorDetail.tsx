@@ -75,7 +75,7 @@ const AdvisorDetail = () => {
         </TabsContent>
         <TabsContent value="assessment">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl">
-            <AdvisorAssessment data={processedStudentData} />
+            <AdvisorAssessment />
           </div>
         </TabsContent>
       </Tabs>

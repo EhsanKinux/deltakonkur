@@ -296,7 +296,7 @@ const router = createBrowserRouter([
                     <DescriptionPage />
                   </Suspense>
                 }
-                requiredRole={[0, 4]}
+                requiredRole={[0, 4, 7]}
               />
             ),
           },
