@@ -28,4 +28,11 @@ export const get_students_assassments = () => fetchInstance(`api/register/assess
 export const student_call_answering = (body: StudentCallAnsweringBody) =>
   fetchInstance(`api/register/followups/`, { method: "POST", body: JSON.stringify(body) });
 
-export const get_followup_students = () => fetchInstance(`api/register/followups/`, { method: "GET" });
+export const get_not_completed_followup_students = () =>
+  fetchInstance(`api/register/followups/not-completed/list/`, { method: "GET" });
+
+export const send_notification = (token: string) =>
+  fetchInstance(`api/register/followups/sendnotif/${token}/`, { method: "GET" });
+
+export const followup_complete = (token: string) =>
+  fetchInstance(`api/register/followups/complete/${token}/`, { method: "POST" });
