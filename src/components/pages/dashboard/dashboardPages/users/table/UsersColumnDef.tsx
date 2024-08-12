@@ -1,10 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { IUsers } from "../users/interface";
 import UserDialogButton from "./delete/UserDialogButton";
+import { IUsers2 } from "@/lib/store/useUsersStore";
 
 // import StudentDialogButtons from "./parts/StudentDialogButtons";
 
-export const userColumns: ColumnDef<IUsers>[] = [
+export const userColumns: ColumnDef<IUsers2>[] = [
   {
     accessorKey: "first_name",
     header: "نام",
@@ -22,7 +22,7 @@ export const userColumns: ColumnDef<IUsers>[] = [
     header: "کد ملی",
   },
   {
-    accessorKey: "role",
+    accessorKey: "roles",
     header: "نوع کاربر",
   },
   {

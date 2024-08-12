@@ -5,4 +5,5 @@ export interface IUsers {
   national_id: string;
   phone_number: string;
   role: string;
+  roles: number[];
 }

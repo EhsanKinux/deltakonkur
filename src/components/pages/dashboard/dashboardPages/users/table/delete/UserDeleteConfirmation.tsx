@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { IUserDetail } from "../../userDetail/interface";
+import { IUserDetail2 } from "../../userDetail/interface";
 import {
   DialogContent,
   DialogDescription,
@@ -17,7 +17,7 @@ const UserDeleteConfirmation = ({
 }: {
   setDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   closeModal: () => void;
-  formData: IUserDetail;
+  formData: IUserDetail2;
 }) => {
   const { deletingUser } = useUsers();
 

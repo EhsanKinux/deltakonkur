@@ -1,5 +1,5 @@
-export const getRoleName = (role: string): string => {
-  const roleMap: { [key: string]: string } = {
+export const getRoleNames = (roles: number[]): string => {
+  const roleMap: { [key: number]: string } = {
     0: "مدیرکل",
     1: "واحد رزرو",
     2: "واحد مشاوران",
@@ -9,5 +9,6 @@ export const getRoleName = (role: string): string => {
     6: "واحد محتوا",
     7: "مشاور",
   };
-  return roleMap[role] || "Unknown Role";
+
+  return roles.map((role) => roleMap[role] || "نامشخص").join(", ");
 };

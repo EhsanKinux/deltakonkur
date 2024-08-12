@@ -1,9 +1,18 @@
-import { IUsers } from "@/components/pages/dashboard/dashboardPages/users/users/interface";
 import { create } from "zustand";
 
+export interface IUsers2 {
+  id: string;
+  first_name: string;
+  last_name: string;
+  national_id: string;
+  phone_number: string;
+  role: string;
+  roles: string;
+}
+
 interface UserState {
-  users: IUsers[];
-  setUsers: (users: IUsers[]) => void;
+  users: IUsers2[];
+  setUsers: (users: IUsers2[]) => void;
   deleteUser: (id: string) => void;
 }
 

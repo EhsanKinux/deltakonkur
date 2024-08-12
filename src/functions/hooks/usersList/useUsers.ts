@@ -2,7 +2,7 @@ import { IUserDetail } from "@/components/pages/dashboard/dashboardPages/users/u
 import { IUsers } from "@/components/pages/dashboard/dashboardPages/users/users/interface";
 import { delete_user, get_all_users, get_user_info } from "@/lib/apis/users/service";
 import { useUsersStore } from "@/lib/store/useUsersStore";
-import { getRoleName } from "@/lib/utils/roles/Roles";
+import { getRoleNames } from "@/lib/utils/roles/Roles";
 import { useCallback, useState } from "react";
 
 export const useUsers = () => {
@@ -18,11 +18,16 @@ export const useUsers = () => {
       const response = await get_all_users();
       const data: IUsers[] = response;
 
-      // Transform the data to map roles to their names
-      const transformedData = data.map((user) => ({
-        ...user,
-        role: getRoleName(user.role),
-      }));
+      const transformedData = data.map((user) => {
+        const roleNames = getRoleNames(user.roles);
+  
+        console.log(`User ID: ${user.id}, Role Names: ${roleNames}`);
+  
+        return {
+          ...user,
+          roles: roleNames, // Change role to roles
+        };
+      });
 
       setUsers(transformedData);
     } catch (error) {

@@ -11,14 +11,14 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { IUsers } from "../users/interface";
 import { MouseEvent, useState } from "react";
 import { Input } from "@/components/ui/input";
 import SearchIcon from "@/assets/icons/search.svg";
+import { IUsers2 } from "@/lib/store/useUsersStore";
 
 interface UsersTableProps {
-  columns: ColumnDef<IUsers>[];
-  data: IUsers[];
+  columns: ColumnDef<IUsers2>[];
+  data: IUsers2[];
 }
 
 export function UsersTable({ columns, data }: UsersTableProps) {

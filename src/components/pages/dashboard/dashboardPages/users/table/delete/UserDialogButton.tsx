@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import useModalHistory from "@/hooks/useBackButton";
 import React from "react";
-import { IUserDetail } from "../../userDetail/interface";
+import { IUserDetail2 } from "../../userDetail/interface";
 import UserDeleteConfirmation from "./UserDeleteConfirmation";
 
-const UserDialogButton = ({ formData }: { formData: IUserDetail }) => {
+const UserDialogButton = ({ formData }: { formData: IUserDetail2 }) => {
   const { modalState, openModal, closeModal } = useModalHistory();
 
   const handleOpenDeleteDialog = (e: React.MouseEvent) => {
