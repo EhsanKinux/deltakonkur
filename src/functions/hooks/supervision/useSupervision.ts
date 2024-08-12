@@ -1,13 +1,21 @@
 import { IPostStudentAssessment } from "@/lib/apis/supervision/interface";
 import {
-  get_followup_students,
+  followup_complete,
+  get_not_completed_followup_students,
   get_students_assassments,
   post_student_assassment,
+  send_notification,
   student_call_answering,
 } from "@/lib/apis/supervision/service";
 import { useCallback, useState } from "react";
 import { IAssessments } from "./interface";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
+
+interface StudentCallAnsweringParams {
+  studentId: number;
+  firstCall: boolean;
+  firstCallTime: string;
+}
 
 export const useSupervision = () => {
   const [loading, setLoading] = useState(false);
@@ -84,7 +92,7 @@ export const useSupervision = () => {
     setError("");
 
     try {
-      const response = await get_followup_students();
+      const response = await get_not_completed_followup_students();
       if (response) {
         const data = await response;
 
@@ -112,6 +120,8 @@ export const useSupervision = () => {
           second_call_time: item.second_call_time ? convertToShamsi(item.second_call_time) : "-",
           token: item.token,
           completed_time: item.completed_time ? convertToShamsi(item.completed_time) : "-",
+          first_call_time2: item.first_call_time,
+          first_call2: item.first_call,
         }));
         setFollowUpStudents(transformedData);
       } else {
@@ -128,6 +138,82 @@ export const useSupervision = () => {
     }
   }, []);
 
+  const completeFollowup = useCallback(
+    async (token: string) => {
+      setLoading(true);
+      setError("");
+      try {
+        const response = await followup_complete(token);
+        if (!response.ok) {
+          setError("Failed to complete follow-up.");
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An error occurred while completing follow-up.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading]
+  );
+
+  const handleSecondStudentCallAnswering = useCallback(
+    async ({ studentId, firstCall, firstCallTime }: StudentCallAnsweringParams) => {
+      setLoading(true);
+      setError("");
+      const body = {
+        student: studentId,
+        first_call: firstCall,
+        first_call_time: firstCallTime,
+        second_call: true,
+        second_call_time: new Date().toISOString(),
+        completed_time: null,
+      };
+
+      try {
+        const response = await student_call_answering(body);
+        if (!response.ok) {
+          setError("Failed to update student call answering");
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+          throw err;
+        } else {
+          setError("An error occurred while updating student call answering");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading]
+  );
+
+  const sendNotif = useCallback(
+    async (token: string) => {
+      setLoading(true);
+      setError("");
+      try {
+        const response = await send_notification(token);
+        if (!response.ok) {
+          setError("Failed to complete follow-up.");
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An error occurred while completing follow-up.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading]
+  );
+
   return {
     submitAssassmentForm,
     error,
@@ -137,5 +223,8 @@ export const useSupervision = () => {
     handleStudentCallAnswering,
     fetchFollowUpStudents,
     followUpStudents,
+    completeFollowup,
+    handleSecondStudentCallAnswering,
+    sendNotif,
   };
 };
