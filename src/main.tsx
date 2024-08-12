@@ -7,6 +7,7 @@ import RedirectRoute from "./components/pages/auth/RedirectRoute.tsx";
 import Unauthorized from "./components/pages/auth/Unauthorized.tsx";
 import "./index.css";
 import ScrollToTop from "./lib/utils/ScrollToTop.tsx";
+import { DescriptionPage } from "./components/pages/dashboard/dashboardPages/supervision/assess/parts/recentAssassments/DescriptionPage.tsx";
 
 // Lazy load components
 const SupervisionFollowUp = lazy(
@@ -279,6 +280,19 @@ const router = createBrowserRouter([
                 element={
                   <Suspense fallback={<Loading />}>
                     <StudentAssessment />
+                  </Suspense>
+                }
+                requiredRole={[0, 4]}
+              />
+            ),
+          },
+          {
+            path: "supervision/description/:studentId",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <DescriptionPage />
                   </Suspense>
                 }
                 requiredRole={[0, 4]}
