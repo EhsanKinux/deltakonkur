@@ -207,6 +207,39 @@ export const useSupervision = () => {
     [setError, setLoading]
   );
 
+  const handleSecondStudentCallAnsweringCompleted = useCallback(
+    async ({ id, studentId, firstCall, firstCallTime }: StudentCallAnsweringParams) => {
+      setLoading(true);
+      setError("");
+      const body = {
+        id,
+        student: studentId,
+        first_call: firstCall,
+        first_call_time: firstCallTime,
+        second_call: true,
+        second_call_time: new Date().toISOString(),
+        completed_time: new Date().toISOString(),
+      };
+
+      try {
+        const response = await student_call_answering(body);
+        if (!response.ok) {
+          setError("Failed to update student call answering");
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+          throw err;
+        } else {
+          setError("An error occurred while updating student call answering");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading]
+  );
+
   const sendNotif = useCallback(
     async (token: string) => {
       setLoading(true);
@@ -241,5 +274,6 @@ export const useSupervision = () => {
     followUpStudents,
     handleSecondStudentCallAnswering,
     sendNotif,
+    handleSecondStudentCallAnsweringCompleted,
   };
 };

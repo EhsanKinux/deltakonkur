@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 const FollowUpDialogButtons = (formData: any) => {
-  const { handleSecondStudentCallAnswering, sendNotif } = useSupervision();
+  const { handleSecondStudentCallAnswering, sendNotif, handleSecondStudentCallAnsweringCompleted } = useSupervision();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -19,7 +19,17 @@ const FollowUpDialogButtons = (formData: any) => {
     const loadingToastId = toast.loading("در حال هدایت برای پر کردن فرم نظرسنجی دانش آموز...");
 
     try {
-      // await completeFollowup(token);
+      const id = formData.formData.id;
+      const firstCall = formData.formData.first_call2;
+      const firstCallTime = formData.formData.first_call_time2;
+
+      await handleSecondStudentCallAnsweringCompleted({
+        id,
+        studentId: formData.formData.student_id,
+        firstCall,
+        firstCallTime,
+      });
+
       toast.dismiss(loadingToastId);
       setTimeout(() => {
         const studentId = formData.formData.student_id;
