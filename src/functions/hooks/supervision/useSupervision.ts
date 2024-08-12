@@ -107,6 +107,7 @@ export const useSupervision = () => {
         if (!response.ok) {
           setError("Failed to update student call answering");
         }
+        // console.log("response", response);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -171,7 +172,6 @@ export const useSupervision = () => {
       setLoading(false);
     }
   }, []);
-
 
   const handleSecondStudentCallAnswering = useCallback(
     async ({ id, studentId, firstCall, firstCallTime }: StudentCallAnsweringParams) => {

@@ -15,6 +15,18 @@ import RecentAssassments from "./parts/recentAssassments/RecentAssassments";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 
+interface StudentCallResponse {
+  id: number;
+  student: number;
+  first_call: boolean;
+  first_call_time: string;
+  second_call: boolean;
+  second_call_time: string | null;
+  token: string;
+  completed_time: string | null;
+  created: string;
+}
+
 const StudentAssessment = () => {
   const { studentId } = useParams();
   const {
@@ -23,6 +35,7 @@ const StudentAssessment = () => {
     // fetchFollowUpStudents,
     // followUpStudents,
     handleStudentCallAnswering2,
+    sendNotif,
   } = useSupervision();
 
   const { fetchStudentInfo, studentInfo } = useStudentList();
@@ -107,14 +120,21 @@ const StudentAssessment = () => {
     if (studentId) {
       setIsloading(true);
       try {
-        // const studentFollowUpId = getStudentFollowUpId();
+        const response = await handleStudentCallAnswering2(parseInt(studentId, 10));
 
-        // if (studentFollowUpId) {
-        //   await handleStudentCallAnswering(parseInt(studentId, 10), studentFollowUpId);
-        // } else {
-        await handleStudentCallAnswering2(parseInt(studentId, 10));
-        // }
-        toast.success("ثبت عدم پاسخگویی اول با موفقیت انجام شد!");
+        // Use type assertion to assume the response type
+        const responseData = response as unknown as StudentCallResponse;
+
+        // Safely extract the token using optional chaining
+        const token = responseData?.token;
+
+        // Check if the token exists before calling sendNotif
+        if (token) {
+          await sendNotif(token);
+          toast.success("ثبت عدم پاسخگویی اول با موفقیت انجام شد!");
+        } else {
+          toast.error("Token not found in response.");
+        }
       } catch (error) {
         toast.error("خطایی در ثبت عدم پاسخگویی رخ داده است!");
       } finally {
