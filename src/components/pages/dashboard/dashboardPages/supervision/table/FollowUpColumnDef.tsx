@@ -35,9 +35,9 @@ export const followUpStColumns: ColumnDef<FormEntry>[] = [
   },
   {
     id: "actions",
-    cell: () => {
-    //   const formData = row.original;
-      return <FollowUpDialogButtons />;
+    cell: ({row}) => {
+      const formData = row.original;
+      return <FollowUpDialogButtons formData={formData} />;
     },
   },
 ];

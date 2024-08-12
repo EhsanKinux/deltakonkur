@@ -1,41 +1,94 @@
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
-import useModalHistory from "@/hooks/useBackButton";
 import callNotAnswerIcon from "@/assets/icons/call-slash.svg";
 import formCheck from "@/assets/icons/card-tick.svg";
+import { useSupervision } from "@/functions/hooks/supervision/useSupervision";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useState } from "react";
 
-const FollowUpDialogButtons = () => {
-  const { modalState, openModal, closeModal } = useModalHistory();
+const FollowUpDialogButtons = (formData: any) => {
+  const { handleSecondStudentCallAnswering, sendNotif } = useSupervision();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const handleRefreshStudent = (e: React.MouseEvent) => {
+  const handleCompleteStudent = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    openModal("restart");
+    // const token = formData.formData.token;
+
+    // Show loading toast notification and keep the reference
+    const loadingToastId = toast.loading("در حال هدایت برای پر کردن فرم نظرسنجی دانش آموز...");
+
+    try {
+      // await completeFollowup(token);
+      toast.dismiss(loadingToastId);
+      setTimeout(() => {
+        const studentId = formData.formData.student_id;
+        navigate(`/dashboard/supervision/${studentId}`);
+      }, 2000); // 2-second delay before navigation
+    } catch (error) {
+      // Dismiss the loading toast and show error notification
+      toast.dismiss(loadingToastId);
+      toast.error("خطا در تکمیل فرآیند: " + (error || "مشکلی رخ داده است"));
+      console.error("Failed to complete student follow-up:", error);
+    }
   };
 
-  const handleStopStudent = async (e: React.MouseEvent) => {
+  const handleSecondAnswering = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    openModal("stop");
-    // await rowData;
+
+    if (formData) {
+      setLoading(true);
+      const loadingToastId = toast.loading("در حال پردازش...");
+
+      try {
+        const firstCall = formData.formData.first_call2;
+        const firstCallTime = formData.formData.first_call_time2;
+
+        await handleSecondStudentCallAnswering({
+          studentId: formData.formData.student_id,
+          firstCall,
+          firstCallTime,
+        });
+        await sendNotif(formData.formData.token);
+        toast.dismiss(loadingToastId);
+        toast.success("ثبت عدم پاسخگویی دوم با موفقیت انجام شد!");
+
+        setTimeout(() => {
+          window.location.reload(); // Reload the page after a 3-second delay
+        }, 3000);
+      } catch (error) {
+        toast.dismiss(loadingToastId);
+        toast.error("خطایی در ثبت عدم پاسخگویی رخ داده است!");
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
     <>
       <div className="flex">
-        <Button className="cursor-pointer flex gap-2 hover:!bg-green-100 rounded-[5px]" onClick={handleRefreshStudent}>
+        <Button
+          className={`cursor-pointer flex gap-2 hover:!bg-green-100 rounded-[5px] ${
+            loading ? "disabled:opacity-50" : ""
+          }`}
+          onClick={handleCompleteStudent}
+          disabled={loading}
+        >
           <img className="w-5" src={formCheck} alt="userDeleteIcon" />
           <span>تکمیل</span>
         </Button>
-        <Button className="cursor-pointer flex gap-2 hover:!bg-red-200 rounded-[5px]" onClick={handleStopStudent}>
+        <Button
+          className={`cursor-pointer flex gap-2 hover:!bg-red-200 rounded-[5px] ${
+            loading ? "disabled:opacity-50" : ""
+          }`}
+          onClick={handleSecondAnswering}
+          disabled={loading}
+        >
           <img className="w-5" src={callNotAnswerIcon} alt="userEditIcon" />
           <span>عدم پاسخگویی دوم</span>
         </Button>
       </div>
-      <Dialog open={modalState.stop} onOpenChange={() => closeModal()}>
-        {/* <StopDialog rowData={rowData} setStopDialog={() => modalState.stop} /> */}
-      </Dialog>
-      <Dialog open={modalState.restart} onOpenChange={() => closeModal()}>
-        {/* <Restart rowData={rowData} /> */}
-      </Dialog>
     </>
   );
 };
