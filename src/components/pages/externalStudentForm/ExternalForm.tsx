@@ -11,10 +11,12 @@ import { Loader2 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useExternalForm } from "@/functions/hooks/externalForm/useExternalForm";
 import { z } from "zod";
+import thanksIcon from "@/assets/icons/thanks.svg";
 
 const ExternalForm = () => {
   const { token } = useParams(); // Extract token from URL params
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const { completeFollowup } = useExternalForm();
 
   const formSchema = studentAssessment();
@@ -60,9 +62,10 @@ const ExternalForm = () => {
         form.reset();
         toast.dismiss(loadingToastId);
         toast.success("نظرسنجی با موفقیت ثبت شد!");
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        setIsSubmitted(true);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 2000);
       } catch (error) {
         toast.dismiss();
         toast.error("خطایی در ثبت نظرسنجی رخ داده است!");
@@ -73,13 +76,19 @@ const ExternalForm = () => {
   };
 
   return (
-    <section className="flex w-full flex-col overflow-hidden px-10">
-      <div className="mt-8 w-full flex flex-col items-center justify-center bg-slate-100 rounded-xl overflow-hidden pb-10 shadow-form">
-        <div className="w-full bg-slate-400 rounded-b-full flex justify-center items-center gap-3 flex-col p-5">
-          {/* <img src={AddAdvisor} width={500} /> */}
-          <h3 className="text-3xl text-white font-bold">نظرسنجی عملکرد مشاور</h3>
-        </div>
+    // <section className="flex w-full flex-col px-10 h-screen">
+    <div className="w-full flex flex-col items-center justify-center bg-slate-100 rounded-xl custom-scrollbar overflow-y-auto py-10 shadow-form">
+      <div className="w-full bg-slate-400 rounded-b-full flex justify-center items-center gap-3 flex-col p-5">
+        <h3 className="text-3xl text-white font-bold">نظرسنجی عملکرد مشاور</h3>
+      </div>
 
+      {isSubmitted ? (
+        <div className="text-center mt-8">
+          <img src={thanksIcon} className="w-80" />
+          <h4 className="text-2xl font-semibold">با تشکر از شما!</h4>
+          <p className="mt-4">نظرسنجی شما با موفقیت ثبت شد. از همکاری شما سپاسگزاریم.</p>
+        </div>
+      ) : (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 w-full px-20">
             <CustomInputAssassment
@@ -177,8 +186,9 @@ const ExternalForm = () => {
             </div>
           </form>
         </Form>
-      </div>
-    </section>
+      )}
+    </div>
+    // </section>
   );
 };
 
