@@ -46,6 +46,10 @@ export const studentAssessment = () =>
     motivation_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
     exam_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
     advisor_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
+    description: z
+      .string()
+      .min(1, { message: "توضیحات نمیتواند خالی باشد" })
+      .max(4092, { message: "حداکثر تعداد کاراکتر برای توضیحات 4092 است!" }),
   });
 
 export const editAdvisorFormSchema = () =>
