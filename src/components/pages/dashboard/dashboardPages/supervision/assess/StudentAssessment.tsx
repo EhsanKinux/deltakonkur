@@ -19,11 +19,12 @@ const StudentAssessment = () => {
   const { studentId } = useParams();
   const {
     submitAssassmentForm,
-    handleStudentCallAnswering,
-    fetchFollowUpStudents,
-    followUpStudents,
+    // handleStudentCallAnswering,
+    // fetchFollowUpStudents,
+    // followUpStudents,
     handleStudentCallAnswering2,
   } = useSupervision();
+
   const { fetchStudentInfo, studentInfo } = useStudentList();
   const navigate = useNavigate();
 
@@ -36,9 +37,9 @@ const StudentAssessment = () => {
     }
   }, [fetchStudentInfo, studentId]);
 
-  useEffect(() => {
-    fetchFollowUpStudents();
-  }, [fetchFollowUpStudents]);
+  // useEffect(() => {
+  //   fetchFollowUpStudents();
+  // }, [fetchFollowUpStudents]);
 
   const formSchema = studentAssessment();
   const form = useForm({
@@ -94,25 +95,25 @@ const StudentAssessment = () => {
 
   // handleStudentCallAnswering(parseInt(studentId, 10));
 
-  const getStudentFollowUpId = () => {
-    if (studentId) {
-      const student = followUpStudents.find((student) => student.student_id === parseInt(studentId, 10));
+  // const getStudentFollowUpId = () => {
+  //   if (studentId) {
+  //     const student = followUpStudents.find((student) => student.student_id === parseInt(studentId, 10));
 
-      return student ? student.id : null; // Return null if not found
-    }
-  };
+  //     return student ? student.id : null; // Return null if not found
+  //   }
+  // };
 
   const handleNonResponsive = async () => {
     if (studentId) {
       setIsloading(true);
       try {
-        const studentFollowUpId = getStudentFollowUpId();
+        // const studentFollowUpId = getStudentFollowUpId();
 
-        if (studentFollowUpId) {
-          await handleStudentCallAnswering(parseInt(studentId, 10), studentFollowUpId);
-        } else {
-          await handleStudentCallAnswering2(parseInt(studentId, 10));
-        }
+        // if (studentFollowUpId) {
+        //   await handleStudentCallAnswering(parseInt(studentId, 10), studentFollowUpId);
+        // } else {
+        await handleStudentCallAnswering2(parseInt(studentId, 10));
+        // }
         toast.success("ثبت عدم پاسخگویی اول با موفقیت انجام شد!");
       } catch (error) {
         toast.error("خطایی در ثبت عدم پاسخگویی رخ داده است!");
