@@ -24,13 +24,8 @@ export function SupervisionAssessmentTable({ columns, data }: SupervisionAssessm
     },
   });
 
-  const handleRowClick = (studentId: string) => {
-    // if (
-    //   (e.target as HTMLElement).tagName.toLowerCase() !== "button" &&
-    //   (e.target as HTMLElement).tagName.toLowerCase() !== "input"
-    // ) {
-    // }
-    navigate(`/dashboard/supervision/${studentId}`);
+  const handleRowClick = (studentId: string, description: string) => {
+    navigate(`/dashboard/supervision/description/${studentId}`, { state: { description } });
   };
 
   return (
@@ -56,7 +51,7 @@ export function SupervisionAssessmentTable({ columns, data }: SupervisionAssessm
                 className="hover:bg-slate-200 hover:cursor-pointer"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                onClick={() => handleRowClick(row.original.student)}
+                onClick={() => handleRowClick(row.original.student, row.original.description)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell className="!text-center" key={cell.id}>
