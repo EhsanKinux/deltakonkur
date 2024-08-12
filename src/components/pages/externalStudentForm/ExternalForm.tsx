@@ -1,5 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import CustomInputAssassment from "../dashboard/dashboardPages/supervision/assess/parts/customInput/CustomInputAssassment";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
@@ -77,7 +84,7 @@ const ExternalForm = () => {
 
   return (
     // <section className="flex w-full flex-col px-10 h-screen">
-    <div className="w-full flex flex-col items-center justify-center bg-slate-100 rounded-xl custom-scrollbar overflow-y-auto py-10 shadow-form">
+    <div className="w-full h-screen max-h-[100vh] flex flex-col items-center justify-center bg-slate-100 custom-scrollbar overflow-y-hidden shadow-form">
       <div className="w-full bg-slate-400 rounded-b-full flex justify-center items-center gap-3 flex-col p-5">
         <h3 className="text-3xl text-white font-bold">نظرسنجی عملکرد مشاور</h3>
       </div>
@@ -86,11 +93,16 @@ const ExternalForm = () => {
         <div className="text-center mt-8">
           <img src={thanksIcon} className="w-80" />
           <h4 className="text-2xl font-semibold">با تشکر از شما!</h4>
-          <p className="mt-4">نظرسنجی شما با موفقیت ثبت شد. از همکاری شما سپاسگزاریم.</p>
+          <p className="mt-4">
+            نظرسنجی شما با موفقیت ثبت شد. از همکاری شما سپاسگزاریم.
+          </p>
         </div>
       ) : (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 w-full px-20">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="mt-4 w-full px-7 md:px-20 overflow-y-auto custom-scrollbar py-10"
+          >
             <CustomInputAssassment
               control={form.control}
               name="plan_score"
@@ -173,7 +185,11 @@ const ExternalForm = () => {
               )}
             />
             <div className="flex gap-2 justify-center items-center w-full mt-5">
-              <Button type="submit" className="form-btn w-full hover:bg-blue-800" disabled={isSubmitting}>
+              <Button
+                type="submit"
+                className="form-btn w-full hover:bg-blue-800"
+                disabled={isSubmitting}
+              >
                 {isSubmitting ? (
                   <>
                     <Loader2 size={20} className="animate-spin" />
