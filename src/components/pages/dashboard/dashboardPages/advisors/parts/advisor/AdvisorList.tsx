@@ -1,11 +1,11 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { appStore } from "@/lib/store/appStore";
-import { useEffect, useMemo } from "react";
-import { columns } from "./parts/table/ColumnDef";
-import { AdvisorDataTable } from "../table/AdvisorDataTable";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Advisor } from "@/lib/store/types";
+import { useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
+import { AdvisorDataTable } from "../table/AdvisorDataTable";
+import { columns } from "./parts/table/ColumnDef";
 
 const AdvisorList = () => {
   const { getAdvisorsData } = useAdvisorsList();
@@ -22,11 +22,14 @@ const AdvisorList = () => {
   }, [getAdvisorsData]);
 
   const handleTabChange = (value: string) => {
-    // Update the URL query parameter when the tab changes
     setSearchParams({ tab: value });
   };
 
-  const calculateActivePercentage = (active: number, stopped: number, canceled: number) => {
+  const calculateActivePercentage = (
+    active: number,
+    stopped: number,
+    canceled: number
+  ) => {
     const total = active + stopped + canceled;
     return total ? ((active / total) * 100).toFixed(2) : "0.00";
   };
@@ -54,9 +57,13 @@ const AdvisorList = () => {
   }, [advisors]);
 
   const sortAdvisorsByActivePercentage = (advisors: Advisor[]): Advisor[] => {
-    return advisors.sort((a, b) => (b.activePercentage ?? 0) - (a.activePercentage ?? 0));
+    return advisors.sort(
+      (a, b) => (b.activePercentage ?? 0) - (a.activePercentage ?? 0)
+    );
   };
-  const mathAdvisors = sortAdvisorsByActivePercentage(memoizedAdvisors.filter((advisor) => advisor.field === "ریاضی"));
+  const mathAdvisors = sortAdvisorsByActivePercentage(
+    memoizedAdvisors.filter((advisor) => advisor.field === "ریاضی")
+  );
   const experimentalAdvisors = sortAdvisorsByActivePercentage(
     memoizedAdvisors.filter((advisor) => advisor.field === "تجربی")
   );
@@ -66,17 +73,28 @@ const AdvisorList = () => {
 
   return (
     <section className="max-h-screen">
-      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">مشاوران</h1>
+      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">
+        مشاوران
+      </h1>
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
-          <TabsTrigger value="mathAdvisors" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+          <TabsTrigger
+            value="mathAdvisors"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
             ریاضی
           </TabsTrigger>
-          <TabsTrigger value="experimentalAdvisors" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+          <TabsTrigger
+            value="experimentalAdvisors"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
             تجربی
           </TabsTrigger>
-          <TabsTrigger value="humanitiesAdvisors" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+          <TabsTrigger
+            value="humanitiesAdvisors"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
             علوم انسانی
           </TabsTrigger>
         </TabsList>

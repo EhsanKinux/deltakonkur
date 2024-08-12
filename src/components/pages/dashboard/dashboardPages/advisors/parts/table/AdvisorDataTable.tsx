@@ -1,20 +1,26 @@
+import SearchIcon from "@/assets/icons/search.svg";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Advisor } from "@/lib/store/types";
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
   getFilteredRowModel,
-  ColumnFiltersState,
+  getPaginationRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
-
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { Advisor } from "@/lib/store/types";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import SearchIcon from "@/assets/icons/search.svg";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface AdvisorDataTableProps {
   columns: ColumnDef<Advisor>[];
@@ -23,6 +29,13 @@ interface AdvisorDataTableProps {
 
 export function AdvisorDataTable({ columns, data }: AdvisorDataTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const [pagination, setPagination] = useState({
+    pageIndex: Number(queryParams.get("page")) || 0,
+    pageSize: 8,
+  });
 
   const table = useReactTable({
     data,
@@ -31,17 +44,25 @@ export function AdvisorDataTable({ columns, data }: AdvisorDataTableProps) {
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 8,
-      },
-    },
+    onPaginationChange: setPagination,
     state: {
+      pagination,
       columnFilters,
     },
+    autoResetPageIndex: false,
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    const updateQueryParam = () => {
+      const newPage = table.getState().pagination.pageIndex;
+      const params = new URLSearchParams(location.search);
+      params.set("page", newPage.toString());
+      navigate(`?${params.toString()}`, { replace: true });
+    };
+    if (location.search) {
+      updateQueryParam();
+    }
+  }, [table.getState().pagination.pageIndex, navigate, location.search]);
 
   const handleRowClick = (advisorId: string, e: React.MouseEvent) => {
     if (
@@ -51,25 +72,40 @@ export function AdvisorDataTable({ columns, data }: AdvisorDataTableProps) {
       navigate(`/dashboard/advisors/${advisorId}`);
     }
   };
-
   return (
     <div className="w-full overflow-auto p-10 absolute top-0 right-0 left-0 bottom-0">
       <div className="flex flex-col items-center xl:flex-row gap-2 py-4">
         <div className="relative flex items-center w-full text-14 rounded-[8px]">
-          <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
+          <img
+            src={SearchIcon}
+            alt="searchicon"
+            className="absolute left-3 w-6 h-6 text-gray-500"
+          />
           <Input
             placeholder="جستجو براساس نام"
-            value={(table.getColumn("first_name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn("first_name")?.setFilterValue(event.target.value)}
+            value={
+              (table.getColumn("first_name")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("first_name")?.setFilterValue(event.target.value)
+            }
             className="placeholder:text-14 placeholder:text-gray-500 rounded-[8px] text-gray-900 border-slate-400 hover:placeholder:text-blue-500 hover:cursor-pointer"
           />
         </div>
-        <div className="relative flex items-center w-full text-14  rounded-[8px]">
-          <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
+        <div className="relative flex items-center w-full text-14 rounded-[8px]">
+          <img
+            src={SearchIcon}
+            alt="searchicon"
+            className="absolute left-3 w-6 h-6 text-gray-500"
+          />
           <Input
             placeholder="جستجو براساس نام خانوادگی"
-            value={(table.getColumn("last_name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn("last_name")?.setFilterValue(event.target.value)}
+            value={
+              (table.getColumn("last_name")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("last_name")?.setFilterValue(event.target.value)
+            }
             className="placeholder:text-14 placeholder:text-gray-500 rounded-[8px] text-gray-900 border-slate-400 hover:placeholder:text-blue-500 hover:cursor-pointer"
           />
         </div>
@@ -81,7 +117,12 @@ export function AdvisorDataTable({ columns, data }: AdvisorDataTableProps) {
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id} className="!text-center">
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 );
               })}
@@ -131,7 +172,8 @@ export function AdvisorDataTable({ columns, data }: AdvisorDataTableProps) {
           </Button>
         </div>
         <span className="text-slate-600 text-sm">
-          صفحه {table.getState().pagination.pageIndex + 1} از {table.getPageCount()}
+          صفحه {table.getState().pagination.pageIndex + 1} از{" "}
+          {table.getPageCount()}
         </span>
       </div>
     </div>
