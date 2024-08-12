@@ -41,10 +41,12 @@ const FollowUpDialogButtons = (formData: any) => {
       const loadingToastId = toast.loading("در حال پردازش...");
 
       try {
+        const id = formData.formData.id;
         const firstCall = formData.formData.first_call2;
         const firstCallTime = formData.formData.first_call_time2;
 
         await handleSecondStudentCallAnswering({
+          id,
           studentId: formData.formData.student_id,
           firstCall,
           firstCallTime,

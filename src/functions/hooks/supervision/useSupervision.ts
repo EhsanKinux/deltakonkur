@@ -6,12 +6,14 @@ import {
   post_student_assassment,
   send_notification,
   student_call_answering,
+  student_call_answering2,
 } from "@/lib/apis/supervision/service";
 import { useCallback, useState } from "react";
 import { IAssessments } from "./interface";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 
 interface StudentCallAnsweringParams {
+  id: number;
   studentId: number;
   firstCall: boolean;
   firstCallTime: string;
@@ -56,6 +58,39 @@ export const useSupervision = () => {
   }, []);
 
   const handleStudentCallAnswering = useCallback(
+    async (studentId: number, followUpId: number) => {
+      setLoading(true);
+      setError("");
+      const body = {
+        id: followUpId, // Use the followUpId passed to the function
+        student: studentId,
+        first_call: true,
+        first_call_time: new Date().toISOString(), // Set the current time
+        second_call: false,
+        second_call_time: null,
+        completed_time: null,
+      };
+
+      try {
+        const response = await student_call_answering(body);
+        if (!response.ok) {
+          setError("Failed to update student call answering");
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+          throw err;
+        } else {
+          setError("An error occurred while updating student call answering");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setError, setLoading]
+  );
+
+  const handleStudentCallAnswering2 = useCallback(
     async (studentId: number) => {
       setLoading(true);
       setError("");
@@ -69,7 +104,7 @@ export const useSupervision = () => {
       };
 
       try {
-        const response = await student_call_answering(body);
+        const response = await student_call_answering2(body);
         if (!response.ok) {
           setError("Failed to update student call answering");
         }
@@ -161,10 +196,11 @@ export const useSupervision = () => {
   );
 
   const handleSecondStudentCallAnswering = useCallback(
-    async ({ studentId, firstCall, firstCallTime }: StudentCallAnsweringParams) => {
+    async ({ id, studentId, firstCall, firstCallTime }: StudentCallAnsweringParams) => {
       setLoading(true);
       setError("");
       const body = {
+        id,
         student: studentId,
         first_call: firstCall,
         first_call_time: firstCallTime,
@@ -221,6 +257,7 @@ export const useSupervision = () => {
     getAssessments,
     assassments,
     handleStudentCallAnswering,
+    handleStudentCallAnswering2,
     fetchFollowUpStudents,
     followUpStudents,
     completeFollowup,

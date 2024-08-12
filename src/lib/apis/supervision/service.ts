@@ -1,5 +1,5 @@
 import { fetchInstance } from "../fetch-config";
-import { IPostStudentAssessment, StudentCallAnsweringBody } from "./interface";
+import { IPostStudentAssessment, StudentCallAnsweringBody, StudentCallAnsweringBody2 } from "./interface";
 
 export const get_students_by_name = ({ first_name, last_name }: { first_name: string; last_name: string }) => {
   let url = "api/register/students/?";
@@ -26,6 +26,9 @@ export const post_student_assassment = (body: IPostStudentAssessment) =>
 export const get_students_assassments = () => fetchInstance(`api/register/assessment/`, { method: "GET" });
 
 export const student_call_answering = (body: StudentCallAnsweringBody) =>
+  fetchInstance(`api/register/followups/${body.id}/`, { method: "PATCH", body: JSON.stringify(body) });
+
+export const student_call_answering2 = (body: StudentCallAnsweringBody2) =>
   fetchInstance(`api/register/followups/`, { method: "POST", body: JSON.stringify(body) });
 
 export const get_not_completed_followup_students = () =>

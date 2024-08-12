@@ -11,6 +11,7 @@ export interface IPostStudentAssessment {
 }
 
 export type StudentCallAnsweringBody = {
+  id: number;
   student: number;
   first_call: boolean;
   first_call_time: string;
@@ -18,3 +19,13 @@ export type StudentCallAnsweringBody = {
   second_call_time: string | null;
   completed_time: string | null;
 };
+
+export type StudentCallAnsweringBody2 = {
+  student: number;
+  first_call: boolean;
+  first_call_time: string;
+  second_call: boolean;
+  second_call_time: string | null;
+  completed_time: string | null;
+};
+
