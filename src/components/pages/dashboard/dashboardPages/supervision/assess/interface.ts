@@ -1,4 +1,6 @@
 export interface IStudentAssessment {
+  advisor_name: string;
+  student_name:string;
   student: string;
   plan_score: string;
   report_score: string;

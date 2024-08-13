@@ -1,10 +1,10 @@
+import { IStudentAssessment } from "@/components/pages/dashboard/dashboardPages/supervision/assess/interface";
 import { ColumnDef } from "@tanstack/react-table";
-import { IStudentAssessment } from "../assess/interface";
 
-export const stAssessmentColumnDef: ColumnDef<IStudentAssessment>[] = [
+export const advisorAssessmentColumnDef: ColumnDef<IStudentAssessment>[] = [
   {
-    accessorKey: "advisor_name",
-    header: "نام مشاور",
+    accessorKey: "student_name",
+    header: "نام دانش‌آموز",
   },
   {
     accessorKey: "plan_score",

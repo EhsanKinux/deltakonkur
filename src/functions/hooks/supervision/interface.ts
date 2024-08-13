@@ -1,6 +1,8 @@
 export interface IAssessments {
   id: string;
   student: string;
+  advisor_name: string;
+  student_name:string;
   plan_score: string;
   report_score: string;
   phone_score: string;
