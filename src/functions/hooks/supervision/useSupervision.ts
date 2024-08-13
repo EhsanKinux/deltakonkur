@@ -1,5 +1,6 @@
 import { IPostStudentAssessment } from "@/lib/apis/supervision/interface";
 import {
+  get_assessment_by_advisorId,
   get_not_completed_followup_students,
   get_students_assassments,
   post_student_assassment,
@@ -22,6 +23,7 @@ export const useSupervision = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [assassments, setAssessments] = useState<IAssessments[]>();
+  const [assessmentsById, setAssessmentsById] = useState<IAssessments[]>();
   const [followUpStudents, setFollowUpStudents] = useState<any[]>([]);
 
   const submitAssassmentForm = useCallback(
@@ -54,6 +56,11 @@ export const useSupervision = () => {
   const getAssessments = useCallback(async () => {
     const data = await get_students_assassments();
     setAssessments(data);
+  }, []);
+
+  const getAssessmentsById = useCallback(async (advisorId: string) => {
+    const data = await get_assessment_by_advisorId(advisorId);
+    setAssessmentsById(data);
   }, []);
 
   const handleStudentCallAnswering = useCallback(
@@ -275,5 +282,7 @@ export const useSupervision = () => {
     handleSecondStudentCallAnswering,
     sendNotif,
     handleSecondStudentCallAnsweringCompleted,
+    getAssessmentsById,
+    assessmentsById,
   };
 };

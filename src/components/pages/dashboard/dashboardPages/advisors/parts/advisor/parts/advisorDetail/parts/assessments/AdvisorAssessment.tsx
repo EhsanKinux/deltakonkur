@@ -5,22 +5,26 @@ import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { SupervisionAssessmentTable } from "@/components/pages/dashboard/dashboardPages/supervision/table/SupervisionAssessmentTable";
 import { advisorAssessmentColumnDef } from "./advisorAssessmentColumnDef";
 
-const AdvisorAssessment = () => {
-  const { getAssessments, assassments } = useSupervision();
+const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
+  const { getAssessmentsById, assessmentsById } = useSupervision();
 
   useEffect(() => {
-    getAssessments();
-  }, [getAssessments]);
+    if (advisorId) {
+      getAssessmentsById(advisorId);
+    }
+  }, [advisorId, getAssessmentsById]);
 
   const formattedAssessments: IStudentAssessment[] = useMemo(() => {
-    if (assassments) {
-      return assassments?.map((assessment: IStudentAssessment) => ({
+    if (assessmentsById) {
+      return assessmentsById?.map((assessment: IStudentAssessment) => ({
         ...assessment,
         created: convertToShamsi(assessment.created),
       }));
     }
     return [];
-  }, [assassments]);
+  }, [assessmentsById]);
+
+  // console.log(assessmentsById);
 
   return (
     <div className="flex flex-col w-full items-center pt-5">

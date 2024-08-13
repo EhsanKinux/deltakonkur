@@ -25,6 +25,9 @@ export const post_student_assassment = (body: IPostStudentAssessment) =>
 
 export const get_students_assassments = () => fetchInstance(`api/register/assessment/`, { method: "GET" });
 
+export const get_assessment_by_advisorId = (advisorId: string) =>
+  fetchInstance(`api/register/advisor/assessments/${advisorId}/`, { method: "GET" });
+
 export const student_call_answering = (body: StudentCallAnsweringBody) =>
   fetchInstance(`api/register/followups/${body.id}/`, { method: "PATCH", body: JSON.stringify(body) });
 
