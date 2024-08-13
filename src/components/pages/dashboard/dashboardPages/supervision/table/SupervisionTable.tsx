@@ -2,8 +2,9 @@ import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, Colu
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FormEntry } from "../../advisors/parts/student/table/interfaces";
+import { useEffect, useState } from "react";
 
 interface SupervisionTableProps {
   columns: ColumnDef<FormEntry>[];
@@ -11,19 +12,37 @@ interface SupervisionTableProps {
 }
 
 export function SupervisionTable({ columns, data }: SupervisionTableProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const [pagination, setPagination] = useState({
+    pageIndex: Number(queryParams.get("page")) || 0,
+    pageSize: 8,
+  });
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 8,
-      },
+    onPaginationChange: setPagination,
+    state: {
+      pagination,
     },
+    autoResetPageIndex: false,
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    const updateQueryParam = () => {
+      const newPage = table.getState().pagination.pageIndex;
+      const params = new URLSearchParams(location.search);
+      params.set("page", newPage.toString());
+      navigate(`?${params.toString()}`, { replace: true });
+    };
+    if (location.search) {
+      updateQueryParam();
+    }
+  }, [table.getState().pagination.pageIndex, navigate, location.search]);
 
   const handleRowClick = (studentId: string) => {
     // if (

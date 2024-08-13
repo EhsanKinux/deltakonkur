@@ -10,10 +10,10 @@ import {
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { IallAdvisors } from "@/lib/store/types";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchIcon from "@/assets/icons/search.svg";
 
 interface AdvisorTableProps {
@@ -23,6 +23,13 @@ interface AdvisorTableProps {
 
 export function AdvisorTable({ columns, data }: AdvisorTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const [pagination, setPagination] = useState({
+    pageIndex: Number(queryParams.get("page")) || 0,
+    pageSize: 8,
+  });
 
   const table = useReactTable({
     data,
@@ -31,17 +38,25 @@ export function AdvisorTable({ columns, data }: AdvisorTableProps) {
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 8,
-      },
-    },
+    onPaginationChange: setPagination,
     state: {
+      pagination,
       columnFilters,
     },
+    autoResetPageIndex: false,
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    const updateQueryParam = () => {
+      const newPage = table.getState().pagination.pageIndex;
+      const params = new URLSearchParams(location.search);
+      params.set("page", newPage.toString());
+      navigate(`?${params.toString()}`, { replace: true });
+    };
+    if (location.search) {
+      updateQueryParam();
+    }
+  }, [table.getState().pagination.pageIndex, navigate, location.search]);
 
   const handleRowClick = (advisorId: string, e: React.MouseEvent) => {
     if (

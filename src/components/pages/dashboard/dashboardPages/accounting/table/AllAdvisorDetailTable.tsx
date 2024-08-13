@@ -11,11 +11,12 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import SearchIcon from "@/assets/icons/search.svg";
 //   import { StudentWithDetails } from "../advisor/parts/advisorDetail/interface";
 import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface AllAdvisorDetailTableProps {
   columns: ColumnDef<StudentWithDetails>[];
@@ -24,6 +25,13 @@ interface AllAdvisorDetailTableProps {
 
 export function AllAdvisorDetailTable({ columns, data }: AllAdvisorDetailTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const [pagination, setPagination] = useState({
+    pageIndex: Number(queryParams.get("page")) || 0,
+    pageSize: 8,
+  });
 
   const table = useReactTable({
     data,
@@ -32,15 +40,25 @@ export function AllAdvisorDetailTable({ columns, data }: AllAdvisorDetailTablePr
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 8,
-      },
-    },
+    onPaginationChange: setPagination,
     state: {
+      pagination,
       columnFilters,
     },
+    autoResetPageIndex: false,
   });
+
+  useEffect(() => {
+    const updateQueryParam = () => {
+      const newPage = table.getState().pagination.pageIndex;
+      const params = new URLSearchParams(location.search);
+      params.set("page", newPage.toString());
+      navigate(`?${params.toString()}`, { replace: true });
+    };
+    if (location.search) {
+      updateQueryParam();
+    }
+  }, [table.getState().pagination.pageIndex, navigate, location.search]);
 
   const getRowBgColor = (status: string | null) => {
     if (status === "active") return "bg-green-200";

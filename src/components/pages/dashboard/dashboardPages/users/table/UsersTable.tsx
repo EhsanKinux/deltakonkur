@@ -10,8 +10,8 @@ import {
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { MouseEvent, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { MouseEvent, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import SearchIcon from "@/assets/icons/search.svg";
 import { IUsers2 } from "@/lib/store/useUsersStore";
@@ -23,6 +23,13 @@ interface UsersTableProps {
 
 export function UsersTable({ columns, data }: UsersTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const [pagination, setPagination] = useState({
+    pageIndex: Number(queryParams.get("page")) || 0,
+    pageSize: 8,
+  });
 
   const table = useReactTable({
     data,
@@ -31,17 +38,25 @@ export function UsersTable({ columns, data }: UsersTableProps) {
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 8,
-      },
-    },
+    onPaginationChange: setPagination,
     state: {
+      pagination,
       columnFilters,
     },
+    autoResetPageIndex: false,
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    const updateQueryParam = () => {
+      const newPage = table.getState().pagination.pageIndex;
+      const params = new URLSearchParams(location.search);
+      params.set("page", newPage.toString());
+      navigate(`?${params.toString()}`, { replace: true });
+    };
+    if (location.search) {
+      updateQueryParam();
+    }
+  }, [table.getState().pagination.pageIndex, navigate, location.search]);
 
   const handleRowClick = (userId: string, e: MouseEvent) => {
     if (

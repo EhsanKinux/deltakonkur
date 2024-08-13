@@ -3,6 +3,8 @@ import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, Colu
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { FormEntry } from "../../advisors/parts/student/table/interfaces";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 interface SupervisionFollowUpTableProps {
   columns: ColumnDef<FormEntry>[];
@@ -10,17 +12,37 @@ interface SupervisionFollowUpTableProps {
 }
 
 export function SupervisionFollowUpTable({ columns, data }: SupervisionFollowUpTableProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const [pagination, setPagination] = useState({
+    pageIndex: Number(queryParams.get("page")) || 0,
+    pageSize: 8,
+  });
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 8,
-      },
+    onPaginationChange: setPagination,
+    state: {
+      pagination,
     },
+    autoResetPageIndex: false,
   });
+
+  useEffect(() => {
+    const updateQueryParam = () => {
+      const newPage = table.getState().pagination.pageIndex;
+      const params = new URLSearchParams(location.search);
+      params.set("page", newPage.toString());
+      navigate(`?${params.toString()}`, { replace: true });
+    };
+    if (location.search) {
+      updateQueryParam();
+    }
+  }, [table.getState().pagination.pageIndex, navigate, location.search]);
 
   return (
     <div className="w-full overflow-auto p-10 absolute top-0 right-0 left-0 bottom-0">
