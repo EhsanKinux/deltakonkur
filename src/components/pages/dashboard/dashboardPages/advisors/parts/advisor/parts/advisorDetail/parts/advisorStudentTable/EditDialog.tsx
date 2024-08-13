@@ -11,7 +11,7 @@ import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { editStudentFormSchema } from "@/lib/schema/Schema";
+import { editStudentFormSchemaInAdvisor } from "@/lib/schema/Schema";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { useEffect, useRef, useState } from "react";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
@@ -43,7 +43,7 @@ export function EditStudentDialog({ formData }: { formData: StudentWithDetails }
   // Memoize advisors to prevent unnecessary re-renders
   // const memoizedAdvisors = useMemo(() => advisors, [advisors]);
 
-  const formSchema = editStudentFormSchema();
+  const formSchema = editStudentFormSchemaInAdvisor();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
