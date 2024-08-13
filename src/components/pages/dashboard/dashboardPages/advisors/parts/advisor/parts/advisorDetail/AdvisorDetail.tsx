@@ -1,6 +1,6 @@
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import backIcon from "@/assets/icons/back.svg";
 import AdvisorInfo from "./parts/Info/AdvisorInfo";
@@ -16,6 +16,16 @@ const AdvisorDetail = () => {
   const navigate = useNavigate();
   const { advisorDetailStudent, getStudents } = useAdvisorsList();
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
+
+  // Use search params to manage query string
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Extract tab from query params or set default
+  const activeTab = searchParams.get("tab") || "studentTable";
+
+  const handleTabChange = (value: string) => {
+    setSearchParams({ tab: value });
+  };
 
   useEffect(() => {
     if (advisorId) {
@@ -59,7 +69,7 @@ const AdvisorDetail = () => {
         <span>بازگشت</span>
       </Button>
       <AdvisorInfo advisorId={advisorId} />
-      <Tabs defaultValue="studentTable" className="mt-4">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger value="studentTable" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
             لیست دانش‌آموزان
@@ -75,7 +85,7 @@ const AdvisorDetail = () => {
         </TabsContent>
         <TabsContent value="assessment">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl">
-            <AdvisorAssessment />
+            <AdvisorAssessment advisorId={advisorId} />
           </div>
         </TabsContent>
       </Tabs>
