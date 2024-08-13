@@ -22,10 +22,11 @@ const CustomEditInput = ({
       grade: string;
       created: string;
       advisor:string;
+      package_price: string;
     },
     undefined
   >;
-  name: "first_name" | "last_name" | "school" | "phone_number" | "home_phone" | "parent_phone" | "field" | "grade";
+  name: "first_name" | "last_name" | "school" | "phone_number" | "home_phone" | "parent_phone" | "field" | "grade" | "package_price";
   label: string;
   customclass?: string;
 }) => {

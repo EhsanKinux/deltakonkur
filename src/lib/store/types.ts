@@ -26,6 +26,7 @@ export type FormData = {
   field: string;
   grade: string;
   created?: string;
+  package_price?: string;
 };
 
 export type IadvisorStudent = {

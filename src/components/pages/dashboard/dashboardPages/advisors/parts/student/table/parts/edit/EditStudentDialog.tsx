@@ -26,6 +26,7 @@ import { appStore } from "@/lib/store/appStore";
 import Birthdate from "./parts/dateAndTime/Birthdate";
 import { convertToGregorian, convertToShamsi2 } from "@/lib/utils/date/convertDate";
 import { toast } from "sonner";
+import PlansType from "./parts/PlansType";
 
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo, setAdvisorForStudent } = useStudentList();
@@ -54,6 +55,7 @@ export function EditStudentDialog() {
       field: "",
       grade: "",
       created: "",
+      package_price: "",
       advisor: "",
     },
   });
@@ -72,11 +74,14 @@ export function EditStudentDialog() {
         field: studentInfo.field ? studentInfo.field : "",
         grade: studentInfo.grade ? studentInfo.grade : "",
         created: studentInfo.created,
+        package_price: String(studentInfo.package_price),
         advisor: "",
       });
     }
   }, [studentInfo, form]);
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
+
+  // console.log(studentInfo?.package_price);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // console.log("Form submitted with data:", data.date_of_birth);
@@ -141,6 +146,7 @@ export function EditStudentDialog() {
                   <DateAndTime2 form={form} />
                 </div>
                 <SelectStudentAdvisor form={form} memoizedAdvisors={memoizedAdvisors} />
+                <PlansType name="package_price" control={form.control} label="هزینه ی بسته" />
               </div>
               <DialogFooter>
                 <div className="flex justify-between items-center w-full">
