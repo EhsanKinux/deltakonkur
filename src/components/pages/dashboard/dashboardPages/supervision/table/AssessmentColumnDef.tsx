@@ -32,7 +32,7 @@ export const stAssessmentColumnDef: ColumnDef<IStudentAssessment>[] = [
   },
   {
     accessorKey: "exam_score",
-    header: "نمره آزمون",
+    header: "تعداد آزمون برگزار شده ( از نظرسنجی قبل تا الان)",
   },
   {
     accessorKey: "advisor_score",

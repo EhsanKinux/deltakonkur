@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import CustomInputAssassment from "../dashboard/dashboardPages/supervision/assess/parts/customInput/CustomInputAssassment";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
@@ -93,9 +86,7 @@ const ExternalForm = () => {
         <div className="text-center mt-8">
           <img src={thanksIcon} className="w-80" />
           <h4 className="text-2xl font-semibold">با تشکر از شما!</h4>
-          <p className="mt-4">
-            نظرسنجی شما با موفقیت ثبت شد. از همکاری شما سپاسگزاریم.
-          </p>
+          <p className="mt-4">نظرسنجی شما با موفقیت ثبت شد. از همکاری شما سپاسگزاریم.</p>
         </div>
       ) : (
         <Form {...form}>
@@ -154,7 +145,7 @@ const ExternalForm = () => {
             <CustomInputAssassment
               control={form.control}
               name="exam_score"
-              label="نمره آزمون"
+              label="تعداد آزمون برگزار شده ( از نظرسنجی قبل تا الان)"
               placeHolder="یک عدد بین 0 تا 4 وارد کنید..."
               min={0}
               max={4}
@@ -185,11 +176,7 @@ const ExternalForm = () => {
               )}
             />
             <div className="flex gap-2 justify-center items-center w-full mt-5">
-              <Button
-                type="submit"
-                className="form-btn w-full hover:bg-blue-800"
-                disabled={isSubmitting}
-              >
+              <Button type="submit" className="form-btn w-full hover:bg-blue-800" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <Loader2 size={20} className="animate-spin" />

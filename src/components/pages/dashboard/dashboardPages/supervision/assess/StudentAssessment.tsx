@@ -217,7 +217,7 @@ const StudentAssessment = () => {
             <CustomInputAssassment
               control={form.control}
               name="exam_score"
-              label="نمره آزمون"
+              label="تعداد آزمون برگزار شده ( از نظرسنجی قبل تا الان)"
               placeHolder="یک عدد بین 0 تا 4 وارد کنید..."
               min={0}
               max={4}
