@@ -1,10 +1,20 @@
-import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, ColumnDef } from "@tanstack/react-table";
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getPaginationRowModel,
+  ColumnDef,
+  getFilteredRowModel,
+  ColumnFiltersState,
+} from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { FormEntry } from "../../advisors/parts/student/table/interfaces";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import SearchIcon from "@/assets/icons/search.svg";
 
 interface SupervisionFollowUpTableProps {
   columns: ColumnDef<FormEntry>[];
@@ -12,6 +22,7 @@ interface SupervisionFollowUpTableProps {
 }
 
 export function SupervisionFollowUpTable({ columns, data }: SupervisionFollowUpTableProps) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -25,9 +36,12 @@ export function SupervisionFollowUpTable({ columns, data }: SupervisionFollowUpT
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     onPaginationChange: setPagination,
     state: {
       pagination,
+      columnFilters,
     },
     autoResetPageIndex: false,
   });
@@ -46,6 +60,26 @@ export function SupervisionFollowUpTable({ columns, data }: SupervisionFollowUpT
 
   return (
     <div className="w-full overflow-auto p-10 absolute top-0 right-0 left-0 bottom-0">
+      <div className="flex flex-col items-center xl:flex-row gap-2 py-4">
+        <div className="relative flex items-center w-full text-14 rounded-[8px]">
+          <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
+          <Input
+            placeholder="جستجو براساس نام"
+            value={(table.getColumn("first_name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn("first_name")?.setFilterValue(event.target.value)}
+            className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
+          />
+        </div>
+        <div className="relative flex items-center w-full text-14 rounded-[8px]">
+          <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
+          <Input
+            placeholder="جستجو براساس نام خانوادگی"
+            value={(table.getColumn("last_name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn("last_name")?.setFilterValue(event.target.value)}
+            className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
+          />
+        </div>
+      </div>
       <Table className="!rounded-xl border">
         <TableHeader className="bg-slate-300">
           {table.getHeaderGroups().map((headerGroup) => (
