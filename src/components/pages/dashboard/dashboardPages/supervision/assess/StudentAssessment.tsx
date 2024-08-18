@@ -1,7 +1,7 @@
 import { studentAssessment } from "@/lib/schema/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { z } from "zod";
 import CustomInputAssassment from "./parts/customInput/CustomInputAssassment";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -39,7 +39,7 @@ const StudentAssessment = () => {
   } = useSupervision();
 
   const { fetchStudentInfo, studentInfo } = useStudentList();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isloading, setIsloading] = useState(false);
