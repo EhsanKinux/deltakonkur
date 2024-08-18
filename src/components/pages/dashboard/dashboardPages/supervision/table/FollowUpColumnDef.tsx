@@ -14,6 +14,14 @@ export const followUpStColumns: ColumnDef<FormEntry>[] = [
     header: "نام خانوادگی",
   },
   {
+    accessorKey: "advisor_name",
+    header: "نام مشاور",
+  },
+  {
+    accessorKey: "phone_number",
+    header: "شماره همراه",
+  },
+  {
     accessorKey: "first_call",
     header: "تماس اول",
   },
@@ -35,7 +43,7 @@ export const followUpStColumns: ColumnDef<FormEntry>[] = [
   },
   {
     id: "actions",
-    cell: ({row}) => {
+    cell: ({ row }) => {
       const formData = row.original;
       return <FollowUpDialogButtons formData={formData} />;
     },
