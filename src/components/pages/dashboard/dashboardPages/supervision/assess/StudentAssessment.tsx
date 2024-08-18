@@ -144,7 +144,8 @@ const StudentAssessment = () => {
   };
 
   const goBackToSupervision = () => {
-    navigate("/dashboard/supervision");
+    // navigate("/dashboard/supervision");
+    window.history.go(-1);
   };
 
   return (
