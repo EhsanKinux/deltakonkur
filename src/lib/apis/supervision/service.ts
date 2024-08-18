@@ -2,7 +2,7 @@ import { fetchInstance } from "../fetch-config";
 import { IPostStudentAssessment, StudentCallAnsweringBody, StudentCallAnsweringBody2 } from "./interface";
 
 export const get_students_by_name = ({ first_name, last_name }: { first_name: string; last_name: string }) => {
-  let url = "api/register/students/?";
+  let url = "api/register/students/?active=true&";
 
   // Add first name to the query string if it exists
   if (first_name) {
