@@ -4,10 +4,14 @@ import studentCancel from "@/assets/icons/student-cancel.svg";
 import studentStop from "@/assets/icons/student-stop.svg";
 import personCard from "@/assets/icons/person-card.svg";
 import callIcon from "@/assets/icons/call.svg";
+import bankAccountIcon from "@/assets/icons/bankAccount.svg";
 import { AdvisorData } from "../../JustAdvisorDetail";
 import { appStore } from "@/lib/store/appStore";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { fetchInstance } from "@/lib/apis/fetch-config";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 // import { AdvisorDataResponse } from "@/functions/hooks/advisorsList/interface";
 
 const JustAdvisorInfo = ({
@@ -21,6 +25,8 @@ const JustAdvisorInfo = ({
 }) => {
   const advisorInfo = appStore((state) => state.advisorInfo);
   const { fetchAdvisorInfo } = useAdvisorsList();
+  const [bankAccount, setBankAccount] = useState(advisorInfo?.bank_account || "");
+  const [isEditing, setIsEditing] = useState(false);
 
   const levelMapping: { [key in "1" | "2" | "3" | "4" | "5"]: string } = {
     "1": "سطح 1",
@@ -36,6 +42,12 @@ const JustAdvisorInfo = ({
     }
   }, [advisorData, fetchAdvisorInfo, userRole]);
 
+  useEffect(() => {
+    if (advisorInfo?.bank_account) {
+      setBankAccount(advisorInfo.bank_account);
+    }
+  }, [advisorInfo?.bank_account]);
+
   const calculateActivePercentage = (active: number, stopped: number, canceled: number) => {
     const total = active + stopped + canceled;
     return total ? ((active / total) * 100).toFixed(2) : 0;
@@ -48,6 +60,35 @@ const JustAdvisorInfo = ({
   );
 
   const levelLabel = advisorInfo?.level && levelMapping[advisorInfo.level as keyof typeof levelMapping];
+
+  const handleBankAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBankAccount(e.target.value);
+  };
+
+  const handleBankAccountSubmit = async () => {
+    try {
+      const response = await fetchInstance(`api/advisor/advisor/bank-account/change/`, {
+        method: "POST",
+        body: JSON.stringify({ bank_account: bankAccount }),
+      });
+
+      if (response.ok) {
+        toast.success("شماره حساب بانکی با موفقیت به‌روزرسانی شد.");
+        setIsEditing(false);
+      } else {
+        const errorData = await response.json();
+        toast.error(`خطا در به‌روزرسانی شماره حساب: ${errorData.message || "خطای نامشخص"}`);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        // This block handles standard JavaScript errors
+        toast.error(`خطا در به‌روزرسانی شماره حساب: ${error.message}`);
+      } else {
+        // This block handles non-standard errors
+        toast.error("خطای نامشخصی رخ داده است.");
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col xl:flex-row justify-between w-full gap-3 p-4 mt-4 rounded-xl shadow-form relative bg-slate-100">
@@ -69,6 +110,35 @@ const JustAdvisorInfo = ({
           <div className="flex gap-2 items-center">
             <img src={personCard} width={25} />
             <h1 className="text-lg font-medium">کد ملی: {advisorInfo?.national_id}</h1>
+          </div>
+          <div className="flex flex-col gap-2 justify-center">
+            <p className="text-red-500 text-xs font-thin">برای تغییر روی شماره حساب کلیک کنید</p>
+            <div className="flex gap-2">
+              <img src={bankAccountIcon} width={25} />
+              <h1 className="text-lg flex flex-col font-medium">
+                شماره حساب بانکی: 
+                {isEditing ? (
+                  <>
+                    <input
+                      type="text"
+                      value={bankAccount}
+                      onChange={handleBankAccountChange}
+                      className="border p-1 ml-2"
+                    />
+                    <Button
+                      onClick={handleBankAccountSubmit}
+                      className="bg-blue-500 text-white rounded ml-2 hover:bg-blue-700"
+                    >
+                      ذخیره
+                    </Button>
+                  </>
+                ) : (
+                  <span onClick={() => setIsEditing(true)} className="cursor-pointer">
+                     {bankAccount}
+                  </span>
+                )}
+              </h1>
+            </div>
           </div>
           <div className="flex gap-2 items-center">
             <h2 className="text-base font-medium">
