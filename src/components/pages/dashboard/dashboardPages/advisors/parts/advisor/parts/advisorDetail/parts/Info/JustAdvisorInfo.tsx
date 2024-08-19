@@ -72,11 +72,11 @@ const JustAdvisorInfo = ({
         body: JSON.stringify({ bank_account: bankAccount }),
       });
 
-      if (response.ok) {
+      if (response) {
         toast.success("شماره حساب بانکی با موفقیت به‌روزرسانی شد.");
         setIsEditing(false);
       } else {
-        const errorData = await response.json();
+        const errorData = await response;
         toast.error(`خطا در به‌روزرسانی شماره حساب: ${errorData.message || "خطای نامشخص"}`);
       }
     } catch (error) {
