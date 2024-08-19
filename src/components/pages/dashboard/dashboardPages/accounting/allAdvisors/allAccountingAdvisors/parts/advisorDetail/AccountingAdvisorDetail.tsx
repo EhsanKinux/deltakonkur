@@ -4,11 +4,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import AccountingAdvisorInfo from "./parts/AccountingAdvisorInfo";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { stColumns } from "./parts/ColumnDef";
+import { accountStColumns } from "./parts/ColumnDef";
 import backIcon from "@/assets/icons/back.svg";
 import {
   AdvisorStudentData,
-  StudentWithDetails,
+  StudentWithDetails2,
 } from "@/functions/hooks/advisorsList/interface";
 import { AllAdvisorDetailTable } from "../../../../table/AllAdvisorDetailTable";
 
@@ -23,7 +23,7 @@ const AccountingAdvisorDetail = () => {
   const navigate = useNavigate();
   const { advisorDetailData, getStudentsOfAdvisor } = useAdvisorsList();
   const [processedStudentData, setProcessedStudentData] = useState<
-    StudentWithDetails[]
+    StudentWithDetails2[]
   >([]);
   const [statusCounts, setStatusCounts] = useState({
     active: 0,
@@ -39,7 +39,7 @@ const AccountingAdvisorDetail = () => {
 
   useEffect(() => {
     if (advisorDetailData && advisorDetailData.data) {
-      const studentData: StudentWithDetails[] = advisorDetailData.data.map(
+      const studentData: StudentWithDetails2[] = advisorDetailData.data.map(
         (entry: AdvisorStudentData) => ({
           ...entry.student,
           status: entry.status, // Assuming you have a way to get the status, replace accordingly
@@ -95,7 +95,7 @@ const AccountingAdvisorDetail = () => {
       />
       <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
         <AllAdvisorDetailTable
-          columns={stColumns}
+          columns={accountStColumns}
           data={processedStudentData}
         />
       </div>

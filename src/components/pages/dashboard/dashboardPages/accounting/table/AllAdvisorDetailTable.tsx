@@ -14,13 +14,13 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import SearchIcon from "@/assets/icons/search.svg";
-//   import { StudentWithDetails } from "../advisor/parts/advisorDetail/interface";
-import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
+//   import { StudentWithDetails2 } from "../advisor/parts/advisorDetail/interface";
+import { StudentWithDetails2 } from "@/functions/hooks/advisorsList/interface";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface AllAdvisorDetailTableProps {
-  columns: ColumnDef<StudentWithDetails>[];
-  data: StudentWithDetails[];
+  columns: ColumnDef<StudentWithDetails2>[];
+  data: StudentWithDetails2[];
 }
 
 export function AllAdvisorDetailTable({ columns, data }: AllAdvisorDetailTableProps) {

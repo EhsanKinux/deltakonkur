@@ -30,7 +30,7 @@ export interface AdvisorDataResponse {
   total_wage: number;
 }
 
-export interface StudentWithDetails extends Student {
+export interface StudentWithDetails2 extends Student {
   status: string;
   started_date: string;
   ended_date: string;

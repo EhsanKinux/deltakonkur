@@ -1,7 +1,7 @@
-import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
+import { StudentWithDetails2 } from "@/functions/hooks/advisorsList/interface";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const stColumns: ColumnDef<StudentWithDetails>[] = [
+export const accountStColumns: ColumnDef<StudentWithDetails2>[] = [
   {
     accessorKey: "first_name",
     header: "نام",

@@ -14,15 +14,9 @@ import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import JustAdvisorInfo from "./parts/Info/JustAdvisorInfo";
 import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
 import { JustAdvisorColumnDef } from "./parts/advisorStudentTable/JustAdvisorColumnDef";
-
-export interface ICurrentUser {
-  id: number;
-  first_name: string;
-  last_name: string;
-  national_id: string;
-  phone_number: string;
-  role: number;
-}
+import { AllAdvisorDetailTable } from "@/components/pages/dashboard/dashboardPages/accounting/table/AllAdvisorDetailTable";
+import { accountStColumns } from "@/components/pages/dashboard/dashboardPages/accounting/allAdvisors/allAccountingAdvisors/parts/advisorDetail/parts/ColumnDef";
+import { AdvisorStudentData, StudentWithDetails2 } from "@/functions/hooks/advisorsList/interface";
 
 export interface AdvisorData {
   id: number;
@@ -41,10 +35,17 @@ export interface AdvisorData {
 
 const JustAdvisorDetail = () => {
   const { accessToken, userRoles } = authStore();
-  const { advisorDetailStudent, getStudents } = useAdvisorsList();
+  const { advisorDetailStudent, getStudents, advisorDetailData, getStudentsOfAdvisor } = useAdvisorsList();
   const navigate = useNavigate();
   const [advisorData, setAdvisorData] = useState<AdvisorData | null>(null);
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
+  const [processedStudentDataAccounting, setProcessedStudentDataAccounting] = useState<StudentWithDetails2[]>([]);
+
+  const formatNumber = (number: string): string => {
+    const num = parseFloat(number);
+    if (isNaN(num)) return "0";
+    return new Intl.NumberFormat("en-US").format(num);
+  };
 
   useEffect(() => {
     if (userRoles && userRoles.includes(7)) {
@@ -93,6 +94,28 @@ const JustAdvisorDetail = () => {
     }
   }, [advisorDetailStudent]);
 
+  useEffect(() => {
+    if (String(advisorData?.id)) {
+      getStudentsOfAdvisor(String(advisorData?.id));
+    }
+  }, [advisorData?.id, getStudentsOfAdvisor]);
+
+  useEffect(() => {
+    if (advisorDetailData && advisorDetailData.data) {
+      const studentData: StudentWithDetails2[] = advisorDetailData.data.map((entry: AdvisorStudentData) => ({
+        ...entry.student,
+        status: entry.status, // Assuming you have a way to get the status, replace accordingly
+        started_date: entry.start_date ? convertToShamsi(entry.start_date) : "-",
+        ended_date: entry.end_date ? convertToShamsi(entry.end_date) : "-",
+        duration: entry.duration,
+        start_date: entry.start_date,
+        end_date: entry.end_date,
+        wage: `${formatNumber(Number(entry.wage).toFixed(0)).toString()} ریال`,
+      }));
+      setProcessedStudentDataAccounting(studentData);
+    }
+  }, [advisorDetailData]);
+
   const goToAdvisors = () => {
     if (userRoles && userRoles.includes(7)) {
       navigate("/dashboard");
@@ -121,6 +144,9 @@ const JustAdvisorDetail = () => {
           <TabsTrigger value="assessment" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
             نظرسنجی ها
           </TabsTrigger>
+          <TabsTrigger value="accountingAdvisor" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+            حسابداری
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="studentTable">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
@@ -130,6 +156,11 @@ const JustAdvisorDetail = () => {
         <TabsContent value="assessment">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl">
             <AdvisorAssessment advisorId={String(advisorData?.id)} />
+          </div>
+        </TabsContent>
+        <TabsContent value="accountingAdvisor">
+          <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
+            <AllAdvisorDetailTable columns={accountStColumns} data={processedStudentDataAccounting} />
           </div>
         </TabsContent>
       </Tabs>

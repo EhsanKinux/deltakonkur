@@ -47,10 +47,6 @@ const AdvisorDetail = () => {
     }
   }, [advisorDetailStudent]);
 
-  // console.log("advisorDetailData", advisorDetailStudent);
-  // console.log("advisorDetailData", advisorDetailData);
-  // console.log("processedStudentData", processedStudentData);
-
   const goToAdisors = () => {
     navigate("/dashboard/advisors");
   };
