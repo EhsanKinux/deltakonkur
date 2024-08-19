@@ -165,6 +165,7 @@ export const useSupervision = () => {
           completed_time: item.completed_time ? convertToShamsi(item.completed_time) : "-",
           first_call_time2: item.first_call_time,
           first_call2: item.first_call,
+          advisor_name: item.advisor_name ? item.advisor_name : "-",
         }));
         setFollowUpStudents(transformedData);
       } else {
