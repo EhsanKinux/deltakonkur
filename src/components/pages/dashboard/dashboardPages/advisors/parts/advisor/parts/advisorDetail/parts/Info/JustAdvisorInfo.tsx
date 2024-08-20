@@ -147,7 +147,7 @@ const JustAdvisorInfo = ({
           </div>
           <div className="flex gap-2 items-center">
             <h2 className="text-base font-medium">
-              سطج مشاور : <span className="text-blue-500 font-semibold">{levelLabel}</span>
+              سطح مشاور : <span className="text-blue-500 font-semibold">{levelLabel}</span>
             </h2>
           </div>
           {/* <div className="flex gap-2 items-center">
