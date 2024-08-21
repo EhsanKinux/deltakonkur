@@ -75,7 +75,10 @@ export function AdvisorTable({ columns, data }: AdvisorTableProps) {
           <Input
             placeholder="جستجو براساس نام"
             value={(table.getColumn("first_name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn("first_name")?.setFilterValue(event.target.value)}
+            onChange={(event) => {
+              table.setPageIndex(0);
+              table.getColumn("first_name")?.setFilterValue(event.target.value);
+            }}
             className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
           />
         </div>
@@ -84,7 +87,10 @@ export function AdvisorTable({ columns, data }: AdvisorTableProps) {
           <Input
             placeholder="جستجو براساس نام خانوادگی"
             value={(table.getColumn("last_name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn("last_name")?.setFilterValue(event.target.value)}
+            onChange={(event) => {
+              table.setPageIndex(0);
+              table.getColumn("last_name")?.setFilterValue(event.target.value);
+            }}
             className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
           />
         </div>
