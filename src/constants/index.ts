@@ -11,6 +11,7 @@ import addSquareIcon from "@/assets/icons/addSquare.svg";
 import sendMessageIcon from "@/assets/icons/sendmsg.svg";
 import followUpIcon from "@/assets/icons/followup.svg";
 import supervisionIcon from "@/assets/icons/box-search.svg";
+import examIcon from "@/assets/icons/note.svg";
 
 export const sidebarLinks = [
   {
@@ -155,5 +156,12 @@ export const sidebarLinks = [
     route: "/dashboard/advisors/justAdvisor",
     label: "مشاور",
     roles: [7],
+  },
+  {
+    id: 9,
+    imgURL: examIcon,
+    route: "/dashboard/exam",
+    label: "آزمون",
+    roles: [0],
   },
 ];
