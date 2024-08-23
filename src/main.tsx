@@ -10,6 +10,10 @@ import ScrollToTop from "./lib/utils/ScrollToTop.tsx";
 import { DescriptionPage } from "./components/pages/dashboard/dashboardPages/supervision/assess/parts/recentAssassments/DescriptionPage.tsx";
 
 // Lazy load components
+const ExamAdvisroDetail = lazy(
+  () => import("./components/pages/dashboard/dashboardPages/exam/advisorDetail/ExamAdvisroDetail.tsx")
+);
+const Exam = lazy(() => import("./components/pages/dashboard/dashboardPages/exam/Exam.tsx"));
 const ExternalForm = lazy(() => import("./components/pages/externalStudentForm/ExternalForm.tsx"));
 const SupervisionFollowUp = lazy(
   () => import("./components/pages/dashboard/dashboardPages/supervision/followUp/SupervisionFollowUp.tsx")
@@ -401,6 +405,32 @@ const router = createBrowserRouter([
                   </Suspense>
                 }
                 requiredRole={[0]}
+              />
+            ),
+          },
+          {
+            path: "exam",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <Exam />
+                  </Suspense>
+                }
+                requiredRole={[0]}
+              />
+            ),
+          },
+          {
+            path: "exam/:advisorId",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <ExamAdvisroDetail />
+                  </Suspense>
+                }
+                requiredRole={[0, 2, 7]}
               />
             ),
           },
