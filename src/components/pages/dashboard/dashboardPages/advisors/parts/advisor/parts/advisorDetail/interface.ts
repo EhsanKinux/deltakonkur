@@ -40,10 +40,11 @@ export interface AdvisorDetailEntry {
   solar_date_day: string | null;
   solar_date_month: string | null;
   solar_date_year: string | null;
+  deduction: boolean;
 }
 
 export interface StudentWithDetails extends Student {
-  advisor:string;
+  advisor: string;
   wholeId: string;
   status: string;
   started_date: string;
