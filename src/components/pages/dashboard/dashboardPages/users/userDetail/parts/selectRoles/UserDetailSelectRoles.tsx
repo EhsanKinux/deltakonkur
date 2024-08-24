@@ -28,6 +28,7 @@ const UserDetailSelectRoles = ({ userId, initialRoles }: UserDetailSelectRolesPr
     { value: "4", label: "واحد نظارت" },
     { value: "5", label: "واحد کنسلی" },
     { value: "6", label: "واحد محتوا" },
+    { value: "8", label: "واحد آزمون" },
   ];
 
   useEffect(() => {
@@ -85,8 +86,8 @@ const UserDetailSelectRoles = ({ userId, initialRoles }: UserDetailSelectRolesPr
   return (
     <div className="flex flex-col justify-center items-center w-full">
       <p className="font-semibold text-red-600">
-        دقت داشته باشید با انتخاب هر یک از نقش های کاربر، در لحظه انتخاب اعمال میشود و درصورت حذف آن در لحظه نقش کاربر حذف
-        میگردد!
+        دقت داشته باشید با انتخاب هر یک از نقش های کاربر، در لحظه انتخاب اعمال میشود و درصورت حذف آن در لحظه نقش کاربر
+        حذف میگردد!
       </p>
       <Select
         isMulti

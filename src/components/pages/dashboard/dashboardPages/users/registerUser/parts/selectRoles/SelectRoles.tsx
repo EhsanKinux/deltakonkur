@@ -31,6 +31,7 @@ const SelectRoles = ({ form, userId }: SelectRolesProps) => {
     { value: "4", label: "واحد نظارت" },
     { value: "5", label: "واحد کنسلی" },
     { value: "6", label: "واحد محتوا" },
+    { value: "8", label: "واحد آزمون" },
   ];
 
   const handleRoleChange = async (selectedOptions: MultiValue<RoleOption>) => {

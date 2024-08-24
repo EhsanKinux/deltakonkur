@@ -162,6 +162,6 @@ export const sidebarLinks = [
     imgURL: examIcon,
     route: "/dashboard/exam",
     label: "آزمون",
-    roles: [0],
+    roles: [0, 8],
   },
 ];

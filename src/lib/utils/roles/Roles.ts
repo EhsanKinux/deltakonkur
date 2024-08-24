@@ -8,6 +8,7 @@ export const getRoleNames = (roles: number[]): string => {
     5: "واحد کنسلی",
     6: "واحد محتوا",
     7: "مشاور",
+    8: "واحد آزمون",
   };
 
   return roles.map((role) => roleMap[role] || "نامشخص").join(", ");

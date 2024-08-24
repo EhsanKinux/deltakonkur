@@ -417,7 +417,7 @@ const router = createBrowserRouter([
                     <Exam />
                   </Suspense>
                 }
-                requiredRole={[0]}
+                requiredRole={[0, 8]}
               />
             ),
           },
@@ -430,7 +430,7 @@ const router = createBrowserRouter([
                     <ExamAdvisroDetail />
                   </Suspense>
                 }
-                requiredRole={[0, 2, 7]}
+                requiredRole={[0, 8]}
               />
             ),
           },
