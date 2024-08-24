@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { StudentWithDetails } from "../../advisors/parts/advisor/parts/advisorDetail/interface";
+import ActionButtons from "../advisorDetail/parts/ActionButtons";
 
 export const examStColumns: ColumnDef<StudentWithDetails>[] = [
   {
@@ -50,11 +51,11 @@ export const examStColumns: ColumnDef<StudentWithDetails>[] = [
     accessorKey: "deduction",
     header: "کسر شده",
   },
-  //   {
-  //     id: "actions",
-  //     cell: ({ row }) => {
-  //       const formData = row.original;
-  //       return <StudentDialogButtons formData={formData} />;
-  //     },
-  //   },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const formData = row.original;
+        return <ActionButtons formData={formData} />;
+      },
+    },
 ];
