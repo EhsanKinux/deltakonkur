@@ -51,10 +51,10 @@ export const activeAccountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] = 
     accessorKey: "expire_date",
     header: "تاریخ انقضا",
   },
-  // {
-  //   accessorKey: "status",
-  //   header: "وضعیت",
-  // },
+  {
+    accessorKey: "package_price",
+    header: "هزینه بسته",
+  },
   {
     id: "actions",
     cell: ({ row }) => {

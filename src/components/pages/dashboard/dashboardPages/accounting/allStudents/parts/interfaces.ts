@@ -28,6 +28,7 @@ export interface IStudent {
   solar_date_day: string;
   solar_date_month: string;
   solar_date_year: string;
+  package_price: number;
 }
 
 // Interface for the main student-advisor object

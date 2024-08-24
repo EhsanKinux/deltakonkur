@@ -61,6 +61,7 @@ const AllAccountingStudents = () => {
         ended_date: item.ended_date,
         status: item.status,
         advisor_name: item.advisor_name,
+        package_price: item.student.package_price
       }));
       setFormattedData(formatted);
     }
