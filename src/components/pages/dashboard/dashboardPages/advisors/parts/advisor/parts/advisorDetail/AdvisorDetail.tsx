@@ -10,12 +10,16 @@ import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
 import { AdvisorDitailTable } from "../../../table/AdvisorDitailTable";
 import { stColumns } from "./parts/advisorStudentTable/ColumnDef";
 import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
+import { AdvisorPayHistoryTable } from "../../../table/AdvisorPayHistoryTable";
+import { payHistoryColumns } from "./parts/advisorPayHistoryTable/PayHistoryColumnDef";
+import { PaymentHistoryRecord } from "@/functions/hooks/advisorsList/interface";
 
 const AdvisorDetail = () => {
   const { advisorId } = useParams();
   const navigate = useNavigate();
-  const { advisorDetailStudent, getStudents } = useAdvisorsList();
+  const { advisorDetailStudent, getStudents, fetchPaymentHistory, paymentHistory } = useAdvisorsList();
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
+  const [processedPaymentHistory, setProcessedPaymentHistory] = useState<PaymentHistoryRecord[]>([]);
 
   // Use search params to manage query string
   const [searchParams, setSearchParams] = useSearchParams();
@@ -47,6 +51,22 @@ const AdvisorDetail = () => {
     }
   }, [advisorDetailStudent]);
 
+  useEffect(() => {
+    if (advisorId) {
+      fetchPaymentHistory(parseInt(advisorId, 10));
+    }
+  }, [advisorId, fetchPaymentHistory]);
+
+  useEffect(() => {
+    if (paymentHistory) {
+      const formattedPaymentHistory = paymentHistory.map((record) => ({
+        ...record,
+        last_pay: convertToShamsi(record.last_pay), // Modify last_pay date here
+      }));
+      setProcessedPaymentHistory(formattedPaymentHistory);
+    }
+  }, [paymentHistory]);
+
   const goToAdisors = () => {
     navigate("/dashboard/advisors");
   };
@@ -73,6 +93,9 @@ const AdvisorDetail = () => {
           <TabsTrigger value="assessment" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
             نظرسنجی ها
           </TabsTrigger>
+          <TabsTrigger value="payHistory" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+            دریافتی
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="studentTable">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
@@ -82,6 +105,11 @@ const AdvisorDetail = () => {
         <TabsContent value="assessment">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl">
             <AdvisorAssessment advisorId={advisorId} />
+          </div>
+        </TabsContent>
+        <TabsContent value="payHistory">
+          <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
+            <AdvisorPayHistoryTable columns={payHistoryColumns} data={processedPaymentHistory} />
           </div>
         </TabsContent>
       </Tabs>

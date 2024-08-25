@@ -39,3 +39,10 @@ export interface StudentWithDetails2 extends Student {
   end_date: string;
   wage: string;
 }
+
+export interface PaymentHistoryRecord {
+  id: number;
+  advisor: string;
+  amount: number;
+  last_pay: string; // Date as ISO string
+}

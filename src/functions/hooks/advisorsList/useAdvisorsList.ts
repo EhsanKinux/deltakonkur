@@ -5,6 +5,7 @@ import {
   advisors_delete,
   delete_student_advisro,
   get_advisor_info,
+  get_payment_history,
   get_registered_advisors,
   get_student_advisor_data,
   get_student_of_advisor,
@@ -15,7 +16,7 @@ import { appStore } from "@/lib/store/appStore";
 import { Advisor } from "@/lib/store/types";
 // import { Advisor } from "@/lib/store/types";
 import { useCallback, useState } from "react";
-import { AdvisorDataResponse } from "./interface";
+import { AdvisorDataResponse, PaymentHistoryRecord } from "./interface";
 import { ISubmitAdvisorRegisterService } from "@/lib/apis/advisors/interface";
 import { AdvisorDetailEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/interface";
 
@@ -39,6 +40,7 @@ export const useAdvisorsList = () => {
   const [wageLoad, setWageLoad] = useState(false);
   const [wageData, setWageData] = useState();
   const [studentAdvisorData, setStudentAdvisorData] = useState(null);
+  const [paymentHistory, setPaymentHistory] = useState<PaymentHistoryRecord[] | null>(null);
 
   const processData = (response: any): AdvisorDataResponse => {
     const result: AdvisorDataResponse = {
@@ -293,6 +295,26 @@ export const useAdvisorsList = () => {
     [setError, setLoading]
   );
 
+  const fetchPaymentHistory = useCallback(
+    async (advisorId: number) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data: PaymentHistoryRecord[] = await get_payment_history(advisorId);
+        setPaymentHistory(data);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to fetch payment history");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, setError]
+  );
+
   return {
     getAdvisorsData,
     advisorDelete,
@@ -312,5 +334,7 @@ export const useAdvisorsList = () => {
     studentAdvisorData,
     fetchStudentAdvisorData,
     deleteStudentAdvisor,
+    fetchPaymentHistory,
+    paymentHistory,
   };
 };

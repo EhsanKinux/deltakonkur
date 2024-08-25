@@ -32,3 +32,6 @@ export const get_student_advisor_data = (studentId: string) =>
 
 export const delete_student_advisro = (id: string) =>
   fetchInstance(`api/register/student-advisors/${id}/`, { method: "DELETE" });
+
+export const get_payment_history = (advisorId: number) =>
+  fetchInstance(`api/advisor/advisor/pay-history/${advisorId}/list`, { method: "GET" });
