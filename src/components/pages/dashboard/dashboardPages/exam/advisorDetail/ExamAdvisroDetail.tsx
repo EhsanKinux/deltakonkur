@@ -27,6 +27,7 @@ const ExamAdvisroDetail = () => {
         advisor: entry.advisor,
         wholeId: entry.id,
         status: entry.status,
+        package_price: entry.student.package_price,
         started_date: entry.started_date ? convertToShamsi(entry.started_date) : "-",
         ended_date: entry.ended_date ? convertToShamsi(entry.ended_date) : "-",
         deduction: entry.deduction === true ? "✔" : "-",

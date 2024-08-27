@@ -48,14 +48,18 @@ export const examStColumns: ColumnDef<StudentWithDetails>[] = [
     header: "تاریخ پایان",
   },
   {
+    accessorKey: "package_price",
+    header: "هزینه بسته",
+  },
+  {
     accessorKey: "deduction",
     header: "کسر شده",
   },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const formData = row.original;
-        return <ActionButtons formData={formData} />;
-      },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const formData = row.original;
+      return <ActionButtons formData={formData} />;
     },
+  },
 ];

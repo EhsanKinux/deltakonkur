@@ -28,6 +28,7 @@ export interface Student {
   solar_date_day: string | null;
   solar_date_month: string | null;
   solar_date_year: string | null;
+  package_price: number;
 }
 
 export interface AdvisorDetailEntry {
