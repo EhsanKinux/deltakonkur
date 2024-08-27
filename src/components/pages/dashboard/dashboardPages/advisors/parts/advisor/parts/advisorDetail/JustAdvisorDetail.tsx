@@ -16,7 +16,13 @@ import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
 import { JustAdvisorColumnDef } from "./parts/advisorStudentTable/JustAdvisorColumnDef";
 import { AllAdvisorDetailTable } from "@/components/pages/dashboard/dashboardPages/accounting/table/AllAdvisorDetailTable";
 import { accountStColumns } from "@/components/pages/dashboard/dashboardPages/accounting/allAdvisors/allAccountingAdvisors/parts/advisorDetail/parts/ColumnDef";
-import { AdvisorStudentData, StudentWithDetails2 } from "@/functions/hooks/advisorsList/interface";
+import {
+  AdvisorStudentData,
+  PaymentHistoryRecord,
+  StudentWithDetails2,
+} from "@/functions/hooks/advisorsList/interface";
+import { AdvisorPayHistoryTable } from "../../../table/AdvisorPayHistoryTable";
+import { payHistoryColumns } from "./parts/advisorPayHistoryTable/PayHistoryColumnDef";
 
 export interface AdvisorData {
   id: number;
@@ -35,11 +41,19 @@ export interface AdvisorData {
 
 const JustAdvisorDetail = () => {
   const { accessToken, userRoles } = authStore();
-  const { advisorDetailStudent, getStudents, advisorDetailData, getStudentsOfAdvisor } = useAdvisorsList();
+  const {
+    advisorDetailStudent,
+    getStudents,
+    advisorDetailData,
+    getStudentsOfAdvisor,
+    fetchPaymentHistory,
+    paymentHistory,
+  } = useAdvisorsList();
   const navigate = useNavigate();
   const [advisorData, setAdvisorData] = useState<AdvisorData | null>(null);
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
   const [processedStudentDataAccounting, setProcessedStudentDataAccounting] = useState<StudentWithDetails2[]>([]);
+  const [processedPaymentHistory, setProcessedPaymentHistory] = useState<PaymentHistoryRecord[]>([]);
 
   const formatNumber = (number: string): string => {
     const num = parseFloat(number);
@@ -116,6 +130,30 @@ const JustAdvisorDetail = () => {
     }
   }, [advisorDetailData]);
 
+  useEffect(() => {
+    if (advisorData?.id) {
+      fetchPaymentHistory(advisorData?.id);
+    }
+  }, [advisorData?.id, fetchPaymentHistory]);
+
+  useEffect(() => {
+    if (paymentHistory) {
+      let runningSum = 0;
+
+      const formattedPaymentHistory = paymentHistory.map((record, index) => {
+        runningSum += record.amount;
+        return {
+          ...record,
+          sum_of_amount: runningSum,
+          last_pay: convertToShamsi(record.last_pay),
+          id: index + 1,
+        };
+      });
+
+      setProcessedPaymentHistory(formattedPaymentHistory);
+    }
+  }, [paymentHistory]);
+
   const goToAdvisors = () => {
     if (userRoles && userRoles.includes(7)) {
       navigate("/dashboard");
@@ -147,6 +185,9 @@ const JustAdvisorDetail = () => {
           <TabsTrigger value="accountingAdvisor" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
             حسابداری
           </TabsTrigger>
+          <TabsTrigger value="payHistory" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+            دریافتی
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="studentTable">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
@@ -161,6 +202,11 @@ const JustAdvisorDetail = () => {
         <TabsContent value="accountingAdvisor">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
             <AllAdvisorDetailTable columns={accountStColumns} data={processedStudentDataAccounting} />
+          </div>
+        </TabsContent>
+        <TabsContent value="payHistory">
+          <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
+            <AdvisorPayHistoryTable columns={payHistoryColumns} data={processedPaymentHistory} />
           </div>
         </TabsContent>
       </Tabs>

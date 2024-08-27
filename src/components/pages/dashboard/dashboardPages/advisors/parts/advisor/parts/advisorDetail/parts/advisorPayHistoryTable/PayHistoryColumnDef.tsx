@@ -7,12 +7,16 @@ export const payHistoryColumns: ColumnDef<PaymentHistoryRecord>[] = [
     header: "شماره",
   },
   {
-    accessorKey: "amount",
-    header: "مقدار هزینه",
-  },
-  {
     accessorKey: "last_pay",
     header: "تاریخ آخرین دریافتی",
+  },
+  {
+    accessorKey: "amount",
+    header: "مقدار دریافتی",
+  },
+  {
+    accessorKey: "sum_of_amount",
+    header: "مقدار دریافتی کل",
   },
   //   {
   //     id: "actions",
