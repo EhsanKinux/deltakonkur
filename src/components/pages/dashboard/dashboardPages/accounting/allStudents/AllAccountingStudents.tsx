@@ -25,6 +25,12 @@ const AllAccountingStudents = () => {
   };
 
   useEffect(() => {
+    if (!searchParams.has("tab")) {
+      setSearchParams({ tab: "activeStudent_accounting" });
+    }
+  }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
     const fetchData = async () => {
       await getStudentsWithAdvisors();
       setDataLoaded(true);
@@ -61,7 +67,7 @@ const AllAccountingStudents = () => {
         ended_date: item.ended_date,
         status: item.status,
         advisor_name: item.advisor_name,
-        package_price: item.student.package_price
+        package_price: item.student.package_price,
       }));
       setFormattedData(formatted);
     }

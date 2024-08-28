@@ -18,18 +18,18 @@ const AdvisorList = () => {
   const activeTab = searchParams.get("tab") || "mathAdvisors";
 
   useEffect(() => {
+    if (!searchParams.has("tab")) {
+      // Set the default tab if it's not present in the URL
+      setSearchParams({ tab: "mathAdvisors" });
+    }
     getAdvisorsData();
-  }, [getAdvisorsData]);
+  }, [getAdvisorsData, searchParams, setSearchParams]);
 
   const handleTabChange = (value: string) => {
     setSearchParams({ tab: value });
   };
 
-  const calculateActivePercentage = (
-    active: number,
-    stopped: number,
-    canceled: number
-  ) => {
+  const calculateActivePercentage = (active: number, stopped: number, canceled: number) => {
     const total = active + stopped + canceled;
     return total ? ((active / total) * 100).toFixed(2) : "0.00";
   };
@@ -57,13 +57,9 @@ const AdvisorList = () => {
   }, [advisors]);
 
   const sortAdvisorsByActivePercentage = (advisors: Advisor[]): Advisor[] => {
-    return advisors.sort(
-      (a, b) => (b.activePercentage ?? 0) - (a.activePercentage ?? 0)
-    );
+    return advisors.sort((a, b) => (b.activePercentage ?? 0) - (a.activePercentage ?? 0));
   };
-  const mathAdvisors = sortAdvisorsByActivePercentage(
-    memoizedAdvisors.filter((advisor) => advisor.field === "ریاضی")
-  );
+  const mathAdvisors = sortAdvisorsByActivePercentage(memoizedAdvisors.filter((advisor) => advisor.field === "ریاضی"));
   const experimentalAdvisors = sortAdvisorsByActivePercentage(
     memoizedAdvisors.filter((advisor) => advisor.field === "تجربی")
   );
@@ -73,28 +69,17 @@ const AdvisorList = () => {
 
   return (
     <section className="max-h-screen">
-      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">
-        مشاوران
-      </h1>
+      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">مشاوران</h1>
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
-          <TabsTrigger
-            value="mathAdvisors"
-            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
-          >
+          <TabsTrigger value="mathAdvisors" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
             ریاضی
           </TabsTrigger>
-          <TabsTrigger
-            value="experimentalAdvisors"
-            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
-          >
+          <TabsTrigger value="experimentalAdvisors" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
             تجربی
           </TabsTrigger>
-          <TabsTrigger
-            value="humanitiesAdvisors"
-            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
-          >
+          <TabsTrigger value="humanitiesAdvisors" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
             علوم انسانی
           </TabsTrigger>
         </TabsList>

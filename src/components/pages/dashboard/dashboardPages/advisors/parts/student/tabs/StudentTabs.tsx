@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StudentsList from "../StudentsList";
 import AllStudentsList from "../AllStudentsList";
 import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const StudentTabs = () => {
   // Use search params to manage query string
@@ -9,6 +10,12 @@ const StudentTabs = () => {
 
   // Extract tab from query params or set default
   const activeTab = searchParams.get("tab") || "noAdvisorStudents";
+
+  useEffect(() => {
+    if (!searchParams.has("tab")) {
+      setSearchParams({ tab: "noAdvisorStudents" });
+    }
+  }, [searchParams, setSearchParams]);
 
   const handleTabChange = (value: string) => {
     // Update the URL query parameter when the tab changes

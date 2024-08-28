@@ -47,6 +47,14 @@ export function SupervisionFollowUpTable({ columns, data }: SupervisionFollowUpT
   });
 
   useEffect(() => {
+    // Initialize the query parameter if it's missing
+    if (!queryParams.has("page")) {
+      queryParams.set("page", pagination.pageIndex.toString());
+      navigate(`?${queryParams.toString()}`, { replace: true });
+    }
+  }, [navigate, queryParams, pagination.pageIndex]);
+
+  useEffect(() => {
     const updateQueryParam = () => {
       const newPage = table.getState().pagination.pageIndex;
       const params = new URLSearchParams(location.search);

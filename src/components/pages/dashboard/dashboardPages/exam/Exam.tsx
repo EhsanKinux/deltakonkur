@@ -18,8 +18,12 @@ const Exam = () => {
   const activeTab = searchParams.get("tab") || "mathAdvisorsExam";
 
   useEffect(() => {
+    if (!searchParams.has("tab")) {
+      // Set the default tab if it's not present in the URL
+      setSearchParams({ tab: "mathAdvisorsExam" });
+    }
     getAdvisorsData();
-  }, [getAdvisorsData]);
+  }, [getAdvisorsData, searchParams, setSearchParams]);
 
   const handleTabChange = (value: string) => {
     setSearchParams({ tab: value });

@@ -17,8 +17,12 @@ const ContentAdvisor = () => {
   const activeTab = searchParams.get("tab") || "mathAdvisorsContent";
 
   useEffect(() => {
+    if (!searchParams.has("tab")) {
+      // Set the default tab if it's not present in the URL
+      setSearchParams({ tab: "mathAdvisorsContent" });
+    }
     getAdvisorsData();
-  }, [getAdvisorsData]);
+  }, [getAdvisorsData, searchParams, setSearchParams]);
 
   const handleTabChange = (value: string) => {
     // Update the URL query parameter when the tab changes

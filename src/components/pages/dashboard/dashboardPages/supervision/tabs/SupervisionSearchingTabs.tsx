@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SearchByName from "./parts/SearchByName";
 import SearchByDay from "./parts/SearchByDay";
 import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const SupervisionSearchingTabs = () => {
   // Use search params to manage query string
@@ -14,6 +15,12 @@ const SupervisionSearchingTabs = () => {
     // Update the URL query parameter when the tab changes
     setSearchParams({ tab: value });
   };
+
+  useEffect(() => {
+    if (!searchParams.has("tab")) {
+      setSearchParams({ tab: "SearchByDay" });
+    }
+  }, [searchParams, setSearchParams]);
 
   return (
     <>
