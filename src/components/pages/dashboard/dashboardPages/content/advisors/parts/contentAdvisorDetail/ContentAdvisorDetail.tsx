@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import backIcon from "@/assets/icons/back.svg";
 import { useContent } from "@/functions/hooks/content/useContent";
 import { advisorDetailColumn } from "./parts/table/AdvisorDetailContentColDef";
@@ -9,7 +9,7 @@ import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList"
 
 const ContentAdvisorDetail = () => {
   const { advisorId } = useParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { getAdvisorContent, advisorContent } = useContent();
   const { fetchAdvisorInfo, advisorInfo } = useAdvisorsList();
 
@@ -26,7 +26,8 @@ const ContentAdvisorDetail = () => {
   }, [advisorId, getAdvisorContent]);
 
   const goBackToContentAdvisor = () => {
-    navigate("/dashboard/content/advisors");
+    // navigate("/dashboard/content/advisors");
+    window.history.go(-1);
   };
 
   return (

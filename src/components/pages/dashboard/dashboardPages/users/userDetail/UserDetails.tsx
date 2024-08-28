@@ -4,7 +4,7 @@ import { updateUserFormSchema } from "@/lib/schema/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import CustomUserDetailInput from "./parts/CustomUserDetailInput";
 import UserDetailSelectRoles from "./parts/selectRoles/UserDetailSelectRoles";
 import { Loader2 } from "lucide-react";
@@ -18,7 +18,7 @@ import backIcon from "@/assets/icons/back.svg";
 const UserDetails = () => {
   const { userId } = useParams();
   const { getUserDetailInfo, userInfo } = useUsers();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [isloading, setIsloading] = useState(false);
 
   useEffect(() => {
@@ -94,7 +94,8 @@ const UserDetails = () => {
 
   const handleBackClick = () => {
     form.reset();
-    navigate("/dashboard/users");
+    // navigate("/dashboard/users");
+    window.history.go(-1);
   };
 
   return (

@@ -1,6 +1,6 @@
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import backIcon from "@/assets/icons/back.svg";
 import AdvisorInfo from "./parts/Info/AdvisorInfo";
@@ -13,7 +13,7 @@ import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
 
 const AdvisorDetail = () => {
   const { advisorId } = useParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { advisorDetailStudent, getStudents } = useAdvisorsList();
   const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
 
@@ -48,7 +48,8 @@ const AdvisorDetail = () => {
   }, [advisorDetailStudent]);
 
   const goToAdisors = () => {
-    navigate("/dashboard/advisors");
+    // navigate("/dashboard/advisors");
+    window.history.go(-1);
   };
 
   if (!advisorId) {

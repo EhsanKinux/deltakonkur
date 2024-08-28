@@ -1,15 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AccountingAdvisorInfo from "./parts/AccountingAdvisorInfo";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { accountStColumns } from "./parts/ColumnDef";
 import backIcon from "@/assets/icons/back.svg";
-import {
-  AdvisorStudentData,
-  StudentWithDetails2,
-} from "@/functions/hooks/advisorsList/interface";
+import { AdvisorStudentData, StudentWithDetails2 } from "@/functions/hooks/advisorsList/interface";
 import { AllAdvisorDetailTable } from "../../../../table/AllAdvisorDetailTable";
 
 const formatNumber = (number: string): string => {
@@ -20,11 +17,9 @@ const formatNumber = (number: string): string => {
 
 const AccountingAdvisorDetail = () => {
   const { advisorId } = useParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { advisorDetailData, getStudentsOfAdvisor } = useAdvisorsList();
-  const [processedStudentData, setProcessedStudentData] = useState<
-    StudentWithDetails2[]
-  >([]);
+  const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails2[]>([]);
   const [statusCounts, setStatusCounts] = useState({
     active: 0,
     stop: 0,
@@ -39,22 +34,16 @@ const AccountingAdvisorDetail = () => {
 
   useEffect(() => {
     if (advisorDetailData && advisorDetailData.data) {
-      const studentData: StudentWithDetails2[] = advisorDetailData.data.map(
-        (entry: AdvisorStudentData) => ({
-          ...entry.student,
-          status: entry.status, // Assuming you have a way to get the status, replace accordingly
-          started_date: entry.start_date
-            ? convertToShamsi(entry.start_date)
-            : "-",
-          ended_date: entry.end_date ? convertToShamsi(entry.end_date) : "-",
-          duration: entry.duration,
-          start_date: entry.start_date,
-          end_date: entry.end_date,
-          wage: `${formatNumber(
-            Number(entry.wage).toFixed(0)
-          ).toString()} ریال`,
-        })
-      );
+      const studentData: StudentWithDetails2[] = advisorDetailData.data.map((entry: AdvisorStudentData) => ({
+        ...entry.student,
+        status: entry.status, // Assuming you have a way to get the status, replace accordingly
+        started_date: entry.start_date ? convertToShamsi(entry.start_date) : "-",
+        ended_date: entry.end_date ? convertToShamsi(entry.end_date) : "-",
+        duration: entry.duration,
+        start_date: entry.start_date,
+        end_date: entry.end_date,
+        wage: `${formatNumber(Number(entry.wage).toFixed(0)).toString()} ریال`,
+      }));
       setProcessedStudentData(studentData);
       const counts = studentData.reduce(
         (acc, student) => {
@@ -72,7 +61,8 @@ const AccountingAdvisorDetail = () => {
   // console.log("advisorDetailData", advisorDetailData);
 
   const goToAdisors = () => {
-    navigate("/dashboard/accounting/allAdvisors");
+    // navigate("/dashboard/accounting/allAdvisors");
+    window.history.go(-1);
   };
 
   if (!advisorId) {
@@ -88,16 +78,9 @@ const AccountingAdvisorDetail = () => {
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
-      <AccountingAdvisorInfo
-        advisorId={advisorId}
-        advisorDetailData={advisorDetailData}
-        statusCounts={statusCounts}
-      />
+      <AccountingAdvisorInfo advisorId={advisorId} advisorDetailData={advisorDetailData} statusCounts={statusCounts} />
       <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-        <AllAdvisorDetailTable
-          columns={accountStColumns}
-          data={processedStudentData}
-        />
+        <AllAdvisorDetailTable columns={accountStColumns} data={processedStudentData} />
       </div>
     </div>
   );
