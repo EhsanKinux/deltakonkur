@@ -28,6 +28,7 @@ const UserDetailSelectRoles = ({ userId, initialRoles }: UserDetailSelectRolesPr
     { value: "4", label: "واحد نظارت" },
     { value: "5", label: "واحد کنسلی" },
     { value: "6", label: "واحد محتوا" },
+    { value: "7", label: "مشاور" },
     { value: "8", label: "واحد آزمون" },
   ];
 
@@ -87,7 +88,10 @@ const UserDetailSelectRoles = ({ userId, initialRoles }: UserDetailSelectRolesPr
     <div className="flex flex-col justify-center items-center w-full">
       <p className="font-semibold text-red-600">
         دقت داشته باشید با انتخاب هر یک از نقش های کاربر، در لحظه انتخاب اعمال میشود و درصورت حذف آن در لحظه نقش کاربر
-        حذف میگردد!
+        حذف میگردد!&ensp;
+        <span className="font-bold text-sm text-slate-500">
+          ( انتخاب نوع کاربر مشاور حتما باید در واحد مشاوران ثبت گردد)
+        </span>
       </p>
       <Select
         isMulti
