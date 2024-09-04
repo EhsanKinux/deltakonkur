@@ -12,6 +12,7 @@ export type Advisor = {
   cancelled_students?: string;
   activePercentage?: number;
   level: string;
+  subject?: string;
 };
 
 export type FormData = {

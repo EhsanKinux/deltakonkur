@@ -1,6 +1,6 @@
 export interface IContent {
   advisor: string;
-  subject: string;
+  subject: string | undefined;
 }
 [];
 
