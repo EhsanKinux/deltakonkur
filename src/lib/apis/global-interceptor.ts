@@ -1,7 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
-import Cookies from "js-cookie";
 import { toast } from "sonner";
 // import Cookies from 'js-cookie';
 
@@ -12,7 +11,7 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const { refreshToken, setTokens, clearAuth } = authStore.getState();
+    const { refreshToken, setTokens, clearAuth, username, password } = authStore.getState();
     const originalRequest = error.config;
 
     if (error.response.status === 401 && !originalRequest._retry) {
@@ -20,10 +19,6 @@ api.interceptors.response.use(
 
       if (refreshToken) {
         try {
-          // Retrieve credentials from cookies (for demonstration only, not recommended)
-          const username = Cookies.get("username");
-          const password = Cookies.get("password");
-
           if (username && password) {
             const response = await axios.post(`${BASE_API_URL}api/auth/login/`, {
               username: username,

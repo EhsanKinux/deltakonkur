@@ -11,13 +11,12 @@ import CustomInput from "./customInput/CustomInput";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import api from "@/lib/apis/global-interceptor";
-import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
 const AuthForm = () => {
   const navigate = useNavigate();
-  const { setTokens, setUserRoles, userRoles } = authStore();
+  const { setTokens, setUserRoles, userRoles, setCredentials } = authStore();
   const [isloading, setIsLoading] = useState(false);
   const [isRoleFetching, setIsRoleFetching] = useState(false);
 
@@ -72,8 +71,8 @@ const AuthForm = () => {
         const { access, refresh } = response.data;
         setTokens(access, refresh);
 
-        Cookies.set("username", data.tell, { sameSite: "strict" });
-        Cookies.set("password", data.password, { sameSite: "strict" });
+        // Store username and password in the store
+        setCredentials(data.tell, data.password);
 
         await fetchUserRole(access);
 
