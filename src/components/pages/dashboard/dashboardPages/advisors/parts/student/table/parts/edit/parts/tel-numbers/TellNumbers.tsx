@@ -1,6 +1,5 @@
 import { UseFormReturn } from "react-hook-form";
 import CustomEditInput from "../CustomEditInput";
-import CustomEditInput2 from "./CostumEditInput";
 
 const TellNumbers = ({
   form,
@@ -26,7 +25,7 @@ const TellNumbers = ({
 }) => {
   return (
     <>
-      <CustomEditInput2 control={form.control} name="phone_number" label="شماره همراه" customclass="w-[90%]" />
+      <CustomEditInput control={form.control} name="phone_number" label="شماره همراه" customclass="w-[90%]" />
       <CustomEditInput control={form.control} name="parent_phone" label="شماره همراه والدین" customclass="w-[90%]" />
       <CustomEditInput control={form.control} name="phone_number" label="شماره تلفن منزل" customclass="w-[90%]" />
     </>
