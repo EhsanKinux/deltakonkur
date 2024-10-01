@@ -13,6 +13,7 @@ import {
 } from "@/lib/apis/students/service";
 import { ISetStudentAdvisor } from "@/lib/apis/students/interface";
 import { IChangeAdvisor } from "./interface";
+import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
 
 export const useStudentList = () => {
   const addFormData = appStore((state) => state.addFormData);
@@ -32,6 +33,7 @@ export const useStudentList = () => {
     // Transform the data to convert grade to string
     const transformedData = data.map((student: FormEntry) => ({
       ...student,
+      date_of_birth: convertToShamsi2(student.date_of_birth),
       grade: student.grade.toString(),
     }));
 

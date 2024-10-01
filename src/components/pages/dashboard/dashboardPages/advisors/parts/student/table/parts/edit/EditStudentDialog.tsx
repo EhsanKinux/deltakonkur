@@ -24,7 +24,7 @@ import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { appStore } from "@/lib/store/appStore";
 import Birthdate from "./parts/dateAndTime/Birthdate";
-import { convertToGregorian, convertToShamsi2 } from "@/lib/utils/date/convertDate";
+import { convertToGregorian } from "@/lib/utils/date/convertDate";
 import { toast } from "sonner";
 import PlansType from "./parts/PlansType";
 
@@ -81,7 +81,7 @@ export function EditStudentDialog() {
   }, [studentInfo, form]);
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
-  // console.log(studentInfo?.package_price);
+  // console.log(studentInfo?.date_of_birth);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // console.log("Form submitted with data:", data.date_of_birth);
@@ -92,7 +92,7 @@ export function EditStudentDialog() {
         const modifiedData: ISubmitStudentRegisterService = {
           ...restData,
           id: String(studentInfo.id),
-          date_of_birth: convertToShamsi2(data.date_of_birth),
+          // date_of_birth: convertToShamsi2(data.date_of_birth),
           created: String(data.created),
         };
 
