@@ -72,7 +72,7 @@ export function EditStudentDialog() {
         home_phone: studentInfo.home_phone ? studentInfo.home_phone : "",
         parent_phone: studentInfo.parent_phone ? studentInfo.parent_phone : "",
         field: studentInfo.field ? studentInfo.field : "",
-        grade: studentInfo.grade ? studentInfo.grade : "",
+        grade: studentInfo.grade ? String(studentInfo.grade) : "",
         created: studentInfo.created,
         package_price: String(studentInfo.package_price),
         advisor: "",
