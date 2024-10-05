@@ -39,7 +39,7 @@ export const convertToShamsi2 = (isoDate: string) => {
 
 export const convertToGregorian = (shamsiDate: string) => {
   const [jy, jm, jd] = shamsiDate.split("-").map(Number);
-  console.log(shamsiDate);
+  // console.log(shamsiDate);
   const gregorianDate = jalaali.toGregorian(jy, jm, jd);
 
   const date = new Date(
