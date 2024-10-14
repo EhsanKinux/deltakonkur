@@ -16,8 +16,8 @@ import { submit_student_register_service } from "@/lib/apis/reserve/service";
 import studentPic from "@/assets/icons/education.svg";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import BirthDate from "./form/topright/BirthDate";
-import { convertToShamsi, convertToShamsi2 } from "@/lib/utils/date/convertDate";
+// import BirthDate from "./form/topright/BirthDate";
+import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import PlansType from "./form/down/PlansType";
 
 interface CustomError extends Error {
@@ -37,7 +37,7 @@ const Reserve = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       // id:"",
-      date_of_birth: "",
+      // date_of_birth: "",
       first_name: "",
       last_name: "",
       school: "",
@@ -64,7 +64,7 @@ const Reserve = () => {
     const transformedData = {
       // id: "",
       ...data,
-      date_of_birth: convertToShamsi2(data.date_of_birth),
+      // date_of_birth: convertToShamsi2(data.date_of_birth),
       created: currentDateTime,
       solar_date_day: day.toString(),
       solar_date_month: month.toString(),
@@ -141,7 +141,7 @@ const Reserve = () => {
               <div className="w-full xl:w-1/2 flex flex-col justify-center items-center gap-3 bg-slate-200 rounded-xl p-5">
                 <h2 className="text-2xl">اطلاعات شخصی</h2>
                 <TopRight form={form} />
-                <BirthDate form={form} />
+                {/* <BirthDate form={form} /> */}
               </div>
             </div>
 

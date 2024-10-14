@@ -63,7 +63,7 @@ export function EditStudentDialog() {
   useEffect(() => {
     if (studentInfo) {
       form.reset({
-        id: "",
+        id: String(studentInfo.id),
         // date_of_birth: studentInfo.date_of_birth ? convertToGregorian(studentInfo.date_of_birth) : "",
         first_name: studentInfo.first_name,
         last_name: studentInfo.last_name,

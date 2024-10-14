@@ -63,7 +63,7 @@ export const editAdvisorFormSchema = () =>
 
 export const editStudentFormSchema = () =>
   z.object({
-    // id: z.string(),
+    id: z.string(),
     first_name: z.string().min(1, { message: "نام دانش آموز را تعیین کنید!" }),
     last_name: z.string().min(1, { message: "نام خانوادگی دانش آموز را تعیین کنید!" }),
     school: z.string(),
@@ -123,7 +123,7 @@ export const registerFormSchema = () =>
       .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
     field: z.string().min(1, { message: "رشته‌ی تحصیلی را انتخاب کنید" }),
     grade: z.string().min(1, { message: "مقطع تحصیلی را انتخاب کنید" }),
-    date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
+    // date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
     created: z.string(),
     package_price: z.string().min(1, { message: "هزینه را به ریال وارد کنید" }),
     solar_date_day: z.string(),

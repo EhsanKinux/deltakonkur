@@ -13,7 +13,7 @@ export interface ISubmitStudentRegisterService {
 }
 
 export interface IRegisterStudentService {
-  date_of_birth: string;
+  // date_of_birth: string;
   first_name: string;
   last_name: string;
   phone_number: string;
