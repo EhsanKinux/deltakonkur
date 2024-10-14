@@ -23,8 +23,8 @@ import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { appStore } from "@/lib/store/appStore";
-import Birthdate from "./parts/dateAndTime/Birthdate";
-import { convertToGregorian } from "@/lib/utils/date/convertDate";
+// import Birthdate from "./parts/dateAndTime/Birthdate";
+// import { convertToGregorian } from "@/lib/utils/date/convertDate";
 import { toast } from "sonner";
 import PlansType from "./parts/PlansType";
 
@@ -45,7 +45,7 @@ export function EditStudentDialog() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       id: "",
-      date_of_birth: "",
+      // date_of_birth: "",
       first_name: "",
       last_name: "",
       school: "",
@@ -64,7 +64,7 @@ export function EditStudentDialog() {
     if (studentInfo) {
       form.reset({
         id: "",
-        date_of_birth: studentInfo.date_of_birth ? convertToGregorian(studentInfo.date_of_birth) : "",
+        // date_of_birth: studentInfo.date_of_birth ? convertToGregorian(studentInfo.date_of_birth) : "",
         first_name: studentInfo.first_name,
         last_name: studentInfo.last_name,
         school: studentInfo.school,
@@ -142,7 +142,7 @@ export function EditStudentDialog() {
                 <CustomEditInput control={form.control} name="school" label="نام مدرسه" customclass="w-[90%]" />
                 <FieldGrade form={form} />
                 <div className="flex gap-5 flex-wrap">
-                  <Birthdate form={form} />
+                  {/* <Birthdate form={form} /> */}
                   <DateAndTime2 form={form} />
                 </div>
                 <SelectStudentAdvisor form={form} memoizedAdvisors={memoizedAdvisors} />
