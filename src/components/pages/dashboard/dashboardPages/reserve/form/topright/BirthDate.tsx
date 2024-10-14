@@ -15,7 +15,7 @@ const BirthDate = ({ form }: { form: UseFormReturn<IRegisterStudentService, unde
   return (
     <FormField
       control={form.control}
-      name="date_of_birth"
+      name="first_name"
       render={({ field }) => (
         <FormItem className="flex justify-center flex-col w-full">
           <FormLabel className="pt-2 font-bold text-slate-500">تاریخ تولد:</FormLabel>
