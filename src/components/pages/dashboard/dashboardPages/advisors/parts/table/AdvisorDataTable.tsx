@@ -12,6 +12,19 @@ import { Advisor } from "@/lib/store/types";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+// کامپوننت Skeleton برای نمایش در حالت لودینگ
+const SkeletonRow = ({ columnsCount }: { columnsCount: number }) => {
+  return (
+    <TableRow>
+      {Array.from({ length: columnsCount }).map((_, index) => (
+        <TableCell key={index} className="!text-center">
+          <div className="h-5 w-20 bg-gray-300 animate-pulse rounded-xl mx-auto"></div>
+        </TableCell>
+      ))}
+    </TableRow>
+  );
+};
+
 interface AdvisorDataTableProps {
   columns: any[];
   data: Advisor[];
@@ -95,42 +108,36 @@ export function AdvisorDataTable({
             ))}
           </TableRow>
         </TableHeader>
-        {isLoading || isTableLoading ? (
-          <TableBody>
+        <TableBody>
+          {isLoading || isTableLoading ? (
+            // نمایش ۵ ردیف اسکلتون در حالت لودینگ
+            <>
+              {Array.from({ length: 8 }).map((_, index) => (
+                <SkeletonRow key={index} columnsCount={columns.length} />
+              ))}
+            </>
+          ) : data.length ? (
+            data.map((row) => (
+              <TableRow
+                onClick={(e) => handleRowClick(row.id, e)}
+                key={row.id}
+                className="hover:bg-slate-200 hover:cursor-pointer transition-all duration-300"
+              >
+                {columns.map((col) => (
+                  <TableCell key={col.id} className="!text-center">
+                    {row[col.accessorKey]}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                ⏳ در حال بارگذاری...
+                نتیجه‌ای یافت نشد...
               </TableCell>
             </TableRow>
-          </TableBody>
-        ) : (
-          <TableBody>
-            {data.length ? (
-              data.map((row) => (
-                <TableRow
-                  onClick={(e) => handleRowClick(row.id, e)}
-                  key={row.id}
-                  className="hover:bg-slate-200 hover:cursor-pointer transition-all duration-300"
-                >
-                  {columns.map((col) => (
-                    <TableCell key={col.id} className="!text-center">
-                      {row[col.accessorKey]}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  نتیجه‌ای یافت نشد...
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        )}
+          )}
+        </TableBody>
       </Table>
       {totalPages ? (
         <div className="flex items-center justify-between py-4 w-full">
@@ -148,14 +155,12 @@ export function AdvisorDataTable({
           <Button
             className="rounded-[8px] border border-black"
             onClick={() => handlePageChange(page + 1)}
-            disabled={page >= totalPages}
+            disabled={page >= Number(totalPages)}
           >
             بعدی
           </Button>
         </div>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </div>
   );
 }
