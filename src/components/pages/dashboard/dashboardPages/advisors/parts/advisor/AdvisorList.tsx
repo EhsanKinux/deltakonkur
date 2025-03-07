@@ -1,7 +1,8 @@
+import { debounce } from "lodash";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AdvisorDataTable } from "../table/AdvisorDataTable";
 import { columns } from "./parts/table/ColumnDef";
@@ -10,8 +11,10 @@ const AdvisorList = () => {
   const [advisors, setAdvisors] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState("");
+  const abortControllerRef = useRef<AbortController | null>(null); // اضافه کردن abortController
 
   const activeTab = searchParams.get("tab") || "mathAdvisors";
+
   const getAdvisors = useCallback(async () => {
     const field =
       searchParams.get("tab") === "mathAdvisors"
@@ -24,26 +27,47 @@ const AdvisorList = () => {
     const firstName = searchParams.get("first_name") || "";
     const lastName = searchParams.get("last_name") || "";
 
+    // اگر ریکوئست قبلی وجود داشت، کنسل کن
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
     try {
       const { data } = await axios.get(`${BASE_API_URL}api/advisor/advisors/`, {
         params: {
           field,
-          page: page,
+          page,
           first_name: firstName,
           last_name: lastName,
         },
+        signal, // ارسال سیگنال
       });
 
       setAdvisors(data.results);
       setTotalPages(Number(data.count / 10).toFixed(0));
-    } catch (error) {
-      console.error("خطا در دریافت اطلاعات مشاوران:", error);
+    } catch (error: any) {
+      if (axios.isCancel(error)) {
+        console.log("🔴 درخواست لغو شد");
+      } else {
+        console.error("خطا در دریافت اطلاعات مشاوران:", error);
+      }
     }
   }, [searchParams, setAdvisors]);
 
+  // Debounce کردن تابع getAdvisors
+  const debouncedGetAdvisors = useCallback(debounce(getAdvisors, 500), [
+    getAdvisors,
+  ]);
+
   useEffect(() => {
-    getAdvisors();
-  }, [getAdvisors, searchParams]);
+    debouncedGetAdvisors();
+    return () => {
+      debouncedGetAdvisors.cancel();
+    };
+  }, [searchParams]);
 
   const handleTabChange = (value: string) => {
     setSearchParams({ tab: value, page: "1" });
