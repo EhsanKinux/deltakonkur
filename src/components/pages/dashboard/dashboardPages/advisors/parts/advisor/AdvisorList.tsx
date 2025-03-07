@@ -58,7 +58,7 @@ const AdvisorList = () => {
   }, [searchParams, setAdvisors]);
 
   // Debounce کردن تابع getAdvisors
-  const debouncedGetAdvisors = useCallback(debounce(getAdvisors, 500), [
+  const debouncedGetAdvisors = useCallback(debounce(getAdvisors, 50), [
     getAdvisors,
   ]);
 
