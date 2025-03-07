@@ -47,7 +47,7 @@ export function AdvisorDataTable({
   };
 
   const handlePageChange = (newPage: number) => {
-    if (newPage < 1 || newPage > totalPages) return;
+    if (newPage < 1 || newPage > Number(totalPages)) return;
 
     setIsTableLoading(true);
     const params = new URLSearchParams(location.search);
@@ -58,6 +58,15 @@ export function AdvisorDataTable({
       window.scrollTo({ top: 0, behavior: "smooth" });
       setIsTableLoading(false);
     }, 500);
+  };
+
+  const handleRowClick = (advisorId: string, e: React.MouseEvent) => {
+    if (
+      (e.target as HTMLElement).tagName.toLowerCase() !== "button" &&
+      (e.target as HTMLElement).tagName.toLowerCase() !== "input"
+    ) {
+      navigate(`/dashboard/advisors/${advisorId}`);
+    }
   };
 
   return (
@@ -99,6 +108,7 @@ export function AdvisorDataTable({
             {data.length ? (
               data.map((row) => (
                 <TableRow
+                  onClick={(e) => handleRowClick(row.id, e)}
                   key={row.id}
                   className="hover:bg-slate-200 hover:cursor-pointer transition-all duration-300"
                 >
