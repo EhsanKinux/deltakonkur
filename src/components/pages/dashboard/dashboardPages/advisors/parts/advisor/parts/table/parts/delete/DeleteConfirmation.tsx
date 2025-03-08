@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { FormEntry } from "../../interfaces";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { toast } from "sonner";
@@ -21,6 +27,10 @@ const DeleteConfirmation = ({
       error: "خطایی رخ داده است!",
     });
     setDeleteDialogOpen(false);
+    // Set a timeout before reloading the page
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000); // 3-second delay
   };
 
   const handleDeleteCancel = (e: React.MouseEvent) => {
@@ -29,14 +39,20 @@ const DeleteConfirmation = ({
   };
 
   return (
-    <DialogContent className="bg-slate-100 !rounded-[10px]" onClick={(e) => e.stopPropagation()}>
+    <DialogContent
+      className="bg-slate-100 !rounded-[10px]"
+      onClick={(e) => e.stopPropagation()}
+    >
       <DialogHeader>
         <DialogTitle>تایید حذف</DialogTitle>
         <DialogDescription>آیا از حذف این مشاور مطمئن هستید؟</DialogDescription>
       </DialogHeader>
       <DialogFooter>
         <div className="flex justify-between items-center w-full">
-          <Button className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2" onClick={handleDeleteConfirm}>
+          <Button
+            className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+            onClick={handleDeleteConfirm}
+          >
             حذف مشاور
           </Button>
 

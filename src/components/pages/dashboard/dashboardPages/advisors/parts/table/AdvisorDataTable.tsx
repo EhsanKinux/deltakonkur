@@ -11,6 +11,7 @@ import {
 import { Advisor } from "@/lib/store/types";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import AdvisorDialogButtons from "../advisor/parts/table/parts/AdvisorDialogButtons";
 
 // کامپوننت Skeleton برای نمایش در حالت لودینگ
 const SkeletonRow = ({ columnsCount }: { columnsCount: number }) => {
@@ -110,9 +111,9 @@ export function AdvisorDataTable({
         </TableHeader>
         <TableBody>
           {isLoading || isTableLoading ? (
-            // نمایش ۵ ردیف اسکلتون در حالت لودینگ
+            // نمایش 10 ردیف اسکلتون در حالت لودینگ
             <>
-              {Array.from({ length: 5 }).map((_, index) => (
+              {Array.from({ length: 10 }).map((_, index) => (
                 <SkeletonRow key={index} columnsCount={columns.length} />
               ))}
             </>
@@ -125,7 +126,7 @@ export function AdvisorDataTable({
               >
                 {columns.map((col) => (
                   <TableCell key={col.id} className="!text-center">
-                    {row[col.accessorKey]}
+                    {col.cell ? col.cell({ row }) : row[col.accessorKey]}
                   </TableCell>
                 ))}
               </TableRow>

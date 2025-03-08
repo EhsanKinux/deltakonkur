@@ -36,10 +36,11 @@ export const columns: ColumnDef<FormEntry>[] = [
     header: "سطح",
   },
   {
+    accessorKey: "controls",
+    header: "دسترسی",
     id: "actions",
     cell: ({ row }) => {
-      const formData = row.original;
-
+      const formData = row;
       return <AdvisorDialogButtons formData={formData} />;
     },
   },

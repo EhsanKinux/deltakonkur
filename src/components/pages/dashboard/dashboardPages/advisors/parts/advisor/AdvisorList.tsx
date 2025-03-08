@@ -106,7 +106,7 @@ const AdvisorList = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value={activeTab}>
-          <div className="flex flex-col justify-center items-center gap-3 mt-4 bg-slate-100 rounded-xl relative min-h-[120vh]">
+          <div className="flex flex-col justify-center items-center gap-3 mt-4 bg-slate-100 rounded-xl relative min-h-[150vh]">
             <AdvisorDataTable
               columns={columns}
               data={advisors}
