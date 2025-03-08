@@ -11,6 +11,8 @@ const AdvisorList = () => {
   const [advisors, setAdvisors] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const abortControllerRef = useRef<AbortController | null>(null); // اضافه کردن abortController
 
   const activeTab = searchParams.get("tab") || "mathAdvisors";
@@ -36,6 +38,7 @@ const AdvisorList = () => {
     const signal = abortControllerRef.current.signal;
 
     try {
+      setIsLoading(true);
       const { data } = await axios.get(`${BASE_API_URL}api/advisor/advisors/`, {
         params: {
           field,
@@ -55,6 +58,7 @@ const AdvisorList = () => {
         console.error("خطا در دریافت اطلاعات مشاوران:", error);
       }
     }
+    setIsLoading(false);
   }, [searchParams, setAdvisors]);
 
   // Debounce کردن تابع getAdvisors
@@ -107,6 +111,7 @@ const AdvisorList = () => {
               columns={columns}
               data={advisors}
               totalPages={totalPages}
+              isLoading={isLoading}
             />
           </div>
         </TabsContent>

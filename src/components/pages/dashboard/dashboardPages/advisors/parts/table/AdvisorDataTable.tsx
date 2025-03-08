@@ -112,7 +112,7 @@ export function AdvisorDataTable({
           {isLoading || isTableLoading ? (
             // نمایش ۵ ردیف اسکلتون در حالت لودینگ
             <>
-              {Array.from({ length: 8 }).map((_, index) => (
+              {Array.from({ length: 5 }).map((_, index) => (
                 <SkeletonRow key={index} columnsCount={columns.length} />
               ))}
             </>
