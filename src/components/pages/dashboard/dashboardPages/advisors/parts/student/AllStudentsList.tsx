@@ -32,7 +32,7 @@ const AllStudentsList = () => {
     try {
       setIsLoading(true);
       const { data } = await axios.get(
-        `${BASE_API_URL}api/register/students-no-advisor/`,
+        `${BASE_API_URL}api/register/students/`,
         {
           params: {
             page,
@@ -71,8 +71,8 @@ const AllStudentsList = () => {
   }, [searchParams]);
 
   return (
-    <section className="max-h-screen">
-      <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
+    <section className="">
+      <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 bg-slate-100 rounded-xl relative min-h-[120vh]">
         <AllStudentsDataTable
           columns={stColumns}
           data={students}
