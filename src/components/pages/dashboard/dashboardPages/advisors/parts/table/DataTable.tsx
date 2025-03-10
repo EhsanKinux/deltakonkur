@@ -1,13 +1,8 @@
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-  getFilteredRowModel,
-  ColumnFiltersState,
-} from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 
+import SearchIcon from "@/assets/icons/search.svg";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -16,10 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import SearchIcon from "@/assets/icons/search.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface DataTableProps<TData, TValue> {
@@ -55,8 +47,6 @@ export function DataTable<TData, TValue>({
   const page = Number(queryParams.get("page")) || 1;
   const firstName = queryParams.get("first_name") || "";
   const lastName = queryParams.get("last_name") || "";
-  const field = queryParams.get("field") || "";
-  const grade = queryParams.get("grade") || "";
 
   const [isTableLoading, setIsTableLoading] = useState(false);
 

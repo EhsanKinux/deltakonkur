@@ -1,116 +1,153 @@
-import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { IStudentAssessment } from "../assess/interface";
-import { useLocation, useNavigate } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { IStudentAssessment } from "../assess/interface";
 
 interface SupervisionAssessmentTableProps {
   columns: ColumnDef<IStudentAssessment>[];
   data: IStudentAssessment[];
+  isLoading: boolean;
+  totalPages: string;
 }
 
-export function SupervisionAssessmentTable({ columns, data }: SupervisionAssessmentTableProps) {
+// کامپوننت Skeleton برای نمایش در حالت لودینگ
+const SkeletonRow = ({ columnsCount }: { columnsCount: number }) => {
+  return (
+    <TableRow>
+      {Array.from({ length: columnsCount }).map((_, index) => (
+        <TableCell key={index} className="!text-center">
+          <div className="h-5 w-20 bg-gray-300 animate-pulse rounded-xl mx-auto"></div>
+        </TableCell>
+      ))}
+    </TableRow>
+  );
+};
+
+export function SupervisionAssessmentTable({
+  columns,
+  data,
+  isLoading,
+  totalPages,
+}: SupervisionAssessmentTableProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const [pagination, setPagination] = useState({
-    pageIndex: Number(queryParams.get("page")) || 0,
-    pageSize: 8,
-  });
 
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
-    state: {
-      pagination,
-    },
-    autoResetPageIndex: false,
-  });
+  const page = Number(queryParams.get("page")) || 1;
+  const firstName = queryParams.get("first_name") || "";
+  const lastName = queryParams.get("last_name") || "";
+
+  const [isTableLoading, setIsTableLoading] = useState(false);
+
+  const handleSearch = (key: string, value: string) => {
+    const params = new URLSearchParams(location.search);
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+    params.set("page", "1");
+    navigate(`?${params.toString()}`, { replace: true });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > Number(totalPages)) return;
+
+    setIsTableLoading(true);
+    const params = new URLSearchParams(location.search);
+    params.set("page", newPage.toString());
+    navigate(`?${params.toString()}`, { replace: true });
+
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setIsTableLoading(false);
+    }, 500);
+  };
 
   useEffect(() => {
-    const updateQueryParam = () => {
-      const newPage = table.getState().pagination.pageIndex;
-      const params = new URLSearchParams(location.search);
-      params.set("page", newPage.toString());
-      navigate(`?${params.toString()}`, { replace: true });
-    };
-    if (location.search) {
-      updateQueryParam();
-    }
-  }, [table.getState().pagination.pageIndex, navigate, location.search]);
+    setIsTableLoading(isLoading);
+  }, [isLoading]);
 
   const handleRowClick = (studentId: string, description: string) => {
-    navigate(`/dashboard/supervision/description/${studentId}`, { state: { description } });
+    navigate(`/dashboard/supervision/description/${studentId}`, {
+      state: { description },
+    });
   };
 
   return (
     <div className="w-full overflow-auto p-10 absolute top-0 right-0 left-0 bottom-0">
       <Table className="!rounded-xl border">
         <TableHeader className="bg-slate-300">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id} className="!text-center">
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
+          <TableRow>
+            {columns.map((col) => (
+              <TableHead key={col.id} className="!text-center">
+                {col.header}
+              </TableHead>
+            ))}
+          </TableRow>
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+          {isTableLoading ? (
+            <>
+              {Array.from({ length: 5 }).map((_, index) => (
+                <SkeletonRow key={index} columnsCount={columns.length} />
+              ))}
+            </>
+          ) : data.length ? (
+            data.map((row) => (
               <TableRow
-                className="hover:bg-slate-200 hover:cursor-pointer"
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                onClick={() => handleRowClick(row.original.student, row.original.description)}
+                className="hover:bg-slate-200 hover:cursor-pointer"
+                onClick={() => handleRowClick(row.student, row.description)}
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell className="!text-center" key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                {columns.map((col) => (
+                  <TableCell key={col.id} className="!text-center">
+                    {col.cell ? col.cell({ row }) : row[col.accessorKey]}
                   </TableCell>
                 ))}
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                نتیجه ای یافت نشد...
+              <TableCell colSpan={columns.length} className="text-center">
+                نتیجه‌ای یافت نشد...
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
 
-      <div className="flex items-center justify-between py-4 w-full">
-        <div className="flex gap-2">
+      {totalPages && (
+        <div className="flex items-center justify-between py-4">
           <Button
             className="rounded-[8px] border border-black"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page <= 1}
           >
             قبلی
           </Button>
+          <span>
+            صفحه {page} از {totalPages}
+          </span>
           <Button
             className="rounded-[8px] border border-black"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page >= Number(totalPages)}
           >
             بعدی
           </Button>
         </div>
-        <span className="text-slate-600 text-sm">
-          صفحه {table.getState().pagination.pageIndex + 1} از {table.getPageCount()}
-        </span>
-      </div>
+      )}
     </div>
   );
 }
