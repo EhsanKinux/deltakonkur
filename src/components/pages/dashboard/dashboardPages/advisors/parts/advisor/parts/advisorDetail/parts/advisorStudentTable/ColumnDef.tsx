@@ -2,7 +2,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { StudentWithDetails } from "../../interface";
 import StudentDialogButtons from "./DialogButtons";
 
-
 export const stColumns: ColumnDef<StudentWithDetails>[] = [
   {
     accessorKey: "first_name",
@@ -53,9 +52,11 @@ export const stColumns: ColumnDef<StudentWithDetails>[] = [
   //   header: "دریافتی",
   // },
   {
+    accessorKey: "controls",
+    header: "دسترسی",
     id: "actions",
     cell: ({ row }) => {
-      const formData = row.original;
+      const formData = row;
       return <StudentDialogButtons formData={formData} />;
     },
   },
