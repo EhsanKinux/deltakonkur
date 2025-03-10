@@ -123,7 +123,9 @@ export function DataTable<TData, TValue>({
         <TableHeader className="bg-slate-300">
           <TableRow>
             {columns.map((col) => (
-              <TableHead key={col.id}>{col.header}</TableHead>
+              <TableHead key={col.id} className="!text-center">
+                {col.header}
+              </TableHead>
             ))}
           </TableRow>
         </TableHeader>
@@ -138,7 +140,9 @@ export function DataTable<TData, TValue>({
             data.map((row) => (
               <TableRow key={row.id} className="hover:bg-slate-200">
                 {columns.map((col) => (
-                  <TableCell key={col.id}>{row[col.accessorKey]}</TableCell>
+                  <TableCell key={col.id} className="!text-center">
+                    {col.cell ? col.cell({ row }) : row[col.accessorKey]}
+                  </TableCell>
                 ))}
               </TableRow>
             ))

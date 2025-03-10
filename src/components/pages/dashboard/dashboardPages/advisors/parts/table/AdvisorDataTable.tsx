@@ -11,7 +11,6 @@ import {
 import { Advisor } from "@/lib/store/types";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import AdvisorDialogButtons from "../advisor/parts/table/parts/AdvisorDialogButtons";
 
 // کامپوننت Skeleton برای نمایش در حالت لودینگ
 const SkeletonRow = ({ columnsCount }: { columnsCount: number }) => {
