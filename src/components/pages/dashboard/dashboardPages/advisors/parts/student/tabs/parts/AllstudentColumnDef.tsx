@@ -44,9 +44,11 @@ export const stColumns: ColumnDef<FormEntry>[] = [
     header: "تاریخ ثبت",
   },
   {
+    accessorKey: "controls",
+    header: "دسترسی",
     id: "actions",
     cell: ({ row }) => {
-      const formData = row.original;
+      const formData = row;
       return <StudentDialogButtons formData={formData} />;
     },
   },
