@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AdvisorDataTable } from "../table/AdvisorDataTable";
 import { columns } from "./parts/table/ColumnDef";
+import { authStore } from "@/lib/store/authStore";
 
 const AdvisorList = () => {
   const [advisors, setAdvisors] = useState([]);
@@ -13,11 +14,13 @@ const AdvisorList = () => {
   const [totalPages, setTotalPages] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const abortControllerRef = useRef<AbortController | null>(null); // اضافه کردن abortController
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const activeTab = searchParams.get("tab") || "mathAdvisors";
 
   const getAdvisors = useCallback(async () => {
+    const { accessToken } = authStore.getState(); // گرفتن accessToken از authStore
+
     const field =
       searchParams.get("tab") === "mathAdvisors"
         ? "ریاضی"
@@ -29,7 +32,6 @@ const AdvisorList = () => {
     const firstName = searchParams.get("first_name") || "";
     const lastName = searchParams.get("last_name") || "";
 
-    // اگر ریکوئست قبلی وجود داشت، کنسل کن
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
@@ -46,7 +48,11 @@ const AdvisorList = () => {
           first_name: firstName,
           last_name: lastName,
         },
-        signal, // ارسال سیگنال
+        signal,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`, // اضافه کردن هدر Authorization
+        },
       });
 
       setAdvisors(data.results);
@@ -61,7 +67,6 @@ const AdvisorList = () => {
     setIsLoading(false);
   }, [searchParams, setAdvisors]);
 
-  // Debounce کردن تابع getAdvisors
   const debouncedGetAdvisors = useCallback(debounce(getAdvisors, 50), [
     getAdvisors,
   ]);

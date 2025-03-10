@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AllStudentsDataTable } from "../table/AllStudentsDataTable";
 import { stColumns } from "./tabs/parts/AllstudentColumnDef";
+import { authStore } from "@/lib/store/authStore";
 
 const AllStudentsList = () => {
   const [students, setStudents] = useState([]);
@@ -15,6 +16,7 @@ const AllStudentsList = () => {
   const abortControllerRef = useRef<AbortController | null>(null); // اضافه کردن abortController
 
   const getStudents = useCallback(async () => {
+    const { accessToken } = authStore.getState(); // گرفتن accessToken از authStore
     // اگر ریکوئست قبلی وجود داشت، کنسل کن
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -43,6 +45,10 @@ const AllStudentsList = () => {
             field: field,
           },
           signal, // ارسال سیگنال
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`, // اضافه کردن هدر Authorization
+          },
         }
       );
 
