@@ -8,7 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Advisor } from "@/lib/store/types";
+import { Advisor, IallAdvisors } from "@/lib/store/types";
+import { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -26,7 +27,7 @@ const SkeletonRow = ({ columnsCount }: { columnsCount: number }) => {
 };
 
 interface AdvisorDataTableProps {
-  columns: any[];
+  columns: ColumnDef<IallAdvisors>[];
   data: Advisor[];
   isLoading: boolean;
   totalPages: string;
@@ -38,6 +39,7 @@ export function AdvisorDataTable({
   isLoading,
   totalPages,
 }: AdvisorDataTableProps) {
+  console.log(totalPages);
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -160,7 +162,9 @@ export function AdvisorDataTable({
             بعدی
           </Button>
         </div>
-      ) : null}
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

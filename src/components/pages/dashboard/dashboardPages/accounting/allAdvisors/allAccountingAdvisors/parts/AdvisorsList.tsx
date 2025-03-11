@@ -1,79 +1,123 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
-import { accountingStore } from "@/lib/store/accountingStore";
-import { useEffect, useMemo } from "react";
-import { AllAdvisorsDataTable } from "./table/AllAdvisorsTable";
-import { advisorColumn } from "./table/AllAdvisorColumnDef";
+import { authStore } from "@/lib/store/authStore";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import axios from "axios";
+import { debounce } from "lodash";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { advisorColumn } from "./table/AllAdvisorColumnDef";
+import { AllAdvisorsDataTable } from "./table/AllAdvisorsTable";
 
 const AdvisorsList = () => {
-  const { getAdvisorsData } = useAccounting();
-  const alladvisors = accountingStore((state) => state.alladvisors);
-
-  // Use search params to manage query string
+  const [advisors, setAdvisors] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [totalPages, setTotalPages] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Extract tab from query params or set default
-  const activeTab = searchParams.get("tab") || "mathAdvisorsAccounting";
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const activeTab = searchParams.get("tab") || "mathAdvisors";
+
+  const getAdvisors = useCallback(async () => {
+    const { accessToken } = authStore.getState(); // گرفتن accessToken از authStore
+
+    const field =
+      searchParams.get("tab") === "mathAdvisors"
+        ? "ریاضی"
+        : searchParams.get("tab") === "experimentalAdvisors"
+        ? "تجربی"
+        : "علوم انسانی";
+
+    const page = searchParams.get("page") || 1;
+    const firstName = searchParams.get("first_name") || "";
+    const lastName = searchParams.get("last_name") || "";
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(`${BASE_API_URL}api/advisor/advisors/`, {
+        params: {
+          field,
+          page,
+          first_name: firstName,
+          last_name: lastName,
+        },
+        signal,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`, // اضافه کردن هدر Authorization
+        },
+      });
+
+      setAdvisors(data.results);
+      setTotalPages(Number(data.count / 10).toFixed(0));
+    } catch (error: any) {
+      if (axios.isCancel(error)) {
+        console.log("🔴 درخواست لغو شد");
+      } else {
+        console.error("خطا در دریافت اطلاعات مشاوران:", error);
+      }
+    }
+    setIsLoading(false);
+  }, [searchParams, setAdvisors]);
+
+  const debouncedGetAdvisors = useCallback(debounce(getAdvisors, 50), [
+    getAdvisors,
+  ]);
 
   useEffect(() => {
-    if (!searchParams.has("tab")) {
-      // Set the default tab if it's not present in the URL
-      setSearchParams({ tab: "mathAdvisorsAccounting" });
-    }
-    getAdvisorsData();
-  }, [getAdvisorsData, searchParams, setSearchParams]);
+    debouncedGetAdvisors();
+    return () => {
+      debouncedGetAdvisors.cancel();
+    };
+  }, [searchParams]);
 
   const handleTabChange = (value: string) => {
-    // Update the URL query parameter when the tab changes
-    setSearchParams({ tab: value });
+    setSearchParams({ tab: value, page: "1" });
+    getAdvisors();
   };
 
-  // Memoize advisors to prevent unnecessary re-renders
-  const memoizedAdvisors = useMemo(() => alladvisors, [alladvisors]);
-
-  const mathAdvisors = memoizedAdvisors.filter((advisor) => advisor.field === "ریاضی");
-  const experimentalAdvisors = memoizedAdvisors.filter((advisor) => advisor.field === "تجربی");
-  const humanitiesAdvisors = memoizedAdvisors.filter((advisor) => advisor.field === "علوم انسانی");
-  // console.log("mathAdvisors", mathAdvisors);
-  // console.log("experimentalAdvisors", experimentalAdvisors);
-  // console.log("humanitiesAdvisors", humanitiesAdvisors);
-
   return (
-    <section className="max-h-screen">
-      {/* <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">مشاوران</h1> */}
+    <section className="">
+      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">
+        مشاوران
+      </h1>
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
-          <TabsTrigger value="mathAdvisorsAccounting" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+          <TabsTrigger
+            value="mathAdvisors"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
             ریاضی
           </TabsTrigger>
           <TabsTrigger
-            value="experimentalAdvisorsAccounting"
+            value="experimentalAdvisors"
             className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
           >
             تجربی
           </TabsTrigger>
           <TabsTrigger
-            value="humanitiesAdvisorsAccounting"
+            value="humanitiesAdvisors"
             className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
           >
             علوم انسانی
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="mathAdvisorsAccounting">
-          <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-            <AllAdvisorsDataTable columns={advisorColumn} data={mathAdvisors} />
-          </div>
-        </TabsContent>
-        <TabsContent value="experimentalAdvisorsAccounting">
-          <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-            <AllAdvisorsDataTable columns={advisorColumn} data={experimentalAdvisors} />
-          </div>
-        </TabsContent>
-        <TabsContent value="humanitiesAdvisorsAccounting">
-          <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-            <AllAdvisorsDataTable columns={advisorColumn} data={humanitiesAdvisors} />
+        <TabsContent value={activeTab}>
+          <div className="flex flex-col justify-center items-center gap-3 mt-4 bg-slate-100 rounded-xl relative min-h-[150vh]">
+            <AllAdvisorsDataTable
+              columns={advisorColumn}
+              data={advisors}
+              totalPages={totalPages}
+              isLoading={isLoading}
+            />
           </div>
         </TabsContent>
       </Tabs>
