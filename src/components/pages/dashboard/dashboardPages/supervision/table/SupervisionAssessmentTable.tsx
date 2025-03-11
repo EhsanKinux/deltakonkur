@@ -44,21 +44,8 @@ export function SupervisionAssessmentTable({
   const queryParams = new URLSearchParams(location.search);
 
   const page = Number(queryParams.get("page")) || 1;
-  const firstName = queryParams.get("first_name") || "";
-  const lastName = queryParams.get("last_name") || "";
 
   const [isTableLoading, setIsTableLoading] = useState(false);
-
-  const handleSearch = (key: string, value: string) => {
-    const params = new URLSearchParams(location.search);
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
-    }
-    params.set("page", "1");
-    navigate(`?${params.toString()}`, { replace: true });
-  };
 
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > Number(totalPages)) return;
