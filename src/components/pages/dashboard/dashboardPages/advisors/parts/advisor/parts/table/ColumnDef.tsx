@@ -40,7 +40,7 @@ export const columns: ColumnDef<FormEntry>[] = [
     header: "دسترسی",
     id: "actions",
     cell: ({ row }) => {
-      const formData = row;
+      const formData: FormEntry = row.original;
       return <AdvisorDialogButtons formData={formData} />;
     },
   },

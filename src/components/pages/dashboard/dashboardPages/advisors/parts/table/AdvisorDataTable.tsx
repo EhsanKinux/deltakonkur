@@ -39,7 +39,6 @@ export function AdvisorDataTable({
   isLoading,
   totalPages,
 }: AdvisorDataTableProps) {
-  console.log(totalPages);
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
