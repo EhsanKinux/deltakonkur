@@ -44,23 +44,8 @@ export function SupervisionTable({
   const queryParams = new URLSearchParams(location.search);
 
   const page = Number(queryParams.get("page")) || 1;
-  const firstName = queryParams.get("first_name") || "";
-  const lastName = queryParams.get("last_name") || "";
-  const field = queryParams.get("field") || "";
-  const grade = queryParams.get("grade") || "";
 
   const [isTableLoading, setIsTableLoading] = useState(false);
-
-  const handleSearch = (key: string, value: string) => {
-    const params = new URLSearchParams(location.search);
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
-    }
-    params.set("page", "1");
-    navigate(`?${params.toString()}`, { replace: true });
-  };
 
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > Number(totalPages)) return;
@@ -79,38 +64,6 @@ export function SupervisionTable({
   useEffect(() => {
     setIsTableLoading(isLoading);
   }, [isLoading]);
-
-  // const navigate = useNavigate();
-  // const location = useLocation();
-  // const queryParams = new URLSearchParams(location.search);
-  // const [pagination, setPagination] = useState({
-  //   pageIndex: Number(queryParams.get("page")) || 0,
-  //   pageSize: 8,
-  // });
-
-  // const table = useReactTable({
-  //   data,
-  //   columns,
-  //   getCoreRowModel: getCoreRowModel(),
-  //   getPaginationRowModel: getPaginationRowModel(),
-  //   onPaginationChange: setPagination,
-  //   state: {
-  //     pagination,
-  //   },
-  //   autoResetPageIndex: false,
-  // });
-
-  // useEffect(() => {
-  //   const updateQueryParam = () => {
-  //     const newPage = table.getState().pagination.pageIndex;
-  //     const params = new URLSearchParams(location.search);
-  //     params.set("page", newPage.toString());
-  //     navigate(`?${params.toString()}`, { replace: true });
-  //   };
-  //   if (location.search) {
-  //     updateQueryParam();
-  //   }
-  // }, [table.getState().pagination.pageIndex, navigate, location.search]);
 
   const handleRowClick = (studentId: string) => {
     // if (
@@ -144,7 +97,7 @@ export function SupervisionTable({
             data.map((row) => (
               <TableRow
                 key={row.id}
-                className="hover:bg-slate-200"
+                className="hover:bg-slate-200 hover:cursor-pointer"
                 onClick={() => handleRowClick(row.id)}
               >
                 {columns.map((col) => (
@@ -163,30 +116,6 @@ export function SupervisionTable({
               </TableCell>
             </TableRow>
           )}
-
-          {/* 
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                className="hover:bg-slate-200 hover:cursor-pointer"
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                onClick={() => handleRowClick(row.original.id)}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell className="!text-center" key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                نتیجه ای یافت نشد...
-              </TableCell>
-            </TableRow>
-          )} */}
         </TableBody>
       </Table>
 
