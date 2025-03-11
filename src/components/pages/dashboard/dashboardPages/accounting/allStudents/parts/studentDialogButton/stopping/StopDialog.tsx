@@ -12,8 +12,19 @@ import { IFormattedStudentAdvisor } from "../../interfaces";
 import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
 // import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
@@ -52,7 +63,9 @@ const StopDialog = ({
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // First, check if the student has already stopped
     if (rowData?.stop_date && rowData?.status === "stop") {
-      toast.warning(`دانش‌آموز ${rowData?.first_name} ${rowData?.last_name} قبلا متوقف شده است!`);
+      toast.warning(
+        `دانش‌آموز ${rowData?.first_name} ${rowData?.last_name} قبلا متوقف شده است!`
+      );
       return;
     }
 
@@ -72,7 +85,9 @@ const StopDialog = ({
         });
 
         toast.dismiss(loadingToastId);
-        toast.success(`توقف ${rowData?.first_name} ${rowData?.last_name} با موفقیت انجام شد!`);
+        toast.success(
+          `توقف ${rowData?.first_name} ${rowData?.last_name} با موفقیت انجام شد!`
+        );
         setTimeout(() => {
           window.location.reload(); // Refresh the page after 2 seconds if successful
         }, 2000);
@@ -104,17 +119,25 @@ const StopDialog = ({
         <DialogTitle>تایید توقف</DialogTitle>
         <DialogDescription className="flex flex-col gap-2">
           <span>آیا از توقف این دانش‌آموز مطمئن هستید؟</span>
-          <span className="text-red-400">در صورتی که تاریخی انتخاب نکنید، تاریخ امروز به صورت خودکار ثبت میگردد.</span>
+          <span className="text-red-400">
+            در صورتی که تاریخی انتخاب نکنید، تاریخ امروز به صورت خودکار ثبت
+            میگردد.
+          </span>
         </DialogDescription>
       </DialogHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 ">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4 "
+        >
           <FormField
             control={form.control}
             name="stopDate"
             render={({ field }) => (
               <FormItem className="flex justify-center flex-col w-full">
-                <FormLabel className="pt-2 font-bold text-slate-500">تاریخ توقف:</FormLabel>
+                <FormLabel className="pt-2 font-bold text-slate-500">
+                  تاریخ توقف:
+                </FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -126,15 +149,24 @@ const StopDialog = ({
                         )}
                       >
                         <CalendarIcon className="h-4 w-4 opacity-50" />
-                        {field.value ? format(field.value, "PPP", { locale: faIR }) : <span>انتخاب تاریخ توقف</span>}
+                        {field.value ? (
+                          format(field.value, "PPP", { locale: faIR })
+                        ) : (
+                          <span>انتخاب تاریخ توقف</span>
+                        )}
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 bg-blue-100" align="start">
+                  <PopoverContent
+                    className="w-auto p-0 bg-blue-100"
+                    align="start"
+                  >
                     <DatePicker
                       value={field.value ? new Date(field.value) : null}
                       format="YYYY-MM-DD"
-                      onChange={(date) => field.onChange(date?.toDate().toISOString() || null)}
+                      onChange={(date) =>
+                        field.onChange(date?.toDate().toISOString() || null)
+                      }
                       calendar={persian}
                       locale={persian_fa}
                       className="red"
@@ -149,7 +181,10 @@ const StopDialog = ({
           />
           <DialogFooter>
             <div className="flex justify-between items-center w-full">
-              <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2">
+              <Button
+                type="submit"
+                className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+              >
                 توقف دانش‌آموز
               </Button>
               <DialogClose asChild>

@@ -55,7 +55,10 @@ export const stopAccountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] = [
     accessorKey: "package_price",
     header: "هزینه بسته",
   },
+
   {
+    accessorKey: "controls",
+    header: "دسترسی",
     id: "actions",
     cell: ({ row }) => {
       const rowData = row.original;
