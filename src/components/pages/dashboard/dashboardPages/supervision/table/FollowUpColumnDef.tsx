@@ -42,6 +42,8 @@ export const followUpStColumns: ColumnDef<FormEntry>[] = [
     header: "زمان تکمیل شدن",
   },
   {
+    accessorKey: "action",
+    header: "دسترسی",
     id: "actions",
     cell: ({ row }) => {
       const formData = row.original;

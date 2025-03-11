@@ -1,11 +1,6 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-  ColumnDef,
-} from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -14,10 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FormEntry } from "../../advisors/parts/student/table/interfaces";
-import { useEffect, useState } from "react";
 
 interface SupervisionTableProps {
   columns: ColumnDef<FormEntry>[];
@@ -155,7 +149,9 @@ export function SupervisionTable({
               >
                 {columns.map((col) => (
                   <TableCell key={col.id} className="!text-center">
-                    {col.cell ? col.cell({ row }) : row[col.accessorKey]}
+                    {col.cell
+                      ? col.cell({ row: { original: row } })
+                      : row[col.accessorKey]}
                   </TableCell>
                 ))}
               </TableRow>

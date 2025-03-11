@@ -7,7 +7,11 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 const FollowUpDialogButtons = (formData: any) => {
-  const { handleSecondStudentCallAnswering, sendNotif, handleSecondStudentCallAnsweringCompleted } = useSupervision();
+  const {
+    handleSecondStudentCallAnswering,
+    sendNotif,
+    handleSecondStudentCallAnsweringCompleted,
+  } = useSupervision();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +20,9 @@ const FollowUpDialogButtons = (formData: any) => {
     // const token = formData.formData.token;
 
     // Show loading toast notification and keep the reference
-    const loadingToastId = toast.loading("در حال هدایت برای پر کردن فرم نظرسنجی دانش آموز...");
+    const loadingToastId = toast.loading(
+      "در حال هدایت برای پر کردن فرم نظرسنجی دانش آموز..."
+    );
 
     try {
       const id = formData.formData.id;

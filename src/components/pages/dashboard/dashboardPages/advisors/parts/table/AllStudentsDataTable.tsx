@@ -1,13 +1,8 @@
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-  ColumnFiltersState,
-  getFilteredRowModel,
-} from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 
+import SearchIcon from "@/assets/icons/search.svg";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -16,10 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import SearchIcon from "@/assets/icons/search.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface AllStudentsDataTableProps<TData, TValue> {
