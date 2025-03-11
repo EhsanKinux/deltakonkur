@@ -50,7 +50,7 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
       );
 
       setAssessmentsById(formattedAssessments);
-      setTotalPages(Number(formattedAssessments.length / 10).toFixed(0));
+      setTotalPages(Number(data.count / 10).toFixed(0));
     } catch (error: any) {
       if (axios.isCancel(error)) {
         console.log("🔴 درخواست لغو شد");

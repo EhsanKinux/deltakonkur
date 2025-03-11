@@ -3,45 +3,77 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SupervisionTable } from "../../table/SupervisionTable";
 import { stColumns } from "../../table/SupervisionColumnDef";
-import { useEffect, useState } from "react";
-import { get_students_by_day } from "@/lib/apis/supervision/service";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { FormEntry } from "../../../advisors/parts/student/table/interfaces";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
+import axios from "axios";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import { authStore } from "@/lib/store/authStore";
 
 const SearchByDay = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [solarDay, setSolarDay] = useState(searchParams.get("solar_day") || "");
   const [students, setStudents] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState("");
 
-  // Fetch students when search parameters change
-  useEffect(() => {
-    const fetchStudents = async () => {
-      const solarDayParam = searchParams.get("solar_day");
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-      if (solarDayParam) {
-        try {
-          const data = await get_students_by_day({ solar_date_day: solarDayParam });
+  const activeSolarDay = searchParams.get("solar_day");
 
-          if (data.length === 0) {
-            toast.warning("دانش‌آموزی در این تاریخ یافت نشد");
-          }
+  const fetchStudents = useCallback(async () => {
+    if (!solarDay) return;
 
-          const formattedData = data.map((student: FormEntry) => ({
-            ...student,
-            created: convertToShamsi(student.created),
-          }));
+    const { accessToken } = authStore.getState();
 
-          setStudents(formattedData);
-        } catch (error) {
-          console.error("Error fetching students:", error);
-        }
+    // لغو درخواست قبلی در صورت وجود
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(`${BASE_API_URL}api/register/students`, {
+        params: {
+          solar_date_day: solarDay,
+          page: searchParams.get("page") || 1, // گرفتن مقدار صفحه از searchParams
+        },
+        signal,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (data.results?.length === 0) {
+        toast.warning("دانش‌آموزی در این تاریخ یافت نشد");
       }
-    };
 
+      const formattedData = data.results?.map((student: FormEntry) => ({
+        ...student,
+        created: convertToShamsi(student.created),
+      }));
+
+      setStudents(formattedData);
+      setTotalPages(Number(data.count / 10).toFixed(0));
+    } catch (error: any) {
+      if (axios.isCancel(error)) {
+        console.log("🔴 درخواست لغو شد");
+      } else {
+        console.error("خطا در دریافت اطلاعات:", error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [activeSolarDay, searchParams]); // فچ هنگام تغییر solarDay یا searchParams اجرا می‌شود
+
+  useEffect(() => {
     fetchStudents();
-  }, [searchParams]);
+  }, [fetchStudents]); // فچ خودکار هنگام تغییر searchParams
 
   const handleSearch = () => {
     if (!solarDay) {
@@ -49,17 +81,14 @@ const SearchByDay = () => {
       return;
     }
 
-    // Merge new search parameters with existing ones
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set("solar_day", solarDay);
-
-    // Update the URL search parameters without removing existing params
+    newSearchParams.set("page", "1"); // جستجو را از صفحه اول شروع کند
     setSearchParams(newSearchParams);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Allow only numbers and validate range
     if (value === "" || (Number(value) >= 1 && Number(value) <= 31)) {
       setSolarDay(value);
     }
@@ -67,7 +96,6 @@ const SearchByDay = () => {
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && solarDay) {
-      // Check for Enter key and non-empty input
       handleSearch();
     }
   };
@@ -97,7 +125,12 @@ const SearchByDay = () => {
         </div>
       </div>
       <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-        <SupervisionTable columns={stColumns} data={students} />
+        <SupervisionTable
+          columns={stColumns}
+          data={students}
+          totalPages={totalPages}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );
