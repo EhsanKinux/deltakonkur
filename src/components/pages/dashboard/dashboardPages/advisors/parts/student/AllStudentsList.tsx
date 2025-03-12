@@ -78,7 +78,7 @@ const AllStudentsList = () => {
 
   return (
     <section className="">
-      <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 bg-slate-100 rounded-xl relative min-h-[120vh]">
+      <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 bg-slate-100 rounded-xl relative min-h-[150vh]">
         <AllStudentsDataTable
           columns={stColumns}
           data={students}
