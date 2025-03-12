@@ -85,10 +85,6 @@ const AdvisorsList = () => {
 
   return (
     <section className="">
-      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">
-        مشاوران
-      </h1>
-
       <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger
