@@ -3,12 +3,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { get_students_by_name } from "@/lib/apis/supervision/service";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { FormEntry } from "../advisors/parts/student/table/interfaces";
 import { stColumns } from "./table/CancelingColumnDef";
 import { CancelingTable } from "./table/CancelingTable";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import axios from "axios";
+import { authStore } from "@/lib/store/authStore";
 
 const Canceling = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,39 +19,71 @@ const Canceling = () => {
     searchParams.get("first_name") || ""
   );
   const [lastName, setLastName] = useState(searchParams.get("last_name") || "");
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState<FormEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState("");
 
-  // Fetch students when search parameters change
-  useEffect(() => {
-    const fetchStudents = async () => {
-      const firstNameParam = searchParams.get("first_name");
-      const lastNameParam = searchParams.get("last_name");
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-      if (firstNameParam || lastNameParam) {
-        try {
-          const data = await get_students_by_name({
-            first_name: firstNameParam || "",
-            last_name: lastNameParam || "",
-          });
+  const { accessToken } = authStore.getState();
 
-          if (data.length === 0) {
-            toast.warning("دانش‌آموزی با این نام یافت نشد");
-          }
+  const activeFname = searchParams.get("first_name");
+  const activeLname = searchParams.get("last_name");
 
-          const formattedData = data.map((student: FormEntry) => ({
-            ...student,
-            created: convertToShamsi(student.created),
-          }));
+  const fetchStudents = useCallback(async () => {
+    if (!firstName && !lastName) return;
 
-          setStudents(formattedData);
-        } catch (error) {
-          console.error("Error fetching students:", error);
-        }
+    // لغو درخواست قبلی در صورت وجود
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(`${BASE_API_URL}api/register/students`, {
+        params: {
+          active: true,
+          first_name: firstName || "",
+          last_name: lastName || "",
+          page: searchParams.get("page") || 1, // Getting the page value from searchParams
+        },
+        signal,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (data.length === 0) {
+        toast.warning("دانش‌آموزی با این نام یافت نشد");
       }
-    };
 
+      const formattedData = data.results?.map((student: FormEntry) => ({
+        ...student,
+        created: convertToShamsi(student.created),
+        date_of_birth: student.date_of_birth
+          ? convertToShamsi(student.date_of_birth)
+          : student.date_of_birth,
+      }));
+
+      setStudents(formattedData);
+      setTotalPages(Math.ceil(data.count / 10).toString());
+    } catch (error: unknown) {
+      if (axios.isCancel(error)) {
+        console.log("🔴 درخواست لغو شد");
+      } else {
+        console.error("خطا در دریافت اطلاعات:", error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [activeFname, activeLname, searchParams]);
+
+  useEffect(() => {
     fetchStudents();
-  }, [searchParams]);
+  }, [fetchStudents]);
 
   const handleSearch = () => {
     if (!firstName && !lastName) {
@@ -56,27 +91,15 @@ const Canceling = () => {
       return;
     }
 
-    // Merge new search parameters with existing ones
     const newSearchParams = new URLSearchParams(searchParams);
-    if (firstName) {
-      newSearchParams.set("first_name", firstName);
-    } else {
-      newSearchParams.delete("first_name");
-    }
-
-    if (lastName) {
-      newSearchParams.set("last_name", lastName);
-    } else {
-      newSearchParams.delete("last_name");
-    }
-
-    // Update the URL search parameters without removing existing params
+    newSearchParams.set("page", "1");
+    newSearchParams.set("first_name", firstName);
+    newSearchParams.set("last_name", lastName);
     setSearchParams(newSearchParams);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      // Check for Enter key
+    if (e.key === "Enter" && (firstName || lastName)) {
       handleSearch();
     }
   };
@@ -107,7 +130,7 @@ const Canceling = () => {
             />
           </div>
           <div className="w-full">
-            <Label htmlFor="name">نام خانوادگی:</Label>
+            <Label htmlFor="lastName">نام خانوادگی:</Label>
             <Input
               id="lastName"
               type="text"
@@ -121,7 +144,12 @@ const Canceling = () => {
       </div>
 
       <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-        <CancelingTable columns={stColumns} data={students} />
+        <CancelingTable
+          columns={stColumns}
+          data={students}
+          isLoading={isLoading}
+          totalPages={totalPages}
+        />
       </div>
     </div>
   );
