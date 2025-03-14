@@ -50,7 +50,7 @@ const Sidebar = () => {
   };
 
   return (
-    <section className="min-w-[100px] max-h-screen right-0 top-0 bottom-0 flex flex-col justify-between bg-black pt-8 text-white max-md:hidden sm:p-4 xl:p-6 md:w-[240px] rounded-l-xl overflow-hidden">
+    <section className="min-w-[100px] max-h-screen right-0 top-0 bottom-0 flex flex-col justify-between bg-gray-900 pt-8 text-white max-md:hidden sm:p-4 xl:p-6 md:w-[240px] rounded-l-xl overflow-hidden">
       <nav className="h-4/5 flex flex-col gap-4">
         {/* logo */}
         <div className="h-1/6 max-h-[60px] flex flex-col justify-center">
@@ -65,8 +65,8 @@ const Sidebar = () => {
         {/* nav links */}
         <div className="flex-1 relative flex flex-col gap-3 overflow-y-auto overflow-hidden scroll">
           {/* scroll shadow */}
-          <div className="h-10 absolute bottom-0 w-full bg-gradient-to-t from-black to-transparent z-10"></div>
-          <div className="h-10 absolute top-0 w-full bg-gradient-to-b from-black to-transparent z-10"></div>
+          <div className="h-10 absolute bottom-0 w-full bg-gradient-to-t from-gray-bg-gray-900 to-transparent z-10"></div>
+          <div className="h-10 absolute top-0 w-full bg-gradient-to-b from-gray-bg-gray-900 to-transparent z-10"></div>
           <div className="relative flex flex-col gap-3 overflow-y-auto max-h-[68vh] no-scrollbar py-10">
             {filteredLinks.map((item: SidebarLink) => {
               const isActive =
