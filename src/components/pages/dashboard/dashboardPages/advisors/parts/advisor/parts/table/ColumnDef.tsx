@@ -1,8 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { FormEntry } from "./interfaces";
 import AdvisorDialogButtons from "./parts/AdvisorDialogButtons";
+import { IallAdvisors } from "@/lib/store/types";
 
-export const columns: ColumnDef<FormEntry>[] = [
+export const columns: ColumnDef<IallAdvisors>[] = [
   {
     accessorKey: "first_name",
     header: "نام",

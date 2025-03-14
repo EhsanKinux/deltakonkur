@@ -16,15 +16,15 @@ const AdvisorsList = () => {
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const activeTab = searchParams.get("tab") || "mathAdvisors";
+  const activeTab = searchParams.get("tab") || "mathAdvisorsAccounting";
 
   const getAdvisors = useCallback(async () => {
     const { accessToken } = authStore.getState(); // گرفتن accessToken از authStore
 
     const field =
-      searchParams.get("tab") === "mathAdvisors"
+      searchParams.get("tab") === "mathAdvisorsAccounting"
         ? "ریاضی"
-        : searchParams.get("tab") === "experimentalAdvisors"
+        : searchParams.get("tab") === "experimentalAdvisorsAccounting"
         ? "تجربی"
         : "علوم انسانی";
 
@@ -57,7 +57,7 @@ const AdvisorsList = () => {
 
       setAdvisors(data.results);
       setTotalPages(Number(data.count / 10).toFixed(0));
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (axios.isCancel(error)) {
         console.log("🔴 درخواست لغو شد");
       } else {
@@ -83,24 +83,30 @@ const AdvisorsList = () => {
     getAdvisors();
   };
 
+  useEffect(() => {
+    if (!searchParams.get("tab")) {
+      setSearchParams({ tab: activeTab, page: "1" });
+    }
+  }, []);
+
   return (
     <section className="">
       <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger
-            value="mathAdvisors"
+            value="mathAdvisorsAccounting"
             className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
           >
             ریاضی
           </TabsTrigger>
           <TabsTrigger
-            value="experimentalAdvisors"
+            value="experimentalAdvisorsAccounting"
             className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
           >
             تجربی
           </TabsTrigger>
           <TabsTrigger
-            value="humanitiesAdvisors"
+            value="humanitiesAdvisorsAccounting"
             className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
           >
             علوم انسانی

@@ -1,4 +1,4 @@
-import { ColumnDef, flexRender } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 
 import SearchIcon from "@/assets/icons/search.svg";
 import { Button } from "@/components/ui/button";

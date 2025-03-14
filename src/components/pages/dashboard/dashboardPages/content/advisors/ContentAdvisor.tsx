@@ -16,15 +16,15 @@ const ContentAdvisor = () => {
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const activeTab = searchParams.get("tab") || "mathAdvisors";
+  const activeTab = searchParams.get("tab") || "mathAdvisorsContent";
 
   const getAdvisors = useCallback(async () => {
     const { accessToken } = authStore.getState(); // گرفتن accessToken از authStore
 
     const field =
-      searchParams.get("tab") === "mathAdvisors"
+      searchParams.get("tab") === "mathAdvisorsContent"
         ? "ریاضی"
-        : searchParams.get("tab") === "experimentalAdvisors"
+        : searchParams.get("tab") === "experimentalAdvisorsContent"
         ? "تجربی"
         : "علوم انسانی";
 
@@ -83,24 +83,30 @@ const ContentAdvisor = () => {
     getAdvisors();
   };
 
+  useEffect(() => {
+    if (!searchParams.get("tab")) {
+      setSearchParams({ tab: activeTab, page: "1" });
+    }
+  }, []);
+
   return (
     <section className="">
       <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger
-            value="mathAdvisors"
+            value="mathAdvisorsContent"
             className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
           >
             ریاضی
           </TabsTrigger>
           <TabsTrigger
-            value="experimentalAdvisors"
+            value="experimentalAdvisorsContent"
             className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
           >
             تجربی
           </TabsTrigger>
           <TabsTrigger
-            value="humanitiesAdvisors"
+            value="humanitiesAdvisorsContent"
             className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
           >
             علوم انسانی

@@ -7,6 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { AdvisorDataTable } from "../table/AdvisorDataTable";
 import { columns } from "./parts/table/ColumnDef";
 import { authStore } from "@/lib/store/authStore";
+import { Advisor } from "@/lib/store/types";
 
 const AdvisorList = () => {
   const [advisors, setAdvisors] = useState([]);
@@ -55,9 +56,38 @@ const AdvisorList = () => {
         },
       });
 
-      setAdvisors(data.results);
+      const levelMapping: { [key: string]: string } = {
+        "1": "سطح 1",
+        "2": "سطح 2",
+        "3": "سطح 3",
+        "4": "ارشد 1",
+        "5": "ارشد 2",
+      };
+
+      const calculateActivePercentage = (
+        active: number,
+        stopped: number,
+        canceled: number
+      ) => {
+        const total = active + stopped + canceled;
+        return total ? ((active / total) * 100).toFixed(2) : "0.00";
+      };
+
+      const formattedData = data.results?.map((advisor: Advisor) => ({
+        ...advisor,
+        activePercentage: parseFloat(
+          calculateActivePercentage(
+            parseInt(advisor.active_students ?? "0"),
+            parseInt(advisor.stopped_students ?? "0"),
+            parseInt(advisor.cancelled_students ?? "0")
+          )
+        ),
+        level: levelMapping[advisor.level.toString()] || advisor.level,
+      }));
+
+      setAdvisors(formattedData);
       setTotalPages(Number(data.count / 10).toFixed(0));
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (axios.isCancel(error)) {
         console.log("🔴 درخواست لغو شد");
       } else {
@@ -82,6 +112,12 @@ const AdvisorList = () => {
     setSearchParams({ tab: value, page: "1" });
     getAdvisors();
   };
+
+  useEffect(() => {
+    if (!searchParams.get("tab")) {
+      setSearchParams({ tab: activeTab, page: "1" });
+    }
+  }, []);
 
   return (
     <section className="">
