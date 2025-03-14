@@ -11,7 +11,7 @@ import { IUsers } from "./interface";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
