@@ -56,6 +56,14 @@ const SearchByDay = () => {
       const formattedData = data.results?.map((student: FormEntry) => ({
         ...student,
         created: convertToShamsi(student.created),
+        grade:
+          student.grade == "10"
+            ? "پایه دهم"
+            : student.grade == "11"
+            ? "پایه یازدهم"
+            : student.grade == "12"
+            ? "پایه دوازدهم"
+            : "فارغ‌التحصیل",
       }));
 
       setStudents(formattedData);
