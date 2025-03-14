@@ -16,7 +16,7 @@ import AdvisorInfo from "./parts/Info/AdvisorInfo";
 
 const AdvisorDetail = () => {
   const { advisorId } = useParams();
-  /** شروع **/
+
   const [advisorStudents, setAdvisorStudents] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState("");
@@ -120,8 +120,6 @@ const AdvisorDetail = () => {
       getAdvisorStudents();
     }
   };
-
-  /** پایان **/
 
   const goToAdisors = () => {
     // navigate("/dashboard/advisors");

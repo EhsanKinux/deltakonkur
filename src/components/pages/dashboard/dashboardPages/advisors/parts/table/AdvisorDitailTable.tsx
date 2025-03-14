@@ -82,42 +82,6 @@ export function AdvisorDitailTable({
     setIsTableLoading(isLoading);
   }, [isLoading]);
 
-  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  // const navigate = useNavigate();
-  // const location = useLocation();
-  // const queryParams = new URLSearchParams(location.search);
-  // const [pagination, setPagination] = useState({
-  //   pageIndex: Number(queryParams.get("page")) || 0,
-  //   pageSize: 8,
-  // });
-
-  // const table = useReactTable({
-  //   data,
-  //   columns,
-  //   getCoreRowModel: getCoreRowModel(),
-  //   getPaginationRowModel: getPaginationRowModel(),
-  //   onColumnFiltersChange: setColumnFilters,
-  //   getFilteredRowModel: getFilteredRowModel(),
-  //   onPaginationChange: setPagination,
-  //   state: {
-  //     pagination,
-  //     columnFilters,
-  //   },
-  //   autoResetPageIndex: false,
-  // });
-
-  // useEffect(() => {
-  //   const updateQueryParam = () => {
-  //     const newPage = table.getState().pagination.pageIndex;
-  //     const params = new URLSearchParams(location.search);
-  //     params.set("page", newPage.toString());
-  //     navigate(`?${params.toString()}`, { replace: true });
-  //   };
-  //   if (location.search) {
-  //     updateQueryParam();
-  //   }
-  // }, [table.getState().pagination.pageIndex, navigate, location.search]);
-
   const getRowBgColor = (status: string | null) => {
     if (status === "active") return "bg-green-200";
     if (status === "stop") return "bg-yellow-200";

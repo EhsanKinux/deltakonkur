@@ -8,7 +8,14 @@ import {
   ColumnFiltersState,
 } from "@tanstack/react-table";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 //   import { useNavigate } from "react-router-dom";
 // import { Input } from "@/components/ui/input";
@@ -20,104 +27,81 @@ import { useLocation, useNavigate } from "react-router-dom";
 interface AdvisorDetailContentTableProps {
   columns: ColumnDef<IAdvisorContent>[];
   data: IAdvisorContent[];
+  isLoading: boolean;
+  totalPages: string;
 }
 
-export function AdvisorDetailContentTable({ columns, data }: AdvisorDetailContentTableProps) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+// کامپوننت Skeleton برای نمایش در حالت لودینگ
+const SkeletonRow = ({ columnsCount }: { columnsCount: number }) => {
+  return (
+    <TableRow>
+      {Array.from({ length: columnsCount }).map((_, index) => (
+        <TableCell key={index} className="!text-center">
+          <div className="h-5 w-20 bg-gray-300 animate-pulse rounded-xl mx-auto"></div>
+        </TableCell>
+      ))}
+    </TableRow>
+  );
+};
+
+export function AdvisorDetailContentTable({
+  columns,
+  data,
+  isLoading,
+  totalPages,
+}: AdvisorDetailContentTableProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const [pagination, setPagination] = useState({
-    pageIndex: Number(queryParams.get("page")) || 0,
-    pageSize: 8,
-  });
 
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    onPaginationChange: setPagination,
-    state: {
-      pagination,
-      columnFilters,
-    },
-    autoResetPageIndex: false,
-  });
+  const page = Number(queryParams.get("page")) || 1;
+  const [isTableLoading, setIsTableLoading] = useState(false);
 
-  useEffect(() => {
-    const updateQueryParam = () => {
-      const newPage = table.getState().pagination.pageIndex;
-      const params = new URLSearchParams(location.search);
-      params.set("page", newPage.toString());
-      navigate(`?${params.toString()}`, { replace: true });
-    };
-    if (location.search) {
-      updateQueryParam();
-    }
-  }, [table.getState().pagination.pageIndex, navigate, location.search]);
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > Number(totalPages)) return;
 
-  // const navigate = useNavigate();
+    setIsTableLoading(true);
+    const params = new URLSearchParams(location.search);
+    params.set("page", newPage.toString());
+    navigate(`?${params.toString()}`, { replace: true });
 
-  // const handleRowClick = (advisorId: string, e: React.MouseEvent) => {
-  //   if (
-  //     (e.target as HTMLElement).tagName.toLowerCase() !== "button" &&
-  //     (e.target as HTMLElement).tagName.toLowerCase() !== "input"
-  //   ) {
-  //     navigate(`/dashboard/content/advisors/${advisorId}`);
-  //   }
-  // };
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setIsTableLoading(false);
+    }, 500);
+  };
 
   return (
     <div className="w-full overflow-auto p-10 absolute top-0 right-0 left-0 bottom-0">
-      {/* <div className="flex flex-col items-center xl:flex-row gap-2 py-4">
-        <div className="relative flex items-center w-full text-14 rounded-[8px]">
-          <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
-          <Input
-            placeholder="جستجو براساس نام"
-            value={(table.getColumn("first_name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => {table.setPageIndex(0);table.getColumn("first_name")?.setFilterValue(event.target.value)}}
-            className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
-          />
-        </div>
-        <div className="relative flex items-center w-full text-14 rounded-[8px]">
-          <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
-          <Input
-            placeholder="جستجو براساس نام خانوادگی"
-            value={(table.getColumn("last_name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) => {table.setPageIndex(0);table.getColumn("last_name")?.setFilterValue(event.target.value)}}
-            className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500"
-          />
-        </div>
-      </div> */}
       <Table className="!rounded-xl border mt-5">
         <TableHeader className="bg-slate-300">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id} className="!text-center">
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
+          <TableRow>
+            {columns.map((col) => (
+              <TableHead key={col.id} className="!text-center">
+                {col.header}
+              </TableHead>
+            ))}
+          </TableRow>
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+          {isLoading || isTableLoading ? (
+            // نمایش 10 ردیف اسکلتون در حالت لودینگ
+            <>
+              {Array.from({ length: 10 }).map((_, index) => (
+                <SkeletonRow key={index} columnsCount={columns.length} />
+              ))}
+            </>
+          ) : data.length ? (
+            data.map((row) => (
               <TableRow
-                className="hover:bg-slate-200 hover:cursor-pointer"
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                //   onClick={(e) => handleRowClick(data[index].id, e)}
+                className="hover:bg-slate-200 transition-all duration-300"
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell className="!text-center" key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                {columns.map((col) => (
+                  <TableCell key={col.id} className="!text-center">
+                    {col.cell
+                      ? col.cell({ row: { original: row } })
+                      : row[col.accessorKey]}
                   </TableCell>
                 ))}
               </TableRow>
@@ -125,33 +109,36 @@ export function AdvisorDetailContentTable({ columns, data }: AdvisorDetailConten
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                نتیجه ای یافت نشد...
+                نتیجه‌ای یافت نشد...
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
-      <div className="flex items-center justify-between py-4 w-full">
-        <div className="flex gap-2">
+      {totalPages ? (
+        <div className="flex items-center justify-between py-4 w-full">
           <Button
             className="rounded-[8px] border border-black"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page <= 1}
           >
             قبلی
           </Button>
+          <span className="text-slate-600 text-sm">
+            صفحه {page} از {totalPages}
+          </span>
+
           <Button
             className="rounded-[8px] border border-black"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page >= Number(totalPages)}
           >
             بعدی
           </Button>
         </div>
-        <span className="text-slate-600 text-sm">
-          صفحه {table.getState().pagination.pageIndex + 1} از {table.getPageCount()}
-        </span>
-      </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
