@@ -29,6 +29,9 @@ const UserDeleteConfirmation = ({
       error: "خطایی رخ داده است!",
     });
     setDeleteDialogOpen(false);
+    setTimeout(() => {
+      window.location.reload(); // Refresh the page after 2 seconds if successful
+    }, 1500);
   };
 
   // const handleDeleteCancel = (e: React.MouseEvent) => {
