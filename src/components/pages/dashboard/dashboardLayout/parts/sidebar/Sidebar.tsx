@@ -65,8 +65,8 @@ const Sidebar = () => {
         {/* nav links */}
         <div className="flex-1 relative flex flex-col gap-3 overflow-y-auto overflow-hidden scroll">
           {/* scroll shadow */}
-          <div className="h-10 absolute bottom-0 w-full bg-gradient-to-t from-gray-bg-gray-900 to-transparent z-10"></div>
-          <div className="h-10 absolute top-0 w-full bg-gradient-to-b from-gray-bg-gray-900 to-transparent z-10"></div>
+          <div className="h-10 absolute bottom-0 w-full bg-gradient-to-t from-gray-900 to-transparent z-10"></div>
+          <div className="h-10 absolute top-0 w-full bg-gradient-to-b from-gray-900 to-transparent z-10"></div>
           <div className="relative flex flex-col gap-3 overflow-y-auto max-h-[68vh] no-scrollbar py-10">
             {filteredLinks.map((item: SidebarLink) => {
               const isActive =
