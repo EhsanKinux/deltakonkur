@@ -39,7 +39,7 @@ const RecentAssassments = ({
         `${BASE_API_URL}api/register/assessment/`,
         {
           params: {
-            student: studentId,
+            student_id: studentId,
             page,
           },
           signal,
