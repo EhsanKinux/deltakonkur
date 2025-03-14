@@ -48,7 +48,7 @@ export const stColumns: ColumnDef<FormEntry>[] = [
     header: "دسترسی",
     id: "actions",
     cell: ({ row }) => {
-      const formData = row;
+      const formData = row.original;
       return <StudentDialogButtons formData={formData} />;
     },
   },

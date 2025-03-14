@@ -66,6 +66,14 @@ const SearchByName = () => {
         date_of_birth: student.date_of_birth
           ? convertToShamsi(student.date_of_birth)
           : student.date_of_birth,
+        grade:
+          student.grade == "10"
+            ? "پایه دهم"
+            : student.grade == "11"
+            ? "پایه یازدهم"
+            : student.grade == "12"
+            ? "پایه دوازدهم"
+            : "فارغ‌التحصیل",
       }));
 
       setStudents(formattedData);

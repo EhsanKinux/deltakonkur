@@ -66,7 +66,7 @@ const AllAccountingStudents = () => {
       const formattedData = data.results?.map((item: IStudentAdvisor) => ({
         id: item.id, // ID from the student object
         studentId: item.student.id,
-        grade: String(item.student.grade),
+
         advisor: item.advisor,
         created: convertToShamsi(item.student.created),
         expire_date: convertToShamsi(item.expire_date),
@@ -89,11 +89,19 @@ const AllAccountingStudents = () => {
         status: item.status,
         advisor_name: item.advisor_name,
         package_price: item.student.package_price,
+        grade:
+          item.student.grade == "10"
+            ? "پایه دهم"
+            : item.student.grade == "11"
+            ? "پایه یازدهم"
+            : item.student.grade == "12"
+            ? "پایه دوازدهم"
+            : "فارغ‌التحصیل",
       }));
 
       setStudents(formattedData);
       setTotalPages(Number(data.count / 10).toFixed(0));
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (axios.isCancel(error)) {
         console.log("🔴 درخواست لغو شد");
       } else {

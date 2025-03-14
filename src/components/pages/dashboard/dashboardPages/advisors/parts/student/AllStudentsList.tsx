@@ -6,10 +6,12 @@ import { useSearchParams } from "react-router-dom";
 import { AllStudentsDataTable } from "../table/AllStudentsDataTable";
 import { stColumns } from "./tabs/parts/AllstudentColumnDef";
 import { authStore } from "@/lib/store/authStore";
+import { FormEntry } from "./table/interfaces";
+import { convertToShamsi } from "@/lib/utils/date/convertDate";
 
 const AllStudentsList = () => {
   const [students, setStudents] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,7 +54,23 @@ const AllStudentsList = () => {
         }
       );
 
-      setStudents(data.results);
+      const formattedData = data.results?.map((student: FormEntry) => ({
+        ...student,
+        created: convertToShamsi(student.created),
+        date_of_birth: student.date_of_birth
+          ? convertToShamsi(student.date_of_birth)
+          : student.date_of_birth,
+        grade:
+          student.grade == "10"
+            ? "پایه دهم"
+            : student.grade == "11"
+            ? "پایه یازدهم"
+            : student.grade == "12"
+            ? "پایه دوازدهم"
+            : "فارغ‌التحصیل",
+      }));
+
+      setStudents(formattedData);
       setTotalPages(Number(data.count / 10).toFixed(0));
     } catch (error: any) {
       if (axios.isCancel(error)) {

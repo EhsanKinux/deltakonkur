@@ -159,7 +159,9 @@ export function AllStudentsDataTable<TData, TValue>({
               <TableRow key={row.id} className="hover:bg-slate-200">
                 {columns.map((col) => (
                   <TableCell key={col.id} className="!text-center">
-                    {col.cell ? col.cell({ row }) : row[col.accessorKey]}
+                    {col.cell
+                      ? col.cell({ row: { original: row } })
+                      : row[col.accessorKey]}
                   </TableCell>
                 ))}
               </TableRow>
