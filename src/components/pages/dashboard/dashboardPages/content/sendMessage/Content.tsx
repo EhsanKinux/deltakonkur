@@ -1,66 +1,103 @@
-import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import { appStore } from "@/lib/store/appStore";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import { useContent } from "@/functions/hooks/content/useContent";
+import { authStore } from "@/lib/store/authStore";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import axios from "axios";
+import { debounce } from "lodash";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { ContentAdvisorTable } from "./parts/table/ContentAdvisorTable";
 import { contentAdvisorColumns } from "./parts/table/ContentAdvisorColumnDef";
+import { ContentAdvisorTable } from "./parts/table/ContentAdvisorTable";
 
 const Content = () => {
-  const { getAdvisorsData } = useAdvisorsList();
+  const [advisors, setAdvisors] = useState([]);
+  const [searchParams] = useSearchParams();
+  const [totalPages, setTotalPages] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const getAdvisors = useCallback(async () => {
+    const { accessToken } = authStore.getState(); // گرفتن accessToken از authStore
+
+    const page = searchParams.get("page") || 1;
+    const firstName = searchParams.get("first_name") || "";
+    const lastName = searchParams.get("last_name") || "";
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(`${BASE_API_URL}api/advisor/advisors/`, {
+        params: {
+          page,
+          first_name: firstName,
+          last_name: lastName,
+        },
+        signal,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`, // اضافه کردن هدر Authorization
+        },
+      });
+
+      setAdvisors(data.results);
+      setTotalPages(Number(data.count / 10).toFixed(0));
+    } catch (error: unknown) {
+      if (axios.isCancel(error)) {
+        console.log("🔴 درخواست لغو شد");
+      } else {
+        console.error("خطا در دریافت اطلاعات مشاوران:", error);
+      }
+    }
+    setIsLoading(false);
+  }, [searchParams, setAdvisors]);
+
+  const debouncedGetAdvisors = useCallback(debounce(getAdvisors, 50), [
+    getAdvisors,
+  ]);
+
+  useEffect(() => {
+    debouncedGetAdvisors();
+    return () => {
+      debouncedGetAdvisors.cancel();
+    };
+  }, [searchParams]);
+
   const { sendContent, error } = useContent();
-  const advisors = appStore((state) => state.advisors);
   const [isloading, setIsloading] = useState(false);
 
-  const [advisorSubjects, setAdvisorSubjects] = useState(
-    advisors.map((advisor) => ({
-      advisor: advisor.id,
-      subject: "",
-    }))
-  );
+  const [advisorSubjects, setAdvisorSubjects] = useState<
+    Record<number, string>
+  >({});
 
-  useEffect(() => {
-    getAdvisorsData();
-  }, [getAdvisorsData]);
-
-  useEffect(() => {
-    setAdvisorSubjects(
-      advisors.map((advisor) => ({
-        advisor: advisor.id,
-        subject: "", // Ensure every advisor has an initial subject
-      }))
-    );
-  }, [advisors]);
-
-  const updateSubject = (index: number, value: string) => {
-    setAdvisorSubjects((prev) => {
-      const newSubjects = [...prev];
-      if (!newSubjects[index]) {
-        console.error(`Index ${index} is out of bounds for advisorSubjects array`);
-        return prev;
-      }
-      newSubjects[index].subject = value;
-      return newSubjects;
-    });
+  const updateSubject = (advisorId: number, value: string) => {
+    setAdvisorSubjects((prev) => ({
+      ...prev,
+      [advisorId]: value,
+    }));
   };
 
   const onSubmit = async (event: any) => {
     event.preventDefault(); // Prevent default form submission behavior
     setIsloading(true);
 
-    const dataArray = advisorSubjects.filter((entry) => entry.subject);
+    const dataArray = Object.entries(advisorSubjects)
+      .filter(([_, subject]) => subject)
+      .map(([advisorId, subject]) => ({
+        advisor: Number(advisorId),
+        subject,
+      }));
+
     if (dataArray.length > 0) {
-      console.log("dataArray:", dataArray);
       toast.promise(
         sendContent(dataArray).then(() => {
-          setAdvisorSubjects(
-            advisors.map((advisor) => ({
-              advisor: advisor.id,
-              subject: "",
-            }))
-          );
+          setAdvisorSubjects({});
         }),
         {
           loading: "در حال ارسال پیام...",
@@ -69,30 +106,31 @@ const Content = () => {
         }
       );
     } else {
-      console.log("No data to send");
+      toast.error(
+        "موضوعی برای ارسال وجود ندارد. لطفا ابتدا موضوعات خود را وارد کنید."
+      );
     }
     setIsloading(false);
   };
 
   return (
-    <section className="flex flex-col gap-4 max-h-screen">
-      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">محتوا</h1>
-      <form onSubmit={onSubmit} className="mt-4 px-8 w-full min-h-screen">
-        <div className="flex flex-col items-center justify-center bg-slate-100 rounded-xl shadow-form px-5 py-10 xl:p-5 relative min-h-screen">
-          <ContentAdvisorTable columns={contentAdvisorColumns} data={advisors} updateSubject={updateSubject} />
-        </div>
-        <div className="w-full flex flex-col items-center gap-6 py-8">
-          {/* <SearchAdvisors form={form} advisors={advisors} /> */}
-          <Button type="submit" className="form-btn hover:bg-blue-800 w-2/5">
-            {isloading ? (
-              <>
-                <Loader2 size={20} className="animate-spin" />
-                &nbsp; در حال ثبت...
-              </>
-            ) : (
-              "ارسال پیام"
-            )}
-          </Button>
+    <section className="flex flex-col gap-4">
+      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">
+        محتوا
+      </h1>
+      <form
+        onSubmit={onSubmit}
+        className="mt-4 px-8 w-full min-h-screen rounded-xl "
+      >
+        <div className="flex flex-col items-center justify-center bg-slate-100 rounded-xl shadow-form px-5 py-10 xl:p-5 relative min-h-[150vh]">
+          <ContentAdvisorTable
+            columns={contentAdvisorColumns}
+            data={advisors}
+            updateSubject={updateSubject}
+            totalPages={totalPages}
+            isLoading={isLoading}
+            advisorSubjects={advisorSubjects}
+          />
         </div>
       </form>
     </section>
