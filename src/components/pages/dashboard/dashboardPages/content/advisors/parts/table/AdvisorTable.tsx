@@ -1,13 +1,8 @@
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-  getFilteredRowModel,
-  ColumnFiltersState,
-} from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 
+import SearchIcon from "@/assets/icons/search.svg";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -16,12 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { useLocation, useNavigate } from "react-router-dom";
 import { IallAdvisors } from "@/lib/store/types";
-import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
-import SearchIcon from "@/assets/icons/search.svg";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface AdvisorTableProps {
   columns: ColumnDef<IallAdvisors>[];

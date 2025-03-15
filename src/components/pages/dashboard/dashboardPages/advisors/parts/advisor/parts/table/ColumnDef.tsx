@@ -1,9 +1,8 @@
+import { Advisor } from "@/lib/store/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { FormEntry } from "./interfaces";
 import AdvisorDialogButtons from "./parts/AdvisorDialogButtons";
-import { IallAdvisors } from "@/lib/store/types";
 
-export const columns: ColumnDef<IallAdvisors>[] = [
+export const columns: ColumnDef<Advisor>[] = [
   {
     accessorKey: "first_name",
     header: "نام",
@@ -41,7 +40,7 @@ export const columns: ColumnDef<IallAdvisors>[] = [
     header: "دسترسی",
     id: "actions",
     cell: ({ row }) => {
-      const formData: FormEntry = row.original;
+      const formData = row.original;
       return <AdvisorDialogButtons formData={formData} />;
     },
   },
