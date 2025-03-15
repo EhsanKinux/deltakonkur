@@ -20,9 +20,6 @@ const FollowUpDialogButtons = (formData: any) => {
     // const token = formData.formData.token;
 
     // Show loading toast notification and keep the reference
-    const loadingToastId = toast.loading(
-      "در حال هدایت برای پر کردن فرم نظرسنجی دانش آموز..."
-    );
 
     try {
       const id = formData.formData.id;
@@ -36,14 +33,13 @@ const FollowUpDialogButtons = (formData: any) => {
         firstCallTime,
       });
 
-      toast.dismiss(loadingToastId);
+      toast.success("در حال هدایت برای پر کردن فرم نظرسنجی دانش آموز...");
+      const studentId = formData.formData.student_id;
       setTimeout(() => {
-        const studentId = formData.formData.student_id;
         navigate(`/dashboard/supervision/${studentId}`);
       }, 2000); // 2-second delay before navigation
     } catch (error) {
       // Dismiss the loading toast and show error notification
-      toast.dismiss(loadingToastId);
       toast.error("خطا در تکمیل فرآیند: " + (error || "مشکلی رخ داده است"));
       console.error("Failed to complete student follow-up:", error);
     }
