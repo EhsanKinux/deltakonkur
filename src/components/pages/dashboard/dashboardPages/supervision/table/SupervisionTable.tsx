@@ -1,5 +1,4 @@
 import { ColumnDef } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -12,6 +11,11 @@ import {
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FormEntry } from "../../advisors/parts/student/table/interfaces";
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
 interface SupervisionTableProps {
   columns: ColumnDef<FormEntry>[];
@@ -47,6 +51,13 @@ export function SupervisionTable({
 
   const [isTableLoading, setIsTableLoading] = useState(false);
 
+  // استفاده از useReactTable
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > Number(totalPages)) return;
 
@@ -66,11 +77,6 @@ export function SupervisionTable({
   }, [isLoading]);
 
   const handleRowClick = (studentId: string) => {
-    // if (
-    //   (e.target as HTMLElement).tagName.toLowerCase() !== "button" &&
-    //   (e.target as HTMLElement).tagName.toLowerCase() !== "input"
-    // ) {
-    // }
     navigate(`/dashboard/supervision/${studentId}`);
   };
 
@@ -78,13 +84,18 @@ export function SupervisionTable({
     <div className="w-full overflow-auto p-10 absolute top-0 right-0 left-0 bottom-0">
       <Table className="!rounded-xl border">
         <TableHeader className="bg-slate-300">
-          <TableRow>
-            {columns.map((col) => (
-              <TableHead key={col.id} className="!text-center">
-                {col.header}
-              </TableHead>
-            ))}
-          </TableRow>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id} className="!text-center">
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
         </TableHeader>
         <TableBody>
           {isTableLoading ? (
@@ -93,18 +104,16 @@ export function SupervisionTable({
                 <SkeletonRow key={index} columnsCount={columns.length} />
               ))}
             </>
-          ) : data.length ? (
-            data.map((row) => (
+          ) : table.getRowModel().rows.length ? (
+            table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
                 className="hover:bg-slate-200 hover:cursor-pointer"
-                onClick={() => handleRowClick(row.id)}
+                onClick={() => handleRowClick(row.original.id)}
               >
-                {columns.map((col) => (
-                  <TableCell key={col.id} className="!text-center">
-                    {col.cell
-                      ? col.cell({ row: { original: row } })
-                      : row[col.accessorKey]}
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className="!text-center">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
               </TableRow>

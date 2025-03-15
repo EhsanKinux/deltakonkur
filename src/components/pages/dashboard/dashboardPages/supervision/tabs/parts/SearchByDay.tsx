@@ -68,7 +68,7 @@ const SearchByDay = () => {
 
       setStudents(formattedData);
       setTotalPages(Number(data.count / 10).toFixed(0));
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (axios.isCancel(error)) {
         console.log("🔴 درخواست لغو شد");
       } else {
