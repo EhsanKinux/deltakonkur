@@ -93,7 +93,7 @@ const StopDialog = ({
         }, 2000);
       } catch (error) {
         toast.dismiss(loadingToastId);
-        toast.error("خطایی رخ داده است!");
+        toast.error(`خطایی رخ داده است!`);
       }
     }
 
