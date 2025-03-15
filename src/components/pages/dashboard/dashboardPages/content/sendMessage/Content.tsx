@@ -8,6 +8,7 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { contentAdvisorColumns } from "./parts/table/ContentAdvisorColumnDef";
 import { ContentAdvisorTable } from "./parts/table/ContentAdvisorTable";
+import { IContent } from "@/lib/apis/content/interface";
 
 const Content = () => {
   const [advisors, setAdvisors] = useState([]);
@@ -67,10 +68,9 @@ const Content = () => {
     return () => {
       debouncedGetAdvisors.cancel();
     };
-  }, [searchParams]);
+  }, [debouncedGetAdvisors, searchParams]);
 
   const { sendContent, error } = useContent();
-  const [isloading, setIsloading] = useState(false);
 
   const [advisorSubjects, setAdvisorSubjects] = useState<
     Record<number, string>
@@ -83,14 +83,14 @@ const Content = () => {
     }));
   };
 
-  const onSubmit = async (event: any) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission behavior
-    setIsloading(true);
+    setIsLoading(true);
 
-    const dataArray = Object.entries(advisorSubjects)
-      .filter(([_, subject]) => subject)
+    const dataArray: IContent[] = Object.entries(advisorSubjects)
+      .filter(([, subject]) => subject)
       .map(([advisorId, subject]) => ({
-        advisor: Number(advisorId),
+        advisor: advisorId.toString(), // تبدیل به string
         subject,
       }));
 
@@ -110,7 +110,7 @@ const Content = () => {
         "موضوعی برای ارسال وجود ندارد. لطفا ابتدا موضوعات خود را وارد کنید."
       );
     }
-    setIsloading(false);
+    setIsLoading(false);
   };
 
   return (

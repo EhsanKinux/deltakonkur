@@ -12,6 +12,7 @@ import {
 import { Advisor } from "@/lib/store/types";
 import {
   ColumnDef,
+  flexRender, // اضافه شده
   getCoreRowModel,
   getFilteredRowModel,
   TableMeta,
@@ -91,7 +92,7 @@ export function ContentAdvisorTable({
   };
 
   const table = useReactTable({
-    data: data,
+    data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -144,13 +145,18 @@ export function ContentAdvisorTable({
       </div>
       <Table className="!rounded-xl border mt-5">
         <TableHeader className="bg-slate-300">
-          <TableRow>
-            {columns.map((col) => (
-              <TableHead key={col.id} className="!text-center">
-                {col.header}
-              </TableHead>
-            ))}
-          </TableRow>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id} className="!text-center">
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
         </TableHeader>
         <TableBody>
           {isLoading || isTableLoading ? (
@@ -160,23 +166,29 @@ export function ContentAdvisorTable({
                 <SkeletonRow key={index} columnsCount={columns.length} />
               ))}
             </>
-          ) : data.length ? (
-            data.map((row) => (
+          ) : table.getRowModel().rows.length ? (
+            table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
                 className="hover:bg-slate-200 transition-all duration-300"
               >
-                {columns.map((col) => (
-                  <TableCell key={col.id} className="!text-center">
-                    {col.accessorKey === "subject" ? (
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className="!text-center">
+                    {cell.column.id === "subject" ? (
                       <Input
-                        value={advisorSubjects[row.id] || ""}
-                        onChange={(e) => updateSubject(row.id, e.target.value)}
+                        value={advisorSubjects[Number(row.original.id)] || ""}
+                        onChange={
+                          (e) =>
+                            updateSubject(
+                              Number(row.original.id),
+                              e.target.value
+                            ) // تبدیل به number
+                        }
                         placeholder="موضوع"
                         className="placeholder:text-14 placeholder:text-gray-500 rounded-[8px] text-gray-900 min-w-[200px] border-slate-400 hover:placeholder:text-blue-500 hover:cursor-pointer"
                       />
                     ) : (
-                      row[col.accessorKey]
+                      flexRender(cell.column.columnDef.cell, cell.getContext())
                     )}
                   </TableCell>
                 ))}
