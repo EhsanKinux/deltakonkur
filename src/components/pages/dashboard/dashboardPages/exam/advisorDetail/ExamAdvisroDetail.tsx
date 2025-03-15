@@ -69,7 +69,7 @@ const ExamAdvisroDetail = () => {
 
       // ترکیب اطلاعات دانشجویان با اطلاعات دریافتی قبلی
       const studentsData = data.results.map(
-        (entry: AdvisorDetailEntry, index) => ({
+        (entry: AdvisorDetailEntry, index: number) => ({
           ...studentsDetails[index], // اضافه کردن اطلاعات جدید
           advisor: entry.advisor,
           wholeId: entry.id,

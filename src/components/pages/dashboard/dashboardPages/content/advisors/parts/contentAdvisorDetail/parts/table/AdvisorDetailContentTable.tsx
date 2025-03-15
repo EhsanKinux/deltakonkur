@@ -1,4 +1,3 @@
-import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -8,14 +7,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
 import { IAdvisorContent } from "@/functions/hooks/content/interface";
-import { useLocation, useNavigate } from "react-router-dom";
 import {
+  ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface AdvisorDetailContentTableProps {
   columns: ColumnDef<IAdvisorContent>[];

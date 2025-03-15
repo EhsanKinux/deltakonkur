@@ -1,5 +1,9 @@
-import { ColumnDef } from "@tanstack/react-table";
-
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,13 +13,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import SearchIcon from "@/assets/icons/search.svg";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { StudentWithDetails } from "../../advisors/parts/advisor/parts/advisorDetail/interface";
-// import { StudentWithDetails } from "@/functions/hooks/advisorsList/interface";
 
 interface ExamAdvisorDetailTableProps {
   columns: ColumnDef<StudentWithDetails>[];
@@ -53,6 +55,13 @@ export function ExamAdvisorDetailTable({
 
   const [isTableLoading, setIsTableLoading] = useState(false);
 
+  // استفاده از useReactTable برای مدیریت جدول
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   const handleSearch = (key: string, value: string) => {
     const params = new URLSearchParams(location.search);
     if (value) {
@@ -87,6 +96,7 @@ export function ExamAdvisorDetailTable({
     if (status === "stop") return "bg-yellow-200";
     return "bg-red-200";
   };
+
   return (
     <div className="w-full overflow-auto p-10 absolute top-0 right-0 left-0 bottom-0">
       <div className="flex items-center gap-2 py-4">
@@ -103,7 +113,7 @@ export function ExamAdvisorDetailTable({
             className="placeholder:text-14 placeholder:text-gray-500 rounded-[8px] text-gray-900 border-slate-400 hover:placeholder:text-blue-500 hover:cursor-pointer"
           />
         </div>
-        <div className="relative flex items-center w-[50%] text-14  rounded-[8px]">
+        <div className="relative flex items-center w-[50%] text-14 rounded-[8px]">
           <img
             src={SearchIcon}
             alt="searchicon"
@@ -119,13 +129,18 @@ export function ExamAdvisorDetailTable({
       </div>
       <Table className="!rounded-xl border">
         <TableHeader className="bg-slate-300">
-          <TableRow>
-            {columns.map((col) => (
-              <TableHead key={col.id} className="!text-center">
-                {col.header}
-              </TableHead>
-            ))}
-          </TableRow>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id} className="!text-center">
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
         </TableHeader>
         <TableBody>
           {isTableLoading ? (
@@ -134,19 +149,17 @@ export function ExamAdvisorDetailTable({
                 <SkeletonRow key={index} columnsCount={columns.length} />
               ))}
             </>
-          ) : data.length ? (
-            data.map((row, index) => (
+          ) : table.getRowModel().rows.length ? (
+            table.getRowModel().rows.map((row) => (
               <TableRow
-                key={`${row.id}-${index}`}
+                key={row.id}
                 className={`hover:bg-slate-200 border-b-slate-400 ${getRowBgColor(
-                  row.status
+                  row.original.status
                 )}`}
               >
-                {columns.map((col) => (
-                  <TableCell key={col.id} className="!text-center">
-                    {col.cell
-                      ? col.cell({ row: { original: row } })
-                      : row[col.accessorKey]}
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className="!text-center">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
               </TableRow>
