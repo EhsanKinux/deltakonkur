@@ -1,5 +1,3 @@
-import { ColumnDef } from "@tanstack/react-table";
-
 import SearchIcon from "@/assets/icons/search.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +10,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { IallAdvisors } from "@/lib/store/types";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -50,6 +54,13 @@ export function AllAdvisorsDataTable({
   const lastName = queryParams.get("last_name") || "";
 
   const [isTableLoading, setIsTableLoading] = useState(false);
+
+  // استفاده از useReactTable
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   const handleSearch = (column: string, value: string) => {
     const params = new URLSearchParams(location.search);
@@ -117,13 +128,18 @@ export function AllAdvisorsDataTable({
       </div>
       <Table className="!rounded-xl border mt-5">
         <TableHeader className="bg-slate-300">
-          <TableRow>
-            {columns.map((col) => (
-              <TableHead key={col.id} className="!text-center">
-                {col.header}
-              </TableHead>
-            ))}
-          </TableRow>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id} className="!text-center">
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
         </TableHeader>
         <TableBody>
           {isLoading || isTableLoading ? (
@@ -133,16 +149,16 @@ export function AllAdvisorsDataTable({
                 <SkeletonRow key={index} columnsCount={columns.length} />
               ))}
             </>
-          ) : data.length ? (
-            data.map((row) => (
+          ) : table.getRowModel().rows.length ? (
+            table.getRowModel().rows.map((row) => (
               <TableRow
-                onClick={(e) => handleRowClick(row.id, e)}
+                onClick={(e) => handleRowClick(row.original.id, e)}
                 key={row.id}
                 className="hover:bg-slate-200 hover:cursor-pointer transition-all duration-300"
               >
-                {columns.map((col) => (
-                  <TableCell key={col.id} className="!text-center">
-                    {col.cell ? col.cell({ row }) : row[col.accessorKey]}
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className="!text-center">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
               </TableRow>
