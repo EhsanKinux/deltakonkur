@@ -1,17 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { get_students_by_name } from "@/lib/apis/supervision/service";
+import { authStore } from "@/lib/store/authStore";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import axios from "axios";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { FormEntry } from "../advisors/parts/student/table/interfaces";
 import { stColumns } from "./table/CancelingColumnDef";
 import { CancelingTable } from "./table/CancelingTable";
-import { BASE_API_URL } from "@/lib/variables/variables";
-import axios from "axios";
-import { authStore } from "@/lib/store/authStore";
 
 const Canceling = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -151,7 +150,7 @@ const Canceling = () => {
         </div>
       </div>
 
-      <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
+      <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-[150vh]">
         <CancelingTable
           columns={stColumns}
           data={students}
