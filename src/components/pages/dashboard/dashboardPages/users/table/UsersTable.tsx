@@ -1,13 +1,12 @@
 import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
   ColumnDef,
-  ColumnFiltersState,
-  getFilteredRowModel,
+  flexRender,
+  useReactTable,
+  getCoreRowModel,
 } from "@tanstack/react-table";
-
+import SearchIcon from "@/assets/icons/search.svg";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -16,12 +15,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { useLocation, useNavigate } from "react-router-dom";
-import { MouseEvent, useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import SearchIcon from "@/assets/icons/search.svg";
 import { IUsers2 } from "@/lib/store/useUsersStore";
+import { MouseEvent, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface UsersTableProps {
   columns: ColumnDef<IUsers2>[];
@@ -30,7 +26,6 @@ interface UsersTableProps {
   totalPages: string;
 }
 
-// کامپوننت Skeleton برای نمایش در حالت لودینگ
 const SkeletonRow = ({ columnsCount }: { columnsCount: number }) => {
   return (
     <TableRow>
@@ -59,6 +54,12 @@ export function UsersTable({
 
   const [isTableLoading, setIsTableLoading] = useState(false);
 
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   const handleSearch = (column: string, value: string) => {
     const params = new URLSearchParams(location.search);
     if (value) {
@@ -84,50 +85,6 @@ export function UsersTable({
     }, 500);
   };
 
-  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  // const navigate = useNavigate();
-  // const location = useLocation();
-  // const queryParams = new URLSearchParams(location.search);
-  // const [pagination, setPagination] = useState({
-  //   pageIndex: Number(queryParams.get("page")) || 0,
-  //   pageSize: 8,
-  // });
-
-  // const table = useReactTable({
-  //   data,
-  //   columns,
-  //   getCoreRowModel: getCoreRowModel(),
-  //   getPaginationRowModel: getPaginationRowModel(),
-  //   onColumnFiltersChange: setColumnFilters,
-  //   getFilteredRowModel: getFilteredRowModel(),
-  //   onPaginationChange: setPagination,
-  //   state: {
-  //     pagination,
-  //     columnFilters,
-  //   },
-  //   autoResetPageIndex: false,
-  // });
-
-  // useEffect(() => {
-  //   // Initialize the query parameter if it's missing
-  //   if (!queryParams.has("page")) {
-  //     queryParams.set("page", pagination.pageIndex.toString());
-  //     navigate(`?${queryParams.toString()}`, { replace: true });
-  //   }
-  // }, [navigate, queryParams, pagination.pageIndex]);
-
-  // useEffect(() => {
-  //   const updateQueryParam = () => {
-  //     const newPage = table.getState().pagination.pageIndex;
-  //     const params = new URLSearchParams(location.search);
-  //     params.set("page", newPage.toString());
-  //     navigate(`?${params.toString()}`, { replace: true });
-  //   };
-  //   if (location.search) {
-  //     updateQueryParam();
-  //   }
-  // }, [table.getState().pagination.pageIndex, navigate, location.search]);
-
   const handleRowClick = (userId: string, e: MouseEvent) => {
     if (
       (e.target as HTMLElement).tagName.toLowerCase() !== "button" &&
@@ -135,8 +92,6 @@ export function UsersTable({
     ) {
       navigate(`/dashboard/users/detail/${userId}`);
     }
-    // console.log(studentId);
-    // console.log(data);
   };
 
   return (
@@ -171,34 +126,36 @@ export function UsersTable({
       </div>
       <Table className="!rounded-xl border mt-5">
         <TableHeader className="bg-slate-300">
-          <TableRow>
-            {columns.map((col) => (
-              <TableHead key={col.id} className="!text-center">
-                {col.header}
-              </TableHead>
-            ))}
-          </TableRow>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id} className="!text-center">
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
         </TableHeader>
         <TableBody>
           {isLoading || isTableLoading ? (
-            // نمایش 10 ردیف اسکلتون در حالت لودینگ
             <>
               {Array.from({ length: 10 }).map((_, index) => (
                 <SkeletonRow key={index} columnsCount={columns.length} />
               ))}
             </>
-          ) : data.length ? (
-            data.map((row) => (
+          ) : table.getRowModel().rows.length ? (
+            table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
                 className="hover:bg-slate-200 transition-all duration-300 hover:cursor-pointer"
-                onClick={(e) => handleRowClick(row.id, e)}
+                onClick={(e) => handleRowClick(row.original.id, e)}
               >
-                {columns.map((col) => (
-                  <TableCell key={col.id} className="!text-center">
-                    {col.cell
-                      ? col.cell({ row: { original: row } })
-                      : row[col.accessorKey]}
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className="!text-center">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
               </TableRow>
@@ -212,7 +169,6 @@ export function UsersTable({
           )}
         </TableBody>
       </Table>
-
       {totalPages ? (
         <div className="flex items-center justify-between py-4 w-full">
           <Button
@@ -225,7 +181,6 @@ export function UsersTable({
           <span className="text-slate-600 text-sm">
             صفحه {page} از {totalPages}
           </span>
-
           <Button
             className="rounded-[8px] border border-black"
             onClick={() => handlePageChange(page + 1)}
