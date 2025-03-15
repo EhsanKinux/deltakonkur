@@ -38,7 +38,8 @@ const DeleteDialog = ({
   setDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   formData: StudentWithDetails;
 }) => {
-  const { fetchStudentAdvisorData, studentAdvisorData, deleteStudentAdvisor } = useAdvisorsList();
+  const { fetchStudentAdvisorData, studentAdvisorData, deleteStudentAdvisor } =
+    useAdvisorsList();
 
   useEffect(() => {
     fetchStudentAdvisorData(formData.id);
@@ -57,7 +58,9 @@ const DeleteDialog = ({
     );
 
     if (!activeAdvisor) {
-      console.error("No active student advisor found with matching advisor ID.");
+      console.error(
+        "No active student advisor found with matching advisor ID."
+      );
       return;
     }
 
@@ -86,16 +89,23 @@ const DeleteDialog = ({
         <DialogTitle>تایید حذف</DialogTitle>
         <DialogDescription className="flex flex-col gap-2">
           <span>آیا از حذف این دانش‌آموز مطمئن هستید؟</span>
-          <span className="text-orange-600 text-sm">دقت داشته باشید که این کار خطرناک است و پیشنهاد نمیشود</span>
+          <span className="text-orange-600 text-sm">
+            دقت داشته باشید که این کار خطرناک است و پیشنهاد نمیشود
+          </span>
         </DialogDescription>
       </DialogHeader>
       <DialogFooter>
         <div className="flex justify-between items-center w-full">
-          <Button className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2" onClick={handleDeleteConfirm}>
+          <Button
+            className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+            onClick={handleDeleteConfirm}
+          >
             حذف دانش‌آموز
           </Button>
           <DialogClose asChild>
-            <Button className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2">لغو</Button>
+            <Button className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2">
+              لغو
+            </Button>
           </DialogClose>
         </div>
       </DialogFooter>

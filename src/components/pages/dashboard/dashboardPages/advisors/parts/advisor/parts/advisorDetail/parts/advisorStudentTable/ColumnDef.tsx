@@ -56,7 +56,7 @@ export const stColumns: ColumnDef<StudentWithDetails>[] = [
     header: "دسترسی",
     id: "actions",
     cell: ({ row }) => {
-      const formData = row;
+      const formData = row.original;
       return <StudentDialogButtons formData={formData} />;
     },
   },

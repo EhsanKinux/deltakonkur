@@ -59,7 +59,7 @@ const AdvisorDetail = () => {
       );
 
       // ارسال درخواست‌های جداگانه برای دریافت اطلاعات هر دانشجو
-      const studentRequests = studentIds.map((id) =>
+      const studentRequests = studentIds.map((id: number) =>
         axios
           .get(`${BASE_API_URL}api/register/students/${id}/`, {
             headers: {
@@ -75,7 +75,7 @@ const AdvisorDetail = () => {
 
       // ترکیب اطلاعات دانشجویان با اطلاعات دریافتی قبلی
       const studentsData = data.results.map(
-        (entry: AdvisorDetailEntry, index) => ({
+        (entry: AdvisorDetailEntry, index: number) => ({
           ...studentsDetails[index], // اضافه کردن اطلاعات جدید
           advisor: entry.advisor,
           wholeId: entry.id,
@@ -91,7 +91,7 @@ const AdvisorDetail = () => {
 
       setAdvisorStudents(studentsData);
       setTotalPages(Math.ceil(data.count / 10).toString());
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (axios.isCancel(error)) {
         console.log("🔴 درخواست لغو شد");
       } else {

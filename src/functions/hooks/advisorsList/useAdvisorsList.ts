@@ -15,10 +15,10 @@ import {
 import { appStore } from "@/lib/store/appStore";
 import { Advisor } from "@/lib/store/types";
 // import { Advisor } from "@/lib/store/types";
+import { AdvisorDetailEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/interface";
+import { ISubmitAdvisorRegisterService } from "@/lib/apis/advisors/interface";
 import { useCallback, useState } from "react";
 import { AdvisorDataResponse, PaymentHistoryRecord } from "./interface";
-import { ISubmitAdvisorRegisterService } from "@/lib/apis/advisors/interface";
-import { AdvisorDetailEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/interface";
 
 export const useAdvisorsList = () => {
   const deleteAdvisor = appStore((state) => state.deleteAdvisor);
@@ -34,13 +34,17 @@ export const useAdvisorsList = () => {
   const loading = appStore((state) => state.loading);
 
   const [dataLoaded, setDataLoaded] = useState(false);
-  const [advisorDetailData, setAdvisorDetailData] = useState<AdvisorDataResponse | null>(null);
-  const [advisorDetailStudent, setAdvisorDetailStudent] = useState<AdvisorDetailEntry[]>();
+  const [advisorDetailData, setAdvisorDetailData] =
+    useState<AdvisorDataResponse | null>(null);
+  const [advisorDetailStudent, setAdvisorDetailStudent] =
+    useState<AdvisorDetailEntry[]>();
   useState<AdvisorDataResponse | null>(null);
   const [wageLoad, setWageLoad] = useState(false);
   const [wageData, setWageData] = useState();
   const [studentAdvisorData, setStudentAdvisorData] = useState(null);
-  const [paymentHistory, setPaymentHistory] = useState<PaymentHistoryRecord[] | null>(null);
+  const [paymentHistory, setPaymentHistory] = useState<
+    PaymentHistoryRecord[] | null
+  >(null);
 
   const processData = (response: any): AdvisorDataResponse => {
     const result: AdvisorDataResponse = {
@@ -256,7 +260,7 @@ export const useAdvisorsList = () => {
       setError(null);
       try {
         const data = await get_student_advisor_data(studentId);
-        setStudentAdvisorData(data);
+        setStudentAdvisorData(data?.results);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -280,7 +284,10 @@ export const useAdvisorsList = () => {
           // Optionally, update your local state to remove the deleted advisor if needed
           console.log("Student advisor deleted successfully.");
         } else {
-          console.error("Failed to delete student advisor: ", response.statusText);
+          console.error(
+            "Failed to delete student advisor: ",
+            response.statusText
+          );
         }
       } catch (err) {
         if (err instanceof Error) {
@@ -300,7 +307,9 @@ export const useAdvisorsList = () => {
       setLoading(true);
       setError(null);
       try {
-        const data: PaymentHistoryRecord[] = await get_payment_history(advisorId);
+        const data: PaymentHistoryRecord[] = await get_payment_history(
+          advisorId
+        );
         setPaymentHistory(data);
       } catch (err) {
         if (err instanceof Error) {
