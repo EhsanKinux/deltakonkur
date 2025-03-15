@@ -94,10 +94,9 @@ export function EditStudentDialog() {
           window.location.reload();
         }, 1500);
       }
-    } catch (error) {
+    } catch (error: any) {
       toast.dismiss(loadingToastId);
-      toast.error("خطا در ویرایش اطلاعات. لطفا دوباره تلاش کنید.");
-      console.error(error);
+      toast.error(`خطا در ویرایش اطلاعات. ${error["message"]}`);
     }
   };
 

@@ -26,14 +26,16 @@ const DeleteConfirmationDialog = ({
     try {
       await deleteStudent(formData?.id);
       toast.dismiss(loadingToastId);
-      toast.success(`حذف کردن ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`);
+      toast.success(
+        `حذف کردن ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`
+      );
       setTimeout(() => {
         setDeleteDialogOpen(false);
         window.location.reload();
       }, 2000);
-    } catch (error) {
+    } catch (error: any) {
       toast.dismiss(loadingToastId);
-      toast.error("خطایی رخ داده است");
+      toast.error(`خطا: ${error["message"]}`);
       // toast.error(error);
     } finally {
       setDeleteDialogOpen(false);
@@ -44,15 +46,22 @@ const DeleteConfirmationDialog = ({
     <DialogContent className="bg-slate-100 !rounded-[10px]">
       <DialogHeader>
         <DialogTitle>تایید حذف</DialogTitle>
-        <DialogDescription>آیا از حذف این دانش‌آموز مطمئن هستید؟</DialogDescription>
+        <DialogDescription>
+          آیا از حذف این دانش‌آموز مطمئن هستید؟
+        </DialogDescription>
       </DialogHeader>
       <DialogFooter>
         <div className="flex justify-between items-center w-full">
-          <Button className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2" onClick={handleDeleteConfirm}>
+          <Button
+            className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+            onClick={handleDeleteConfirm}
+          >
             حذف دانش‌آموز
           </Button>
           <DialogClose asChild>
-            <Button className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2">لغو</Button>
+            <Button className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2">
+              لغو
+            </Button>
           </DialogClose>
         </div>
       </DialogFooter>
