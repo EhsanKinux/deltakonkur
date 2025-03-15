@@ -141,7 +141,7 @@ export function AllStudentsDataTable<TData, TValue>({
             className="absolute left-3 w-6 h-6 text-gray-500"
           />
           <Input
-            placeholder="جستجو براساس مقطع تحصیلی"
+            placeholder="جستجو مقطع تحصیلی (عدد وارد کنید)"
             value={grade}
             onChange={(e) => handleSearch("grade", e.target.value)}
             className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
