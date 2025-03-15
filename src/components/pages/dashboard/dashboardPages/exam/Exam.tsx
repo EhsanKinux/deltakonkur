@@ -1,15 +1,13 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import { appStore } from "@/lib/store/appStore";
-import { Advisor } from "@/lib/store/types";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { ExamAdvisorTable } from "./table/ExamAdvisorTable";
-import { examAdvisorColumns } from "./table/ExamAdvisorColumnDef";
 import { authStore } from "@/lib/store/authStore";
+import { Advisor } from "@/lib/store/types";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
 import { debounce } from "lodash";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { examAdvisorColumns } from "./table/ExamAdvisorColumnDef";
+import { ExamAdvisorTable } from "./table/ExamAdvisorTable";
 
 const Exam = () => {
   const [advisors, setAdvisors] = useState([]);

@@ -10,7 +10,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Advisor } from "@/lib/store/types";
-import { ColumnDef } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -50,6 +55,13 @@ export function ExamAdvisorTable({
 
   const [isTableLoading, setIsTableLoading] = useState(false);
 
+  // استفاده از useReactTable برای مدیریت جدول
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   const handleSearch = (column: string, value: string) => {
     const params = new URLSearchParams(location.search);
     if (value) {
@@ -83,6 +95,7 @@ export function ExamAdvisorTable({
       navigate(`/dashboard/exam/${advisorId}`);
     }
   };
+
   return (
     <div className="w-full overflow-auto p-10 absolute top-0 right-0 left-0 bottom-0">
       <div className="flex flex-col items-center xl:flex-row gap-2 py-4">
@@ -115,13 +128,18 @@ export function ExamAdvisorTable({
       </div>
       <Table className="!rounded-xl border mt-5">
         <TableHeader className="bg-slate-300">
-          <TableRow>
-            {columns.map((col) => (
-              <TableHead key={col.id} className="!text-center">
-                {col.header}
-              </TableHead>
-            ))}
-          </TableRow>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id} className="!text-center">
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
         </TableHeader>
         <TableBody>
           {isLoading || isTableLoading ? (
@@ -131,16 +149,16 @@ export function ExamAdvisorTable({
                 <SkeletonRow key={index} columnsCount={columns.length} />
               ))}
             </>
-          ) : data.length ? (
-            data.map((row) => (
+          ) : table.getRowModel().rows.length ? (
+            table.getRowModel().rows.map((row) => (
               <TableRow
-                onClick={(e) => handleRowClick(row.id, e)}
+                onClick={(e) => handleRowClick(row.original.id, e)}
                 key={row.id}
                 className="hover:bg-slate-200 hover:cursor-pointer transition-all duration-300"
               >
-                {columns.map((col) => (
-                  <TableCell key={col.id} className="!text-center">
-                    {col.cell ? col.cell({ row }) : row[col.accessorKey]}
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className="!text-center">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
               </TableRow>
