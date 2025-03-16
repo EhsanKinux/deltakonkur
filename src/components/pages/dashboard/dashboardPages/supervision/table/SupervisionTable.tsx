@@ -100,7 +100,7 @@ export function SupervisionTable({
         <TableBody>
           {isTableLoading ? (
             <>
-              {Array.from({ length: 5 }).map((_, index) => (
+              {Array.from({ length: 10 }).map((_, index) => (
                 <SkeletonRow key={index} columnsCount={columns.length} />
               ))}
             </>
