@@ -1,28 +1,26 @@
 import backIcon from "@/assets/icons/back.svg";
-import { Button } from "@/components/ui/button";
-import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import api from "@/lib/apis/global-interceptor";
-import { authStore } from "@/lib/store/authStore";
-import { BASE_API_URL } from "@/lib/variables/variables";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AdvisorDitailTable } from "../../../table/AdvisorDitailTable";
-import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
-import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import JustAdvisorInfo from "./parts/Info/JustAdvisorInfo";
-import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
-import { JustAdvisorColumnDef } from "./parts/advisorStudentTable/JustAdvisorColumnDef";
-import { AllAdvisorDetailTable } from "@/components/pages/dashboard/dashboardPages/accounting/table/AllAdvisorDetailTable";
 import { accountStColumns } from "@/components/pages/dashboard/dashboardPages/accounting/allAdvisors/allAccountingAdvisors/parts/advisorDetail/parts/ColumnDef";
+import { AllAdvisorDetailTable } from "@/components/pages/dashboard/dashboardPages/accounting/table/AllAdvisorDetailTable";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   AdvisorStudentData,
   PaymentHistoryRecord,
   StudentWithDetails2,
 } from "@/functions/hooks/advisorsList/interface";
+import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
+import api from "@/lib/apis/global-interceptor";
+import { authStore } from "@/lib/store/authStore";
+import { convertToShamsi } from "@/lib/utils/date/convertDate";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AdvisorPayHistoryTable } from "../../../table/AdvisorPayHistoryTable";
+import { AdvisorDetailEntry, StudentWithDetails } from "./interface";
 import { payHistoryColumns } from "./parts/advisorPayHistoryTable/PayHistoryColumnDef";
+import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
+import JustAdvisorInfo from "./parts/Info/JustAdvisorInfo";
 
 export interface AdvisorData {
   id: number;
@@ -51,9 +49,12 @@ const JustAdvisorDetail = () => {
   } = useAdvisorsList();
   const navigate = useNavigate();
   const [advisorData, setAdvisorData] = useState<AdvisorData | null>(null);
-  const [processedStudentData, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
-  const [processedStudentDataAccounting, setProcessedStudentDataAccounting] = useState<StudentWithDetails2[]>([]);
-  const [processedPaymentHistory, setProcessedPaymentHistory] = useState<PaymentHistoryRecord[]>([]);
+  const [, setProcessedStudentData] = useState<StudentWithDetails[]>([]);
+  const [processedStudentDataAccounting, setProcessedStudentDataAccounting] =
+    useState<StudentWithDetails2[]>([]);
+  const [processedPaymentHistory, setProcessedPaymentHistory] = useState<
+    PaymentHistoryRecord[]
+  >([]);
 
   const formatNumber = (number: string): string => {
     const num = parseFloat(number);
@@ -65,19 +66,25 @@ const JustAdvisorDetail = () => {
     if (userRoles && userRoles.includes(7)) {
       const fetchUserData = async () => {
         try {
-          const roleResponse = await api.get(`${BASE_API_URL}api/auth/current-user/`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
+          const roleResponse = await api.get(
+            `${BASE_API_URL}api/auth/current-user/`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
           const userData = roleResponse.data;
 
           // Fetch advisor data based on user ID
-          const advisorResponse = await axios.get(`${BASE_API_URL}api/advisor/advisor/from-user/${userData.id}/`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
+          const advisorResponse = await axios.get(
+            `${BASE_API_URL}api/advisor/advisor/from-user/${userData.id}/`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
           setAdvisorData(advisorResponse.data); // Set the advisor data
         } catch (error) {
           console.error("Error fetching user/advisor data:", error);
@@ -96,14 +103,20 @@ const JustAdvisorDetail = () => {
 
   useEffect(() => {
     if (advisorDetailStudent) {
-      const studentData: StudentWithDetails[] = advisorDetailStudent.map((entry: AdvisorDetailEntry) => ({
-        ...entry.student,
-        advisor: entry.advisor,
-        wholeId: entry.id,
-        status: entry.status,
-        started_date: entry.started_date ? convertToShamsi(entry.started_date) : "-",
-        ended_date: entry.ended_date ? convertToShamsi(entry.ended_date) : "-",
-      }));
+      const studentData: StudentWithDetails[] = advisorDetailStudent.map(
+        (entry: AdvisorDetailEntry) => ({
+          ...entry.student,
+          advisor: entry.advisor,
+          wholeId: entry.id,
+          status: entry.status,
+          started_date: entry.started_date
+            ? convertToShamsi(entry.started_date)
+            : "-",
+          ended_date: entry.ended_date
+            ? convertToShamsi(entry.ended_date)
+            : "-",
+        })
+      );
       setProcessedStudentData(studentData);
     }
   }, [advisorDetailStudent]);
@@ -116,16 +129,22 @@ const JustAdvisorDetail = () => {
 
   useEffect(() => {
     if (advisorDetailData && advisorDetailData.data) {
-      const studentData: StudentWithDetails2[] = advisorDetailData.data.map((entry: AdvisorStudentData) => ({
-        ...entry.student,
-        status: entry.status, // Assuming you have a way to get the status, replace accordingly
-        started_date: entry.start_date ? convertToShamsi(entry.start_date) : "-",
-        ended_date: entry.end_date ? convertToShamsi(entry.end_date) : "-",
-        duration: entry.duration,
-        start_date: entry.start_date,
-        end_date: entry.end_date,
-        wage: `${formatNumber(Number(entry.wage).toFixed(0)).toString()} ریال`,
-      }));
+      const studentData: StudentWithDetails2[] = advisorDetailData.data.map(
+        (entry: AdvisorStudentData) => ({
+          ...entry.student,
+          status: entry.status, // Assuming you have a way to get the status, replace accordingly
+          started_date: entry.start_date
+            ? convertToShamsi(entry.start_date)
+            : "-",
+          ended_date: entry.end_date ? convertToShamsi(entry.end_date) : "-",
+          duration: entry.duration,
+          start_date: entry.start_date,
+          end_date: entry.end_date,
+          wage: `${formatNumber(
+            Number(entry.wage).toFixed(0)
+          ).toString()} ریال`,
+        })
+      );
       setProcessedStudentDataAccounting(studentData);
     }
   }, [advisorDetailData]);
@@ -176,22 +195,34 @@ const JustAdvisorDetail = () => {
       <JustAdvisorInfo advisorData={advisorData} userRole={7} />
       <Tabs defaultValue="studentTable" className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
-          <TabsTrigger value="studentTable" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+          <TabsTrigger
+            value="studentTable"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
             لیست دانش‌آموزان
           </TabsTrigger>
-          <TabsTrigger value="assessment" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+          <TabsTrigger
+            value="assessment"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
             نظرسنجی ها
           </TabsTrigger>
-          <TabsTrigger value="accountingAdvisor" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+          <TabsTrigger
+            value="accountingAdvisor"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
             حسابداری
           </TabsTrigger>
-          <TabsTrigger value="payHistory" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+          <TabsTrigger
+            value="payHistory"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
             دریافتی
           </TabsTrigger>
         </TabsList>
         <TabsContent value="studentTable">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-            <AdvisorDitailTable columns={JustAdvisorColumnDef} data={processedStudentData} />
+            {/* <AdvisorDitailTable columns={JustAdvisorColumnDef} data={processedStudentData} /> */}
           </div>
         </TabsContent>
         <TabsContent value="assessment">
@@ -201,12 +232,18 @@ const JustAdvisorDetail = () => {
         </TabsContent>
         <TabsContent value="accountingAdvisor">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-            <AllAdvisorDetailTable columns={accountStColumns} data={processedStudentDataAccounting} />
+            <AllAdvisorDetailTable
+              columns={accountStColumns}
+              data={processedStudentDataAccounting}
+            />
           </div>
         </TabsContent>
         <TabsContent value="payHistory">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-            <AdvisorPayHistoryTable columns={payHistoryColumns} data={processedPaymentHistory} />
+            <AdvisorPayHistoryTable
+              columns={payHistoryColumns}
+              data={processedPaymentHistory}
+            />
           </div>
         </TabsContent>
       </Tabs>
