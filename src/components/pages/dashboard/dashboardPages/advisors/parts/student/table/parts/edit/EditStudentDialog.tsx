@@ -61,7 +61,7 @@ export function EditStudentDialog() {
         grade: studentInfo.grade ? String(studentInfo.grade) : "",
         created: studentInfo.created,
         package_price: String(studentInfo.package_price),
-        advisor: "",
+        advisor: String(studentInfo.advisor_id),
       });
     }
   }, [studentInfo, form]);
@@ -81,10 +81,10 @@ export function EditStudentDialog() {
 
         await updateStudentInfo(modifiedData);
 
-        if (advisor) {
+        if (!studentInfo.advisor_name && !studentInfo.advisor_id) {
           await setAdvisorForStudent({
             studentId: studentInfo.id,
-            advisorId: advisor,
+            advisorId: advisor || "",
           });
         }
 

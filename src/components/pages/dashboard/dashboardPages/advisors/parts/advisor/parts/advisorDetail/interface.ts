@@ -28,7 +28,9 @@ export interface Student {
   solar_date_day: string | null;
   solar_date_month: string | null;
   solar_date_year: string | null;
-  package_price: number;
+  package_price: string;
+  advisor_id: string | null;
+  advisor_name: string | null;
 }
 
 export interface AdvisorDetailEntry {
@@ -45,9 +47,11 @@ export interface AdvisorDetailEntry {
 }
 
 export interface StudentWithDetails extends Student {
-  advisor: string;
   wholeId: string;
   status: string;
   started_date: string;
   ended_date: string | null;
+  advisor: string | null;
+  advisor_id: string | null;
+  advisor_name: string | null;
 }

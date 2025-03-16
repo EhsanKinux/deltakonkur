@@ -102,7 +102,13 @@ export const useStudentList = () => {
   );
 
   const setAdvisorForStudent = useCallback(
-    async ({ studentId, advisorId }: { studentId: string; advisorId: string }) => {
+    async ({
+      studentId,
+      advisorId,
+    }: {
+      studentId: string;
+      advisorId: string;
+    }) => {
       setLoading(true);
       setError(null);
       try {

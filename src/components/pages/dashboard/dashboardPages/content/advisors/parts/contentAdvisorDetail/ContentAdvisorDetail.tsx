@@ -1,17 +1,16 @@
-import { Button } from "@/components/ui/button";
-import { useParams, useSearchParams } from "react-router-dom";
 import backIcon from "@/assets/icons/back.svg";
-import { useContent } from "@/functions/hooks/content/useContent";
+import { Button } from "@/components/ui/button";
+import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
+import { IAdvisorContent } from "@/functions/hooks/content/interface";
+import { authStore } from "@/lib/store/authStore";
+import { convertToShamsi } from "@/lib/utils/date/convertDate";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import axios from "axios";
+import { debounce } from "lodash";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import { advisorDetailColumn } from "./parts/table/AdvisorDetailContentColDef";
 import { AdvisorDetailContentTable } from "./parts/table/AdvisorDetailContentTable";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import { debounce } from "lodash";
-import axios from "axios";
-import { authStore } from "@/lib/store/authStore";
-import { BASE_API_URL } from "@/lib/variables/variables";
-import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { IAdvisorContent } from "@/functions/hooks/content/interface";
 
 const ContentAdvisorDetail = () => {
   const { advisorId } = useParams();
