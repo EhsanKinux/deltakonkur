@@ -8,7 +8,14 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
 import { useEffect, useState } from "react";
@@ -19,9 +26,27 @@ import { PaymentHistoryRecord } from "@/functions/hooks/advisorsList/interface";
 interface AdvisorPayHistoryTableProps {
   columns: ColumnDef<PaymentHistoryRecord>[];
   data: PaymentHistoryRecord[];
+  isLoading: boolean;
 }
 
-export function AdvisorPayHistoryTable({ columns, data }: AdvisorPayHistoryTableProps) {
+// کامپوننت Skeleton برای نمایش در حالت لودینگ
+const SkeletonRow = ({ columnsCount }: { columnsCount: number }) => {
+  return (
+    <TableRow>
+      {Array.from({ length: columnsCount }).map((_, index) => (
+        <TableCell key={index} className="!text-center">
+          <div className="h-5 w-20 bg-gray-300 animate-pulse rounded-xl mx-auto"></div>
+        </TableCell>
+      ))}
+    </TableRow>
+  );
+};
+
+export function AdvisorPayHistoryTable({
+  columns,
+  data,
+  isLoading,
+}: AdvisorPayHistoryTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -67,7 +92,12 @@ export function AdvisorPayHistoryTable({ columns, data }: AdvisorPayHistoryTable
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id} className="!text-center">
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 );
               })}
@@ -75,16 +105,20 @@ export function AdvisorPayHistoryTable({ columns, data }: AdvisorPayHistoryTable
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {isLoading ? (
+            <>
+              {Array.from({ length: 10 }).map((_, index) => (
+                <SkeletonRow key={index} columnsCount={columns.length} />
+              ))}
+            </>
+          ) : table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
-                // className={`hover:bg-slate-200 border-b-slate-400`}
-                className={`hover:bg-slate-200 border-b-slate-400`}
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                className={`hover:bg-slate-200 border-b-slate-400`}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell className="!text-center" key={cell.id}>
+                  <TableCell key={cell.id} className="!text-center">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -92,8 +126,8 @@ export function AdvisorPayHistoryTable({ columns, data }: AdvisorPayHistoryTable
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                نتیجه ای یافت نشد...
+              <TableCell colSpan={columns.length} className="text-center">
+                نتیجه‌ای یافت نشد...
               </TableCell>
             </TableRow>
           )}
@@ -118,7 +152,8 @@ export function AdvisorPayHistoryTable({ columns, data }: AdvisorPayHistoryTable
           </Button>
         </div>
         <span className="text-slate-600 text-sm">
-          صفحه {table.getState().pagination.pageIndex + 1} از {table.getPageCount()}
+          صفحه {table.getState().pagination.pageIndex + 1} از{" "}
+          {table.getPageCount()}
         </span>
       </div>
     </div>

@@ -7,18 +7,20 @@ import axios from "axios";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { advisorAssessmentColumnDef } from "./advisorAssessmentColumnDef";
+import { useSearchParams } from "react-router-dom";
 
 const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
   const [totalPages, setTotalPages] = useState("");
   const [assessmentsById, setAssessmentsById] = useState<IStudentAssessment[]>(
     []
   );
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const getAssessmentsById = useCallback(async () => {
     if (!advisorId) return;
-
+    const page = searchParams.get("page") || 1;
     const { accessToken } = authStore.getState();
 
     if (abortControllerRef.current) {
@@ -33,6 +35,7 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
       const { data } = await axios.get(
         `${BASE_API_URL}api/register/advisor/assessments/${advisorId}/`,
         {
+          params: { page },
           signal,
           headers: {
             "Content-Type": "application/json",
@@ -59,7 +62,7 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
       }
     }
     setIsLoading(false);
-  }, [advisorId]);
+  }, [advisorId, searchParams]);
 
   const debouncedGetAssessmentsById = useCallback(
     debounce(getAssessmentsById, 50),
@@ -71,7 +74,13 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
     return () => {
       debouncedGetAssessmentsById.cancel();
     };
-  }, [advisorId]);
+  }, [advisorId, searchParams]);
+
+  useEffect(() => {
+    if (searchParams.get("page") == "0") {
+      setSearchParams({ tab: "assessment", page: "1" });
+    }
+  }, [searchParams]);
 
   return (
     <div className="flex flex-col w-full items-center pt-5">

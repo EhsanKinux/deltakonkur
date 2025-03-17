@@ -21,6 +21,8 @@ export interface AdvisorStudentData {
   duration: number;
   start_date: string;
   end_date: string;
+  started_date: string;
+  ended_date: string;
   wage: string;
   status: string;
 }

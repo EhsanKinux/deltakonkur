@@ -1,9 +1,8 @@
+import { StudentWithDetails2 } from "@/functions/hooks/advisorsList/interface";
 import { ColumnDef } from "@tanstack/react-table";
-import { StudentWithDetails } from "../../interface";
 // import StudentDialogButtons from "./DialogButtons";
 
-
-export const JustAdvisorColumnDef: ColumnDef<StudentWithDetails>[] = [
+export const JustAdvisorColumnDef: ColumnDef<StudentWithDetails2>[] = [
   {
     accessorKey: "first_name",
     header: "نام",
