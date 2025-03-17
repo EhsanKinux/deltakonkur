@@ -172,6 +172,12 @@ const SelectStudentAdvisor = ({
                 onChange={(selectedOption) => {
                   field.onChange(selectedOption?.value || "");
                 }}
+                onInputChange={(inputValue) => {
+                  setSearchQuery(inputValue);
+                }}
+                onBlur={() => {
+                  setSearchQuery("");
+                }}
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
