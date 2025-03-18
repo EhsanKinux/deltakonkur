@@ -23,6 +23,10 @@ import Name from "./parts/name/Name";
 import PlansType from "./parts/PlansType";
 import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
 import TellNumbers from "./parts/tel-numbers/TellNumbers";
+import axios from "axios";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import { authStore } from "@/lib/store/authStore";
+import { StudentWithDetails } from "../../../../advisor/parts/advisorDetail/interface";
 
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo, setAdvisorForStudent } =
@@ -68,6 +72,8 @@ export function EditStudentDialog() {
 
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
+  const { accessToken } = authStore.getState();
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const loadingToastId = toast.loading("در حال ثبت اطلاعات...");
     try {
@@ -81,11 +87,70 @@ export function EditStudentDialog() {
 
         await updateStudentInfo(modifiedData);
 
-        if (!studentInfo.advisor_name && !studentInfo.advisor_id) {
-          await setAdvisorForStudent({
-            studentId: studentInfo.id,
-            advisorId: advisor || "",
-          });
+        if (advisor) {
+          let isTheSameAdvisor = false;
+          if (studentInfo.advisor_name) {
+            const response = await axios
+              .get(
+                `${BASE_API_URL}api/register/student-advisors/student/${studentInfo.id}`,
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                  },
+                }
+              )
+              .catch((error) => {
+                console.error(
+                  "Error:",
+                  error.response ? error.response.data : error.message
+                );
+                throw error; // خطا را دوباره پرتاب کنید تا در catch بعدی مدیریت شود
+              });
+
+            if (response && response.data) {
+              const currentTime = new Date().toISOString();
+              const studentAdvisor = response.data.results?.find(
+                (item: StudentWithDetails) => item.status == "active"
+              );
+
+              const studentAdvisorId = studentAdvisor?.id;
+
+              if (studentInfo.advisor_id == advisor) {
+                isTheSameAdvisor = true;
+              } else {
+                await axios
+                  .post(
+                    `${BASE_API_URL}api/register/student-advisors/${studentAdvisorId}/cancel/`,
+                    {
+                      ended_date: currentTime,
+                    },
+                    {
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                      },
+                    }
+                  )
+                  .then((response) => {
+                    console.log("Response:", response.data);
+                  })
+                  .catch((error) => {
+                    console.error(
+                      "Error:",
+                      error.response ? error.response.data : error.message
+                    );
+                  });
+              }
+            }
+          }
+
+          if (!isTheSameAdvisor) {
+            await setAdvisorForStudent({
+              studentId: studentInfo.id,
+              advisorId: advisor || "",
+            });
+          }
         }
 
         toast.dismiss(loadingToastId);

@@ -155,9 +155,6 @@ const SelectStudentAdvisor = ({
             render={({ field }) => (
               <AsyncSelect
                 {...field}
-                isDisabled={
-                  student?.advisor_name && student?.advisor_id ? true : false
-                }
                 loadOptions={(inputValue, callback) =>
                   loadOptions(inputValue, callback)
                 }

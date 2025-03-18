@@ -23,6 +23,7 @@ import { toast } from "sonner";
 // import SelectStudentAdvisor from "../../../../../student/table/parts/edit/parts/selectAdvisor/SelectStudentAdvisor";
 import { StudentWithDetails } from "../../interface";
 import DateAndTime2 from "./parts/DateAndTime2";
+import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
 
 export function EditStudentDialog({
   formData,
@@ -107,6 +108,7 @@ export function EditStudentDialog({
         };
 
         console.table(modifiedData);
+        console.log(formData.status);
         if (formData.status === "active") {
           await changeAdvisorOfStudent(modifiedData);
         }
@@ -114,7 +116,9 @@ export function EditStudentDialog({
         dialogCloseRef.current?.click();
         // toast.dismiss(loadingToastId);
         toast.success("ویرایش اطلاعات دانش آموز با موفقیت انجام شد.");
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       }
     } catch (error) {
       // toast.dismiss(loadingToastId);
@@ -185,7 +189,7 @@ export function EditStudentDialog({
                 <FieldGrade form={form} />
                 <DateAndTime2 form={form} />
                 {/* <SelectStudentAdvisor form={form} memoizedAdvisors={advisors} /> */}
-                {/* <SelectStudentAdvisor form={form} student={formData} /> */}
+                <SelectStudentAdvisor form={form} student={formData} />
               </div>
               <DialogFooter>
                 <div className="flex justify-between items-center w-full pt-4">
