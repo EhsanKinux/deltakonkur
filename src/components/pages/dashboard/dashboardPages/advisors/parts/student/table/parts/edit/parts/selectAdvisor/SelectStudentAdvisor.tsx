@@ -9,6 +9,7 @@ import {
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { authStore } from "@/lib/store/authStore";
+import { BASE_API_URL } from "@/lib/variables/variables";
 
 type OptionType = {
   value: string;
@@ -59,7 +60,7 @@ const { accessToken } = authStore.getState();
 const fetchAdvisors = async (inputValue: string, page: number) => {
   try {
     const response = await axios.get<{ results: Advisor[] }>(
-      `http://127.0.0.1:8000/api/advisor/advisors/`,
+      `${BASE_API_URL}api/advisor/advisors/`,
       {
         params: {
           search: inputValue,
