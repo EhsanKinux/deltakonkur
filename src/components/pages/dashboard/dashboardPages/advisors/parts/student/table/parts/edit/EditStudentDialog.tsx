@@ -8,10 +8,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
+import { StudentWithDetails2 } from "@/functions/hooks/advisorsList/interface";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 import { editStudentFormSchema } from "@/lib/schema/Schema";
+import { authStore } from "@/lib/store/authStore";
+import { BASE_API_URL } from "@/lib/variables/variables";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -23,10 +27,6 @@ import Name from "./parts/name/Name";
 import PlansType from "./parts/PlansType";
 import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
 import TellNumbers from "./parts/tel-numbers/TellNumbers";
-import axios from "axios";
-import { BASE_API_URL } from "@/lib/variables/variables";
-import { authStore } from "@/lib/store/authStore";
-import { StudentWithDetails } from "../../../../advisor/parts/advisorDetail/interface";
 
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo, setAdvisorForStudent } =
@@ -87,40 +87,63 @@ export function EditStudentDialog() {
 
         await updateStudentInfo(modifiedData);
 
+        const fetchAllStudentAdvisors = async (
+          studentId: string,
+          accessToken: string | null
+        ) => {
+          let allAdvisors: StudentWithDetails2[] = [];
+          let nextUrl = `${BASE_API_URL}api/register/student-advisors/student/${studentId}`;
+
+          while (nextUrl) {
+            try {
+              const response = await axios.get(nextUrl, {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              });
+
+              if (response.data && response.data.results) {
+                allAdvisors = allAdvisors.concat(response.data.results);
+              }
+
+              nextUrl = response.data.next; // به روز رسانی URL برای صفحه بعدی
+            } catch (error: any) {
+              console.error(
+                "Error:",
+                error.response ? error.response.data : error.message
+              );
+              throw error; // خطا را دوباره پرتاب کنید تا در catch بعدی مدیریت شود
+            }
+          }
+
+          return allAdvisors;
+        };
+
+        // استفاده از تابع
         if (advisor) {
           let isTheSameAdvisor = false;
           if (studentInfo.advisor_name) {
-            const response = await axios
-              .get(
-                `${BASE_API_URL}api/register/student-advisors/student/${studentInfo.id}`,
-                {
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${accessToken}`,
-                  },
-                }
-              )
-              .catch((error) => {
-                console.error(
-                  "Error:",
-                  error.response ? error.response.data : error.message
-                );
-                throw error; // خطا را دوباره پرتاب کنید تا در catch بعدی مدیریت شود
-              });
-
-            if (response && response.data) {
-              const currentTime = new Date().toISOString();
-              const studentAdvisor = response.data.results?.find(
-                (item: StudentWithDetails) => item.status == "active"
+            try {
+              const allAdvisors = await fetchAllStudentAdvisors(
+                studentInfo.id,
+                accessToken
               );
 
-              const studentAdvisorId = studentAdvisor?.id;
+              if (allAdvisors.length > 0) {
+                const currentTime = new Date().toISOString();
+                const studentAdvisor = allAdvisors.find(
+                  (item) => item.status == "active"
+                );
 
-              if (studentInfo.advisor_id == advisor) {
-                isTheSameAdvisor = true;
-              } else {
-                await axios
-                  .post(
+                console.log(allAdvisors);
+
+                const studentAdvisorId = studentAdvisor?.id;
+
+                if (studentInfo.advisor_id == advisor) {
+                  isTheSameAdvisor = true;
+                } else {
+                  await axios.post(
                     `${BASE_API_URL}api/register/student-advisors/${studentAdvisorId}/cancel/`,
                     {
                       ended_date: currentTime,
@@ -131,17 +154,14 @@ export function EditStudentDialog() {
                         Authorization: `Bearer ${accessToken}`,
                       },
                     }
-                  )
-                  .then((response) => {
-                    console.log("Response:", response.data);
-                  })
-                  .catch((error) => {
-                    console.error(
-                      "Error:",
-                      error.response ? error.response.data : error.message
-                    );
-                  });
+                  );
+                }
               }
+            } catch (error: any) {
+              console.error(
+                "Error:",
+                error.response ? error.response.data : error.message
+              );
             }
           }
 
