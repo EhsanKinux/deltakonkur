@@ -127,6 +127,12 @@ const AllAccountingStudents = () => {
     getStudents();
   };
 
+  useEffect(() => {
+    if (!searchParams.get("tab")) {
+      setSearchParams({ tab: activeTab, page: "1" });
+    }
+  }, []);
+
   return (
     <section className="max-h-screen">
       {/* <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">تمام دانش‌آموزان</h1> */}
