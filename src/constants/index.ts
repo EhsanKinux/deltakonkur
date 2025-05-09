@@ -12,6 +12,7 @@ import sendMessageIcon from "@/assets/icons/sendmsg.svg";
 import followUpIcon from "@/assets/icons/followup.svg";
 import supervisionIcon from "@/assets/icons/box-search.svg";
 import examIcon from "@/assets/icons/note.svg";
+import financeIcon from "@/assets/icons/financeReport.svg";
 
 export const sidebarLinks = [
   {
@@ -70,6 +71,13 @@ export const sidebarLinks = [
         imgURL: studentIcon,
         route: "/dashboard/accounting/allStudents",
         label: "تمام دانش آموزان",
+        roles: [0, 3],
+      },
+      {
+        id: 33,
+        imgURL: financeIcon,
+        route: "/dashboard/accounting/monthlyFinancialSummary",
+        label: "حساب کتاب ماهیانه",
         roles: [0, 3],
       },
     ],
