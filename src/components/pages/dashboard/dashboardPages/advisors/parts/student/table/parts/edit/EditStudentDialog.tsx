@@ -27,6 +27,7 @@ import Name from "./parts/name/Name";
 import PlansType from "./parts/PlansType";
 import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
 import TellNumbers from "./parts/tel-numbers/TellNumbers";
+import SelectStudentSupervisor from "./parts/selectSupervisor/SelectSupervisor";
 
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo, setAdvisorForStudent } =
@@ -136,8 +137,6 @@ export function EditStudentDialog() {
                   (item) => item.status == "active"
                 );
 
-                console.log(allAdvisors);
-
                 const studentAdvisorId = studentAdvisor?.id;
 
                 if (studentInfo.advisor_id == advisor) {
@@ -215,8 +214,9 @@ export function EditStudentDialog() {
                 <div className="flex gap-5 flex-wrap">
                   <DateAndTime2 form={form} />
                 </div>
-                <SelectStudentAdvisor form={form} student={studentInfo} />{" "}
-                {/* حذف memoizedAdvisors */}
+                <SelectStudentAdvisor form={form} student={studentInfo} />
+                <SelectStudentSupervisor form={form} student={studentInfo} />
+
                 <PlansType
                   name="package_price"
                   control={form.control}
