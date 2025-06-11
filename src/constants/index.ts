@@ -13,6 +13,7 @@ import followUpIcon from "@/assets/icons/followup.svg";
 import supervisionIcon from "@/assets/icons/box-search.svg";
 import examIcon from "@/assets/icons/note.svg";
 import financeIcon from "@/assets/icons/financeReport.svg";
+import managementIcon from "@/assets/icons/managementIcon.svg";
 
 export const sidebarLinks = [
   {
@@ -79,6 +80,29 @@ export const sidebarLinks = [
         route: "/dashboard/accounting/monthlyFinancialSummary",
         label: "حساب کتاب ماهیانه",
         roles: [0, 3],
+      },
+    ],
+  },
+  {
+    id: 10,
+    imgURL: managementIcon,
+    route: "/dashboard/management",
+    label: "مدیریت",
+    roles: [0],
+    children: [
+      {
+        id: 101,
+        imgURL: usersIcon,
+        route: "/dashboard/management/users",
+        label: "کاربران",
+        roles: [0],
+      },
+      {
+        id: 102,
+        imgURL: financeIcon,
+        route: "/dashboard/management/reports",
+        label: "گزارش گیری",
+        roles: [0],
       },
     ],
   },

@@ -94,6 +94,14 @@ const AllAccountingStudents = lazy(
       "./components/pages/dashboard/dashboardPages/accounting/allStudents/AllAccountingStudents.tsx"
     )
 );
+
+const ManagementReports = lazy(
+  () =>
+    import(
+      "./components/pages/dashboard/dashboardPages/management/reports/ManagementReports.tsx"
+    )
+);
+
 const Canceling = lazy(
   () =>
     import(
@@ -337,6 +345,33 @@ const router = createBrowserRouter([
                   </Suspense>
                 }
                 requiredRole={[0, 3]}
+              />
+            ),
+          },
+
+          {
+            path: "management/reports",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <ManagementReports />
+                  </Suspense>
+                }
+                requiredRole={[0]}
+              />
+            ),
+          },
+          {
+            path: "management/users",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <MonthlyFinancialSummary />
+                  </Suspense>
+                }
+                requiredRole={[0]}
               />
             ),
           },
