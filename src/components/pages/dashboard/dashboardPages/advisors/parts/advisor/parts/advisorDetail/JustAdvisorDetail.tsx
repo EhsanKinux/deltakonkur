@@ -171,7 +171,6 @@ const JustAdvisorDetail = () => {
       setTotalPages(Math.ceil(data.count / 10).toString());
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.log("🔴 درخواست لغو شد");
       } else {
         console.error("خطا در دریافت اطلاعات دانشجویان مشاور:", error);
       }
@@ -215,7 +214,6 @@ const JustAdvisorDetail = () => {
       setTotalPages(Math.ceil(data.count / 10).toString());
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.log("🔴 درخواست لغو شد");
       } else {
         console.error("خطا در دریافت اطلاعات دانشجویان مشاور:", error);
       }

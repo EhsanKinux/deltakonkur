@@ -121,7 +121,6 @@ const SupervisionFollowUp = () => {
       setTotalPages(Number(data.count / 10).toFixed(0));
     } catch (err: unknown) {
       if (axios.isCancel(err)) {
-        console.log("🔴 درخواست لغو شد");
       } else {
         const error = err as AxiosError;
         setError("خطا در دریافت اطلاعات، لطفاً دوباره تلاش کنید.");

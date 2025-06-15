@@ -56,7 +56,6 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
       setTotalPages(Number(data.count / 10).toFixed(0));
     } catch (error: any) {
       if (axios.isCancel(error)) {
-        console.log("🔴 درخواست لغو شد");
       } else {
         console.error("خطا در دریافت اطلاعات نظرسنجی‌های مشاور:", error);
       }

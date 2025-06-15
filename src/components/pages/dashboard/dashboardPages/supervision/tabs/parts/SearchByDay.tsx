@@ -70,7 +70,6 @@ const SearchByDay = () => {
       setTotalPages(Number(data.count / 10).toFixed(0));
     } catch (error: unknown) {
       if (axios.isCancel(error)) {
-        console.log("🔴 درخواست لغو شد");
       } else {
         console.error("خطا در دریافت اطلاعات:", error);
       }
