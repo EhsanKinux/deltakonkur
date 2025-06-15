@@ -76,6 +76,9 @@ const RecentAssassments = ({
   return (
     <div className="flex flex-col w-full items-center pt-5">
       <h2>نظرسنجی های اخیر</h2>
+      <p className="text-xs text-slate-500">
+        (نکته: نظرسنجی‌های حاوی توضیحات با رنگ پس‌زمینه مشخص شده اند.)
+      </p>
       <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen w-full">
         <SupervisionAssessmentTable
           columns={stAssessmentColumnDef}

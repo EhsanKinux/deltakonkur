@@ -6,10 +6,10 @@ import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { advisorAssessmentColumnDef } from "./advisorAssessmentColumnDef";
+import { advisorAssessmentColumnDef } from "../../../advisors/parts/advisor/parts/advisorDetail/parts/assessments/advisorAssessmentColumnDef";
 import { useSearchParams } from "react-router-dom";
 
-const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
+const StudentSupervisorAssessment = () => {
   const [totalPages, setTotalPages] = useState("");
   const [assessmentsById, setAssessmentsById] = useState<IStudentAssessment[]>(
     []
@@ -19,7 +19,6 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const getAssessmentsById = useCallback(async () => {
-    if (!advisorId) return;
     const page = searchParams.get("page") || 1;
     const { accessToken } = authStore.getState();
 
@@ -33,7 +32,7 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
     try {
       setIsLoading(true);
       const { data } = await axios.get(
-        `${BASE_API_URL}api/supervisor/advisor/assessments/${advisorId}/`,
+        `${BASE_API_URL}api/supervisor/supervisor-assessments/`,
         {
           params: { page },
           signal,
@@ -61,7 +60,7 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
       }
     }
     setIsLoading(false);
-  }, [advisorId, searchParams]);
+  }, [searchParams]);
 
   const debouncedGetAssessmentsById = useCallback(
     debounce(getAssessmentsById, 50),
@@ -73,7 +72,7 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
     return () => {
       debouncedGetAssessmentsById.cancel();
     };
-  }, [advisorId, searchParams]);
+  }, [searchParams]);
 
   useEffect(() => {
     if (searchParams.get("page") == "0") {
@@ -99,4 +98,4 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
   );
 };
 
-export default AdvisorAssessment;
+export default StudentSupervisorAssessment;

@@ -77,9 +77,10 @@ export function SupervisionAssessmentTable({
   }, [isLoading]);
 
   const handleRowClick = (studentId: string, description: string) => {
-    navigate(`/dashboard/supervision/description/${studentId}`, {
-      state: { description },
-    });
+    if (description)
+      navigate(`/dashboard/supervision/description/${studentId}`, {
+        state: { description },
+      });
   };
 
   return (
@@ -110,7 +111,11 @@ export function SupervisionAssessmentTable({
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className="hover:bg-slate-200 hover:cursor-pointer"
+                className={`${
+                  row.original.description
+                    ? "hover:cursor-pointer bg-blue-200 hover:bg-slate-200 "
+                    : ""
+                }`}
                 onClick={() =>
                   handleRowClick(row.original.student, row.original.description)
                 }

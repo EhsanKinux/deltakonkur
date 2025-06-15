@@ -1,9 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import SearchByName from "./parts/SearchByName";
-import SearchByDay from "./parts/SearchByDay";
-import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
-import AdvisorAssessment from "../../advisors/parts/advisor/parts/advisorDetail/parts/assessments/AdvisorAssessment";
+import { useSearchParams } from "react-router-dom";
+import SearchByDay from "./parts/SearchByDay";
+import SearchByName from "./parts/SearchByName";
+import StudentSupervisorAssessment from "./parts/StudentSupervisorAssessments";
 
 const SupervisionSearchingTabs = () => {
   // Use search params to manage query string
@@ -56,7 +56,7 @@ const SupervisionSearchingTabs = () => {
           <SearchByName />
         </TabsContent>
         <TabsContent value="StudentSupervisorAssessments">
-          <AdvisorAssessment advisorId="91" />
+          <StudentSupervisorAssessment />
         </TabsContent>
       </Tabs>
     </>
