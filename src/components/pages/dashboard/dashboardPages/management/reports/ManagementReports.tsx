@@ -86,31 +86,50 @@ const managementReports = () => {
             </div>
             <span className="text-lg font-semibold">{role.name}</span>
 
-            <div className="flex flex-col gap-2 mt-2 w-36">
-              <Button
-                disabled={loading}
-                onClick={() =>
-                  handleFetchAndGenerate(
-                    getTestExelInfo,
-                    `${role.prefix}_Test_${getCurrentShamsiDate()}.xlsx`
-                  )
-                }
-                className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl"
-              >
-                گزارش‌گیری تستی
-              </Button>
-              <Button
-                disabled={loading}
-                onClick={() =>
-                  handleFetchAndGenerate(
-                    getExelInfo,
-                    `${role.prefix}_${getCurrentShamsiDate()}.xlsx`
-                  )
-                }
-                className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl"
-              >
-                گزارش‌گیری
-              </Button>
+            <div className="flex flex-col gap-2 mt-2 w-full">
+              {role.prefix !== "Consultant" ? (
+                <div className="flex flex-col w-full gap-2">
+                  <Button
+                    disabled
+                    className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl"
+                  >
+                    گزارش‌گیری تستی (به زودی)
+                  </Button>
+                  <Button
+                    disabled
+                    className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl"
+                  >
+                    گزارش‌گیری (به زودی)
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col w-full gap-2">
+                  <Button
+                    disabled={loading}
+                    onClick={() =>
+                      handleFetchAndGenerate(
+                        getTestExelInfo,
+                        `${role.prefix}_Test_${getCurrentShamsiDate()}.xlsx`
+                      )
+                    }
+                    className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl"
+                  >
+                    گزارش‌گیری تستی
+                  </Button>
+                  <Button
+                    disabled={loading}
+                    onClick={() =>
+                      handleFetchAndGenerate(
+                        getExelInfo,
+                        `${role.prefix}_${getCurrentShamsiDate()}.xlsx`
+                      )
+                    }
+                    className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl"
+                  >
+                    گزارش‌گیری
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         ))}

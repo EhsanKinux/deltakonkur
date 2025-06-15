@@ -106,6 +106,7 @@ const AllAccountingStudents = () => {
     } catch (error: unknown) {
       if (axios.isCancel(error)) {
       } else {
+        setStudents([]);
         console.error("خطا در دریافت اطلاعات مشاوران:", error);
       }
     }

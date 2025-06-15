@@ -141,13 +141,21 @@ export function AllStudentsDataTable<TData, TValue>({
           name="grade"
           id="grade_select"
         >
-          <option value="" disabled>
+          <option className="hover:cursor-pointer" value="" disabled>
             انتخاب مقطع تحصیلی
           </option>
-          <option value={10}>دهم</option>
-          <option value={11}>یازدهم</option>
-          <option value={12}>دوازدهم</option>
-          <option value={13}>فارغ التحصیل</option>
+          <option className="hover:cursor-pointer" value={10}>
+            دهم
+          </option>
+          <option className="hover:cursor-pointer" value={11}>
+            یازدهم
+          </option>
+          <option className="hover:cursor-pointer" value={12}>
+            دوازدهم
+          </option>
+          <option className="hover:cursor-pointer" value={13}>
+            فارغ التحصیل
+          </option>
         </select>
       </div>
       <Table className="!rounded-xl border">
