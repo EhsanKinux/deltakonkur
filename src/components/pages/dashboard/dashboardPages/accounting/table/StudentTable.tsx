@@ -52,6 +52,7 @@ export function StudentTable({
   const page = Number(queryParams.get("page")) || 1;
   const firstName = queryParams.get("first_name") || "";
   const lastName = queryParams.get("last_name") || "";
+  const grade = queryParams.get("grade") || "";
 
   const [isTableLoading, setIsTableLoading] = useState(false);
 
@@ -115,6 +116,23 @@ export function StudentTable({
             onChange={(e) => handleSearch("last_name", e.target.value)}
             className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
           />
+        </div>
+        <div className="relative flex items-center w-full text-14 rounded-[8px]">
+          <select
+            value={grade}
+            onChange={(e) => handleSearch("grade", e.target.value)}
+            className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 outline outline-1 outline-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer bg-transparent p-[0.4rem] border-l-8 border-l-transparent w-full"
+            name="grade"
+            id="grade_select"
+          >
+            <option value="" disabled>
+              انتخاب مقطع تحصیلی
+            </option>
+            <option value={10}>دهم</option>
+            <option value={11}>یازدهم</option>
+            <option value={12}>دوازدهم</option>
+            <option value={13}>فارغ التحصیل</option>
+          </select>
         </div>
       </div>
       <Table className="!rounded-xl border mt-5">

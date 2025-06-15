@@ -36,6 +36,7 @@ const AllAccountingStudents = () => {
     const page = searchParams.get("page") || 1;
     const firstName = searchParams.get("first_name") || "";
     const lastName = searchParams.get("last_name") || "";
+    const grade = searchParams.get("grade") || "";
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -54,6 +55,7 @@ const AllAccountingStudents = () => {
             page,
             first_name: firstName,
             last_name: lastName,
+            student_grade: grade,
           },
           signal,
           headers: {
