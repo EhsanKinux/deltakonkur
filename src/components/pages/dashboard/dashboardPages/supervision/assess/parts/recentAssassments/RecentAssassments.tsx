@@ -36,7 +36,7 @@ const RecentAssassments = ({
     try {
       setIsLoading(true);
       const { data } = await axios.get(
-        `${BASE_API_URL}api/register/assessment/`,
+        `${BASE_API_URL}api/supervisor/assessment/`,
         {
           params: {
             student_id: studentId,

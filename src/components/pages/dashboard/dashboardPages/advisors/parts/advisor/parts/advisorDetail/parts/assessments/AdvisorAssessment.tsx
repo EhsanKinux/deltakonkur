@@ -33,7 +33,7 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
     try {
       setIsLoading(true);
       const { data } = await axios.get(
-        `${BASE_API_URL}api/register/advisor/assessments/${advisorId}/`,
+        `${BASE_API_URL}api/supervisor/advisor/assessments/${advisorId}/`,
         {
           params: { page },
           signal,

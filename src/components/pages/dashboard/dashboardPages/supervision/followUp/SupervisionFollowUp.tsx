@@ -63,7 +63,7 @@ const SupervisionFollowUp = () => {
       setError("");
 
       const { data } = await axios.get(
-        `${BASE_API_URL}api/register/followups/not-completed/list/`,
+        `${BASE_API_URL}api/supervisor/followups/not-completed/list/`,
         {
           params: {
             page,

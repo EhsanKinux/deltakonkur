@@ -3,6 +3,7 @@ import SearchByName from "./parts/SearchByName";
 import SearchByDay from "./parts/SearchByDay";
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
+import AdvisorAssessment from "../../advisors/parts/advisor/parts/advisorDetail/parts/assessments/AdvisorAssessment";
 
 const SupervisionSearchingTabs = () => {
   // Use search params to manage query string
@@ -24,14 +25,28 @@ const SupervisionSearchingTabs = () => {
 
   return (
     <>
-      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl mb-4">نظارت</h1>
+      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl mb-4">
+        نظارت
+      </h1>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
-          <TabsTrigger value="SearchByDay" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+          <TabsTrigger
+            value="SearchByDay"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
             جستجو براساس روز
           </TabsTrigger>
-          <TabsTrigger value="SearchByName" className="data-[state=active]:bg-slate-50 !rounded-xl pt-2">
+          <TabsTrigger
+            value="SearchByName"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
             جستجو براساس نام
+          </TabsTrigger>
+          <TabsTrigger
+            value="StudentSupervisorAssessments"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
+            لیست ارزیابی‌های دانش آموزان
           </TabsTrigger>
         </TabsList>
         <TabsContent value="SearchByDay">
@@ -39,6 +54,9 @@ const SupervisionSearchingTabs = () => {
         </TabsContent>
         <TabsContent value="SearchByName">
           <SearchByName />
+        </TabsContent>
+        <TabsContent value="StudentSupervisorAssessments">
+          <AdvisorAssessment advisorId="91" />
         </TabsContent>
       </Tabs>
     </>

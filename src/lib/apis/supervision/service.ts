@@ -37,13 +37,13 @@ export const get_students_by_day = ({
   });
 
 export const post_student_assassment = (body: IPostStudentAssessment) =>
-  fetchInstance(`api/register/assessment/`, {
+  fetchInstance(`api/supervisor/assessment/`, {
     method: "POST",
     body: JSON.stringify(body),
   });
 
 export const get_students_assassments = () =>
-  fetchInstance(`api/register/assessment/`, { method: "GET" });
+  fetchInstance(`api/supervisor/assessment/`, { method: "GET" });
 
 export const get_assessment_by_advisorId = (advisorId: string) =>
   fetchInstance(`api/supervisor/advisor/assessments/${advisorId}/`, {
@@ -51,13 +51,13 @@ export const get_assessment_by_advisorId = (advisorId: string) =>
   });
 
 export const student_call_answering = (body: StudentCallAnsweringBody) =>
-  fetchInstance(`api/register/followups/${body.id}/`, {
+  fetchInstance(`api/supervisor/followups/${body.id}/`, {
     method: "PATCH",
     body: JSON.stringify(body),
   });
 
 export const student_call_answering2 = (body: StudentCallAnsweringBody2) =>
-  fetchInstance(`api/register/followups/`, {
+  fetchInstance(`api/supervisor/followups/`, {
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -68,12 +68,12 @@ export const get_not_completed_followup_students = () =>
   });
 
 export const send_notification = (token: string) =>
-  fetchInstance(`api/register/followups/sendnotif/${token}/`, {
+  fetchInstance(`api/supervisor/followups/sendnotif/${token}/`, {
     method: "GET",
   });
 
 export const followup_complete = (token: string, body: any) =>
-  fetchInstance(`api/register/followups/complete/${token}/`, {
+  fetchInstance(`api/supervisor/followups/complete/${token}/`, {
     method: "POST",
     body: JSON.stringify(body),
   });
