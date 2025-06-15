@@ -90,7 +90,7 @@ export function UsersTable({
       (e.target as HTMLElement).tagName.toLowerCase() !== "button" &&
       (e.target as HTMLElement).tagName.toLowerCase() !== "input"
     ) {
-      navigate(`/dashboard/users/detail/${userId}`);
+      navigate(`/dashboard/management/users/detail/${userId}`);
     }
   };
 

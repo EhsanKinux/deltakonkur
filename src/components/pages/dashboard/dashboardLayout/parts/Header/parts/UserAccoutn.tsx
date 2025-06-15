@@ -9,7 +9,7 @@ import {
 import exitIcon from "@/assets/icons/exit.svg";
 import profileIcon from "@/assets/icons/profile.svg";
 import downIcon from "@/assets/icons/down.svg";
-import { IUserDetail } from "@/components/pages/dashboard/dashboardPages/users/userDetail/interface";
+import { IUserDetail } from "@/components/pages/dashboard/dashboardPages/management/users/userDetail/interface";
 // import { getRoleName } from "@/lib/utils/roles/Roles";
 import { useNavigate } from "react-router-dom";
 import { authStore } from "@/lib/store/authStore";
@@ -43,7 +43,12 @@ const UserAccoutn = ({ user }: { user: IUserDetail | undefined }) => {
             {/* <span className="text-black text-sm font-light">{roleName}</span> */}
           </div>
 
-          <Avvvatars value={user ? `${user.first_name} ${user.last_name}` : "?"} style="shape" size={45} border />
+          <Avvvatars
+            value={user ? `${user.first_name} ${user.last_name}` : "?"}
+            style="shape"
+            size={45}
+            border
+          />
           <img src={downIcon} alt="icon" />
         </div>
       </DropdownMenuTrigger>

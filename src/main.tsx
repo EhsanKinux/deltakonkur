@@ -57,13 +57,13 @@ const AccountingAdvisorDetail = lazy(
 const UserDetails = lazy(
   () =>
     import(
-      "./components/pages/dashboard/dashboardPages/users/userDetail/UserDetails.tsx"
+      "./components/pages/dashboard/dashboardPages/management/users/userDetail/UserDetails.tsx"
     )
 );
 const RegisterUser = lazy(
   () =>
     import(
-      "./components/pages/dashboard/dashboardPages/users/registerUser/RegisterUser.tsx"
+      "./components/pages/dashboard/dashboardPages/management/users/registerUser/RegisterUser.tsx"
     )
 );
 const SupervisionSearchingTabs = lazy(
@@ -144,7 +144,9 @@ const Reserve = lazy(
 );
 const Users = lazy(
   () =>
-    import("./components/pages/dashboard/dashboardPages/users/users/Users.tsx")
+    import(
+      "./components/pages/dashboard/dashboardPages/management/users/users/Users.tsx"
+    )
 );
 const Dashboard = lazy(
   () => import("./components/pages/dashboard/dashboard/Dashboard.tsx")
@@ -368,7 +370,33 @@ const router = createBrowserRouter([
               <ProtectedRoute
                 element={
                   <Suspense fallback={<Loading />}>
-                    <MonthlyFinancialSummary />
+                    <Users />
+                  </Suspense>
+                }
+                requiredRole={[0]}
+              />
+            ),
+          },
+          {
+            path: "management/users/register",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <RegisterUser />
+                  </Suspense>
+                }
+                requiredRole={[0]}
+              />
+            ),
+          },
+          {
+            path: "management/users/detail/:userId",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <UserDetails />
                   </Suspense>
                 }
                 requiredRole={[0]}
@@ -479,45 +507,45 @@ const router = createBrowserRouter([
               />
             ),
           },
-          {
-            path: "users",
-            element: (
-              <ProtectedRoute
-                element={
-                  <Suspense fallback={<Loading />}>
-                    <Users />
-                  </Suspense>
-                }
-                requiredRole={[0]}
-              />
-            ),
-          },
-          {
-            path: "users/register",
-            element: (
-              <ProtectedRoute
-                element={
-                  <Suspense fallback={<Loading />}>
-                    <RegisterUser />
-                  </Suspense>
-                }
-                requiredRole={[0]}
-              />
-            ),
-          },
-          {
-            path: "users/detail/:userId",
-            element: (
-              <ProtectedRoute
-                element={
-                  <Suspense fallback={<Loading />}>
-                    <UserDetails />
-                  </Suspense>
-                }
-                requiredRole={[0]}
-              />
-            ),
-          },
+          // {
+          //   path: "users",
+          //   element: (
+          //     <ProtectedRoute
+          //       element={
+          //         <Suspense fallback={<Loading />}>
+          //           <Users />
+          //         </Suspense>
+          //       }
+          //       requiredRole={[0]}
+          //     />
+          //   ),
+          // },
+          // {
+          //   path: "users/register",
+          //   element: (
+          //     <ProtectedRoute
+          //       element={
+          //         <Suspense fallback={<Loading />}>
+          //           <RegisterUser />
+          //         </Suspense>
+          //       }
+          //       requiredRole={[0]}
+          //     />
+          //   ),
+          // },
+          // {
+          //   path: "users/detail/:userId",
+          //   element: (
+          //     <ProtectedRoute
+          //       element={
+          //         <Suspense fallback={<Loading />}>
+          //           <UserDetails />
+          //         </Suspense>
+          //       }
+          //       requiredRole={[0]}
+          //     />
+          //   ),
+          // },
           {
             path: "exam",
             element: (

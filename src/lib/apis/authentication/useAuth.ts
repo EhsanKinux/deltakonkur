@@ -1,4 +1,4 @@
-import { IUserDetail } from "@/components/pages/dashboard/dashboardPages/users/userDetail/interface";
+import { IUserDetail } from "@/components/pages/dashboard/dashboardPages/management/users/userDetail/interface";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
 // import axios from "axios";
@@ -20,7 +20,7 @@ export const useAuth = () => {
       });
       //   console.log("API response:", response.data);
       const userData: IUserDetail = response.data;
-    //   console.log("userData:", userData);
+      //   console.log("userData:", userData);
       return userData;
     } catch (error) {
       console.error("Error fetching user data:", error);

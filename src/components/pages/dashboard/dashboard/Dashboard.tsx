@@ -2,7 +2,7 @@ import profileCover from "@/assets/images/cover-01.png";
 import { useAuth } from "@/lib/apis/authentication/useAuth";
 import { authStore } from "@/lib/store/authStore";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { IUserDetail } from "../dashboardPages/users/userDetail/interface";
+import { IUserDetail } from "../dashboardPages/management/users/userDetail/interface";
 // import { getRoleName } from "@/lib/utils/roles/Roles";
 import { useProfile } from "@/functions/hooks/profile/useProfile";
 import { BASE_API_URL } from "@/lib/variables/variables";

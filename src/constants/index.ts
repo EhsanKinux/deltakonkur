@@ -92,13 +92,20 @@ export const sidebarLinks = [
     children: [
       {
         id: 101,
-        imgURL: usersIcon,
-        route: "/dashboard/management/users",
-        label: "کاربران",
+        imgURL: addSquareIcon,
+        route: "/dashboard/management/users/register",
+        label: "افزودن کاربر جدید",
         roles: [0],
       },
       {
         id: 102,
+        imgURL: usersIcon,
+        route: "/dashboard/management/users",
+        label: "لیست کاربران",
+        roles: [0],
+      },
+      {
+        id: 103,
         imgURL: financeIcon,
         route: "/dashboard/management/reports",
         label: "گزارش گیری",
@@ -161,36 +168,13 @@ export const sidebarLinks = [
   },
   {
     id: 7,
-    imgURL: usersIcon,
-    route: "/dashboard/users",
-    label: "کاربران",
-    roles: [0],
-    children: [
-      {
-        id: 71,
-        imgURL: addSquareIcon,
-        route: "/dashboard/users/register",
-        label: "ثبت کاربر جدید",
-        roles: [0],
-      },
-      {
-        id: 72,
-        imgURL: usersIcon,
-        route: "/dashboard/users",
-        label: "کاربران",
-        roles: [0],
-      },
-    ],
-  },
-  {
-    id: 8,
     imgURL: advisorsListIcon,
     route: "/dashboard/advisors/justAdvisor",
     label: "مشاور",
     roles: [7],
   },
   {
-    id: 9,
+    id: 8,
     imgURL: examIcon,
     route: "/dashboard/exam",
     label: "آزمون",

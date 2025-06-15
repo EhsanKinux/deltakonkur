@@ -3,7 +3,7 @@ import MobileNav from "./parts/Mobile/MobileNav";
 import UserAccoutn from "./parts/UserAccoutn";
 import { useAuth } from "@/lib/apis/authentication/useAuth";
 import { useEffect, useState } from "react";
-import { IUserDetail } from "../../../dashboardPages/users/userDetail/interface";
+import { IUserDetail } from "../../../dashboardPages/management/users/userDetail/interface";
 
 export default function DHeader() {
   const { userRoles } = authStore();
