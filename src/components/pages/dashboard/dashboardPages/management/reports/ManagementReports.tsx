@@ -72,19 +72,19 @@ const managementReports = () => {
 
   return (
     <div>
-      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">
+      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl mx-auto mt-5">
         گزارش گیری
       </h1>
-      <div className="flex flex-col items-center justify-center lg:flex-row xl:items-start gap-8 p-8 mt-6 shadow-sidebar bg-slate-100 rounded-xl h-full">
+      <div className="flex flex-col items-center justify-center lg:flex-row lg:items-start lg:justify-evenly gap-8 p-8 rounded-xl h-full">
         {roles.map((role) => (
           <div
             key={role.name}
-            className="flex flex-col items-center gap-4 border  p-5 rounded-xl"
+            className="flex flex-col items-center gap-4 p-5 rounded-xl bg-slate-100 flex-1 w-full"
           >
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-2  border rounded-full p-5 border-primary aspect-square">
               {role.icon}
-              <span className="text-lg font-semibold">{role.name}</span>
             </div>
+            <span className="text-lg font-semibold">{role.name}</span>
 
             <div className="flex flex-col gap-2 mt-2 w-36">
               <Button
@@ -97,7 +97,7 @@ const managementReports = () => {
                 }
                 className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl"
               >
-                گزارشگیری تستی
+                گزارش‌گیری تستی
               </Button>
               <Button
                 disabled={loading}
@@ -109,7 +109,7 @@ const managementReports = () => {
                 }
                 className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl"
               >
-                گزارشگیری
+                گزارش‌گیری
               </Button>
             </div>
           </div>
