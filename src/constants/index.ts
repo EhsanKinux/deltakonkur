@@ -74,13 +74,13 @@ export const sidebarLinks = [
         label: "تمام دانش آموزان",
         roles: [0, 3],
       },
-      {
-        id: 33,
-        imgURL: financeIcon,
-        route: "/dashboard/accounting/monthlyFinancialSummary",
-        label: "حساب کتاب ماهیانه",
-        roles: [0, 3],
-      },
+      // {
+      //   id: 33,
+      //   imgURL: financeIcon,
+      //   route: "/dashboard/accounting/monthlyFinancialSummary",
+      //   label: "حساب کتاب ماهیانه",
+      //   roles: [0, 3],
+      // },
     ],
   },
   {

@@ -28,6 +28,7 @@ type FormValues = {
   grade: string;
   created: string;
   package_price: string;
+  supervisor: string;
   advisor: string;
 };
 

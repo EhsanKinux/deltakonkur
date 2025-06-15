@@ -31,6 +31,9 @@ export type FormData = {
   advisor: string | null;
   advisor_id: string | null;
   advisor_name: string | null;
+  supervisor: string | null;
+  supervisor_id: string | null;
+  supervisor_name: string | null;
 };
 
 export type IadvisorStudent = {

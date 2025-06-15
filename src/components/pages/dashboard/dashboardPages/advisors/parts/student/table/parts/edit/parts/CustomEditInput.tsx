@@ -1,4 +1,9 @@
-import { FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Control } from "react-hook-form";
 
@@ -21,12 +26,22 @@ const CustomEditInput = ({
       field: string;
       grade: string;
       created: string;
-      advisor:string;
+      advisor: string;
+      supervisor: string;
       package_price: string;
     },
     undefined
   >;
-  name: "first_name" | "last_name" | "school" | "phone_number" | "home_phone" | "parent_phone" | "field" | "grade" | "package_price";
+  name:
+    | "first_name"
+    | "last_name"
+    | "school"
+    | "phone_number"
+    | "home_phone"
+    | "parent_phone"
+    | "field"
+    | "grade"
+    | "package_price";
   label: string;
   customclass?: string;
 }) => {
@@ -35,8 +50,12 @@ const CustomEditInput = ({
       control={control}
       name={name}
       render={({ field }) => (
-        <div className={`flex justify-center flex-col w-full gap-2 ${customclass}`}>
-          <FormLabel className="pt-2 font-bold text-slate-500">{label}</FormLabel>
+        <div
+          className={`flex justify-center flex-col w-full gap-2 ${customclass}`}
+        >
+          <FormLabel className="pt-2 font-bold text-slate-500">
+            {label}
+          </FormLabel>
           <FormControl className="">
             <Input
               // disabled

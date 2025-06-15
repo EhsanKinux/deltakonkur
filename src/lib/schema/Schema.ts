@@ -41,22 +41,37 @@ export const studentAssessment = () =>
     plan_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
     report_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
     phone_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
-    advisor_behaviour_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
-    followup_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
-    motivation_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
+    advisor_behaviour_score: z
+      .string()
+      .min(1, { message: "این فیلد نمیتواند خالی باشد" }),
+    followup_score: z
+      .string()
+      .min(1, { message: "این فیلد نمیتواند خالی باشد" }),
+    motivation_score: z
+      .string()
+      .min(1, { message: "این فیلد نمیتواند خالی باشد" }),
     exam_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
-    advisor_score: z.string().min(1, { message: "این فیلد نمیتواند خالی باشد" }),
-    description: z.string().max(4092, { message: "حداکثر تعداد کاراکتر برای توضیحات 4092 است!" }).optional(),
+    advisor_score: z
+      .string()
+      .min(1, { message: "این فیلد نمیتواند خالی باشد" }),
+    description: z
+      .string()
+      .max(4092, { message: "حداکثر تعداد کاراکتر برای توضیحات 4092 است!" })
+      .optional(),
   });
 
 export const editAdvisorFormSchema = () =>
   z.object({
     id: z.string(),
     first_name: z.string().min(1, { message: "نام مشاور را تعیین کنید" }),
-    last_name: z.string().min(1, { message: "نام خانوادگی مشاور را تعیین کنید" }),
+    last_name: z
+      .string()
+      .min(1, { message: "نام خانوادگی مشاور را تعیین کنید" }),
     phone_number: z.string(),
     field: z.string().min(1, { message: "رشته مشاور را تعیین کنید" }),
-    bank_account: z.string().min(1, { message: "شماره حساب مشاور را تعیین کنید" }),
+    bank_account: z
+      .string()
+      .min(1, { message: "شماره حساب مشاور را تعیین کنید" }),
     national_id: z.string(),
     level: z.string().min(1, { message: "سطح مشاور را تعیین کنید" }),
   });
@@ -65,15 +80,24 @@ export const editStudentFormSchema = () =>
   z.object({
     id: z.string(),
     first_name: z.string().min(1, { message: "نام دانش آموز را تعیین کنید!" }),
-    last_name: z.string().min(1, { message: "نام خانوادگی دانش آموز را تعیین کنید!" }),
+    last_name: z
+      .string()
+      .min(1, { message: "نام خانوادگی دانش آموز را تعیین کنید!" }),
     school: z.string(),
     phone_number: z.string(),
     home_phone: z.string(),
     parent_phone: z.string(),
-    field: z.string().min(1, { message: "رشته تحصیلی دانش آموز را تعیین کنید!" }),
-    grade: z.string().min(1, { message: "مقطع تحصیلی دانش آموز را تعیین کنید!" }),
-    created: z.string().min(1, { message: "تاریخ ثبت دانش آموز را تعیین کنید!" }),
+    field: z
+      .string()
+      .min(1, { message: "رشته تحصیلی دانش آموز را تعیین کنید!" }),
+    grade: z
+      .string()
+      .min(1, { message: "مقطع تحصیلی دانش آموز را تعیین کنید!" }),
+    created: z
+      .string()
+      .min(1, { message: "تاریخ ثبت دانش آموز را تعیین کنید!" }),
     advisor: z.string().optional(),
+    supervisor: z.string().optional(),
     // date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
     package_price: z.string().min(1, { message: "هزینه ی بسته را تعیین کنید" }),
   });
@@ -82,14 +106,22 @@ export const editStudentFormSchemaInAdvisor = () =>
   z.object({
     // id: z.string(),
     first_name: z.string().min(1, { message: "نام دانش آموز را تعیین کنید!" }),
-    last_name: z.string().min(1, { message: "نام خانوادگی دانش آموز را تعیین کنید!" }),
+    last_name: z
+      .string()
+      .min(1, { message: "نام خانوادگی دانش آموز را تعیین کنید!" }),
     school: z.string(),
     phone_number: z.string(),
     home_phone: z.string(),
     parent_phone: z.string(),
-    field: z.string().min(1, { message: "رشته تحصیلی دانش آموز را تعیین کنید!" }),
-    grade: z.string().min(1, { message: "مقطع تحصیلی دانش آموز را تعیین کنید!" }),
-    created: z.string().min(1, { message: "تاریخ ثبت دانش آموز را تعیین کنید!" }),
+    field: z
+      .string()
+      .min(1, { message: "رشته تحصیلی دانش آموز را تعیین کنید!" }),
+    grade: z
+      .string()
+      .min(1, { message: "مقطع تحصیلی دانش آموز را تعیین کنید!" }),
+    created: z
+      .string()
+      .min(1, { message: "تاریخ ثبت دانش آموز را تعیین کنید!" }),
     advisor: z.string().optional(),
     date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
   });
@@ -147,7 +179,10 @@ export const registerAdvisorFormSchema = () =>
       .string()
       .min(8, { message: "شماره نا معتبر است" })
       .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
-    national_id: z.string().min(1, { message: "کد نا معتبر است" }).max(10, { message: "کد ورودی بیش از حد مجاز است" }),
+    national_id: z
+      .string()
+      .min(1, { message: "کد نا معتبر است" })
+      .max(10, { message: "کد ورودی بیش از حد مجاز است" }),
     bank_account: z.string(),
     level: z.string().min(1, { message: "سطح مشاور را انتخاب کنید" }),
   });

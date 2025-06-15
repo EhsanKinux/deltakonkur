@@ -49,6 +49,7 @@ export function EditStudentDialog() {
       created: "",
       package_price: "",
       advisor: "",
+      supervisor: "",
     },
   });
 
@@ -67,9 +68,12 @@ export function EditStudentDialog() {
         created: studentInfo.created,
         package_price: String(studentInfo.package_price),
         advisor: String(studentInfo.advisor_id),
+        supervisor: String(studentInfo?.supervisor_id || ""),
       });
     }
   }, [studentInfo, form]);
+
+  // console.log(form)
 
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
@@ -79,14 +83,41 @@ export function EditStudentDialog() {
     const loadingToastId = toast.loading("در حال ثبت اطلاعات...");
     try {
       if (data && studentInfo) {
-        const { advisor, ...restData } = data;
+        const { advisor, supervisor, ...restData } = data;
         const modifiedData: ISubmitStudentRegisterService = {
           ...restData,
           id: String(studentInfo.id),
           created: String(data.created),
         };
-
         await updateStudentInfo(modifiedData);
+
+        if (supervisor) {
+          try {
+            const currentTime = new Date().toISOString();
+
+            await axios.post(
+              `${BASE_API_URL}api/supervisor/student/`,
+              {
+                ended_at: currentTime,
+                id: 0,
+                student_id: studentInfo.id,
+                current_supervisor: 0,
+                new_supervisor: supervisor || "",
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }
+            );
+          } catch (error: any) {
+            console.error(
+              "Error:",
+              error.response ? error.response.data : error.message
+            );
+          }
+        }
 
         const fetchAllStudentAdvisors = async (
           studentId: string,
@@ -127,7 +158,7 @@ export function EditStudentDialog() {
           if (studentInfo.advisor_name) {
             try {
               const allAdvisors = await fetchAllStudentAdvisors(
-                studentInfo.id,
+                studentInfo?.id,
                 accessToken
               );
 

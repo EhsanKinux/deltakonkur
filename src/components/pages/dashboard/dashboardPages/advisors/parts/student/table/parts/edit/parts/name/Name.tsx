@@ -18,6 +18,7 @@ const Name = ({
       grade: string;
       created: string;
       advisor: string;
+      supervisor: string;
       package_price: string;
     },
     undefined

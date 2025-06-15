@@ -4,20 +4,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import Down from "./form/down/Down";
 import TopLeft from "./form/topleft/TopLeft";
 import TopRight from "./form/topright/TopRight";
-import { Button } from "@/components/ui/button";
 
 import { submit_student_register_service } from "@/lib/apis/reserve/service";
-// import { v4 as uuidv4 } from "uuid";
 
-import studentPic from "@/assets/icons/education.svg";
+import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-// import BirthDate from "./form/topright/BirthDate";
-import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import PlansType from "./form/down/PlansType";
 
 interface CustomError extends Error {
@@ -96,7 +93,9 @@ const Reserve = () => {
           const { data } = customError.response;
           if (
             data.non_field_errors &&
-            data.non_field_errors.includes("The fields first_name, last_name, phone_number must make a unique set.")
+            data.non_field_errors.includes(
+              "The fields first_name, last_name, phone_number must make a unique set."
+            )
           ) {
             errorMessage = "این دانش آموز با این نام و شماره موجود است";
           }
@@ -125,15 +124,11 @@ const Reserve = () => {
 
   return (
     <section className="flex flex-col items-center justify-center bg-slate-100 rounded-xl shadow-form px-5 py-10 xl:p-5">
-      {/* <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">ثبت نام</h1> */}
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <div className="flex flex-col justify-between items-center gap-3 py-10 ">
             <div className="flex flex-col xl:flex-row w-full gap-2 xl:gap-10">
               <div className="w-full xl:w-1/2 flex gap-2 justify-center">
-                {/* pic */}
-                <img src={studentPic} className="w-1/2" />
                 <h1 className="text-4xl">ثبت نام</h1>
               </div>
 
@@ -157,9 +152,16 @@ const Reserve = () => {
                 <div className="flex h-full flex-col gap-5 items-center justify-center bg-slate-200 rounded-xl py-5 px-10">
                   <h2 className="text-2xl">اطلاعات تحصیلی</h2>
                   <Down form={form} />
-                  <PlansType name="package_price" control={form.control} label="هزینه ی بسته" />
+                  <PlansType
+                    name="package_price"
+                    control={form.control}
+                    label="هزینه ی بسته"
+                  />
                 </div>
-                <Button type="submit" className="form-btn w-full hover:bg-blue-800">
+                <Button
+                  type="submit"
+                  className="form-btn w-full hover:bg-blue-800"
+                >
                   {isloading ? (
                     <>
                       <Loader2 size={20} className="animate-spin" />

@@ -16,8 +16,9 @@ const TellNumbers = ({
       parent_phone: string;
       field: string;
       grade: string;
-      created:string;
-      advisor:string;
+      created: string;
+      advisor: string;
+      supervisor: string;
       package_price: string;
     },
     undefined
@@ -25,9 +26,24 @@ const TellNumbers = ({
 }) => {
   return (
     <>
-      <CustomEditInput control={form.control} name="phone_number" label="شماره همراه" customclass="w-[90%]" />
-      <CustomEditInput control={form.control} name="parent_phone" label="شماره همراه والدین" customclass="w-[90%]" />
-      <CustomEditInput control={form.control} name="phone_number" label="شماره تلفن منزل" customclass="w-[90%]" />
+      <CustomEditInput
+        control={form.control}
+        name="phone_number"
+        label="شماره همراه"
+        customclass="w-[90%]"
+      />
+      <CustomEditInput
+        control={form.control}
+        name="parent_phone"
+        label="شماره همراه والدین"
+        customclass="w-[90%]"
+      />
+      <CustomEditInput
+        control={form.control}
+        name="phone_number"
+        label="شماره تلفن منزل"
+        customclass="w-[90%]"
+      />
     </>
   );
 };

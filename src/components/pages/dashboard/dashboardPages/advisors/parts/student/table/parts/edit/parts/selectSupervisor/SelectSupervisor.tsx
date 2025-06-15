@@ -28,6 +28,7 @@ type FormValues = {
   grade: string;
   created: string;
   package_price: string;
+  advisor: string;
   supervisor: string;
 };
 
@@ -44,6 +45,9 @@ type FormData = {
   grade: string;
   created?: string;
   package_price?: string;
+  advisor: string | null;
+  advisor_id: string | null;
+  advisor_name: string | null;
   supervisor: string | null;
   supervisor_id: string | null;
   supervisor_name: string | null;
@@ -53,6 +57,12 @@ interface supervisor {
   id: number;
   first_name: string;
   last_name: string;
+  user: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+  };
 }
 
 const { accessToken } = authStore.getState();
@@ -60,10 +70,10 @@ const { accessToken } = authStore.getState();
 const fetchSupervisors = async (inputValue: string, page: number) => {
   try {
     const response = await axios.get<{ results: supervisor[] }>(
-      `${BASE_API_URL}api/supervisor/student/`,
+      `${BASE_API_URL}api/supervisor/profile/`,
       {
         params: {
-          search: inputValue,
+          supervisor: inputValue,
           page: page,
         },
         headers: {
@@ -73,11 +83,9 @@ const fetchSupervisors = async (inputValue: string, page: number) => {
       }
     );
 
-    console.log(response);
-
     return response.data.results.map((supervisor) => ({
       value: String(supervisor.id),
-      label: `${supervisor.first_name} ${supervisor.last_name}`,
+      label: `${supervisor.user.first_name} ${supervisor.user.last_name}`,
     }));
   } catch (error) {
     console.error("Error fetching supervisors:", error);
@@ -99,6 +107,7 @@ const SelectStudentSupervisor = ({
 
   // اضافه کردن مشاور فعلی به options اگر وجود داشته باشد
   useEffect(() => {
+    console.log(student);
     if (student?.supervisor_id && student.supervisor_name) {
       const currentSupervisor = {
         value: String(student.supervisor_id),

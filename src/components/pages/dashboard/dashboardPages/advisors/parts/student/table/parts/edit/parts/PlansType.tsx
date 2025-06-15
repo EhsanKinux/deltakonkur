@@ -1,4 +1,9 @@
-import { FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Control } from "react-hook-form";
 // import { UseFormReturn } from "react-hook-form";
@@ -22,6 +27,7 @@ const PlansType = ({
       grade: string;
       created: string;
       advisor: string;
+      supervisor: string;
       package_price: string;
     },
     undefined
@@ -70,7 +76,9 @@ const PlansType = ({
                   ref={field.ref}
                   onBlur={field.onBlur}
                 />
-                <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500">ریال</span>
+                <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+                  ریال
+                </span>
               </div>
             </FormControl>
             <FormMessage className="form-message mt-2" />
