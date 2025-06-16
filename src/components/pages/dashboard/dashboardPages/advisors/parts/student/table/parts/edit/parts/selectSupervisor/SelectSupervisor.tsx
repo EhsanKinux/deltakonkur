@@ -107,7 +107,6 @@ const SelectStudentSupervisor = ({
 
   // اضافه کردن مشاور فعلی به options اگر وجود داشته باشد
   useEffect(() => {
-    console.log(student);
     if (student?.supervisor_id && student.supervisor_name) {
       const currentSupervisor = {
         value: String(student.supervisor_id),
