@@ -144,6 +144,9 @@ export function AllStudentsDataTable<TData, TValue>({
           <option className="hover:cursor-pointer" value="" disabled>
             انتخاب مقطع تحصیلی
           </option>
+          <option className="hover:cursor-pointer" value="all">
+            همه مقاطع
+          </option>
           <option className="hover:cursor-pointer" value={10}>
             دهم
           </option>

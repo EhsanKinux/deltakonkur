@@ -55,7 +55,7 @@ const AllAccountingStudents = () => {
             page,
             first_name: firstName,
             last_name: lastName,
-            student_grade: grade,
+            student_grade: grade == "all" ? "" : grade,
           },
           signal,
           headers: {

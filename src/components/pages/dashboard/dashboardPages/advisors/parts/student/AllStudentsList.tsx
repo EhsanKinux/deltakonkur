@@ -43,7 +43,7 @@ const AllStudentsList = () => {
             first_name: firstName,
             last_name: lastName,
             solar_date_day: solarDateDay,
-            grade: grade,
+            grade: grade == "all" ? "" : grade,
             field: field,
           },
           signal, // ارسال سیگنال
