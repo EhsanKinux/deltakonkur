@@ -100,6 +100,9 @@ export const editStudentFormSchema = () =>
     supervisor: z.string().optional(),
     // date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
     package_price: z.string().min(1, { message: "هزینه ی بسته را تعیین کنید" }),
+    solar_date_day: z.string().optional(),
+    solar_date_month: z.string().optional(),
+    solar_date_year: z.string().optional(),
   });
 
 export const editStudentFormSchemaInAdvisor = () =>

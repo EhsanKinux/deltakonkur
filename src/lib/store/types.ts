@@ -34,6 +34,9 @@ export type FormData = {
   supervisor: string | null;
   supervisor_id: string | null;
   supervisor_name: string | null;
+  solar_date_day?: string;
+  solar_date_month?: string;
+  solar_date_year?: string;
 };
 
 export type IadvisorStudent = {

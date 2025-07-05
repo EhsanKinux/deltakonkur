@@ -30,6 +30,9 @@ type FormValues = {
   package_price: string;
   advisor: string;
   supervisor: string;
+  solar_date_day: string;
+  solar_date_month: string;
+  solar_date_year: string;
 };
 
 type FormData = {

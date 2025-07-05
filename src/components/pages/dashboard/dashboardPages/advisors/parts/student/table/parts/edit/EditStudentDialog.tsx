@@ -28,6 +28,7 @@ import PlansType from "./parts/PlansType";
 import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
 import TellNumbers from "./parts/tel-numbers/TellNumbers";
 import SelectStudentSupervisor from "./parts/selectSupervisor/SelectSupervisor";
+import AdvisorChangeDate from "./parts/advisorChangeDate/AdvisorChangeDate";
 
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo, setAdvisorForStudent } =
@@ -50,6 +51,9 @@ export function EditStudentDialog() {
       package_price: "",
       advisor: "",
       supervisor: "",
+      solar_date_day: "",
+      solar_date_month: "",
+      solar_date_year: "",
     },
   });
 
@@ -69,15 +73,25 @@ export function EditStudentDialog() {
         package_price: String(studentInfo.package_price),
         advisor: String(studentInfo.advisor_id),
         supervisor: String(studentInfo?.supervisor_id || ""),
+        solar_date_day: studentInfo.solar_date_day || "",
+        solar_date_month: studentInfo.solar_date_month || "",
+        solar_date_year: studentInfo.solar_date_year || "",
       });
     }
   }, [studentInfo, form]);
 
-  // console.log(form)
+  console.log("supervisorId,", studentInfo?.supervisor_id);
 
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
   const { accessToken } = authStore.getState();
+
+  // Watch the advisor field to conditionally show the date picker
+  const watchedAdvisor = form.watch("advisor");
+  const isDifferentAdvisor =
+    watchedAdvisor &&
+    studentInfo &&
+    String(studentInfo.advisor_id) !== watchedAdvisor;
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const loadingToastId = toast.loading("در حال ثبت اطلاعات...");
@@ -174,9 +188,12 @@ export function EditStudentDialog() {
                   isTheSameAdvisor = true;
                 } else {
                   await axios.post(
-                    `${BASE_API_URL}api/register/student-advisors/${studentAdvisorId}/cancel/`,
+                    `${BASE_API_URL}api/register/student-advisors/change-advisor/${studentInfo.id}/`,
                     {
-                      ended_date: currentTime,
+                      advisor_id: advisor || "",
+                      solar_date_day: data.solar_date_day || "",
+                      solar_date_month: data.solar_date_month || "",
+                      solar_date_year: data.solar_date_year || "",
                     },
                     {
                       headers: {
@@ -186,6 +203,18 @@ export function EditStudentDialog() {
                     }
                   );
                 }
+                // await axios.post(
+                //   `${BASE_API_URL}api/register/student-advisors/${studentAdvisorId}/cancel/`,
+                //   {
+                //     ended_date: currentTime,
+                //   },
+                //   {
+                //     headers: {
+                //       "Content-Type": "application/json",
+                //       Authorization: `Bearer ${accessToken}`,
+                //     },
+                //   }
+                // );
               }
             } catch (error: any) {
               console.error(
@@ -205,9 +234,9 @@ export function EditStudentDialog() {
 
         toast.dismiss(loadingToastId);
         toast.success("ویرایش اطلاعات با موفقیت انجام شد!");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1500);
       }
     } catch (error: any) {
       toast.dismiss(loadingToastId);
@@ -246,6 +275,7 @@ export function EditStudentDialog() {
                   <DateAndTime2 form={form} />
                 </div>
                 <SelectStudentAdvisor form={form} student={studentInfo} />
+                {isDifferentAdvisor && <AdvisorChangeDate form={form} />}
                 <SelectStudentSupervisor form={form} student={studentInfo} />
 
                 <PlansType
