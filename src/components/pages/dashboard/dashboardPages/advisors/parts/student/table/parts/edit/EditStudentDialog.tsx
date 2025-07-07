@@ -250,9 +250,9 @@ export function EditStudentDialog() {
 
         toast.dismiss(loadingToastId);
         toast.success("ویرایش اطلاعات با موفقیت انجام شد!");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1200);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1200);
       }
     } catch (error: unknown) {
       toast.dismiss(loadingToastId);

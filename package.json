@@ -30,7 +30,6 @@
     "date-fns-jalali": "^3.6.0-0",
     "file-saver": "^2.0.5",
     "input-otp": "^1.2.4",
-    "jalaali-js": "^1.2.8",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "lucide-react": "^0.378.0",
