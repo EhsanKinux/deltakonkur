@@ -1,28 +1,29 @@
 import { UseFormReturn } from "react-hook-form";
 import CustomEditInput from "../CustomEditInput";
 
+type EditStudentFormType = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  school: string;
+  phone_number: string;
+  home_phone: string;
+  parent_phone: string;
+  field: string;
+  grade: string;
+  created: string;
+  advisor: string;
+  supervisor: string;
+  package_price: string;
+  solar_date_day: string;
+  solar_date_month: string;
+  solar_date_year: string;
+};
+
 const TellNumbers = ({
   form,
 }: {
-  form: UseFormReturn<
-    {
-      id: string;
-      // date_of_birth: string;
-      first_name: string;
-      last_name: string;
-      school: string;
-      phone_number: string;
-      home_phone: string;
-      parent_phone: string;
-      field: string;
-      grade: string;
-      created: string;
-      advisor: string;
-      supervisor: string;
-      package_price: string;
-    },
-    undefined
-  >;
+  form: UseFormReturn<EditStudentFormType, undefined>;
 }) => {
   return (
     <>
@@ -40,7 +41,7 @@ const TellNumbers = ({
       />
       <CustomEditInput
         control={form.control}
-        name="phone_number"
+        name="home_phone"
         label="شماره تلفن منزل"
         customclass="w-[90%]"
       />

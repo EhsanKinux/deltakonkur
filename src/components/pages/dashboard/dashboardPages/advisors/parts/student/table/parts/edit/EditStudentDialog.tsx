@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import moment from "moment-jalaali";
+import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
 moment.loadPersian({ dialect: "persian-modern" });
 
 import CustomEditInput from "./parts/CustomEditInput";
@@ -68,6 +69,9 @@ export function EditStudentDialog() {
     },
   });
 
+  const { formState } = form;
+  const { isDirty, isSubmitting } = formState;
+
   useEffect(() => {
     if (studentInfo) {
       form.reset({
@@ -106,10 +110,25 @@ export function EditStudentDialog() {
       if (data && studentInfo) {
         const { advisor, supervisor, ...restData } = data;
 
+        // Convert created to Jalali (solar) date fields
+        let solar_date_day = data.solar_date_day;
+        let solar_date_month = data.solar_date_month;
+        let solar_date_year = data.solar_date_year;
+        if (data.created) {
+          const shamsi = convertToShamsi2(data.created); // yyyy-mm-dd
+          const [jy, jm, jd] = shamsi.split("-");
+          solar_date_year = jy;
+          solar_date_month = jm;
+          solar_date_day = jd;
+        }
+
         const modifiedData: ISubmitStudentRegisterService = {
           ...restData,
           id: String(studentInfo.id),
           created: String(data.created),
+          solar_date_day,
+          solar_date_month,
+          solar_date_year,
         };
 
         await updateStudentInfo(modifiedData);
@@ -141,19 +160,7 @@ export function EditStudentDialog() {
           }
         }
 
-        let started_date = new Date().toISOString();
-        const { solar_date_day, solar_date_month, solar_date_year } = data;
-
-        if (solar_date_day && solar_date_month && solar_date_year) {
-          try {
-            const now = new Date();
-            const jDateString = `${solar_date_year}/${solar_date_month}/${solar_date_day} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-            const m = moment(jDateString, "jYYYY/jM/jD H:m:s");
-            started_date = m.toISOString();
-          } catch (err) {
-            console.warn("Invalid Solar date. Using current date instead.");
-          }
-        }
+        const started_date = new Date().toISOString();
 
         if (advisor) {
           let isTheSameAdvisor = false;
@@ -261,9 +268,14 @@ export function EditStudentDialog() {
               <div className="flex justify-between items-center w-full">
                 <Button
                   type="submit"
-                  className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+                  className={`text-white rounded-xl pt-2 ${
+                    !isDirty || isSubmitting
+                      ? "opacity-50 cursor-not-allowed bg-gray-500"
+                      : "bg-blue-500 hover:bg-blue-700"
+                  }`}
+                  disabled={!isDirty || isSubmitting}
                 >
-                  ثبت ویرایش
+                  {isSubmitting ? "در حال ثبت..." : "ثبت ویرایش"}
                 </Button>
                 <DialogClose asChild>
                   <Button
