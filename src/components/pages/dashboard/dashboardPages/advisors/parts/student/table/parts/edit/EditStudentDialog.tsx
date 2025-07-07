@@ -107,28 +107,29 @@ export function EditStudentDialog() {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const loadingToastId = toast.loading("در حال ثبت اطلاعات...");
     try {
+      console.log(data && studentInfo);
       if (data && studentInfo) {
         const { advisor, supervisor, ...restData } = data;
 
         // Convert created to Jalali (solar) date fields
-        let solar_date_day = data.solar_date_day;
-        let solar_date_month = data.solar_date_month;
-        let solar_date_year = data.solar_date_year;
+        let created_solar_day = data.solar_date_day;
+        let created_solar_month = data.solar_date_month;
+        let created_solar_year = data.solar_date_year;
         if (data.created) {
           const shamsi = convertToShamsi2(data.created); // yyyy-mm-dd
           const [jy, jm, jd] = shamsi.split("-");
-          solar_date_year = jy;
-          solar_date_month = jm;
-          solar_date_day = jd;
+          created_solar_year = jy;
+          created_solar_month = jm;
+          created_solar_day = jd;
         }
 
         const modifiedData: ISubmitStudentRegisterService = {
           ...restData,
           id: String(studentInfo.id),
           created: String(data.created),
-          solar_date_day,
-          solar_date_month,
-          solar_date_year,
+          solar_date_day: created_solar_day,
+          solar_date_month: created_solar_month,
+          solar_date_year: created_solar_year,
         };
 
         await updateStudentInfo(modifiedData);
@@ -160,7 +161,19 @@ export function EditStudentDialog() {
           }
         }
 
-        const started_date = new Date().toISOString();
+        let started_date = new Date().toISOString();
+        const { solar_date_day, solar_date_month, solar_date_year } = data;
+
+        if (solar_date_day && solar_date_month && solar_date_year) {
+          try {
+            const now = new Date();
+            const jDateString = `${solar_date_year}/${solar_date_month}/${solar_date_day} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+            const m = moment(jDateString, "jYYYY/jM/jD H:m:s");
+            started_date = m.toISOString();
+          } catch (err) {
+            console.warn("Invalid Solar date. Using current date instead.");
+          }
+        }
 
         if (advisor) {
           let isTheSameAdvisor = false;
