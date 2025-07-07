@@ -19,6 +19,8 @@ import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { useEffect } from "react";
+import moment from "moment-jalaali";
+moment.loadPersian({ dialect: "persian-modern" });
 
 const AdvisorChangeDate = ({
   form,
@@ -70,6 +72,16 @@ const AdvisorChangeDate = ({
     form.setValue("solar_date_year", year.toString());
   };
 
+  // Utility function to format Jalali date as '27-ام اسفند 1403'
+  function formatJalaliDateWithSuffix(
+    year: string,
+    month: string,
+    day: string
+  ) {
+    const m = moment(`${year}/${month}/${day}`, "jYYYY/jM/jD");
+    return m.format("jD[-ام] jMMMM jYYYY");
+  }
+
   return (
     <FormField
       control={form.control}
@@ -92,7 +104,11 @@ const AdvisorChangeDate = ({
                   >
                     <CalendarIcon className="h-4 w-4 opacity-50" />
                     {selectedDate ? (
-                      selectedDate
+                      formatJalaliDateWithSuffix(
+                        form.watch("solar_date_year") || "",
+                        form.watch("solar_date_month") || "",
+                        form.watch("solar_date_day") || ""
+                      )
                     ) : (
                       <span>انتخاب تاریخ تغییر مشاور</span>
                     )}

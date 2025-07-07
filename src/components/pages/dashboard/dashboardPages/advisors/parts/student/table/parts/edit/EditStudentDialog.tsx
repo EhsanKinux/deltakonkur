@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
@@ -20,6 +22,9 @@ import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import moment from "moment-jalaali";
+moment.loadPersian({ dialect: "persian-modern" });
+
 import CustomEditInput from "./parts/CustomEditInput";
 import DateAndTime2 from "./parts/dateAndTime/DateAndTime2";
 import FieldGrade from "./parts/fieldAndGrade/FieldGrade";
@@ -30,11 +35,17 @@ import TellNumbers from "./parts/tel-numbers/TellNumbers";
 import SelectStudentSupervisor from "./parts/selectSupervisor/SelectSupervisor";
 import AdvisorChangeDate from "./parts/advisorChangeDate/AdvisorChangeDate";
 
+// Utility function to format Jalali date as '27-ام اسفند 1403'
+function formatJalaliDateWithSuffix(year: string, month: string, day: string) {
+  const m = moment(`${year}/${month}/${day}`, "jYYYY/jM/jD");
+  return m.format("jD[-ام] jMMMM jYYYY");
+}
+
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo, setAdvisorForStudent } =
     useStudentList();
-
   const formSchema = editStudentFormSchema();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,14 +76,14 @@ export function EditStudentDialog() {
         last_name: studentInfo.last_name,
         school: studentInfo.school,
         phone_number: studentInfo.phone_number,
-        home_phone: studentInfo.home_phone ? studentInfo.home_phone : "",
-        parent_phone: studentInfo.parent_phone ? studentInfo.parent_phone : "",
-        field: studentInfo.field ? studentInfo.field : "",
-        grade: studentInfo.grade ? String(studentInfo.grade) : "",
+        home_phone: studentInfo.home_phone || "",
+        parent_phone: studentInfo.parent_phone || "",
+        field: studentInfo.field || "",
+        grade: String(studentInfo.grade || ""),
         created: studentInfo.created,
         package_price: String(studentInfo.package_price),
         advisor: String(studentInfo.advisor_id),
-        supervisor: String(studentInfo?.supervisor_id || ""),
+        supervisor: String(studentInfo.supervisor_id || ""),
         solar_date_day: studentInfo.solar_date_day || "",
         solar_date_month: studentInfo.solar_date_month || "",
         solar_date_year: studentInfo.solar_date_year || "",
@@ -80,13 +91,9 @@ export function EditStudentDialog() {
     }
   }, [studentInfo, form]);
 
-  console.log("supervisorId,", studentInfo?.supervisor_id);
-
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
-
   const { accessToken } = authStore.getState();
 
-  // Watch the advisor field to conditionally show the date picker
   const watchedAdvisor = form.watch("advisor");
   const isDifferentAdvisor =
     watchedAdvisor &&
@@ -98,17 +105,18 @@ export function EditStudentDialog() {
     try {
       if (data && studentInfo) {
         const { advisor, supervisor, ...restData } = data;
+
         const modifiedData: ISubmitStudentRegisterService = {
           ...restData,
           id: String(studentInfo.id),
           created: String(data.created),
         };
+
         await updateStudentInfo(modifiedData);
 
         if (supervisor) {
           try {
             const currentTime = new Date().toISOString();
-
             await axios.post(
               `${BASE_API_URL}api/supervisor/student/`,
               {
@@ -127,185 +135,149 @@ export function EditStudentDialog() {
             );
           } catch (error: any) {
             console.error(
-              "Error:",
-              error.response ? error.response.data : error.message
+              "Supervisor Error:",
+              error.response?.data || error.message
             );
           }
         }
 
-        const fetchAllStudentAdvisors = async (
-          studentId: string,
-          accessToken: string | null
-        ) => {
-          let allAdvisors: StudentWithDetails2[] = [];
-          let nextUrl = `${BASE_API_URL}api/register/student-advisors/student/${studentId}`;
+        let started_date = new Date().toISOString();
+        const { solar_date_day, solar_date_month, solar_date_year } = data;
 
-          while (nextUrl) {
-            try {
-              const response = await axios.get(nextUrl, {
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${accessToken}`,
-                },
-              });
-
-              if (response.data && response.data.results) {
-                allAdvisors = allAdvisors.concat(response.data.results);
-              }
-
-              nextUrl = response.data.next; // به روز رسانی URL برای صفحه بعدی
-            } catch (error: any) {
-              console.error(
-                "Error:",
-                error.response ? error.response.data : error.message
-              );
-              throw error; // خطا را دوباره پرتاب کنید تا در catch بعدی مدیریت شود
-            }
+        if (solar_date_day && solar_date_month && solar_date_year) {
+          try {
+            const now = new Date();
+            const jDateString = `${solar_date_year}/${solar_date_month}/${solar_date_day} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+            const m = moment(jDateString, "jYYYY/jM/jD H:m:s");
+            started_date = m.toISOString();
+          } catch (err) {
+            console.warn("Invalid Solar date. Using current date instead.");
           }
+        }
 
-          return allAdvisors;
-        };
-
-        // استفاده از تابع
         if (advisor) {
           let isTheSameAdvisor = false;
+
           if (studentInfo.advisor_name) {
             try {
-              const allAdvisors = await fetchAllStudentAdvisors(
-                studentInfo?.id,
-                accessToken
-              );
-
-              if (allAdvisors.length > 0) {
-                const currentTime = new Date().toISOString();
-                const studentAdvisor = allAdvisors.find(
-                  (item) => item.status == "active"
-                );
-
-                const studentAdvisorId = studentAdvisor?.id;
-
-                if (studentInfo.advisor_id == advisor) {
-                  isTheSameAdvisor = true;
-                } else {
-                  await axios.post(
-                    `${BASE_API_URL}api/register/student-advisors/change-advisor/${studentInfo.id}/`,
-                    {
-                      advisor_id: advisor || "",
-                      solar_date_day: data.solar_date_day || "",
-                      solar_date_month: data.solar_date_month || "",
-                      solar_date_year: data.solar_date_year || "",
+              if (studentInfo.advisor_id == advisor) {
+                isTheSameAdvisor = true;
+              } else {
+                await axios.post(
+                  `${BASE_API_URL}api/register/student-advisors/manage/`,
+                  {
+                    advisor_id: advisor || "",
+                    student_id: String(studentInfo.id),
+                    solar_date_day: data.solar_date_day || "",
+                    solar_date_month: data.solar_date_month || "",
+                    solar_date_year: data.solar_date_year || "",
+                    started_date: started_date,
+                  },
+                  {
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${accessToken}`,
                     },
-                    {
-                      headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${accessToken}`,
-                      },
-                    }
-                  );
-                }
-                // await axios.post(
-                //   `${BASE_API_URL}api/register/student-advisors/${studentAdvisorId}/cancel/`,
-                //   {
-                //     ended_date: currentTime,
-                //   },
-                //   {
-                //     headers: {
-                //       "Content-Type": "application/json",
-                //       Authorization: `Bearer ${accessToken}`,
-                //     },
-                //   }
-                // );
+                  }
+                );
               }
             } catch (error: any) {
               console.error(
-                "Error:",
-                error.response ? error.response.data : error.message
+                "Advisor Change Error:",
+                error.response?.data || error.message
               );
             }
           }
 
           if (!isTheSameAdvisor) {
-            await setAdvisorForStudent({
-              studentId: studentInfo.id,
-              advisorId: advisor || "",
-            });
+            await axios.post(
+              `${BASE_API_URL}api/register/student-advisors/manage/`,
+              {
+                advisor_id: advisor || "",
+                student_id: String(studentInfo.id),
+                solar_date_day: data.solar_date_day || "",
+                solar_date_month: data.solar_date_month || "",
+                solar_date_year: data.solar_date_year || "",
+                started_date: started_date,
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }
+            );
           }
         }
 
         toast.dismiss(loadingToastId);
         toast.success("ویرایش اطلاعات با موفقیت انجام شد!");
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1500);
       }
     } catch (error: any) {
       toast.dismiss(loadingToastId);
-      toast.error(`خطا در ویرایش اطلاعات. ${error["message"]}`);
+      toast.error(`خطا در ویرایش اطلاعات. ${error.message}`);
     }
   };
 
   return (
-    <>
-      <DialogContent className="bg-slate-100 !rounded-[10px] h-screen md:h-fit flex flex-col items-center">
-        <DialogHeader className="w-full">
-          <DialogTitle>ویرایش اطلاعات</DialogTitle>
-          <DialogDescription>
-            بعد از انجام ویرایش برای ذخیره اطلاعات روی ثبت ویرایش کلیک کنید
-          </DialogDescription>
-        </DialogHeader>
-        <div className="py-4 w-full">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col gap-4 "
-            >
-              <div className="flex flex-col gap-4 max-h-[65vh] overflow-y-scroll py-4">
-                <div className="flex gap-2">
-                  <Name form={form} />
-                </div>
-                <TellNumbers form={form} />
-                <CustomEditInput
-                  control={form.control}
-                  name="school"
-                  label="نام مدرسه"
-                  customclass="w-[90%]"
-                />
-                <FieldGrade form={form} />
-                <div className="flex gap-5 flex-wrap">
-                  <DateAndTime2 form={form} />
-                </div>
-                <SelectStudentAdvisor form={form} student={studentInfo} />
-                {isDifferentAdvisor && <AdvisorChangeDate form={form} />}
-                <SelectStudentSupervisor form={form} student={studentInfo} />
-
-                <PlansType
-                  name="package_price"
-                  control={form.control}
-                  label="هزینه ی بسته"
-                />
+    <DialogContent className="bg-slate-100 !rounded-[10px] h-screen md:h-fit flex flex-col items-center">
+      <DialogHeader className="w-full">
+        <DialogTitle>ویرایش اطلاعات</DialogTitle>
+        <DialogDescription>
+          بعد از انجام ویرایش برای ذخیره اطلاعات روی ثبت ویرایش کلیک کنید
+        </DialogDescription>
+      </DialogHeader>
+      <div className="py-4 w-full">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
+            <div className="flex flex-col gap-4 max-h-[65vh] overflow-y-scroll py-4">
+              <div className="flex gap-2">
+                <Name form={form} />
               </div>
-              <DialogFooter>
-                <div className="flex justify-between items-center w-full">
+              <TellNumbers form={form} />
+              <CustomEditInput
+                control={form.control}
+                name="school"
+                label="نام مدرسه"
+                customclass="w-[90%]"
+              />
+              <FieldGrade form={form} />
+              <div className="flex gap-5 flex-wrap">
+                <DateAndTime2 form={form} />
+              </div>
+              <SelectStudentAdvisor form={form} student={studentInfo} />
+              {isDifferentAdvisor && <AdvisorChangeDate form={form} />}
+              <SelectStudentSupervisor form={form} student={studentInfo} />
+              <PlansType
+                name="package_price"
+                control={form.control}
+                label="هزینه ی بسته"
+              />
+            </div>
+            <DialogFooter>
+              <div className="flex justify-between items-center w-full">
+                <Button
+                  type="submit"
+                  className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+                >
+                  ثبت ویرایش
+                </Button>
+                <DialogClose asChild>
                   <Button
-                    type="submit"
-                    className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+                    ref={dialogCloseRef}
+                    className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
                   >
-                    ثبت ویرایش
+                    لغو
                   </Button>
-                  <DialogClose asChild>
-                    <Button
-                      ref={dialogCloseRef}
-                      className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
-                    >
-                      لغو
-                    </Button>
-                  </DialogClose>
-                </div>
-              </DialogFooter>
-            </form>
-          </Form>
-        </div>
-      </DialogContent>
-    </>
+                </DialogClose>
+              </div>
+            </DialogFooter>
+          </form>
+        </Form>
+      </div>
+    </DialogContent>
   );
 }
