@@ -20,6 +20,9 @@ const Name = ({
       advisor: string;
       supervisor: string;
       package_price: string;
+      solar_date_day: string;
+      solar_date_month: string;
+      solar_date_year: string;
     },
     undefined
   >;

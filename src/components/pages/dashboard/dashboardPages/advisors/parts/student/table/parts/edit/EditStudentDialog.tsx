@@ -10,7 +10,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { StudentWithDetails2 } from "@/functions/hooks/advisorsList/interface";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 import { editStudentFormSchema } from "@/lib/schema/Schema";
@@ -36,15 +35,8 @@ import TellNumbers from "./parts/tel-numbers/TellNumbers";
 import SelectStudentSupervisor from "./parts/selectSupervisor/SelectSupervisor";
 import AdvisorChangeDate from "./parts/advisorChangeDate/AdvisorChangeDate";
 
-// Utility function to format Jalali date as '27-ام اسفند 1403'
-function formatJalaliDateWithSuffix(year: string, month: string, day: string) {
-  const m = moment(`${year}/${month}/${day}`, "jYYYY/jM/jD");
-  return m.format("jD[-ام] jMMMM jYYYY");
-}
-
 export function EditStudentDialog() {
-  const { studentInfo, updateStudentInfo, setAdvisorForStudent } =
-    useStudentList();
+  const { studentInfo, updateStudentInfo } = useStudentList();
   const formSchema = editStudentFormSchema();
 
   const form = useForm({
@@ -70,7 +62,7 @@ export function EditStudentDialog() {
   });
 
   const { formState } = form;
-  const { isDirty, isSubmitting } = formState;
+  const { isSubmitting, isDirty } = formState;
 
   useEffect(() => {
     if (studentInfo) {
@@ -105,9 +97,9 @@ export function EditStudentDialog() {
     String(studentInfo.advisor_id) !== watchedAdvisor;
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    console.log("onSubmit called with data:", data);
     const loadingToastId = toast.loading("در حال ثبت اطلاعات...");
     try {
-      console.log(data && studentInfo);
       if (data && studentInfo) {
         const { advisor, supervisor, ...restData } = data;
 
@@ -126,7 +118,16 @@ export function EditStudentDialog() {
         const modifiedData: ISubmitStudentRegisterService = {
           ...restData,
           id: String(studentInfo.id),
+          first_name: data.first_name || "",
+          last_name: data.last_name || "",
+          school: data.school || "",
+          phone_number: data.phone_number || "",
+          home_phone: data.home_phone || "",
+          parent_phone: data.parent_phone || "",
+          field: data.field || "",
+          grade: data.grade || "",
           created: String(data.created),
+          package_price: data.package_price || "",
           solar_date_day: created_solar_day,
           solar_date_month: created_solar_month,
           solar_date_year: created_solar_year,
@@ -135,29 +136,41 @@ export function EditStudentDialog() {
         await updateStudentInfo(modifiedData);
 
         if (supervisor) {
-          try {
-            const currentTime = new Date().toISOString();
-            await axios.post(
-              `${BASE_API_URL}api/supervisor/student/`,
-              {
-                ended_at: currentTime,
-                id: 0,
-                student_id: studentInfo.id,
-                current_supervisor: 0,
-                new_supervisor: supervisor || "",
-              },
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${accessToken}`,
+          // Check if supervisor has changed
+          const isTheSameSupervisor =
+            studentInfo.supervisor_id &&
+            String(studentInfo.supervisor_id) === supervisor;
+
+          if (!isTheSameSupervisor) {
+            try {
+              const currentTime = new Date().toISOString();
+              await axios.post(
+                `${BASE_API_URL}api/supervisor/student/`,
+                {
+                  ended_at: currentTime,
+                  id: 0,
+                  student_id: studentInfo.id,
+                  current_supervisor: 0,
+                  new_supervisor: supervisor || "",
                 },
-              }
-            );
-          } catch (error: any) {
-            console.error(
-              "Supervisor Error:",
-              error.response?.data || error.message
-            );
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                  },
+                }
+              );
+            } catch (error: unknown) {
+              const errorMessage =
+                error instanceof Error ? error.message : "Unknown error";
+              console.error(
+                "Supervisor Error:",
+                error instanceof Error && "response" in error
+                  ? (error as { response?: { data?: unknown } }).response
+                      ?.data || errorMessage
+                  : errorMessage
+              );
+            }
           }
         }
 
@@ -201,10 +214,15 @@ export function EditStudentDialog() {
                   }
                 );
               }
-            } catch (error: any) {
+            } catch (error: unknown) {
+              const errorMessage =
+                error instanceof Error ? error.message : "Unknown error";
               console.error(
                 "Advisor Change Error:",
-                error.response?.data || error.message
+                error instanceof Error && "response" in error
+                  ? (error as { response?: { data?: unknown } }).response
+                      ?.data || errorMessage
+                  : errorMessage
               );
             }
           }
@@ -232,10 +250,15 @@ export function EditStudentDialog() {
 
         toast.dismiss(loadingToastId);
         toast.success("ویرایش اطلاعات با موفقیت انجام شد!");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1200);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.dismiss(loadingToastId);
-      toast.error(`خطا در ویرایش اطلاعات. ${error.message}`);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      toast.error(`خطا در ویرایش اطلاعات. ${errorMessage}`);
     }
   };
 
@@ -280,13 +303,14 @@ export function EditStudentDialog() {
             <DialogFooter>
               <div className="flex justify-between items-center w-full">
                 <Button
-                  type="submit"
+                  type="button"
+                  onClick={() => onSubmit(form.getValues())}
                   className={`text-white rounded-xl pt-2 ${
-                    !isDirty || isSubmitting
+                    isSubmitting || !isDirty
                       ? "opacity-50 cursor-not-allowed bg-gray-500"
                       : "bg-blue-500 hover:bg-blue-700"
                   }`}
-                  disabled={!isDirty || isSubmitting}
+                  disabled={isSubmitting || !isDirty}
                 >
                   {isSubmitting ? "در حال ثبت..." : "ثبت ویرایش"}
                 </Button>
