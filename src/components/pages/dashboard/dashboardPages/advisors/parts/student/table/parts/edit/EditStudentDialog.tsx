@@ -189,62 +189,32 @@ export function EditStudentDialog() {
         }
 
         if (advisor) {
-          let isTheSameAdvisor = false;
-
-          if (studentInfo.advisor_name) {
+          if (String(studentInfo.advisor_id) !== advisor) {
             try {
-              if (studentInfo.advisor_id == advisor) {
-                isTheSameAdvisor = true;
-              } else {
-                await axios.post(
-                  `${BASE_API_URL}api/register/student-advisors/manage/`,
-                  {
-                    advisor_id: advisor || "",
-                    student_id: String(studentInfo.id),
-                    solar_date_day: data.solar_date_day || "",
-                    solar_date_month: data.solar_date_month || "",
-                    solar_date_year: data.solar_date_year || "",
-                    started_date: started_date,
+              await axios.post(
+                `${BASE_API_URL}api/register/student-advisors/manage/`,
+                {
+                  advisor_id: advisor || "",
+                  student_id: String(studentInfo.id),
+                  solar_date_day: data.solar_date_day || "",
+                  solar_date_month: data.solar_date_month || "",
+                  solar_date_year: data.solar_date_year || "",
+                  started_date: started_date,
+                },
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
                   },
-                  {
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${accessToken}`,
-                    },
-                  }
-                );
-              }
+                }
+              );
             } catch (error: unknown) {
+              toast.dismiss(loadingToastId);
               const errorMessage =
                 error instanceof Error ? error.message : "Unknown error";
-              console.error(
-                "Advisor Change Error:",
-                error instanceof Error && "response" in error
-                  ? (error as { response?: { data?: unknown } }).response
-                      ?.data || errorMessage
-                  : errorMessage
-              );
+              toast.error(`خطا در تغییر مشاور. ${errorMessage}`);
+              return;
             }
-          }
-
-          if (!isTheSameAdvisor) {
-            await axios.post(
-              `${BASE_API_URL}api/register/student-advisors/manage/`,
-              {
-                advisor_id: advisor || "",
-                student_id: String(studentInfo.id),
-                solar_date_day: data.solar_date_day || "",
-                solar_date_month: data.solar_date_month || "",
-                solar_date_year: data.solar_date_year || "",
-                started_date: started_date,
-              },
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${accessToken}`,
-                },
-              }
-            );
           }
         }
 
