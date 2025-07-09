@@ -27,8 +27,12 @@ export const examAdvisorColumns: ColumnDef<FormEntry>[] = [
     header: "شماره حساب",
   },
   {
-    accessorKey: "activePercentage",
-    header: "درصد رضایت",
+    accessorKey: "overallSatisfaction",
+    header: "درصد رضایت کلی",
+  },
+  {
+    accessorKey: "currentMonthSatisfaction",
+    header: "درصد رضایت ماهیانه",
   },
   {
     accessorKey: "level",

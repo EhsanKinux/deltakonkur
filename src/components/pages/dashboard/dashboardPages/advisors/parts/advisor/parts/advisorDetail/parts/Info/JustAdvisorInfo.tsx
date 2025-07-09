@@ -25,7 +25,9 @@ const JustAdvisorInfo = ({
 }) => {
   const advisorInfo = appStore((state) => state.advisorInfo);
   const { fetchAdvisorInfo } = useAdvisorsList();
-  const [bankAccount, setBankAccount] = useState(advisorInfo?.bank_account || "");
+  const [bankAccount, setBankAccount] = useState(
+    advisorInfo?.bank_account || ""
+  );
   const [isEditing, setIsEditing] = useState(false);
 
   const levelMapping: { [key in "1" | "2" | "3" | "4" | "5"]: string } = {
@@ -48,18 +50,9 @@ const JustAdvisorInfo = ({
     }
   }, [advisorInfo?.bank_account]);
 
-  const calculateActivePercentage = (active: number, stopped: number, canceled: number) => {
-    const total = active + stopped + canceled;
-    return total ? ((active / total) * 100).toFixed(2) : 0;
-  };
-
-  const activePercentage = calculateActivePercentage(
-    parseInt(advisorInfo?.active_students ?? "0"),
-    parseInt(advisorInfo?.stopped_students ?? "0"),
-    parseInt(advisorInfo?.cancelled_students ?? "0")
-  );
-
-  const levelLabel = advisorInfo?.level && levelMapping[advisorInfo.level as keyof typeof levelMapping];
+  const levelLabel =
+    advisorInfo?.level &&
+    levelMapping[advisorInfo.level as keyof typeof levelMapping];
 
   const handleBankAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBankAccount(e.target.value);
@@ -67,17 +60,22 @@ const JustAdvisorInfo = ({
 
   const handleBankAccountSubmit = async () => {
     try {
-      const response = await fetchInstance(`api/advisor/advisor/bank-account/change/`, {
-        method: "POST",
-        body: JSON.stringify({ bank_account: bankAccount }),
-      });
+      const response = await fetchInstance(
+        `api/advisor/advisor/bank-account/change/`,
+        {
+          method: "POST",
+          body: JSON.stringify({ bank_account: bankAccount }),
+        }
+      );
 
       if (response) {
         toast.success("شماره حساب بانکی با موفقیت به‌روزرسانی شد.");
         setIsEditing(false);
       } else {
         const errorData = await response;
-        toast.error(`خطا در به‌روزرسانی شماره حساب: ${errorData.message || "خطای نامشخص"}`);
+        toast.error(
+          `خطا در به‌روزرسانی شماره حساب: ${errorData.message || "خطای نامشخص"}`
+        );
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -105,18 +103,24 @@ const JustAdvisorInfo = ({
           </h1>
           <div className="flex gap-2 items-center">
             <img src={callIcon} width={25} />
-            <h1 className="text-lg font-medium">شماره تلفن: {advisorInfo?.phone_number}</h1>
+            <h1 className="text-lg font-medium">
+              شماره تلفن: {advisorInfo?.phone_number}
+            </h1>
           </div>
           <div className="flex gap-2 items-center">
             <img src={personCard} width={25} />
-            <h1 className="text-lg font-medium">کد ملی: {advisorInfo?.national_id}</h1>
+            <h1 className="text-lg font-medium">
+              کد ملی: {advisorInfo?.national_id}
+            </h1>
           </div>
           <div className="flex flex-col gap-2 justify-center">
-            <p className="text-red-500 text-xs font-thin">برای تغییر روی شماره حساب کلیک کنید</p>
+            <p className="text-red-500 text-xs font-thin">
+              برای تغییر روی شماره حساب کلیک کنید
+            </p>
             <div className="flex gap-2">
               <img src={bankAccountIcon} width={25} />
               <h1 className="text-lg flex flex-col font-medium">
-                شماره حساب بانکی: 
+                شماره حساب بانکی:
                 {isEditing ? (
                   <>
                     <input
@@ -133,8 +137,11 @@ const JustAdvisorInfo = ({
                     </Button>
                   </>
                 ) : (
-                  <span onClick={() => setIsEditing(true)} className="cursor-pointer">
-                     {bankAccount}
+                  <span
+                    onClick={() => setIsEditing(true)}
+                    className="cursor-pointer"
+                  >
+                    {bankAccount}
                   </span>
                 )}
               </h1>
@@ -142,12 +149,30 @@ const JustAdvisorInfo = ({
           </div>
           <div className="flex gap-2 items-center">
             <h2 className="text-base font-medium">
-              درصد رضایت: <span className="text-blue-500 font-semibold">{activePercentage}%</span>
+              درصد رضایت کلی:{" "}
+              <span className="text-blue-500 font-semibold">
+                {advisorInfo?.overall_satisfaction
+                  ? (advisorInfo?.overall_satisfaction * 100).toFixed(2)
+                  : 0}
+                %
+              </span>
             </h2>
           </div>
           <div className="flex gap-2 items-center">
             <h2 className="text-base font-medium">
-              سطح مشاور : <span className="text-blue-500 font-semibold">{levelLabel}</span>
+              درصد رضایت ماهیانه:{" "}
+              <span className="text-blue-500 font-semibold">
+                {advisorInfo?.current_month_satisfaction
+                  ? (advisorInfo?.current_month_satisfaction * 100).toFixed(2)
+                  : 0}
+                %
+              </span>
+            </h2>
+          </div>
+          <div className="flex gap-2 items-center">
+            <h2 className="text-base font-medium">
+              سطح مشاور :{" "}
+              <span className="text-blue-500 font-semibold">{levelLabel}</span>
             </h2>
           </div>
           {/* <div className="flex gap-2 items-center">
@@ -165,11 +190,15 @@ const JustAdvisorInfo = ({
             src={studentActive}
             width={70}
             style={{
-              filter: "invert(50%) sepia(86%) saturate(4975%) hue-rotate(90deg) brightness(105%) contrast(60%)",
+              filter:
+                "invert(50%) sepia(86%) saturate(4975%) hue-rotate(90deg) brightness(105%) contrast(60%)",
             }}
           />
           <h2 className="text-base font-medium">
-            دانش ‌آموزان فعال: <span className="text-green-500 font-semibold">{advisorInfo?.active_students}</span>
+            دانش ‌آموزان فعال:{" "}
+            <span className="text-green-500 font-semibold">
+              {advisorInfo?.active_students}
+            </span>
           </h2>
         </div>
         <div className="flex flex-col gap-2 items-center w-1/3">
@@ -177,11 +206,15 @@ const JustAdvisorInfo = ({
             src={studentCancel}
             width={70}
             style={{
-              filter: "invert(11%) sepia(97%) saturate(7433%) hue-rotate(1deg) brightness(105%) contrast(70%)",
+              filter:
+                "invert(11%) sepia(97%) saturate(7433%) hue-rotate(1deg) brightness(105%) contrast(70%)",
             }}
           />
           <h2 className="text-base font-medium">
-            دانش آموزان کنسلی: <span className="text-red-400 font-semibold">{advisorInfo?.cancelled_students}</span>
+            دانش آموزان کنسلی:{" "}
+            <span className="text-red-400 font-semibold">
+              {advisorInfo?.cancelled_students}
+            </span>
           </h2>
         </div>
         <div className="flex flex-col gap-2 items-center w-1/3">
@@ -189,12 +222,15 @@ const JustAdvisorInfo = ({
             src={studentStop}
             width={70}
             style={{
-              filter: "invert(70%) sepia(80%) saturate(600%) hue-rotate(350deg) brightness(90%) contrast(90%)",
+              filter:
+                "invert(70%) sepia(80%) saturate(600%) hue-rotate(350deg) brightness(90%) contrast(90%)",
             }}
           />
           <h2 className="text-base font-medium">
             دانش آموزان متوقف شده:
-            <span className="text-orange-500 font-semibold">{advisorInfo?.stopped_students}</span>
+            <span className="text-orange-500 font-semibold">
+              {advisorInfo?.stopped_students}
+            </span>
           </h2>
         </div>
       </div>

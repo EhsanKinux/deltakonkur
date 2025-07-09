@@ -28,8 +28,12 @@ export const columns: ColumnDef<Advisor>[] = [
     header: "شماره حساب",
   },
   {
-    accessorKey: "activePercentage",
-    header: "درصد رضایت",
+    accessorKey: "overallSatisfaction",
+    header: "درصد رضایت کلی",
+  },
+  {
+    accessorKey: "currentMonthSatisfaction",
+    header: "درصد رضایت ماهیانه",
   },
   {
     accessorKey: "level",

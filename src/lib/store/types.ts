@@ -10,9 +10,11 @@ export type Advisor = {
   active_students?: string;
   stopped_students?: string;
   cancelled_students?: string;
-  activePercentage?: number;
+  // activePercentage?: number;
   level: string;
   subject?: string;
+  overall_satisfaction?: number;
+  current_month_satisfaction?: number;
 };
 
 export type FormData = {

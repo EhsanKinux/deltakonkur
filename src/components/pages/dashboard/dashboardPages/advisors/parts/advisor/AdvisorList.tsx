@@ -64,24 +64,14 @@ const AdvisorList = () => {
         "5": "ارشد 2",
       };
 
-      const calculateActivePercentage = (
-        active: number,
-        stopped: number,
-        canceled: number
-      ) => {
-        const total = active + stopped + canceled;
-        return total ? ((active / total) * 100).toFixed(2) : "0.00";
-      };
-
       const formattedData = data.results?.map((advisor: Advisor) => ({
         ...advisor,
-        activePercentage: parseFloat(
-          calculateActivePercentage(
-            parseInt(advisor.active_students ?? "0"),
-            parseInt(advisor.stopped_students ?? "0"),
-            parseInt(advisor.cancelled_students ?? "0")
-          )
-        ),
+        overallSatisfaction: advisor?.overall_satisfaction
+          ? (advisor?.overall_satisfaction * 100).toFixed(2)
+          : 0,
+        currentMonthSatisfaction: advisor?.current_month_satisfaction
+          ? (advisor?.current_month_satisfaction * 100).toFixed(2)
+          : 0,
         level: levelMapping[advisor.level.toString()] || advisor.level,
       }));
 
