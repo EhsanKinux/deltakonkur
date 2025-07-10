@@ -10,6 +10,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import AsyncSelect from "react-select/async";
+import { IEditAdvisorStudents } from "../../interface";
 
 type OptionType = {
   value: string;
@@ -31,6 +32,9 @@ type FormData = {
   advisor: string | null;
   advisor_id: string | null;
   advisor_name: string | null;
+  solar_date_day: string;
+  solar_date_month: string;
+  solar_date_year: string;
 };
 
 interface Advisor {
@@ -81,24 +85,7 @@ const SelectStudentAdvisor = ({
   form,
   student,
 }: {
-  form: UseFormReturn<
-    {
-      id: string;
-      date_of_birth: string;
-      first_name: string;
-      last_name: string;
-      school: string;
-      phone_number: string;
-      home_phone: string;
-      parent_phone: string;
-      field: string;
-      grade: string;
-      created: string;
-      advisor: string;
-    },
-    any,
-    undefined
-  >;
+  form: UseFormReturn<IEditAdvisorStudents, unknown, undefined>;
   student: FormData | null;
 }) => {
   const [page, setPage] = useState(1);

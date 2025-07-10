@@ -91,8 +91,6 @@ export function EditStudentDialog({
     String(formData.advisor_id) !== watchedAdvisor;
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    // const loadingToastId = toast.loading("در حال انجام عملیات ثبت...");
-    console.log(data);
     try {
       if (data) {
         // update student data
@@ -166,7 +164,13 @@ export function EditStudentDialog({
             } catch (error: unknown) {
               const errorMessage =
                 error instanceof Error ? error.message : "Unknown error";
-              toast.error(`خطا در تغییر مشاور. ${errorMessage}`);
+              toast.error(
+                `خطا در تغییر مشاور. ${
+                  errorMessage == "Request failed with status code 500"
+                    ? "امکان تعویض مشاور نیست. لطفا ابتدا در واحد حسابداری دانش آموز را متوقف کنید! یا موارد مشابه را چک کنید. در غیر اینصورت این خطا مربوط به ارتباط با سرور است، بعدا تلاش کنید."
+                    : errorMessage
+                }`
+              );
               return;
             }
           }
@@ -174,14 +178,12 @@ export function EditStudentDialog({
         // }
 
         dialogCloseRef.current?.click();
-        // toast.dismiss(loadingToastId);
         toast.success("ویرایش اطلاعات دانش آموز با موفقیت انجام شد.");
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1300);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1300);
       }
     } catch (error) {
-      // toast.dismiss(loadingToastId);
       let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";
       if (error instanceof Error) {
         if (
@@ -247,10 +249,61 @@ export function EditStudentDialog({
                   customclass="w-[90%]"
                 />
                 <FieldGrade form={form} />
-                <DateAndTime2 form={form} disabled={true} />
+                <DateAndTime2 form={form} />
                 {/* <SelectStudentAdvisor form={form} memoizedAdvisors={advisors} /> */}
-                <SelectStudentAdvisor form={form} student={formData} />
-                {isDifferentAdvisor && <AdvisorChangeDate form={form} />}
+                <SelectStudentAdvisor
+                  form={form}
+                  student={{
+                    id: String(formData.id),
+                    date_of_birth: String(formData.date_of_birth),
+                    first_name: String(formData.first_name),
+                    last_name: String(formData.last_name),
+                    school: String(formData.school),
+                    phone_number: String(formData.phone_number),
+                    home_phone: String(formData.home_phone),
+                    parent_phone: String(formData.parent_phone),
+                    field: String(formData.field),
+                    grade: String(formData.grade),
+                    created: String(formData.created),
+                    advisor: formData.advisor_id
+                      ? String(formData.advisor_id)
+                      : "",
+                    advisor_id: formData.advisor_id
+                      ? String(formData.advisor_id)
+                      : "",
+                    advisor_name: formData.advisor_name || "",
+                    solar_date_day: formData.solar_date_day || "",
+                    solar_date_month: formData.solar_date_month || "",
+                    solar_date_year: formData.solar_date_year || "",
+                  }}
+                />
+                {isDifferentAdvisor && (
+                  <AdvisorChangeDate
+                    form={
+                      form as unknown as import("react-hook-form").UseFormReturn<
+                        {
+                          id: string;
+                          first_name: string;
+                          last_name: string;
+                          school: string;
+                          phone_number: string;
+                          home_phone: string;
+                          parent_phone: string;
+                          field: string;
+                          grade: string;
+                          created: string;
+                          advisor: string;
+                          supervisor: string;
+                          package_price: string;
+                          solar_date_day: string;
+                          solar_date_month: string;
+                          solar_date_year: string;
+                        },
+                        undefined
+                      >
+                    }
+                  />
+                )}
               </div>
               <DialogFooter>
                 <div className="flex justify-between items-center w-full pt-4">
