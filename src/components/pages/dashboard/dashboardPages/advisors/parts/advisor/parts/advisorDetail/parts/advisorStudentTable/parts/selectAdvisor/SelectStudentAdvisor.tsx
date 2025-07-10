@@ -67,6 +67,16 @@ const fetchAdvisors = async (inputValue: string, page: number) => {
   }
 };
 
+// تابع کمکی برای حذف گزینه‌های تکراری بر اساس value
+const uniqueOptions = (options: OptionType[]) => {
+  const seen = new Set();
+  return options.filter((opt) => {
+    if (seen.has(opt.value)) return false;
+    seen.add(opt.value);
+    return true;
+  });
+};
+
 const SelectStudentAdvisor = ({
   form,
   student,
@@ -103,7 +113,16 @@ const SelectStudentAdvisor = ({
         value: String(student.advisor_id),
         label: student.advisor_name,
       };
-      setOptions((prevOptions) => [currentAdvisor, ...prevOptions]);
+      setOptions((prevOptions) => {
+        // اگر قبلاً وجود نداشت اضافه کن
+        const exists = prevOptions.some(
+          (opt) => opt.value === currentAdvisor.value
+        );
+        if (!exists) {
+          return uniqueOptions([currentAdvisor, ...prevOptions]);
+        }
+        return prevOptions;
+      });
     }
   }, [student]);
 
@@ -112,7 +131,7 @@ const SelectStudentAdvisor = ({
     const loadInitialOptions = async () => {
       setIsLoading(true);
       const advisors = await fetchAdvisors("", 1);
-      setOptions((prevOptions) => [...prevOptions, ...advisors]);
+      setOptions((prevOptions) => uniqueOptions([...prevOptions, ...advisors]));
       setIsLoading(false);
     };
 
@@ -127,8 +146,9 @@ const SelectStudentAdvisor = ({
     setSearchQuery(inputValue);
     setPage(1);
     fetchAdvisors(inputValue, 1).then((advisors) => {
-      setOptions(advisors);
-      callback(advisors);
+      const newOptions = uniqueOptions(advisors);
+      setOptions(newOptions);
+      callback(newOptions);
       setIsLoading(false);
     });
   };
@@ -137,7 +157,9 @@ const SelectStudentAdvisor = ({
     setIsLoading(true);
     const nextPage = page + 1;
     const moreAdvisors = await fetchAdvisors(searchQuery, nextPage);
-    setOptions((prevOptions) => [...prevOptions, ...moreAdvisors]);
+    setOptions((prevOptions) =>
+      uniqueOptions([...prevOptions, ...moreAdvisors])
+    );
     setPage(nextPage);
     setIsLoading(false);
   };
@@ -167,7 +189,9 @@ const SelectStudentAdvisor = ({
                 onMenuScrollToBottom={fetchMoreOnScroll}
                 isLoading={isLoading}
                 loadingMessage={() => "در حال بارگذاری..."}
-                value={options.find((option) => option.value === field.value)}
+                value={
+                  options.find((option) => option.value === field.value) || null
+                }
                 onChange={(selectedOption) => {
                   field.onChange(selectedOption?.value || "");
                 }}

@@ -8,7 +8,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { editStudentFormSchemaInAdvisor } from "@/lib/schema/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef } from "react";
@@ -16,11 +15,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import CustomEditInput from "./parts/CustomEditInput";
 import FieldGrade from "./parts/fieldAndGrade/FieldGrade";
-// import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
-import { IChangeAdvisor } from "@/functions/hooks/studentsList/interface";
+
 import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
 import { toast } from "sonner";
-// import SelectStudentAdvisor from "../../../../../student/table/parts/edit/parts/selectAdvisor/SelectStudentAdvisor";
+
 import { StudentWithDetails } from "../../interface";
 import DateAndTime2 from "./parts/DateAndTime2";
 import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
@@ -37,22 +35,6 @@ export function EditStudentDialog({
 }: {
   formData: StudentWithDetails;
 }) {
-  // const { getAdvisorsData2 } = useAdvisorsList();
-  // const advisors = appStore((state) => state.advisors);
-  // const [advisors, setAdvisors] = useState<Advisor[]>([]);
-
-  // useEffect(() => {
-  //   getAdvisorsData2().then((data) => {
-  //     if (data && data.length > 0) {
-  //       setAdvisors(data);
-  //     }
-  //     // console.log("Fetched advisors:", data);
-  //   });
-  // }, [getAdvisorsData2]);
-
-  // Memoize advisors to prevent unnecessary re-renders
-  // const memoizedAdvisors = useMemo(() => advisors, [advisors]);
-
   const formSchema = editStudentFormSchemaInAdvisor();
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -90,7 +72,7 @@ export function EditStudentDialog({
         field: String(formData.field),
         grade: String(formData.grade),
         created: String(formData.created),
-        advisor: String(formData.advisor),
+        advisor: formData.advisor_id ? String(formData.advisor_id) : "",
         solar_date_day: formData.solar_date_day || "",
         solar_date_month: formData.solar_date_month || "",
         solar_date_year: formData.solar_date_year || "",
@@ -126,8 +108,6 @@ export function EditStudentDialog({
           created_solar_month = jm;
           created_solar_day = jd;
         }
-
-        console.log("form", formData);
 
         const modifiedData: ISubmitStudentRegisterService = {
           id: String(formData.id),
