@@ -121,6 +121,9 @@ export const editStudentFormSchemaInAdvisor = () =>
       .min(1, { message: "تاریخ ثبت دانش آموز را تعیین کنید!" }),
     advisor: z.string().optional(),
     date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
+    solar_date_day: z.string().optional(),
+    solar_date_month: z.string().optional(),
+    solar_date_year: z.string().optional(),
   });
 
 export const registerFormSchema = () =>

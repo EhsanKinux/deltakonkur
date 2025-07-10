@@ -24,13 +24,19 @@ import { toast } from "sonner";
 import { StudentWithDetails } from "../../interface";
 import DateAndTime2 from "./parts/DateAndTime2";
 import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
+import { authStore } from "@/lib/store/authStore";
+import axios from "axios";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import moment from "moment-jalaali";
+import AdvisorChangeDate from "../../../../../advisorChangeDate/AdvisorChangeDate";
+import { update_student_info } from "@/lib/apis/students/service";
+import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 
 export function EditStudentDialog({
   formData,
 }: {
   formData: StudentWithDetails;
 }) {
-  const { changeAdvisorOfStudent } = useStudentList();
   // const { getAdvisorsData2 } = useAdvisorsList();
   // const advisors = appStore((state) => state.advisors);
   // const [advisors, setAdvisors] = useState<Advisor[]>([]);
@@ -63,6 +69,9 @@ export function EditStudentDialog({
       grade: "",
       created: "",
       advisor: "",
+      solar_date_day: "",
+      solar_date_month: "",
+      solar_date_year: "",
     },
   });
 
@@ -82,43 +91,114 @@ export function EditStudentDialog({
         grade: String(formData.grade),
         created: String(formData.created),
         advisor: String(formData.advisor),
+        solar_date_day: formData.solar_date_day || "",
+        solar_date_month: formData.solar_date_month || "",
+        solar_date_year: formData.solar_date_year || "",
       });
     }
     // console.log(advisor);
   }, [form, formData]);
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
-  // console.log(formData);
+  const { accessToken } = authStore.getState();
+
+  const watchedAdvisor = form.watch("advisor");
+  const isDifferentAdvisor =
+    watchedAdvisor &&
+    formData &&
+    String(formData.advisor_id) !== watchedAdvisor;
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // const loadingToastId = toast.loading("در حال انجام عملیات ثبت...");
+    console.log(data);
     try {
       if (data) {
-        const currentISODate = new Date().toISOString();
-        const currentShamsiDate = convertToShamsi2(currentISODate);
-        const [shamsiYear, shamsiMonth, shamsiDay] =
-          currentShamsiDate.split("-");
+        // update student data
 
-        const modifiedData: IChangeAdvisor = {
-          id: formData.wholeId,
-          advisor_id: String(data.advisor),
-          solar_date_day: shamsiDay,
-          solar_date_month: shamsiMonth,
-          solar_date_year: shamsiYear,
+        // Convert created to Jalali (solar) date fields
+        let created_solar_day = data.solar_date_day;
+        let created_solar_month = data.solar_date_month;
+        let created_solar_year = data.solar_date_year;
+        if (data.created) {
+          const shamsi = convertToShamsi2(data.created); // yyyy-mm-dd
+          const [jy, jm, jd] = shamsi.split("-");
+          created_solar_year = jy;
+          created_solar_month = jm;
+          created_solar_day = jd;
+        }
+
+        console.log("form", formData);
+
+        const modifiedData: ISubmitStudentRegisterService = {
+          id: String(formData.id),
+          first_name: data.first_name || "",
+          last_name: data.last_name || "",
+          school: data.school || "",
+          phone_number: data.phone_number || "",
+          home_phone: data.home_phone || "",
+          parent_phone: data.parent_phone || "",
+          field: data.field || "",
+          grade: data.grade || "",
+          created: String(data.created),
+          package_price: formData.package_price || "",
+          solar_date_day: created_solar_day,
+          solar_date_month: created_solar_month,
+          solar_date_year: created_solar_year,
         };
 
-        console.table(modifiedData);
-        console.log(formData.status);
-        if (formData.status === "active") {
-          await changeAdvisorOfStudent(modifiedData);
+        await update_student_info(modifiedData);
+
+        // if (formData.status === "active") {
+        let started_date = new Date().toISOString();
+        const { solar_date_day, solar_date_month, solar_date_year } = data;
+
+        if (solar_date_day && solar_date_month && solar_date_year) {
+          try {
+            const now = new Date();
+            const jDateString = `${solar_date_year}/${solar_date_month}/${solar_date_day} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+            const m = moment(jDateString, "jYYYY/jM/jD H:m:s");
+            started_date = m.toISOString();
+          } catch (err) {
+            console.warn("Invalid Solar date. Using current date instead.");
+          }
         }
+
+        if (data.advisor) {
+          if (String(formData.advisor) !== data.advisor) {
+            try {
+              await axios.post(
+                `${BASE_API_URL}api/register/student-advisors/manage/`,
+                {
+                  advisor_id: data.advisor || "",
+                  student_id: String(formData.id),
+                  solar_date_day: data.solar_date_day || "",
+                  solar_date_month: data.solar_date_month || "",
+                  solar_date_year: data.solar_date_year || "",
+                  started_date: started_date,
+                },
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                  },
+                }
+              );
+            } catch (error: unknown) {
+              const errorMessage =
+                error instanceof Error ? error.message : "Unknown error";
+              toast.error(`خطا در تغییر مشاور. ${errorMessage}`);
+              return;
+            }
+          }
+        }
+        // }
 
         dialogCloseRef.current?.click();
         // toast.dismiss(loadingToastId);
         toast.success("ویرایش اطلاعات دانش آموز با موفقیت انجام شد.");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1300);
       }
     } catch (error) {
       // toast.dismiss(loadingToastId);
@@ -146,10 +226,10 @@ export function EditStudentDialog({
             بعد از انجام ویرایش برای ذخیره اطلاعات روی ثبت ویرایش کلیک کنید
           </DialogDescription>
         </DialogHeader>
-        <div className="py-4">
+        <div className="py-4 w-full">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="flex flex-col gap-4 max-h-[65vh] overflow-y-scroll py-4">
+              <div className="flex flex-col gap-4 max-h-[65vh] overflow-y-scroll py-4 px-2">
                 <div className="flex gap-2">
                   <CustomEditInput
                     control={form.control}
@@ -187,14 +267,15 @@ export function EditStudentDialog({
                   customclass="w-[90%]"
                 />
                 <FieldGrade form={form} />
-                <DateAndTime2 form={form} />
+                <DateAndTime2 form={form} disabled={true} />
                 {/* <SelectStudentAdvisor form={form} memoizedAdvisors={advisors} /> */}
                 <SelectStudentAdvisor form={form} student={formData} />
+                {isDifferentAdvisor && <AdvisorChangeDate form={form} />}
               </div>
               <DialogFooter>
                 <div className="flex justify-between items-center w-full pt-4">
                   <Button
-                    type="submit"
+                    onClick={() => onSubmit(form.getValues())}
                     className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
                   >
                     ثبت ویرایش

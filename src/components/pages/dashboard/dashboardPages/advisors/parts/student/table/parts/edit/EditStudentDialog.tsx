@@ -33,7 +33,7 @@ import PlansType from "./parts/PlansType";
 import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
 import TellNumbers from "./parts/tel-numbers/TellNumbers";
 import SelectStudentSupervisor from "./parts/selectSupervisor/SelectSupervisor";
-import AdvisorChangeDate from "./parts/advisorChangeDate/AdvisorChangeDate";
+import AdvisorChangeDate from "../../../../advisorChangeDate/AdvisorChangeDate";
 
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo } = useStudentList();
@@ -97,7 +97,6 @@ export function EditStudentDialog() {
     String(studentInfo.advisor_id) !== watchedAdvisor;
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log("onSubmit called with data:", data);
     const loadingToastId = toast.loading("در حال ثبت اطلاعات...");
     try {
       if (data && studentInfo) {
