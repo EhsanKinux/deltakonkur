@@ -39,8 +39,7 @@ const DeleteDialog = ({
   setDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   formData: StudentWithDetails;
 }) => {
-  const { fetchStudentAdvisorData, studentAdvisorData, deleteStudentAdvisor } =
-    useAdvisorsList();
+  const { fetchStudentAdvisorData, studentAdvisorData } = useAdvisorsList();
 
   useEffect(() => {
     fetchStudentAdvisorData(formData.id);

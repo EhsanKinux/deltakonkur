@@ -6,10 +6,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { FormEntry } from "../../interfaces";
-import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import { toast } from "sonner";
 import { fetchInstance } from "@/lib/apis/fetch-config";
+import { toast } from "sonner";
+import { FormEntry } from "../../interfaces";
 
 const DeleteConfirmation = ({
   setDeleteDialogOpen,
@@ -18,16 +17,9 @@ const DeleteConfirmation = ({
   setDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   formData: FormEntry;
 }) => {
-  const { advisorDelete } = useAdvisorsList();
-
   const handleDeleteConfirm = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    // toast.promise(advisorDelete(formData?.id), {
-    //   loading: "در حال حذف...",
-    //   success: `حذف ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`,
-    //   error: "خطایی رخ داده است!",
-    // });
     toast.promise(
       fetchInstance(`api/advisor/advisors/${formData?.id}/`, {
         method: "DELETE",
