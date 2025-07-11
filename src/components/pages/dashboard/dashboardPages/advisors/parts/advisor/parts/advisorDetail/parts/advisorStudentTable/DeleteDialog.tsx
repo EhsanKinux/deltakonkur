@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { fetchInstance } from "@/lib/apis/fetch-config";
 
 interface StudentAdvisorEntry {
   id: string;
@@ -46,7 +47,6 @@ const DeleteDialog = ({
   }, [fetchStudentAdvisorData, formData.id]);
 
   const handleDeleteConfirm = async () => {
-    console.log(formData);
     if (!studentAdvisorData) {
       console.error("No student advisor data available.");
       return;
@@ -58,29 +58,43 @@ const DeleteDialog = ({
     );
 
     if (!activeAdvisor) {
-      console.error(
-        "No active student advisor found with matching advisor ID."
+      toast.error(
+        "متاسفانه اطلاعات مشاور-دانشجوی این دانشجو یافت نشد. قادر به حذف نیستیم."
       );
       return;
     }
 
-    try {
-      // Call the delete function with the id of the active advisor
-      await deleteStudentAdvisor(activeAdvisor.id);
-      console.log(activeAdvisor);
-      console.log("Active student advisor deleted successfully.");
-      toast.success(`حذف با موفقیت انجام شد!`);
-
-      setTimeout(() => {
-        setDeleteDialogOpen(false);
-        window.location.reload();
-      }, 2000);
-    } catch (error) {
-      console.error("Failed to delete student advisor:", error);
-      toast.error("خطایی رخ داده است");
-    } finally {
-      setDeleteDialogOpen(false);
-    }
+    toast.promise(
+      fetchInstance(`api/register/student-advisors/${activeAdvisor.id}/`, {
+        method: "DELETE",
+      }),
+      {
+        loading: "در حال حذف...",
+        success: () => {
+          setTimeout(() => {
+            setDeleteDialogOpen(false);
+            window.location.reload();
+          }, 1500);
+          return "حذف با موفقیت انجام شد!";
+        },
+        error: (err) => {
+          // err is likely an Error with a string message (possibly JSON)
+          if (err && typeof err === "object" && "message" in err) {
+            try {
+              const parsed = JSON.parse(err.message);
+              if (parsed && typeof parsed === "object" && "message" in parsed) {
+                return <p className="p-3">{"خطا: " + parsed.message}</p>;
+              }
+            } catch {
+              // Not JSON, just show the message
+              return err.message;
+            }
+            return err.message;
+          }
+          return "خطایی رخ داده است";
+        },
+      }
+    );
   };
 
   return (

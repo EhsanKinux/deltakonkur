@@ -288,12 +288,17 @@ export const useAdvisorsList = () => {
             "Failed to delete student advisor: ",
             response.statusText
           );
+          throw new Error(
+            response.statusText || "Failed to delete student advisor"
+          );
         }
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
+          throw err;
         } else {
           setError("Failed to delete student advisor");
+          throw new Error("Failed to delete student advisor");
         }
       } finally {
         setLoading(false);
