@@ -8,9 +8,8 @@ import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Controller, UseFormReturn } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import AsyncSelect from "react-select/async";
-import { IEditAdvisorStudents } from "../../interface";
 
 type OptionType = {
   value: string;
@@ -85,7 +84,7 @@ const SelectStudentAdvisor = ({
   form,
   student,
 }: {
-  form: UseFormReturn<IEditAdvisorStudents, unknown, undefined>;
+  form: any;
   student: FormData | null;
 }) => {
   const [page, setPage] = useState(1);
@@ -162,7 +161,7 @@ const SelectStudentAdvisor = ({
           </FormLabel>
           <Controller
             name="advisor"
-            control={form.control}
+            control={form.control as any}
             render={({ field }) => (
               <AsyncSelect
                 {...field}

@@ -104,7 +104,7 @@ export const editStudentFormSchema = () =>
 
 export const editStudentFormSchemaInAdvisor = () =>
   z.object({
-    // id: z.string(),
+    id: z.string(),
     first_name: z.string().min(1, { message: "نام دانش آموز را تعیین کنید!" }),
     last_name: z
       .string()
@@ -122,11 +122,11 @@ export const editStudentFormSchemaInAdvisor = () =>
     created: z
       .string()
       .min(1, { message: "تاریخ ثبت دانش آموز را تعیین کنید!" }),
-    advisor: z.string().optional(),
+    advisor: z.string(),
     date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
-    solar_date_day: z.string().optional(),
-    solar_date_month: z.string().optional(),
-    solar_date_year: z.string().optional(),
+    solar_date_day: z.string(),
+    solar_date_month: z.string(),
+    solar_date_year: z.string(),
   });
 
 export const registerFormSchema = () =>
