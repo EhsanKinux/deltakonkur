@@ -292,9 +292,9 @@ export function EditStudentDialog() {
 
         toast.dismiss(loadingToastId);
         toast.success("ویرایش اطلاعات با موفقیت انجام شد!");
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1200);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1200);
       }
     } catch (error: unknown) {
       toast.dismiss(loadingToastId);
@@ -359,6 +359,7 @@ export function EditStudentDialog() {
                 </Button>
                 <DialogClose asChild>
                   <Button
+                    type="button"
                     ref={dialogCloseRef}
                     className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
                   >

@@ -90,41 +90,64 @@ export function EditStudentDialog({
     formData &&
     String(formData.advisor_id) !== watchedAdvisor;
 
+  const { formState } = form;
+  const { isSubmitting, isDirty } = formState;
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       if (data) {
-        // update student data
+        // Check if only advisor changed
+        const isOnlyAdvisorChanged = isDifferentAdvisor;
 
-        // Convert created to Jalali (solar) date fields
-        let created_solar_day = data.solar_date_day;
-        let created_solar_month = data.solar_date_month;
-        let created_solar_year = data.solar_date_year;
-        if (data.created) {
-          const shamsi = convertToShamsi2(data.created); // yyyy-mm-dd
-          const [jy, jm, jd] = shamsi.split("-");
-          created_solar_year = jy;
-          created_solar_month = jm;
-          created_solar_day = jd;
+        // Check if other fields have changed
+        const otherFieldsChanged =
+          data.first_name !== formData.first_name ||
+          data.last_name !== formData.last_name ||
+          data.school !== formData.school ||
+          data.phone_number !== formData.phone_number ||
+          data.home_phone !== formData.home_phone ||
+          data.parent_phone !== formData.parent_phone ||
+          data.field !== formData.field ||
+          data.grade !== String(formData.grade) ||
+          data.created !== String(formData.created);
+
+        // If only advisor changed, skip student data update
+        if (isOnlyAdvisorChanged && !otherFieldsChanged) {
+          console.log("Only advisor changed, skipping student data update");
+        } else {
+          // update student data
+
+          // Convert created to Jalali (solar) date fields
+          let created_solar_day = data.solar_date_day;
+          let created_solar_month = data.solar_date_month;
+          let created_solar_year = data.solar_date_year;
+          if (data.created) {
+            const shamsi = convertToShamsi2(data.created); // yyyy-mm-dd
+            const [jy, jm, jd] = shamsi.split("-");
+            created_solar_year = jy;
+            created_solar_month = jm;
+            created_solar_day = jd;
+          }
+
+          const modifiedData: ISubmitStudentRegisterService = {
+            id: String(formData.id),
+            first_name: data.first_name || "",
+            last_name: data.last_name || "",
+            school: data.school || "",
+            phone_number: data.phone_number || "",
+            home_phone: data.home_phone || "",
+            parent_phone: data.parent_phone || "",
+            field: data.field || "",
+            grade: data.grade || "",
+            created: String(data.created),
+            package_price: formData.package_price || "",
+            solar_date_day: created_solar_day,
+            solar_date_month: created_solar_month,
+            solar_date_year: created_solar_year,
+          };
+
+          await update_student_info(modifiedData);
         }
-
-        const modifiedData: ISubmitStudentRegisterService = {
-          id: String(formData.id),
-          first_name: data.first_name || "",
-          last_name: data.last_name || "",
-          school: data.school || "",
-          phone_number: data.phone_number || "",
-          home_phone: data.home_phone || "",
-          parent_phone: data.parent_phone || "",
-          field: data.field || "",
-          grade: data.grade || "",
-          created: String(data.created),
-          package_price: formData.package_price || "",
-          solar_date_day: created_solar_day,
-          solar_date_month: created_solar_month,
-          solar_date_year: created_solar_year,
-        };
-
-        await update_student_info(modifiedData);
 
         // if (formData.status === "active") {
         let started_date = new Date().toISOString();
@@ -143,7 +166,7 @@ export function EditStudentDialog({
         }
 
         if (data.advisor) {
-          if (String(formData.advisor) !== data.advisor) {
+          if (String(formData.advisor_id) !== data.advisor) {
             try {
               await axios.post(
                 `${BASE_API_URL}api/register/student-advisors/manage/`,
@@ -299,6 +322,9 @@ export function EditStudentDialog({
                           solar_date_day: string;
                           solar_date_month: string;
                           solar_date_year: string;
+                          supervisor_solar_date_day: string;
+                          supervisor_solar_date_month: string;
+                          supervisor_solar_date_year: string;
                         },
                         undefined
                       >
@@ -309,13 +335,20 @@ export function EditStudentDialog({
               <DialogFooter>
                 <div className="flex justify-between items-center w-full pt-4">
                   <Button
+                    type="button"
                     onClick={() => onSubmit(form.getValues())}
-                    className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+                    className={`text-white rounded-xl pt-2 ${
+                      isSubmitting || !isDirty
+                        ? "opacity-50 cursor-not-allowed bg-gray-500"
+                        : "bg-blue-500 hover:bg-blue-700"
+                    }`}
+                    disabled={isSubmitting || !isDirty}
                   >
-                    ثبت ویرایش
+                    {isSubmitting ? "در حال ثبت..." : "ثبت ویرایش"}
                   </Button>
                   <DialogClose asChild>
                     <Button
+                      type="button"
                       ref={dialogCloseRef}
                       className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
                     >
