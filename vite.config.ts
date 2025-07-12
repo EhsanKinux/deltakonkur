@@ -24,6 +24,11 @@ export default defineConfig({
       },
     },
   },
+  preview: {
+    allowedHosts: [
+      "samane.deltakonkur.com",
+    ],
+  },
   optimizeDeps: {
     include: ['date-fns/locale/fa-IR']
   }
