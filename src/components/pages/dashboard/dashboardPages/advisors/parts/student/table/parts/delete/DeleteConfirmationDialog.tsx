@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 // import { FormEntry } from "../../interfaces";
-import { toast } from "sonner";
+import { showToast } from "@/components/ui/toast";
 import { FormData } from "@/lib/store/types";
 
 const DeleteConfirmationDialog = ({
@@ -22,21 +22,22 @@ const DeleteConfirmationDialog = ({
   const { deleteStudent } = useStudentList();
 
   const handleDeleteConfirm = async () => {
-    const loadingToastId = toast.loading("در حال حذف کردن...");
+    const loadingToastId = showToast.loading("در حال حذف کردن...");
     try {
       await deleteStudent(formData?.id);
-      toast.dismiss(loadingToastId);
-      toast.success(
+      showToast.dismiss(loadingToastId);
+      showToast.success(
         `حذف کردن ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`
       );
       setTimeout(() => {
         setDeleteDialogOpen(false);
         window.location.reload();
       }, 2000);
-    } catch (error: any) {
-      toast.dismiss(loadingToastId);
-      toast.error(`خطا: ${error["message"]}`);
-      // toast.error(error);
+    } catch (error: unknown) {
+      showToast.dismiss(loadingToastId);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      showToast.error(`خطا: ${errorMessage}`);
     } finally {
       setDeleteDialogOpen(false);
     }

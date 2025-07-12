@@ -11,7 +11,7 @@ import CustomInput from "./customInput/CustomInput";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import api from "@/lib/apis/global-interceptor";
-import { toast } from "sonner";
+import { showToast } from "@/components/ui/toast";
 import { AxiosError } from "axios";
 
 const AuthForm = () => {
@@ -38,11 +38,14 @@ const AuthForm = () => {
   const fetchUserRole = async (access: string) => {
     setIsRoleFetching(true);
     try {
-      const roleResponse = await api.get(`${BASE_API_URL}api/auth/current-user/`, {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      });
+      const roleResponse = await api.get(
+        `${BASE_API_URL}api/auth/current-user/`,
+        {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        }
+      );
 
       const { roles } = roleResponse.data;
       setUserRoles(roles);
@@ -50,8 +53,10 @@ const AuthForm = () => {
     } catch (error) {
       const axiosError = error as AxiosError;
       const errorMessage =
-        typeof axiosError.response?.data === "string" ? axiosError.response.data : "Failed to fetch user role.";
-      toast.error(errorMessage); // Show the server error message
+        typeof axiosError.response?.data === "string"
+          ? axiosError.response.data
+          : "Failed to fetch user role.";
+      showToast.error(errorMessage); // Show the server error message
       console.error("Failed to fetch user role:", error);
       return null;
     } finally {
@@ -83,8 +88,10 @@ const AuthForm = () => {
     } catch (error) {
       const axiosError = error as AxiosError;
       const errorMessage =
-        typeof axiosError.response?.data === "string" ? axiosError.response.data : "Authentication failed.";
-      toast.error(errorMessage);
+        typeof axiosError.response?.data === "string"
+          ? axiosError.response.data
+          : "Authentication failed.";
+      showToast.error(errorMessage);
       console.error("Authentication failed:", error);
     } finally {
       setIsLoading(false);
@@ -98,14 +105,22 @@ const AuthForm = () => {
     <section className="flex flex-col justify-center items-center w-full">
       <h1 className="font-bold text-2xl">دلتا کنکور</h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8 w-full">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 mt-8 w-full"
+        >
           <CustomInput
             control={form.control}
             name="tell"
             label="نام کاربری"
             placeholder="شماره تماس خود را وارد کنید"
           />
-          <CustomInput control={form.control} name="password" label="رمز ورود" placeholder="رمز خود را وارد کنید" />
+          <CustomInput
+            control={form.control}
+            name="password"
+            label="رمز ورود"
+            placeholder="رمز خود را وارد کنید"
+          />
           <div className="flex flex-col gap-4">
             <Button type="submit" className="form-btn">
               {isloading ? (

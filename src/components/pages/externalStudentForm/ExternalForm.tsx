@@ -1,17 +1,24 @@
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import CustomInputAssassment from "../dashboard/dashboardPages/supervision/assess/parts/customInput/CustomInputAssassment";
-import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
-import { studentAssessment } from "@/lib/schema/Schema";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import { useParams } from "react-router-dom";
-import { useExternalForm } from "@/functions/hooks/externalForm/useExternalForm";
-import { z } from "zod";
 import thanksIcon from "@/assets/icons/thanks.svg";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import showToast from "@/components/ui/toast";
+import { useExternalForm } from "@/functions/hooks/externalForm/useExternalForm";
+import { studentAssessment } from "@/lib/schema/Schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
+import { z } from "zod";
+import CustomInputAssassment from "../dashboard/dashboardPages/supervision/assess/parts/customInput/CustomInputAssassment";
 
 const ExternalForm = () => {
   const { token } = useParams(); // Extract token from URL params
@@ -54,21 +61,21 @@ const ExternalForm = () => {
       try {
         setIsSubmitting(true);
         console.table(dataTransformed);
-        const loadingToastId = toast.loading("در حال ثبت نظرسنجی...");
+        const loadingToastId = showToast.loading("در حال ثبت نظرسنجی...");
 
         // Call the API using the token and the transformed data
         await completeFollowup(token, dataTransformed);
 
         form.reset();
-        toast.dismiss(loadingToastId);
-        toast.success("نظرسنجی با موفقیت ثبت شد!");
+        showToast.dismiss(loadingToastId);
+        showToast.success("نظرسنجی با موفقیت ثبت شد!");
         setIsSubmitted(true);
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 2000);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       } catch (error) {
-        toast.dismiss();
-        toast.error("خطایی در ثبت نظرسنجی رخ داده است!");
+        showToast.dismiss();
+        showToast.error("خطایی در ثبت نظرسنجی رخ داده است!");
       } finally {
         setIsSubmitting(false);
       }
@@ -86,7 +93,9 @@ const ExternalForm = () => {
         <div className="text-center mt-8">
           <img src={thanksIcon} className="w-80" />
           <h4 className="text-2xl font-semibold">با تشکر از شما!</h4>
-          <p className="mt-4">نظرسنجی شما با موفقیت ثبت شد. از همکاری شما سپاسگزاریم.</p>
+          <p className="mt-4">
+            نظرسنجی شما با موفقیت ثبت شد. از همکاری شما سپاسگزاریم.
+          </p>
         </div>
       ) : (
         <Form {...form}>
@@ -176,7 +185,11 @@ const ExternalForm = () => {
               )}
             />
             <div className="flex gap-2 justify-center items-center w-full mt-5">
-              <Button type="submit" className="form-btn w-full hover:bg-blue-800" disabled={isSubmitting}>
+              <Button
+                type="submit"
+                className="form-btn w-full hover:bg-blue-800"
+                disabled={isSubmitting}
+              >
                 {isSubmitting ? (
                   <>
                     <Loader2 size={20} className="animate-spin" />

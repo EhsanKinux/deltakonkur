@@ -1,18 +1,17 @@
-import counselorProfile from "@/assets/icons/work.svg";
+import bankAccountIcon from "@/assets/icons/bankAccount.svg";
+import callIcon from "@/assets/icons/call.svg";
+import personCard from "@/assets/icons/person-card.svg";
 import studentActive from "@/assets/icons/student-active.svg";
 import studentCancel from "@/assets/icons/student-cancel.svg";
 import studentStop from "@/assets/icons/student-stop.svg";
-import personCard from "@/assets/icons/person-card.svg";
-import callIcon from "@/assets/icons/call.svg";
-import bankAccountIcon from "@/assets/icons/bankAccount.svg";
-import { AdvisorData } from "../../JustAdvisorDetail";
-import { appStore } from "@/lib/store/appStore";
-import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import { useEffect, useState } from "react";
-import { fetchInstance } from "@/lib/apis/fetch-config";
+import counselorProfile from "@/assets/icons/work.svg";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-// import { AdvisorDataResponse } from "@/functions/hooks/advisorsList/interface";
+import showToast from "@/components/ui/toast";
+import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
+import { fetchInstance } from "@/lib/apis/fetch-config";
+import { appStore } from "@/lib/store/appStore";
+import { useEffect, useState } from "react";
+import { AdvisorData } from "../../JustAdvisorDetail";
 
 const JustAdvisorInfo = ({
   advisorData,
@@ -69,21 +68,21 @@ const JustAdvisorInfo = ({
       );
 
       if (response) {
-        toast.success("شماره حساب بانکی با موفقیت به‌روزرسانی شد.");
+        showToast.success("شماره حساب بانکی با موفقیت به‌روزرسانی شد.");
         setIsEditing(false);
       } else {
         const errorData = await response;
-        toast.error(
+        showToast.error(
           `خطا در به‌روزرسانی شماره حساب: ${errorData.message || "خطای نامشخص"}`
         );
       }
     } catch (error) {
       if (error instanceof Error) {
         // This block handles standard JavaScript errors
-        toast.error(`خطا در به‌روزرسانی شماره حساب: ${error.message}`);
+        showToast.error(`خطا در به‌روزرسانی شماره حساب: ${error.message}`);
       } else {
         // This block handles non-standard errors
-        toast.error("خطای نامشخصی رخ داده است.");
+        showToast.error("خطای نامشخصی رخ داده است.");
       }
     }
   };

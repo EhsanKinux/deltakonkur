@@ -1,14 +1,14 @@
+import showToast from "@/components/ui/toast";
 import { useContent } from "@/functions/hooks/content/useContent";
+import { IContent } from "@/lib/apis/content/interface";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
 import { contentAdvisorColumns } from "./parts/table/ContentAdvisorColumnDef";
 import { ContentAdvisorTable } from "./parts/table/ContentAdvisorTable";
-import { IContent } from "@/lib/apis/content/interface";
 
 const Content = () => {
   const [advisors, setAdvisors] = useState([]);
@@ -69,7 +69,7 @@ const Content = () => {
     };
   }, [debouncedGetAdvisors, searchParams]);
 
-  const { sendContent, error } = useContent();
+  const { sendContent } = useContent();
 
   const [advisorSubjects, setAdvisorSubjects] = useState<
     Record<number, string>
@@ -94,18 +94,42 @@ const Content = () => {
       }));
 
     if (dataArray.length > 0) {
-      toast.promise(
+      showToast.promise(
         sendContent(dataArray).then(() => {
           setAdvisorSubjects({});
         }),
         {
           loading: "در حال ارسال پیام...",
           success: "ارسال پیام با موفقیت انجام شد!",
-          error: `${error}`,
+          error: (err: unknown) => {
+            // err is likely an Error with a string message (possibly JSON)
+            if (err && typeof err === "object" && "message" in err) {
+              const errorMessage = (err as { message: string }).message;
+              try {
+                const parsed = JSON.parse(errorMessage);
+                if (
+                  parsed &&
+                  typeof parsed === "object" &&
+                  "message" in parsed
+                ) {
+                  return "خطا: " + (parsed as { message: string }).message;
+                }
+              } catch {
+                // Not JSON, just show the message
+                return errorMessage.includes("detail")
+                  ? "خطا: " + errorMessage.split(`"`)[3]
+                  : "خطایی رخ داده است";
+              }
+              return errorMessage.includes("detail")
+                ? "خطا: " + errorMessage.split(`"`)[3]
+                : "خطایی رخ داده است";
+            }
+            return "خطایی رخ داده است";
+          },
         }
       );
     } else {
-      toast.error(
+      showToast.error(
         "موضوعی برای ارسال وجود ندارد. لطفا ابتدا موضوعات خود را وارد کنید."
       );
     }

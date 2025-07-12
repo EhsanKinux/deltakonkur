@@ -1,5 +1,4 @@
-import { toast } from "sonner";
-import { IUserDetail2 } from "../../userDetail/interface";
+import { Button } from "@/components/ui/button";
 import {
   DialogContent,
   DialogDescription,
@@ -7,8 +6,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import showToast from "@/components/ui/toast";
 import { useUsers } from "@/functions/hooks/usersList/useUsers";
+import { IUserDetail2 } from "../../userDetail/interface";
 
 const UserDeleteConfirmation = ({
   setDeleteDialogOpen,
@@ -23,10 +23,30 @@ const UserDeleteConfirmation = ({
 
   const handleDeleteConfirm = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toast.promise(deletingUser(formData?.id), {
+    showToast.promise(deletingUser(formData?.id), {
       loading: "در حال حذف...",
       success: `حذف ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`,
-      error: "خطایی رخ داده است!",
+      error: (err: unknown) => {
+        // err is likely an Error with a string message (possibly JSON)
+        if (err && typeof err === "object" && "message" in err) {
+          const errorMessage = (err as { message: string }).message;
+          try {
+            const parsed = JSON.parse(errorMessage);
+            if (parsed && typeof parsed === "object" && "message" in parsed) {
+              return "خطا: " + (parsed as { message: string }).message;
+            }
+          } catch {
+            // Not JSON, just show the message
+            return errorMessage.includes("detail")
+              ? "خطا: " + errorMessage.split(`"`)[3]
+              : "خطایی رخ داده است";
+          }
+          return errorMessage.includes("detail")
+            ? "خطا: " + errorMessage.split(`"`)[3]
+            : "خطایی رخ داده است";
+        }
+        return "خطایی رخ داده است";
+      },
     });
     setDeleteDialogOpen(false);
     setTimeout(() => {

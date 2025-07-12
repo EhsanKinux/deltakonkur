@@ -20,19 +20,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import showToast from "@/components/ui/toast";
 import { useCanceling } from "@/functions/hooks/canceling/useCanceling";
 import { FormData } from "@/lib/store/types";
 import { cn } from "@/lib/utils/cn/cn";
-import { CalendarIcon } from "lucide-react";
-import DatePicker from "react-multi-date-picker";
-import persian from "react-date-object/calendars/persian";
-import persian_fa from "react-date-object/locales/persian_fa";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns-jalali";
 import { faIR } from "date-fns-jalali/locale";
-import { toast } from "sonner";
-import { z } from "zod";
+import { CalendarIcon } from "lucide-react";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import DatePicker from "react-multi-date-picker";
+import { z } from "zod";
 
 export const cancelFormSchema = () =>
   z.object({
@@ -58,29 +58,29 @@ const CancelConfirmation = ({
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (!formData?.id) {
-      toast.error("شناسه دانش‌آموز نامعتبر است!");
+      showToast.error("شناسه دانش‌آموز نامعتبر است!");
       return;
     }
 
-    const loadingToastId = toast.loading("در حال بررسی وضعیت دانش‌آموز...");
+    const loadingToastId = showToast.loading("در حال بررسی وضعیت دانش‌آموز...");
     try {
       const response = await checkStudentIsActive(formData?.id);
 
       if (!response || !response.id) {
-        toast.dismiss(loadingToastId);
-        toast.error("خطا در دریافت اطلاعات دانش‌آموز!");
+        showToast.dismiss(loadingToastId);
+        showToast.error("خطا در دریافت اطلاعات دانش‌آموز!");
         return;
       }
 
       if (response?.status === "active") {
-        toast.dismiss(loadingToastId);
-        const cancelToastId = toast.loading("در حال کنسل کردن...");
+        showToast.dismiss(loadingToastId);
+        const cancelToastId = showToast.loading("در حال کنسل کردن...");
 
         const cancelDate = data.cancelDate || new Date().toISOString();
         await cancelStudent(response.id, cancelDate);
 
-        toast.dismiss(cancelToastId);
-        toast.success(
+        showToast.dismiss(cancelToastId);
+        showToast.success(
           `کنسل کردن ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`
         );
 
@@ -88,18 +88,18 @@ const CancelConfirmation = ({
           window.location.reload();
         }, 2000);
       } else {
-        toast.dismiss(loadingToastId);
-        toast.error("این دانش‌آموز مشاور ندارد!");
+        showToast.dismiss(loadingToastId);
+        showToast.error("این دانش‌آموز مشاور ندارد!");
       }
     } catch (error) {
-      toast.dismiss(loadingToastId);
+      showToast.dismiss(loadingToastId);
 
       if (error && typeof error === "object" && "message" in error) {
         console.error("Error canceling student:", error);
-        toast.error(`خطا: ${error.message}`);
+        showToast.error(`خطا: ${error.message}`);
       } else {
         console.error("Unexpected error:", error);
-        toast.error("مشکلی در کنسل کردن دانش‌آموز به وجود آمد.");
+        showToast.error("مشکلی در کنسل کردن دانش‌آموز به وجود آمد.");
       }
     } finally {
       setDeleteDialogOpen(false);

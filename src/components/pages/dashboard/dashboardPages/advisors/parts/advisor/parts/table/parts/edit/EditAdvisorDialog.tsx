@@ -1,10 +1,11 @@
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { editAdvisorFormSchema } from "@/lib/schema/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 // import { Advisor } from "@/lib/store/types";
+import { Button } from "@/components/ui/button";
 import {
   // DialogClose,
   DialogContent,
@@ -14,12 +15,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import CustomEditAdvisorInput from "./parts/CustomEditAdvisorInput";
 import SelectField from "./parts/field/SelectField";
 import LevelSelect from "./parts/level/LevelSelect";
 // import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import showToast from "@/components/ui/toast";
 
 const EditAdvisorDialog = ({
   setEditDialogOpen,
@@ -62,39 +62,29 @@ const EditAdvisorDialog = ({
   }, [advisorInfo, form]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    // console.log("Form submitted with data:", data);
     if (data && advisorInfo) {
-      const loadingToastId = toast.loading("در حال انجام عملیات ویرایش...", {
-        duration: 3000,
-      });
+      const loadingToastId = showToast.loading("در حال انجام عملیات ویرایش...");
       try {
-        // const modifiedData: Advisor = {
-        //   ...data,
-        //   id: String(advisorInfo.id),
-        // };
         await updatAdvisor(data);
-        toast.dismiss(loadingToastId);
-        toast.success("ویرایش اظلاعات با موفقیت انجام شد.");
+        showToast.dismiss(loadingToastId);
+        showToast.success("ویرایش اظلاعات با موفقیت انجام شد.");
 
         // Set a timeout before reloading the page
         setTimeout(() => {
           window.location.reload();
         }, 2000); // 3-second delay
       } catch (error) {
-        toast.dismiss(loadingToastId);
+        showToast.dismiss(loadingToastId);
         let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";
         if (error instanceof Error) {
           errorMessage = error.message;
         }
-        toast.error(errorMessage);
+        showToast.error(errorMessage);
       }
 
       setEditDialogOpen(false);
     }
   };
-
-  //  if (loading) return <div>Loading...</div>;
-  // if (error) return <div>Error: {error}</div>;
 
   return (
     <>

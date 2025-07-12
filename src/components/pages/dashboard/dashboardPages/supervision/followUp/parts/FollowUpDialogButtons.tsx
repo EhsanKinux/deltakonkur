@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
 import callNotAnswerIcon from "@/assets/icons/call-slash.svg";
 import formCheck from "@/assets/icons/card-tick.svg";
+import { Button } from "@/components/ui/button";
+import showToast from "@/components/ui/toast";
 import { useSupervision } from "@/functions/hooks/supervision/useSupervision";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const FollowUpDialogButtons = (formData: any) => {
   const {
@@ -33,14 +33,14 @@ const FollowUpDialogButtons = (formData: any) => {
         firstCallTime,
       });
 
-      toast.success("در حال هدایت برای پر کردن فرم نظرسنجی دانش آموز...");
+      showToast.success("در حال هدایت برای پر کردن فرم نظرسنجی دانش آموز...");
       const studentId = formData.formData.student_id;
       setTimeout(() => {
         navigate(`/dashboard/supervision/${studentId}`);
       }, 2000); // 2-second delay before navigation
     } catch (error) {
       // Dismiss the loading toast and show error notification
-      toast.error("خطا در تکمیل فرآیند: " + (error || "مشکلی رخ داده است"));
+      showToast.error("خطا در تکمیل فرآیند: " + (error || "مشکلی رخ داده است"));
       console.error("Failed to complete student follow-up:", error);
     }
   };
@@ -50,7 +50,7 @@ const FollowUpDialogButtons = (formData: any) => {
 
     if (formData) {
       setLoading(true);
-      const loadingToastId = toast.loading("در حال پردازش...");
+      const loadingToastId = showToast.loading("در حال پردازش...");
 
       try {
         const id = formData.formData.id;
@@ -64,15 +64,15 @@ const FollowUpDialogButtons = (formData: any) => {
           firstCallTime,
         });
         await sendNotif(formData.formData.token);
-        toast.dismiss(loadingToastId);
-        toast.success("ثبت عدم پاسخگویی دوم با موفقیت انجام شد!");
+        showToast.dismiss(loadingToastId);
+        showToast.success("ثبت عدم پاسخگویی دوم با موفقیت انجام شد!");
 
         setTimeout(() => {
           window.location.reload(); // Reload the page after a 3-second delay
         }, 3000);
       } catch (error) {
-        toast.dismiss(loadingToastId);
-        toast.error("خطایی در ثبت عدم پاسخگویی رخ داده است!");
+        showToast.dismiss(loadingToastId);
+        showToast.error("خطایی در ثبت عدم پاسخگویی رخ داده است!");
       } finally {
         setLoading(false);
       }

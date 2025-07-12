@@ -1,7 +1,7 @@
+import showToast from "@/components/ui/toast";
 import { remove_user_roles, submit_user_roles } from "@/lib/apis/users/service";
 import { useController, UseFormReturn } from "react-hook-form";
 import Select, { MultiValue } from "react-select";
-import { toast } from "sonner";
 
 interface RoleOption {
   value: string;
@@ -53,7 +53,7 @@ const SelectRoles = ({ form, userId }: SelectRolesProps) => {
           });
 
           if (response) {
-            toast.success("نقش کاربر با موفقیت ثبت شد");
+            showToast.success("نقش کاربر با موفقیت ثبت شد");
           }
         }
 
@@ -67,13 +67,13 @@ const SelectRoles = ({ form, userId }: SelectRolesProps) => {
           });
 
           if (response) {
-            toast.success("نقش کاربر با موفقیت حذف شد");
+            showToast.success("نقش کاربر با موفقیت حذف شد");
           }
         }
 
         onChange(selectedValues); // Update the form value
       } catch (error) {
-        toast.error("خطا در تغییر نقش کاربر، لطفا دوباره تلاش کنید");
+        showToast.error("خطا در تغییر نقش کاربر، لطفا دوباره تلاش کنید");
         console.error("Error:", error);
       }
     } else {
@@ -84,8 +84,8 @@ const SelectRoles = ({ form, userId }: SelectRolesProps) => {
   return (
     <div className="flex flex-col justify-center items-center w-full">
       <p className="font-semibold text-red-600">
-        دقت داشته باشید با انتخاب هر یک از نقش های کاربر، در لحظه انتخاب اعمال میشود و درصورت حذف آن در لحظه نقش کاربر
-        حذف میگردد!
+        دقت داشته باشید با انتخاب هر یک از نقش های کاربر، در لحظه انتخاب اعمال
+        میشود و درصورت حذف آن در لحظه نقش کاربر حذف میگردد!
       </p>
       <Select
         isMulti

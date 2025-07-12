@@ -1,13 +1,13 @@
-import { useEffect, useState, useRef, useCallback } from "react";
-import { SupervisionFollowUpTable } from "../table/SupervisionFollowUpTable";
-import { followUpStColumns } from "../table/FollowUpColumnDef";
-import { toast } from "sonner";
-import axios, { AxiosError } from "axios";
-import { BASE_API_URL } from "@/lib/variables/variables";
+import showToast from "@/components/ui/toast";
 import { authStore } from "@/lib/store/authStore";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { useSearchParams } from "react-router-dom";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import axios, { AxiosError } from "axios";
 import { debounce } from "lodash";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { followUpStColumns } from "../table/FollowUpColumnDef";
+import { SupervisionFollowUpTable } from "../table/SupervisionFollowUpTable";
 
 interface FollowUpStudent {
   id: number;
@@ -79,7 +79,7 @@ const SupervisionFollowUp = () => {
       );
 
       if (data.length === 0) {
-        toast.warning("هیچ دانش‌آموزی برای پیگیری یافت نشد");
+        showToast.warning("هیچ دانش‌آموزی برای پیگیری یافت نشد");
       }
 
       const formatBoolean = (value: unknown) => (value ? "✔" : " - ");

@@ -1,6 +1,5 @@
-// import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { StudentWithDetails } from "../../interface";
-// import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   DialogClose,
   DialogContent,
@@ -9,11 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import showToast from "@/components/ui/toast";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import { useEffect } from "react";
-import { toast } from "sonner";
 import { fetchInstance } from "@/lib/apis/fetch-config";
+import { useEffect } from "react";
 
 interface StudentAdvisorEntry {
   id: string;
@@ -57,13 +55,13 @@ const DeleteDialog = ({
     );
 
     if (!activeAdvisor) {
-      toast.error(
+      showToast.error(
         "متاسفانه اطلاعات مشاور-دانشجوی این دانشجو یافت نشد. قادر به حذف نیستیم."
       );
       return;
     }
 
-    toast.promise(
+    showToast.promise(
       fetchInstance(`api/register/student-advisors/${activeAdvisor.id}/`, {
         method: "DELETE",
       }),
@@ -76,19 +74,24 @@ const DeleteDialog = ({
           }, 1500);
           return "حذف با موفقیت انجام شد!";
         },
-        error: (err) => {
+        error: (err: unknown) => {
           // err is likely an Error with a string message (possibly JSON)
           if (err && typeof err === "object" && "message" in err) {
+            const errorMessage = (err as { message: string }).message;
             try {
-              const parsed = JSON.parse(err.message);
+              const parsed = JSON.parse(errorMessage);
               if (parsed && typeof parsed === "object" && "message" in parsed) {
-                return <p className="p-3">{"خطا: " + parsed.message}</p>;
+                return "خطا: " + (parsed as { message: string }).message;
               }
             } catch {
               // Not JSON, just show the message
-              return err.message;
+              return errorMessage.includes("detail")
+                ? "خطا: " + errorMessage.split(`"`)[3]
+                : "خطایی رخ داده است";
             }
-            return err.message;
+            return errorMessage.includes("detail")
+              ? "خطا: " + errorMessage.split(`"`)[3]
+              : "خطایی رخ داده است";
           }
           return "خطایی رخ داده است";
         },

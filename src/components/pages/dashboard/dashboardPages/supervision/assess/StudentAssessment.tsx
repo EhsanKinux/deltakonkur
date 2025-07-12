@@ -1,19 +1,26 @@
+import backIcon from "@/assets/icons/back.svg";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import showToast from "@/components/ui/toast";
+import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
+import { useSupervision } from "@/functions/hooks/supervision/useSupervision";
 import { studentAssessment } from "@/lib/schema/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
 import CustomInputAssassment from "./parts/customInput/CustomInputAssassment";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useSupervision } from "@/functions/hooks/supervision/useSupervision";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import backIcon from "@/assets/icons/back.svg";
-import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
-import { useEffect, useState } from "react";
 import RecentAssassments from "./parts/recentAssassments/RecentAssassments";
-import { toast } from "sonner";
-import { Textarea } from "@/components/ui/textarea";
 
 interface StudentCallResponse {
   id: number;
@@ -89,17 +96,17 @@ const StudentAssessment = () => {
       try {
         setIsSubmitting(true);
         console.table(dataTransformed);
-        const loadingToastId = toast.loading("در حال ثبت نظرسنجی...");
+        const loadingToastId = showToast.loading("در حال ثبت نظرسنجی...");
         await submitAssassmentForm(dataTransformed);
         form.reset();
-        toast.dismiss(loadingToastId);
-        toast.success("نظرسنجی با موفقیت ثبت شد!");
+        showToast.dismiss(loadingToastId);
+        showToast.success("نظرسنجی با موفقیت ثبت شد!");
         setTimeout(() => {
           window.location.reload();
         }, 2000);
       } catch (error) {
-        toast.dismiss(); // Dismiss any active toast
-        toast.error("خطایی در ثبت نظرسنجی رخ داده است!");
+        showToast.dismiss(); // Dismiss any active toast
+        showToast.error("خطایی در ثبت نظرسنجی رخ داده است!");
       } finally {
         setIsSubmitting(false);
       }
@@ -120,7 +127,9 @@ const StudentAssessment = () => {
     if (studentId) {
       setIsloading(true);
       try {
-        const response = await handleStudentCallAnswering2(parseInt(studentId, 10));
+        const response = await handleStudentCallAnswering2(
+          parseInt(studentId, 10)
+        );
 
         // Use type assertion to assume the response type
         const responseData = response as unknown as StudentCallResponse;
@@ -131,12 +140,12 @@ const StudentAssessment = () => {
         // Check if the token exists before calling sendNotif
         if (token) {
           await sendNotif(token);
-          toast.success("ثبت عدم پاسخگویی اول با موفقیت انجام شد!");
+          showToast.success("ثبت عدم پاسخگویی اول با موفقیت انجام شد!");
         } else {
-          toast.error("Token not found in response.");
+          showToast.error("Token not found in response.");
         }
       } catch (error) {
-        toast.error("خطایی در ثبت عدم پاسخگویی رخ داده است!");
+        showToast.error("خطایی در ثبت عدم پاسخگویی رخ داده است!");
       } finally {
         setIsloading(false);
       }
@@ -161,12 +170,16 @@ const StudentAssessment = () => {
         <div className="w-full bg-slate-400 rounded-b-full flex justify-center items-center gap-3 flex-col p-5">
           {/* <img src={AddAdvisor} width={500} /> */}
           <h3 className="text-3xl text-white font-bold">
-            نظرسنجی عملکرد مشاور {studentInfo?.first_name} {studentInfo?.last_name}
+            نظرسنجی عملکرد مشاور {studentInfo?.first_name}{" "}
+            {studentInfo?.last_name}
           </h3>
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 w-3/4 px-8">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="mt-4 w-3/4 px-8"
+          >
             <CustomInputAssassment
               control={form.control}
               name="plan_score"
@@ -249,7 +262,11 @@ const StudentAssessment = () => {
               )}
             />
             <div className="flex gap-2 justify-center items-center w-full mt-5">
-              <Button type="submit" className="form-btn w-full hover:bg-blue-800" disabled={isSubmitting}>
+              <Button
+                type="submit"
+                className="form-btn w-full hover:bg-blue-800"
+                disabled={isSubmitting}
+              >
                 {isSubmitting ? (
                   <>
                     <Loader2 size={20} className="animate-spin" />

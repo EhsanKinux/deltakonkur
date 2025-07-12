@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
-import { toast } from "sonner";
+import { showToast } from "@/components/ui/toast";
 // import Cookies from 'js-cookie';
 
 const api = axios.create({
@@ -11,7 +11,8 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const { refreshToken, setTokens, clearAuth, username, password } = authStore.getState();
+    const { refreshToken, setTokens, clearAuth, username, password } =
+      authStore.getState();
     const originalRequest = error.config;
 
     if (error.response.status === 401 && !originalRequest._retry) {
@@ -20,10 +21,13 @@ api.interceptors.response.use(
       if (refreshToken) {
         try {
           if (username && password) {
-            const response = await axios.post(`${BASE_API_URL}api/auth/login/`, {
-              username: username,
-              password: password,
-            });
+            const response = await axios.post(
+              `${BASE_API_URL}api/auth/login/`,
+              {
+                username: username,
+                password: password,
+              }
+            );
             const { access, refresh } = response.data;
             setTokens(access, refresh); // Update tokens in store
             api.defaults.headers.common["Authorization"] = `Bearer ${access}`;
@@ -40,22 +44,26 @@ api.interceptors.response.use(
             typeof axiosAuthError.response?.data === "string"
               ? axiosAuthError.response?.data
               : "Session expired, please log in again.";
-          toast.error(errorMessage); // Show the server error message
+          showToast.error(errorMessage); // Show the server error message
           // window.location.href = "/auth/signIn";
           return Promise.reject(authError);
         }
       } else {
         const errorMessage =
           error.response?.data?.detail ||
-          (typeof error.response?.data === "string" ? error.response.data : "Authentication error, please log in.");
-        toast.error(errorMessage); // Show the server error message
+          (typeof error.response?.data === "string"
+            ? error.response.data
+            : "Authentication error, please log in.");
+        showToast.error(errorMessage); // Show the server error message
         // window.location.href = "/auth/signIn";
       }
     }
     const errorMessage =
       error.response?.data?.detail ||
-      (typeof error.response?.data === "string" ? error.response.data : "An unexpected error occurred.");
-    toast.error(errorMessage); // Show the server error message
+      (typeof error.response?.data === "string"
+        ? error.response.data
+        : "An unexpected error occurred.");
+    showToast.error(errorMessage); // Show the server error message
     return Promise.reject(error);
   }
 );

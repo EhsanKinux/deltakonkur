@@ -7,11 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { toast } from "sonner";
-import { IFormattedStudentAdvisor } from "../../interfaces";
-import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
-// import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import {
   Form,
   FormControl,
@@ -25,16 +20,20 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import DatePicker from "react-multi-date-picker";
-import persian from "react-date-object/calendars/persian";
-import persian_fa from "react-date-object/locales/persian_fa";
+import showToast from "@/components/ui/toast";
+import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
+import { cn } from "@/lib/utils/cn/cn";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns-jalali";
 import { faIR } from "date-fns-jalali/locale";
+import { CalendarIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import DatePicker from "react-multi-date-picker";
 import { z } from "zod";
-import { cn } from "@/lib/utils/cn/cn";
+import { IFormattedStudentAdvisor } from "../../interfaces";
 
 export const stopFormSchema = () =>
   z.object({
@@ -63,7 +62,7 @@ const StopDialog = ({
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // First, check if the student has already stopped
     if (rowData?.stop_date && rowData?.status === "stop") {
-      toast.warning(
+      showToast.warning(
         `دانش‌آموز ${rowData?.first_name} ${rowData?.last_name} قبلا متوقف شده است!`
       );
       return;
@@ -74,7 +73,7 @@ const StopDialog = ({
 
     // Check if the status is not "stop" to perform the stop operation
     if (rowData?.status !== "stop") {
-      const loadingToastId = toast.loading("در حال توقف...");
+      const loadingToastId = showToast.loading("در حال توقف...");
 
       try {
         await stopStudent({
@@ -84,16 +83,16 @@ const StopDialog = ({
           stopDate: stopDate, // Pass the stopDate to the stopStudent function
         });
 
-        toast.dismiss(loadingToastId);
-        toast.success(
+        showToast.dismiss(loadingToastId);
+        showToast.success(
           `توقف ${rowData?.first_name} ${rowData?.last_name} با موفقیت انجام شد!`
         );
         setTimeout(() => {
           window.location.reload(); // Refresh the page after 2 seconds if successful
         }, 2000);
       } catch (error) {
-        toast.dismiss(loadingToastId);
-        toast.error(`خطایی رخ داده است!`);
+        showToast.dismiss(loadingToastId);
+        showToast.error(`خطایی رخ داده است!`);
       }
     }
 

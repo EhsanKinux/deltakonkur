@@ -19,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { showToast } from "@/components/ui/toast";
 import { z } from "zod";
 import moment from "moment-jalaali";
 import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
@@ -107,7 +107,7 @@ export function EditStudentDialog() {
     String(studentInfo.supervisor_id) !== watchedSupervisor;
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const loadingToastId = toast.loading("در حال ثبت اطلاعات...");
+    const loadingToastId = showToast.loading("در حال ثبت اطلاعات...");
     try {
       if (data && studentInfo) {
         const { advisor, supervisor, ...restData } = data;
@@ -281,26 +281,26 @@ export function EditStudentDialog() {
                 }
               );
             } catch (error: unknown) {
-              toast.dismiss(loadingToastId);
+              showToast.dismiss(loadingToastId);
               const errorMessage =
                 error instanceof Error ? error.message : "Unknown error";
-              toast.error(`خطا در تغییر مشاور. ${errorMessage}`);
+              showToast.error(`خطا در تغییر مشاور. ${errorMessage}`);
               return;
             }
           }
         }
 
-        toast.dismiss(loadingToastId);
-        toast.success("ویرایش اطلاعات با موفقیت انجام شد!");
+        showToast.dismiss(loadingToastId);
+        showToast.success("ویرایش اطلاعات با موفقیت انجام شد!");
         setTimeout(() => {
           window.location.reload();
         }, 1200);
       }
     } catch (error: unknown) {
-      toast.dismiss(loadingToastId);
+      showToast.dismiss(loadingToastId);
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
-      toast.error(`خطا در ویرایش اطلاعات. ${errorMessage}`);
+      showToast.error(`خطا در ویرایش اطلاعات. ${errorMessage}`);
     }
   };
 

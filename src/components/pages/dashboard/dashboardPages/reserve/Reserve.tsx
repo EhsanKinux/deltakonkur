@@ -12,9 +12,9 @@ import TopRight from "./form/topright/TopRight";
 
 import { submit_student_register_service } from "@/lib/apis/reserve/service";
 
+import showToast from "@/components/ui/toast";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import PlansType from "./form/down/PlansType";
 
 interface CustomError extends Error {
@@ -68,7 +68,7 @@ const Reserve = () => {
       solar_date_year: year.toString(),
     };
 
-    const loadingToastId = toast.loading("در حال انجام عملیات ثبت...");
+    const loadingToastId = showToast.loading("در حال انجام عملیات ثبت...");
 
     try {
       await submit_student_register_service(transformedData);
@@ -76,10 +76,10 @@ const Reserve = () => {
       // Reset form on successful registration
       form.reset();
 
-      toast.dismiss(loadingToastId);
-      toast.success("ثبت نام با موفقیت انجام شد!");
+      showToast.dismiss(loadingToastId);
+      showToast.success("ثبت نام با موفقیت انجام شد!");
     } catch (error) {
-      toast.dismiss(loadingToastId);
+      showToast.dismiss(loadingToastId);
       // console.error("API call failed:", error);
 
       // Parsing the error message
@@ -116,7 +116,7 @@ const Reserve = () => {
         }
       }
 
-      toast.error(errorMessage);
+      showToast.error(errorMessage);
     } finally {
       setIsloading(false);
     }

@@ -7,12 +7,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import showToast from "@/components/ui/toast";
 import { IAdvisorContent } from "@/functions/hooks/content/interface";
 import { useContent } from "@/functions/hooks/content/useContent";
 import { IDelivered } from "@/lib/apis/content/interface";
 import { useRef } from "react";
 // import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 const DeliveredConfirmationDialog = ({ data }: { data: IAdvisorContent }) => {
   // const navigate = useNavigate();
@@ -21,7 +21,7 @@ const DeliveredConfirmationDialog = ({ data }: { data: IAdvisorContent }) => {
   const { sendContentDelivered, loading } = useContent(); // Destructure the required function from the hook
 
   const handleConfirm = async () => {
-    const loadingToastId = toast.loading("در حال انجام عملیات ثبت...");
+    const loadingToastId = showToast.loading("در حال انجام عملیات ثبت...");
     try {
       const currentISODate = new Date().toISOString();
       const { id, advisor, subject } = data;
@@ -35,19 +35,19 @@ const DeliveredConfirmationDialog = ({ data }: { data: IAdvisorContent }) => {
       };
       await sendContentDelivered(modifiedData);
       dialogCloseRef.current?.click();
-      toast.dismiss(loadingToastId);
-      toast.success("وضعیت ارسال با موفقیت به‌روزرسانی شد.");
+      showToast.dismiss(loadingToastId);
+      showToast.success("وضعیت ارسال با موفقیت به‌روزرسانی شد.");
       // navigate("/dashboard/content/sendMessage");
       setTimeout(() => {
         window.location.reload();
       }, 2000);
     } catch (error) {
-      toast.dismiss(loadingToastId);
+      showToast.dismiss(loadingToastId);
       let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";
       if (error instanceof Error) {
         errorMessage = error.message;
       }
-      toast.error(errorMessage);
+      showToast.error(errorMessage);
     }
   };
 
@@ -56,7 +56,8 @@ const DeliveredConfirmationDialog = ({ data }: { data: IAdvisorContent }) => {
       <DialogHeader>
         <DialogTitle>تایید ارسال موضوع مشاور</DialogTitle>
         <DialogDescription>
-          درصورتی که مشاور موضوع مطرح شده را به واحد محتوا ارسال کرده است تایید کنید!
+          درصورتی که مشاور موضوع مطرح شده را به واحد محتوا ارسال کرده است تایید
+          کنید!
         </DialogDescription>
       </DialogHeader>
       <div className="py-4">

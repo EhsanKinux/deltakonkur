@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { toast } from "sonner";
+import showToast from "@/components/ui/toast";
 import { submit_user_register_form } from "@/lib/apis/users/service";
+import { registerUserFormSchema } from "@/lib/schema/Schema";
+import { useState } from "react";
+import { z } from "zod";
 import FirstForm from "./FirstForm";
 import SecondForm from "./SecondForm";
-import { z } from "zod";
-import { registerUserFormSchema } from "@/lib/schema/Schema";
 
 const formSchema = registerUserFormSchema();
 type UserData = z.infer<typeof formSchema>;
@@ -32,7 +32,9 @@ const RegisterUser = () => {
     try {
       const response = await submit_user_register_form(data);
       if (response && response.id) {
-        toast.success(`اطلاعات ${data.first_name} ${data.last_name} با موفقیت ثبت شد`);
+        showToast.success(
+          `اطلاعات ${data.first_name} ${data.last_name} با موفقیت ثبت شد`
+        );
         setUserId(response.id);
         setStep(2);
         console.log(response);
@@ -57,7 +59,12 @@ const RegisterUser = () => {
       } else {
         try {
           const errorJson = JSON.parse(error.message);
-          if (errorJson.national_id && errorJson.national_id.includes("user with this national id already exists.")) {
+          if (
+            errorJson.national_id &&
+            errorJson.national_id.includes(
+              "user with this national id already exists."
+            )
+          ) {
             errorMessage = "این کاربر با این کد ملی در حال حاظر وجود دارد!";
           }
         } catch (parseError) {
@@ -65,7 +72,7 @@ const RegisterUser = () => {
         }
       }
     }
-    toast.error(errorMessage);
+    showToast.error(errorMessage);
   };
 
   return (
@@ -73,7 +80,9 @@ const RegisterUser = () => {
       <div className="w-full bg-slate-400 rounded-b-full flex justify-center items-center gap-3 flex-col p-5">
         <h3 className="text-3xl text-white font-bold">افزودن کاربر جدید</h3>
       </div>
-      {step === 1 && <FirstForm onSubmit={handleFirstFormSubmit} isLoading={isLoading} />}
+      {step === 1 && (
+        <FirstForm onSubmit={handleFirstFormSubmit} isLoading={isLoading} />
+      )}
       {step === 2 && <SecondForm userId={userId} />}
     </section>
   );

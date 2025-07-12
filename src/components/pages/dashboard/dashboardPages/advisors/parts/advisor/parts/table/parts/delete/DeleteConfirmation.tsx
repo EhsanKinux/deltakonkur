@@ -6,8 +6,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import showToast from "@/components/ui/toast";
 import { fetchInstance } from "@/lib/apis/fetch-config";
-import { toast } from "sonner";
 import { FormEntry } from "../../interfaces";
 
 const DeleteConfirmation = ({
@@ -20,7 +20,7 @@ const DeleteConfirmation = ({
   const handleDeleteConfirm = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    toast.promise(
+    showToast.promise(
       fetchInstance(`api/advisor/advisors/${formData?.id}/`, {
         method: "DELETE",
       }),
@@ -33,22 +33,23 @@ const DeleteConfirmation = ({
           }, 1500);
           return "حذف با موفقیت انجام شد!";
         },
-        error: (err) => {
+        error: (err: unknown) => {
           // err is likely an Error with a string message (possibly JSON)
           if (err && typeof err === "object" && "message" in err) {
+            const errorMessage = (err as { message: string }).message;
             try {
-              const parsed = JSON.parse(err.message);
+              const parsed = JSON.parse(errorMessage);
               if (parsed && typeof parsed === "object" && "message" in parsed) {
-                return <p className="p-3">{"خطا: " + parsed.message}</p>;
+                return "خطا: " + (parsed as { message: string }).message;
               }
             } catch {
               // Not JSON, just show the message
-              return err.message?.includes("detail")
-                ? "خطا: " + err.message.split(`"`)[3]
+              return errorMessage.includes("detail")
+                ? "خطا: " + errorMessage.split(`"`)[3]
                 : "خطایی رخ داده است";
             }
-            return err.message?.includes("detail")
-              ? "خطا: " + err.message.split(`"`)[3]
+            return errorMessage.includes("detail")
+              ? "خطا: " + errorMessage.split(`"`)[3]
               : "خطایی رخ داده است";
           }
           return "خطایی رخ داده است";

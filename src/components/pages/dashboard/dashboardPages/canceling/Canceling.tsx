@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import showToast from "@/components/ui/toast";
 import { authStore } from "@/lib/store/authStore";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
 import { FormEntry } from "../advisors/parts/student/table/interfaces";
 import { stColumns } from "./table/CancelingColumnDef";
 import { CancelingTable } from "./table/CancelingTable";
@@ -56,7 +56,7 @@ const Canceling = () => {
       });
 
       if (data.length === 0) {
-        toast.warning("دانش‌آموزی با این نام یافت نشد");
+        showToast.warning("دانش‌آموزی با این نام یافت نشد");
       }
 
       const formattedData = data.results?.map((student: FormEntry) => ({
@@ -93,7 +93,7 @@ const Canceling = () => {
 
   const handleSearch = () => {
     if (!firstName && !lastName) {
-      toast.warning("لطفاً حداقل یکی از فیلدها را پر کنید.");
+      showToast.warning("لطفاً حداقل یکی از فیلدها را پر کنید.");
       return;
     }
 

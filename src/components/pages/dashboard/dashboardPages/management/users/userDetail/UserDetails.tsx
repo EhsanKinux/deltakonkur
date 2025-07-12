@@ -1,19 +1,19 @@
+import backIcon from "@/assets/icons/back.svg";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import showToast from "@/components/ui/toast";
+import { useUsers } from "@/functions/hooks/usersList/useUsers";
+import { update_user_info } from "@/lib/apis/users/service";
 import { updateUserFormSchema } from "@/lib/schema/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { z } from "zod";
+import { IUserDetail } from "./interface";
 import CustomUserDetailInput from "./parts/CustomUserDetailInput";
 import UserDetailSelectRoles from "./parts/selectRoles/UserDetailSelectRoles";
-import { Loader2 } from "lucide-react";
-import { z } from "zod";
-import { useUsers } from "@/functions/hooks/usersList/useUsers";
-import { IUserDetail } from "./interface";
-import { toast } from "sonner";
-import { update_user_info } from "@/lib/apis/users/service";
-import backIcon from "@/assets/icons/back.svg";
 
 const UserDetails = () => {
   const { userId } = useParams();
@@ -59,15 +59,17 @@ const UserDetails = () => {
         id: String(userInfo.id),
       };
       // console.log(modifiedData);
-      const loadingToastId = toast.loading("در حال انجام عملیات ویرایش...");
+      const loadingToastId = showToast.loading("در حال انجام عملیات ویرایش...");
       try {
         const response = await update_user_info(modifiedData);
         if (response) {
-          toast.dismiss(loadingToastId);
-          toast.success(`ثبت ${modifiedData.first_name} ${modifiedData.last_name} با موفقیت انجام شد`);
+          showToast.dismiss(loadingToastId);
+          showToast.success(
+            `ثبت ${modifiedData.first_name} ${modifiedData.last_name} با موفقیت انجام شد`
+          );
         }
       } catch (error) {
-        toast.dismiss(loadingToastId);
+        showToast.dismiss(loadingToastId);
         console.error("Error:", error);
 
         // Parsing the error message
@@ -83,7 +85,7 @@ const UserDetails = () => {
           }
         }
 
-        toast.error(errorMessage);
+        showToast.error(errorMessage);
       } finally {
         setIsloading(false);
         form.reset();
@@ -115,9 +117,17 @@ const UserDetails = () => {
           </h3>
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 w-3/4 px-8">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="mt-4 w-3/4 px-8"
+          >
             <div className="flex flex-col gap-5">
-              <CustomUserDetailInput control={form.control} name="first_name" label="نام" placeHolder="نام کاربر" />
+              <CustomUserDetailInput
+                control={form.control}
+                name="first_name"
+                label="نام"
+                placeHolder="نام کاربر"
+              />
               <CustomUserDetailInput
                 control={form.control}
                 name="last_name"
@@ -143,7 +153,10 @@ const UserDetails = () => {
             </div>
 
             <div className="flex justify-center items-center flex-col md:flex-row w-full pt-4 gap-4">
-              <Button type="submit" className="form-btn w-full hover:bg-blue-800">
+              <Button
+                type="submit"
+                className="form-btn w-full hover:bg-blue-800"
+              >
                 {isloading ? (
                   <>
                     <Loader2 size={20} className="animate-spin" />

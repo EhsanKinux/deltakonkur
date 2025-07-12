@@ -1,7 +1,7 @@
+import showToast from "@/components/ui/toast";
 import { remove_user_roles, submit_user_roles } from "@/lib/apis/users/service";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Select, { MultiValue } from "react-select";
-import { toast } from "sonner";
 
 interface RoleOption {
   value: string;
@@ -13,12 +13,16 @@ interface UserDetailSelectRolesProps {
   initialRoles: number[]; // Prop for initial roles as an array of numbers
 }
 
-const UserDetailSelectRoles = ({ userId, initialRoles }: UserDetailSelectRolesProps) => {
+const UserDetailSelectRoles = ({
+  userId,
+  initialRoles,
+}: UserDetailSelectRolesProps) => {
   // Convert initial roles to strings for the Select component
   const initialRoleValues = initialRoles.map(String);
 
   // Use useState to manage role selection independently
-  const [selectedRoles, setSelectedRoles] = useState<string[]>(initialRoleValues);
+  const [selectedRoles, setSelectedRoles] =
+    useState<string[]>(initialRoleValues);
 
   const roles: RoleOption[] = [
     { value: "0", label: "مدیرکل" },
@@ -42,7 +46,9 @@ const UserDetailSelectRoles = ({ userId, initialRoles }: UserDetailSelectRolesPr
 
     // Determine if a role was added or removed
     const newRole = selectedValues.find((val) => !selectedRoles.includes(val));
-    const removedRole = selectedRoles.find((val) => !selectedValues.includes(val));
+    const removedRole = selectedRoles.find(
+      (val) => !selectedValues.includes(val)
+    );
 
     if (userId !== null) {
       try {
@@ -56,7 +62,7 @@ const UserDetailSelectRoles = ({ userId, initialRoles }: UserDetailSelectRolesPr
           });
 
           if (response) {
-            toast.success("نقش کاربر با موفقیت ثبت شد");
+            showToast.success("نقش کاربر با موفقیت ثبت شد");
           }
         }
 
@@ -70,13 +76,13 @@ const UserDetailSelectRoles = ({ userId, initialRoles }: UserDetailSelectRolesPr
           });
 
           if (response) {
-            toast.success("نقش کاربر با موفقیت حذف شد");
+            showToast.success("نقش کاربر با موفقیت حذف شد");
           }
         }
 
         setSelectedRoles(selectedValues); // Update the local state
       } catch (error) {
-        toast.error("خطا در تغییر نقش کاربر، لطفا دوباره تلاش کنید");
+        showToast.error("خطا در تغییر نقش کاربر، لطفا دوباره تلاش کنید");
         console.error("Error:", error);
       }
     } else {
@@ -87,8 +93,8 @@ const UserDetailSelectRoles = ({ userId, initialRoles }: UserDetailSelectRolesPr
   return (
     <div className="flex flex-col justify-center items-center w-full">
       <p className="font-semibold text-red-600">
-        دقت داشته باشید با انتخاب هر یک از نقش های کاربر، در لحظه انتخاب اعمال میشود و درصورت حذف آن در لحظه نقش کاربر
-        حذف میگردد!&ensp;
+        دقت داشته باشید با انتخاب هر یک از نقش های کاربر، در لحظه انتخاب اعمال
+        میشود و درصورت حذف آن در لحظه نقش کاربر حذف میگردد!&ensp;
         <span className="font-bold text-sm text-slate-500">
           ( انتخاب نوع کاربر مشاور حتما باید در واحد مشاوران ثبت گردد)
         </span>

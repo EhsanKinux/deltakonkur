@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
-import { StudentWithDetails } from "../../../advisors/parts/advisor/parts/advisorDetail/interface";
 import reduceIcon from "@/assets/icons/archive-minus.svg";
-import { toast } from "sonner";
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import showToast from "@/components/ui/toast";
 import { fetchInstance } from "@/lib/apis/fetch-config";
+import { useState } from "react";
+import { StudentWithDetails } from "../../../advisors/parts/advisor/parts/advisorDetail/interface";
 
 const ActionButtons = ({ formData }: { formData: StudentWithDetails }) => {
   const [loading, setLoading] = useState(false);
@@ -13,28 +13,31 @@ const ActionButtons = ({ formData }: { formData: StudentWithDetails }) => {
     setLoading(true);
 
     // Show loading toast notification
-    const loadingToastId = toast.loading("در حال پردازش کسر...");
+    const loadingToastId = showToast.loading("در حال پردازش کسر...");
     try {
       const id = formData.wholeId;
 
-      const response = await fetchInstance(`api/register/student-advisors/${id}/`, {
-        method: "PATCH",
-        body: JSON.stringify({ deduction: true }),
-      });
+      const response = await fetchInstance(
+        `api/register/student-advisors/${id}/`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({ deduction: true }),
+        }
+      );
 
       if (!response) {
         throw new Error("Failed to apply deduction");
       }
 
-      toast.dismiss(loadingToastId);
-      toast.success("کسر با موفقیت اعمال شد!");
+      showToast.dismiss(loadingToastId);
+      showToast.success("کسر با موفقیت اعمال شد!");
 
       setTimeout(() => {
         window.location.reload();
       }, 2000);
     } catch (error) {
-      toast.dismiss(loadingToastId);
-      toast.error("خطا در اعمال کسر: " + (error || "مشکلی رخ داده است"));
+      showToast.dismiss(loadingToastId);
+      showToast.error("خطا در اعمال کسر: " + (error || "مشکلی رخ داده است"));
       console.error("Error applying deduction:", error);
     } finally {
       setLoading(false);
@@ -44,7 +47,9 @@ const ActionButtons = ({ formData }: { formData: StudentWithDetails }) => {
   return (
     <div className="flex">
       <Button
-        className={`cursor-pointer flex gap-2 hover:!bg-red-200 rounded-[5px] ${loading ? "disabled:opacity-50" : ""}`}
+        className={`cursor-pointer flex gap-2 hover:!bg-red-200 rounded-[5px] ${
+          loading ? "disabled:opacity-50" : ""
+        }`}
         onClick={handleApplyDeduction}
         disabled={loading}
       >

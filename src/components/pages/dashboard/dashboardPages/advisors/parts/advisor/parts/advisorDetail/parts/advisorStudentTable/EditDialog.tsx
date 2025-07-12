@@ -17,7 +17,7 @@ import CustomEditInput from "./parts/CustomEditInput";
 import FieldGrade from "./parts/fieldAndGrade/FieldGrade";
 
 import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
-import { toast } from "sonner";
+import { showToast } from "@/components/ui/toast";
 
 import { StudentWithDetails } from "../../interface";
 import DateAndTime2 from "./parts/DateAndTime2";
@@ -188,7 +188,7 @@ export function EditStudentDialog({
             } catch (error: unknown) {
               const errorMessage =
                 error instanceof Error ? error.message : "Unknown error";
-              toast.error(
+              showToast.error(
                 `خطا در تغییر مشاور. ${
                   errorMessage == "Request failed with status code 500"
                     ? "امکان تعویض مشاور نیست. لطفا ابتدا در واحد حسابداری دانش آموز را متوقف کنید! یا موارد مشابه را چک کنید. در غیر اینصورت این خطا مربوط به ارتباط با سرور است، بعدا تلاش کنید."
@@ -202,10 +202,10 @@ export function EditStudentDialog({
         // }
 
         dialogCloseRef.current?.click();
-        toast.success("ویرایش اطلاعات دانش آموز با موفقیت انجام شد.");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1300);
+        showToast.success("ویرایش اطلاعات دانش آموز با موفقیت انجام شد.");
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1300);
       }
     } catch (error) {
       let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";
@@ -219,7 +219,7 @@ export function EditStudentDialog({
             "امکان تعویض مشاور نیست. لطفا ابتدا در واحد حسابداری دانش آموز را متوقف کنید!";
         }
       }
-      toast.error(errorMessage);
+      showToast.error(errorMessage);
     }
   };
 
