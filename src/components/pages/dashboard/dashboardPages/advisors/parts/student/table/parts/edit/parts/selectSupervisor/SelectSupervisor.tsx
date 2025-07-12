@@ -33,6 +33,9 @@ type FormValues = {
   solar_date_day: string;
   solar_date_month: string;
   solar_date_year: string;
+  supervisor_solar_date_day: string;
+  supervisor_solar_date_month: string;
+  supervisor_solar_date_year: string;
 };
 
 type FormData = {

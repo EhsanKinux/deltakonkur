@@ -135,7 +135,8 @@ export function EditStudentDialog({
             const now = new Date();
             const jDateString = `${solar_date_year}/${solar_date_month}/${solar_date_day} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
             const m = moment(jDateString, "jYYYY/jM/jD H:m:s");
-            started_date = m.toISOString();
+            // Use local time instead of UTC to avoid timezone issues
+            started_date = m.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
           } catch (err) {
             console.warn("Invalid Solar date. Using current date instead.");
           }

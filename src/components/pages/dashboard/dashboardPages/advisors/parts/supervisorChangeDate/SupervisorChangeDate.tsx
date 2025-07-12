@@ -22,7 +22,7 @@ import { useEffect } from "react";
 import moment from "moment-jalaali";
 moment.loadPersian({ dialect: "persian-modern" });
 
-const AdvisorChangeDate = ({
+const SupervisorChangeDate = ({
   form,
 }: {
   form: UseFormReturn<
@@ -51,12 +51,12 @@ const AdvisorChangeDate = ({
   >;
 }) => {
   const selectedDate =
-    form.watch("solar_date_day") &&
-    form.watch("solar_date_month") &&
-    form.watch("solar_date_year")
-      ? `${form.watch("solar_date_year")}/${form.watch(
-          "solar_date_month"
-        )}/${form.watch("solar_date_day")}`
+    form.watch("supervisor_solar_date_day") &&
+    form.watch("supervisor_solar_date_month") &&
+    form.watch("supervisor_solar_date_year")
+      ? `${form.watch("supervisor_solar_date_year")}/${form.watch(
+          "supervisor_solar_date_month"
+        )}/${form.watch("supervisor_solar_date_day")}`
       : null;
 
   // Set current Persian date as default when component mounts
@@ -70,9 +70,9 @@ const AdvisorChangeDate = ({
     const shamsiDate = convertToShamsi(currentDateTime);
     const [day, month, year] = shamsiDate.split(" / ").map(Number);
 
-    form.setValue("solar_date_day", day.toString());
-    form.setValue("solar_date_month", month.toString());
-    form.setValue("solar_date_year", year.toString());
+    form.setValue("supervisor_solar_date_day", day.toString());
+    form.setValue("supervisor_solar_date_month", month.toString());
+    form.setValue("supervisor_solar_date_year", year.toString());
   };
 
   // Utility function to format Jalali date as '27-ام اسفند 1403'
@@ -88,11 +88,11 @@ const AdvisorChangeDate = ({
   return (
     <FormField
       control={form.control}
-      name="solar_date_day"
+      name="supervisor_solar_date_day"
       render={() => (
         <FormItem className="flex justify-center flex-col w-full">
           <FormLabel className="pt-2 font-bold text-slate-500">
-            تاریخ تغییر مشاور:
+            تاریخ تغییر ناظر:
           </FormLabel>
           <div className="flex gap-2">
             <Popover>
@@ -108,12 +108,12 @@ const AdvisorChangeDate = ({
                     <CalendarIcon className="h-4 w-4 opacity-50" />
                     {selectedDate ? (
                       formatJalaliDateWithSuffix(
-                        form.watch("solar_date_year") || "",
-                        form.watch("solar_date_month") || "",
-                        form.watch("solar_date_day") || ""
+                        form.watch("supervisor_solar_date_year") || "",
+                        form.watch("supervisor_solar_date_month") || "",
+                        form.watch("supervisor_solar_date_day") || ""
                       )
                     ) : (
-                      <span>انتخاب تاریخ تغییر مشاور</span>
+                      <span>انتخاب تاریخ تغییر ناظر</span>
                     )}
                   </Button>
                 </FormControl>
@@ -128,9 +128,12 @@ const AdvisorChangeDate = ({
                       const persianMonth = date.month.toString();
                       const persianYear = date.year.toString();
 
-                      form.setValue("solar_date_day", persianDay);
-                      form.setValue("solar_date_month", persianMonth);
-                      form.setValue("solar_date_year", persianYear);
+                      form.setValue("supervisor_solar_date_day", persianDay);
+                      form.setValue(
+                        "supervisor_solar_date_month",
+                        persianMonth
+                      );
+                      form.setValue("supervisor_solar_date_year", persianYear);
                     }
                   }}
                   calendar={persian}
@@ -156,4 +159,4 @@ const AdvisorChangeDate = ({
   );
 };
 
-export default AdvisorChangeDate;
+export default SupervisorChangeDate;

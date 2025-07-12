@@ -97,6 +97,9 @@ export const editStudentFormSchema = () =>
     solar_date_day: z.string().optional(),
     solar_date_month: z.string().optional(),
     solar_date_year: z.string().optional(),
+    supervisor_solar_date_day: z.string().optional(),
+    supervisor_solar_date_month: z.string().optional(),
+    supervisor_solar_date_year: z.string().optional(),
   });
 
 export const editStudentFormSchemaInAdvisor = () =>

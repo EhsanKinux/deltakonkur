@@ -34,6 +34,7 @@ import SelectStudentAdvisor from "./parts/selectAdvisor/SelectStudentAdvisor";
 import TellNumbers from "./parts/tel-numbers/TellNumbers";
 import SelectStudentSupervisor from "./parts/selectSupervisor/SelectSupervisor";
 import AdvisorChangeDate from "../../../../advisorChangeDate/AdvisorChangeDate";
+import SupervisorChangeDate from "../../../../supervisorChangeDate/SupervisorChangeDate";
 
 export function EditStudentDialog() {
   const { studentInfo, updateStudentInfo } = useStudentList();
@@ -58,6 +59,9 @@ export function EditStudentDialog() {
       solar_date_day: "",
       solar_date_month: "",
       solar_date_year: "",
+      supervisor_solar_date_day: "",
+      supervisor_solar_date_month: "",
+      supervisor_solar_date_year: "",
     },
   });
 
@@ -96,43 +100,85 @@ export function EditStudentDialog() {
     studentInfo &&
     String(studentInfo.advisor_id) !== watchedAdvisor;
 
+  const watchedSupervisor = form.watch("supervisor");
+  const isDifferentSupervisor =
+    watchedSupervisor &&
+    studentInfo &&
+    String(studentInfo.supervisor_id) !== watchedSupervisor;
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const loadingToastId = toast.loading("در حال ثبت اطلاعات...");
     try {
       if (data && studentInfo) {
         const { advisor, supervisor, ...restData } = data;
 
-        // Convert created to Jalali (solar) date fields
-        let created_solar_day = data.solar_date_day;
-        let created_solar_month = data.solar_date_month;
-        let created_solar_year = data.solar_date_year;
-        if (data.created) {
-          const shamsi = convertToShamsi2(data.created); // yyyy-mm-dd
-          const [jy, jm, jd] = shamsi.split("-");
-          created_solar_year = jy;
-          created_solar_month = jm;
-          created_solar_day = jd;
+        // Check if only advisor or supervisor changed
+        const isOnlyAdvisorChanged =
+          isDifferentAdvisor && !isDifferentSupervisor;
+        const isOnlySupervisorChanged =
+          isDifferentSupervisor && !isDifferentAdvisor;
+        const isOnlyAdvisorOrSupervisorChanged =
+          isOnlyAdvisorChanged || isOnlySupervisorChanged;
+
+        // Check if other fields have changed
+        const otherFieldsChanged =
+          data.first_name !== studentInfo.first_name ||
+          data.last_name !== studentInfo.last_name ||
+          data.school !== studentInfo.school ||
+          data.phone_number !== studentInfo.phone_number ||
+          data.home_phone !== (studentInfo.home_phone || "") ||
+          data.parent_phone !== (studentInfo.parent_phone || "") ||
+          data.field !== (studentInfo.field || "") ||
+          data.grade !== String(studentInfo.grade || "") ||
+          data.created !== studentInfo.created ||
+          data.package_price !== String(studentInfo.package_price);
+
+        // Extract supervisor date fields for use in supervisor change section
+        const {
+          supervisor_solar_date_day,
+          supervisor_solar_date_month,
+          supervisor_solar_date_year,
+          ...studentData
+        } = restData;
+
+        // If only advisor or supervisor changed, skip student data update
+        if (isOnlyAdvisorOrSupervisorChanged && !otherFieldsChanged) {
+          console.log(
+            "Only advisor or supervisor changed, skipping student data update"
+          );
+        } else {
+          // Convert created to Jalali (solar) date fields
+          let created_solar_day = data.solar_date_day;
+          let created_solar_month = data.solar_date_month;
+          let created_solar_year = data.solar_date_year;
+          if (data.created) {
+            const shamsi = convertToShamsi2(data.created); // yyyy-mm-dd
+            const [jy, jm, jd] = shamsi.split("-");
+            created_solar_year = jy;
+            created_solar_month = jm;
+            created_solar_day = jd;
+          }
+
+          const modifiedData: ISubmitStudentRegisterService = {
+            ...studentData,
+            id: String(studentInfo.id),
+            first_name: data.first_name || "",
+            last_name: data.last_name || "",
+            school: data.school || "",
+            phone_number: data.phone_number || "",
+            home_phone: data.home_phone || "",
+            parent_phone: data.parent_phone || "",
+            field: data.field || "",
+            grade: data.grade || "",
+            created: String(data.created),
+            package_price: data.package_price || "",
+            solar_date_day: created_solar_day,
+            solar_date_month: created_solar_month,
+            solar_date_year: created_solar_year,
+          };
+
+          await updateStudentInfo(modifiedData);
         }
-
-        const modifiedData: ISubmitStudentRegisterService = {
-          ...restData,
-          id: String(studentInfo.id),
-          first_name: data.first_name || "",
-          last_name: data.last_name || "",
-          school: data.school || "",
-          phone_number: data.phone_number || "",
-          home_phone: data.home_phone || "",
-          parent_phone: data.parent_phone || "",
-          field: data.field || "",
-          grade: data.grade || "",
-          created: String(data.created),
-          package_price: data.package_price || "",
-          solar_date_day: created_solar_day,
-          solar_date_month: created_solar_month,
-          solar_date_year: created_solar_year,
-        };
-
-        await updateStudentInfo(modifiedData);
 
         if (supervisor) {
           // Check if supervisor has changed
@@ -142,15 +188,41 @@ export function EditStudentDialog() {
 
           if (!isTheSameSupervisor) {
             try {
-              const currentTime = new Date().toISOString();
+              let supervisor_started_date = new Date().toISOString();
+
+              if (
+                supervisor_solar_date_day &&
+                supervisor_solar_date_month &&
+                supervisor_solar_date_year
+              ) {
+                try {
+                  const now = new Date();
+                  const jDateString = `${supervisor_solar_date_year}/${supervisor_solar_date_month}/${supervisor_solar_date_day} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+                  const m = moment(jDateString, "jYYYY/jM/jD H:m:s");
+                  // Use local time instead of UTC to avoid timezone issues
+                  supervisor_started_date = m.format(
+                    "YYYY-MM-DDTHH:mm:ss.SSS[Z]"
+                  );
+                } catch (err) {
+                  console.warn(
+                    "Invalid Supervisor Solar date. Using current date instead."
+                  );
+                }
+              }
+
               await axios.post(
                 `${BASE_API_URL}api/supervisor/student/`,
                 {
-                  ended_at: currentTime,
+                  ended_at: supervisor_started_date,
                   id: 0,
                   student_id: studentInfo.id,
                   current_supervisor: 0,
                   new_supervisor: supervisor || "",
+                  supervisor_solar_date_day: supervisor_solar_date_day || "",
+                  supervisor_solar_date_month:
+                    supervisor_solar_date_month || "",
+                  supervisor_solar_date_year: supervisor_solar_date_year || "",
+                  supervisor_started_date: supervisor_started_date,
                 },
                 {
                   headers: {
@@ -181,7 +253,8 @@ export function EditStudentDialog() {
             const now = new Date();
             const jDateString = `${solar_date_year}/${solar_date_month}/${solar_date_day} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
             const m = moment(jDateString, "jYYYY/jM/jD H:m:s");
-            started_date = m.toISOString();
+            // Use local time instead of UTC to avoid timezone issues
+            started_date = m.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
           } catch (err) {
             console.warn("Invalid Solar date. Using current date instead.");
           }
@@ -219,9 +292,9 @@ export function EditStudentDialog() {
 
         toast.dismiss(loadingToastId);
         toast.success("ویرایش اطلاعات با موفقیت انجام شد!");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1200);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1200);
       }
     } catch (error: unknown) {
       toast.dismiss(loadingToastId);
@@ -263,6 +336,7 @@ export function EditStudentDialog() {
               <SelectStudentAdvisor form={form} student={studentInfo} />
               {isDifferentAdvisor && <AdvisorChangeDate form={form} />}
               <SelectStudentSupervisor form={form} student={studentInfo} />
+              {isDifferentSupervisor && <SupervisorChangeDate form={form} />}
               <PlansType
                 name="package_price"
                 control={form.control}
