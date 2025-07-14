@@ -36,7 +36,7 @@ export function EditStudentDialog({
   formData: StudentWithDetails;
 }) {
   const formSchema = editStudentFormSchemaInAdvisor();
-  const form = useForm({
+  const form = useForm<z.infer<ReturnType<typeof editStudentFormSchemaInAdvisor>>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       id: "",
@@ -276,7 +276,7 @@ export function EditStudentDialog({
                 <DateAndTime2 form={form} />
                 {/* <SelectStudentAdvisor form={form} memoizedAdvisors={advisors} /> */}
                 <SelectStudentAdvisor
-                  form={form}
+                  form={form as any}
                   student={{
                     id: String(formData.id),
                     date_of_birth: String(formData.date_of_birth),
