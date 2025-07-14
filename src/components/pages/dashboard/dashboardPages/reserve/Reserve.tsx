@@ -16,6 +16,7 @@ import showToast from "@/components/ui/toast";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { Loader2 } from "lucide-react";
 import PlansType from "./form/down/PlansType";
+import SelectSalesManager from "./form/sales/SelectSalesManager";
 
 interface CustomError extends Error {
   response?: {
@@ -123,55 +124,130 @@ const Reserve = () => {
   };
 
   return (
-    <section className="flex flex-col items-center justify-center bg-slate-100 rounded-xl shadow-form px-5 py-10 xl:p-5">
+    <section className="flex flex-col items-center justify-center bg-slate-100 rounded-2xl shadow-form px-5 py-10 xl:p-10 mx-auto w-full">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-          <div className="flex flex-col justify-between items-center gap-3 py-10 ">
-            <div className="flex flex-col xl:flex-row w-full gap-2 xl:gap-10">
-              <div className="w-full xl:w-1/2 flex gap-2 justify-center">
-                <h1 className="text-4xl">ثبت نام</h1>
-              </div>
-
-              {/* personal info */}
-              <div className="w-full xl:w-1/2 flex flex-col justify-center items-center gap-3 bg-slate-200 rounded-xl p-5">
-                <h2 className="text-2xl">اطلاعات شخصی</h2>
-                <TopRight form={form} />
-                {/* <BirthDate form={form} /> */}
-              </div>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full"
+          aria-label="فرم ثبت نام دانش آموز"
+        >
+          <div className="flex flex-col gap-8 py-6">
+            {/* Header */}
+            <div className="flex flex-col items-center gap-2 pb-4 border-b border-slate-300">
+              <h1 className="text-4xl font-bold text-blue-900">
+                ثبت نام دانش آموز
+              </h1>
+              <p className="text-gray-600 text-lg">
+                لطفاً اطلاعات زیر را با دقت وارد کنید.
+              </p>
             </div>
 
-            <div className="flex flex-col xl:flex-row gap-2 xl:gap-10 w-full">
-              {/* contact info */}
-              <div className="w-full xl:w-1/2 flex flex-col items-center gap-3 bg-slate-200 rounded-xl p-5">
-                <h2 className="text-2xl">اطلاعات ارتباطی</h2>
-                <TopLeft form={form} />
-              </div>
+            {/* Personal & Contact Info */}
 
-              {/* education info */}
-              <div className="w-full xl:w-1/2 flex flex-col justify-between gap-3">
-                <div className="flex h-full flex-col gap-5 items-center justify-center bg-slate-200 rounded-xl py-5 px-10">
-                  <h2 className="text-2xl">اطلاعات تحصیلی</h2>
-                  <Down form={form} />
-                  <PlansType
-                    name="package_price"
-                    control={form.control}
-                    label="هزینه ی بسته"
-                  />
+            <div className="flex flex-col xl:flex-row gap-4 xl:gap-10 w-full">
+              {/* Personal Info */}
+              <section
+                className="w-full xl:w-1/2 flex flex-col items-center gap-2 bg-white rounded-xl shadow p-6"
+                aria-labelledby="personal-info-heading"
+              >
+                <div className="w-full flex flex-col gap-2 justify-center">
+                  <h2
+                    id="personal-info-heading"
+                    className="text-2xl font-semibold text-blue-800 mb-2"
+                  >
+                    اطلاعات شخصی
+                  </h2>
+                  <p className="text-gray-500 text-sm mb-4">
+                    نام، نام خانوادگی و مدرسه را وارد کنید.
+                  </p>
+                  <TopRight form={form} />
                 </div>
-                <Button
-                  type="submit"
-                  className="form-btn w-full hover:bg-blue-800"
+              </section>
+              {/* Contact info */}
+              <section
+                className="w-full xl:w-1/2 flex flex-col items-center gap-2 bg-white rounded-xl shadow p-6"
+                aria-labelledby="contact-info-heading"
+              >
+                <h2
+                  id="contact-info-heading"
+                  className="text-2xl font-semibold text-blue-800 mb-2"
                 >
-                  {isloading ? (
-                    <>
-                      <Loader2 size={20} className="animate-spin" />
-                      &nbsp; در حال ثبت...
-                    </>
-                  ) : (
-                    "ثبت نام"
-                  )}
-                </Button>
-              </div>
+                  اطلاعات ارتباطی
+                </h2>
+                <p className="text-gray-500 text-sm mb-4">
+                  شماره تماس خود و والدین را وارد کنید.
+                </p>
+                <TopLeft form={form} />
+              </section>
+            </div>
+
+            {/* Education Info & Sales-manager selection */}
+            <div className="flex flex-col xl:flex-row gap-4 xl:gap-10 w-full">
+              {/* Education info */}
+              <section
+                className="w-full xl:w-1/2 flex flex-col gap-4 bg-white rounded-xl shadow p-6"
+                aria-labelledby="education-info-heading"
+              >
+                <h2
+                  id="education-info-heading"
+                  className="text-2xl font-semibold text-blue-800 mb-2"
+                >
+                  اطلاعات تحصیلی
+                </h2>
+                <p className="text-gray-500 text-sm mb-4">
+                  رشته و مقطع تحصیلی را انتخاب کنید و هزینه بسته را وارد نمایید.
+                </p>
+                <Down form={form} />
+                <PlansType
+                  name="package_price"
+                  control={form.control}
+                  label="هزینه ی بسته (به ریال)"
+                />
+              </section>
+
+              {/* Sales manager info */}
+              <section
+                className="w-full xl:w-1/2 flex flex-col items-center gap-2 bg-white rounded-xl shadow p-6"
+                aria-labelledby="sales-manager-info-heading"
+              >
+                <h2
+                  id="sales-manager-info-heading"
+                  className="text-2xl font-semibold text-blue-800 mb-2"
+                >
+                  اطلاعات فروش
+                </h2>
+                <p className="text-gray-500 text-sm mb-4">
+                  لطفا مسئول فروش را انتخاب نمایید.
+                </p>
+                <SelectSalesManager
+                  form={form}
+                  name="sales_manager"
+                  label="انتخاب مسئول فروش"
+                />
+              </section>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex flex-col items-center gap-2 pt-4 border-t border-slate-300">
+              <Button
+                type="submit"
+                className="form-btn w-full max-w-xs py-3 text-lg font-bold rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-all"
+                disabled={isloading}
+                aria-busy={isloading}
+                aria-label="ثبت نام"
+              >
+                {isloading ? (
+                  <>
+                    <Loader2 size={20} className="animate-spin" />
+                    &nbsp; در حال ثبت...
+                  </>
+                ) : (
+                  "ثبت نام"
+                )}
+              </Button>
+              <span className="text-gray-400 text-xs">
+                با ثبت نام، شما با قوانین سایت موافقت می‌کنید.
+              </span>
             </div>
           </div>
         </form>
