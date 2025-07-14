@@ -50,7 +50,7 @@ const Sidebar = () => {
   };
 
   return (
-    <section className="min-w-[100px] max-h-screen right-0 top-0 bottom-0 flex flex-col justify-between bg-gray-900 pt-8 text-white max-md:hidden sm:p-4 xl:p-6 md:w-[240px] rounded-l-xl overflow-hidden">
+    <section className="min-w-[120px] md:w-[240px] flex-shrink-0 max-h-screen right-0 top-0 bottom-0 flex flex-col justify-between bg-gray-900 pt-8 text-white max-md:hidden sm:p-4 xl:p-6 rounded-l-xl overflow-hidden">
       <nav className="h-4/5 flex flex-col gap-4">
         {/* logo */}
         <div className="h-1/6 max-h-[60px] flex flex-col justify-center">

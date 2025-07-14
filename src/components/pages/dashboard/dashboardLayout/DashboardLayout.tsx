@@ -4,9 +4,9 @@ import DHeader from "./parts/Header/DHeader";
 
 const DashboardLayout = () => {
   return (
-    <main className="h-screen w-full font-bold md:flex bg-slate-200 overflow-x-auto">
+    <main className="h-screen w-full font-bold md:flex bg-slate-200">
       <Sidebar />
-      <div className="flex flex-col max-h-screen flex-1">
+      <div className="flex flex-col max-h-screen flex-1 md:w-1/2">
         <DHeader />
         <div
           id="dashboard-content"

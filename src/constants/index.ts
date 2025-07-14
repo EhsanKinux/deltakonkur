@@ -91,6 +91,13 @@ export const sidebarLinks = [
     roles: [0],
     children: [
       {
+        id: 100,
+        imgURL: usersIcon,
+        route: "/dashboard/management/sales-managers",
+        label: "مسئولان فروش",
+        roles: [0],
+      },
+      {
         id: 101,
         imgURL: addSquareIcon,
         route: "/dashboard/management/users/register",

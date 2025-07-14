@@ -157,6 +157,12 @@ const AuthLayout = lazy(
 const SignUp = lazy(() => import("./components/pages/auth/sign-up/SignUp.tsx"));
 const ErrorPage = lazy(() => import("./components/pages/error/ErrorPage.tsx"));
 const App = lazy(() => import("./App.tsx"));
+const SalesManagers = lazy(
+  () =>
+    import(
+      "./components/pages/dashboard/dashboardPages/management/salesManagers/SalesManagers"
+    )
+);
 
 const router = createBrowserRouter([
   {
@@ -397,6 +403,19 @@ const router = createBrowserRouter([
                 element={
                   <Suspense fallback={<Loading />}>
                     <UserDetails />
+                  </Suspense>
+                }
+                requiredRole={[0]}
+              />
+            ),
+          },
+          {
+            path: "management/sales-managers",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <SalesManagers />
                   </Suspense>
                 }
                 requiredRole={[0]}
