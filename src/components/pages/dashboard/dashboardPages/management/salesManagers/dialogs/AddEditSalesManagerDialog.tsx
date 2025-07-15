@@ -9,21 +9,79 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ISalesManager } from "../interface";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import AsyncSelect from "react-select/async";
+import axios from "axios";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import { authStore } from "@/lib/store/authStore";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormControl,
+  Form,
+} from "@/components/ui/form";
 
 interface AddEditSalesManagerDialogProps {
   open: boolean;
   onClose: () => void;
-  onSave: (manager: ISalesManager) => void;
+  onSave: (
+    manager: Omit<
+      ISalesManager,
+      "id" | "student_name" | "student_last_name" | "created_at"
+    >
+  ) => void;
   editRow: ISalesManager | null;
 }
 
-const initialState: ISalesManager = {
-  id: "",
-  first_name: "",
-  last_name: "",
-  phone_number: "",
-  email: "",
+// تعریف نوع برای گزینه دانش‌آموز
+interface StudentOption {
+  value: number;
+  label: string;
+}
+interface Student {
+  id: number;
+  first_name: string;
+  last_name: string;
+  national_number?: string;
+}
+
+const salesManagerSchema = z.object({
+  name: z.string().min(1, { message: "نام را وارد کنید" }),
+  national_number: z
+    .string()
+    .regex(/^\d{10}$/, { message: "کد ملی باید 10 رقم باشد" }),
+  student_id: z.number().min(1, { message: "دانش‌آموز را انتخاب کنید" }),
+});
+type SalesManagerFormType = z.infer<typeof salesManagerSchema>;
+
+const { accessToken } = authStore.getState();
+
+const fetchStudents = async (
+  inputValue: string,
+  page: number
+): Promise<StudentOption[]> => {
+  try {
+    const res = await axios.get(`${BASE_API_URL}api/register/students`, {
+      params: { search: inputValue, page },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.data.results.map((student: Student) => ({
+      value: student.id,
+      label: `${student.first_name} ${student.last_name} - ${
+        student.national_number || ""
+      }`,
+    }));
+  } catch (error) {
+    console.error("Error fetching students:", error);
+    return [];
+  }
 };
 
 const AddEditSalesManagerDialog = ({
@@ -32,41 +90,82 @@ const AddEditSalesManagerDialog = ({
   onSave,
   editRow,
 }: AddEditSalesManagerDialogProps) => {
-  const [form, setForm] = useState<ISalesManager>(initialState);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const firstNameRef = useRef<HTMLInputElement>(null);
+  const [studentOption, setStudentOption] = useState<StudentOption | null>(
+    null
+  );
+  const [page, setPage] = useState(1);
+  const [options, setOptions] = useState<StudentOption[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const form = useForm<SalesManagerFormType>({
+    resolver: zodResolver(salesManagerSchema),
+    defaultValues: {
+      name: editRow?.name || "",
+      national_number: editRow?.national_number || "",
+      student_id: editRow?.student_id || 0,
+    },
+  });
 
   useEffect(() => {
-    if (editRow) setForm(editRow);
-    else setForm(initialState);
-    setErrors({});
-    if (open && firstNameRef.current) {
-      setTimeout(() => firstNameRef.current?.focus(), 100);
+    if (editRow) {
+      form.reset({
+        name: editRow.name,
+        national_number: editRow.national_number,
+        student_id: editRow.student_id,
+      });
+      setStudentOption(
+        editRow.student_id
+          ? {
+              value: editRow.student_id,
+              label: `${editRow.student_name || ""} ${
+                editRow.student_last_name || ""
+              }`,
+            }
+          : null
+      );
+    } else {
+      form.reset({ name: "", national_number: "", student_id: 0 });
+      setStudentOption(null);
     }
   }, [editRow, open]);
 
-  const validate = () => {
-    const errs: { [key: string]: string } = {};
-    if (!form.first_name.trim()) errs.first_name = "نام را وارد کنید";
-    if (!form.last_name.trim()) errs.last_name = "نام خانوادگی را وارد کنید";
-    if (!form.phone_number.trim())
-      errs.phone_number = "شماره تماس را وارد کنید";
-    if (!form.email.trim()) errs.email = "ایمیل را وارد کنید";
-    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email))
-      errs.email = "ایمیل معتبر نیست";
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
+  // بارگذاری داده‌های اولیه هنگام رندر اولیه
+  useEffect(() => {
+    const loadInitialOptions = async () => {
+      setIsLoading(true);
+      const students = await fetchStudents("", 1);
+      setOptions(students);
+      setIsLoading(false);
+    };
+    loadInitialOptions();
+  }, []);
+
+  const loadOptions = (
+    inputValue: string,
+    callback: (options: StudentOption[]) => void
+  ) => {
+    setIsLoading(true);
+    setSearchQuery(inputValue);
+    setPage(1);
+    fetchStudents(inputValue, 1).then((students) => {
+      setOptions(students);
+      callback(students);
+      setIsLoading(false);
+    });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  const fetchMoreOnScroll = async () => {
+    setIsLoading(true);
+    const nextPage = page + 1;
+    const moreStudents = await fetchStudents(searchQuery, nextPage);
+    setOptions((prevOptions) => [...prevOptions, ...moreStudents]);
+    setPage(nextPage);
+    setIsLoading(false);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
-    onSave(form);
+  const handleSubmit = (data: SalesManagerFormType) => {
+    onSave(data);
   };
 
   return (
@@ -81,135 +180,114 @@ const AddEditSalesManagerDialog = ({
             هستند.
           </DialogDescription>
         </DialogHeader>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-5 mt-2 w-full"
-          autoComplete="off"
-        >
-          <div className="flex flex-col gap-1">
-            <label
-              htmlFor="first_name"
-              className="font-semibold text-gray-700 mb-1"
-            >
-              نام
-            </label>
-            <Input
-              id="first_name"
-              name="first_name"
-              value={form.first_name}
-              onChange={handleChange}
-              placeholder="مثلاً علی"
-              required
-              ref={firstNameRef}
-              aria-invalid={!!errors.first_name}
-              aria-describedby="first_name_error"
-              className="rounded-xl border border-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 px-4 py-2 text-base placeholder:text-gray-400"
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="flex flex-col gap-5 mt-2 w-full"
+            autoComplete="off"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-1">
+                  <FormLabel className="font-semibold text-gray-700 mb-1">
+                    نام مسئول فروش
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="مثلاً علی محمدی"
+                      className="rounded-xl border border-slate-300"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
+                </FormItem>
+              )}
             />
-            {errors.first_name && (
-              <span
-                id="first_name_error"
-                className="text-red-500 text-xs mt-1 font-medium"
-              >
-                {errors.first_name}
-              </span>
-            )}
-          </div>
-          <div className="flex flex-col gap-1">
-            <label
-              htmlFor="last_name"
-              className="font-semibold text-gray-700 mb-1"
-            >
-              نام خانوادگی
-            </label>
-            <Input
-              id="last_name"
-              name="last_name"
-              value={form.last_name}
-              onChange={handleChange}
-              placeholder="مثلاً محمدی"
-              required
-              aria-invalid={!!errors.last_name}
-              aria-describedby="last_name_error"
-              className="rounded-xl border border-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 px-4 py-2 text-base placeholder:text-gray-400"
+            <FormField
+              control={form.control}
+              name="national_number"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-1">
+                  <FormLabel className="font-semibold text-gray-700 mb-1">
+                    کد ملی
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="مثلاً 1234567890"
+                      className="rounded-xl border border-slate-300"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
+                </FormItem>
+              )}
             />
-            {errors.last_name && (
-              <span
-                id="last_name_error"
-                className="text-red-500 text-xs mt-1 font-medium"
-              >
-                {errors.last_name}
-              </span>
-            )}
-          </div>
-          <div className="flex flex-col gap-1">
-            <label
-              htmlFor="phone_number"
-              className="font-semibold text-gray-700 mb-1"
-            >
-              شماره تماس
-            </label>
-            <Input
-              id="phone_number"
-              name="phone_number"
-              value={form.phone_number}
-              onChange={handleChange}
-              placeholder="مثلاً 09121234567"
-              required
-              aria-invalid={!!errors.phone_number}
-              aria-describedby="phone_number_error"
-              className="rounded-xl border border-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 px-4 py-2 text-base placeholder:text-gray-400"
+            <FormField
+              control={form.control}
+              name="student_id"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-1">
+                  <FormLabel className="font-semibold text-gray-700 mb-1">
+                    دانش‌آموز مرتبط
+                  </FormLabel>
+                  <AsyncSelect
+                    loadOptions={loadOptions}
+                    defaultOptions={options}
+                    cacheOptions
+                    value={
+                      studentOption ||
+                      (field.value
+                        ? options.find((option) => option.value === field.value)
+                        : null)
+                    }
+                    onChange={(option) => {
+                      field.onChange(option?.value || 0);
+                      setStudentOption(option as StudentOption | null);
+                    }}
+                    placeholder="انتخاب دانش‌آموز"
+                    isClearable
+                    onMenuScrollToBottom={fetchMoreOnScroll}
+                    isLoading={isLoading}
+                    loadingMessage={() => "در حال بارگذاری..."}
+                    onInputChange={(inputValue) => {
+                      setSearchQuery(inputValue);
+                    }}
+                    styles={{
+                      control: (base, state) => ({
+                        ...base,
+                        borderColor: state.isFocused
+                          ? "primary75"
+                          : "rgb(148, 163, 184)",
+                        backgroundColor: "rgb(241, 245, 249)",
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                      }),
+                    }}
+                  />
+                  <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
+                </FormItem>
+              )}
             />
-            {errors.phone_number && (
-              <span
-                id="phone_number_error"
-                className="text-red-500 text-xs mt-1 font-medium"
+            <DialogFooter className="flex flex-row gap-2 justify-between w-full mt-2">
+              <Button
+                type="submit"
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white text-base py-2 rounded-xl font-bold shadow-md transition-all duration-200"
               >
-                {errors.phone_number}
-              </span>
-            )}
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="email" className="font-semibold text-gray-700 mb-1">
-              ایمیل
-            </label>
-            <Input
-              id="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="مثلاً ali@example.com"
-              required
-              type="email"
-              aria-invalid={!!errors.email}
-              aria-describedby="email_error"
-              className="rounded-xl border border-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 px-4 py-2 text-base placeholder:text-gray-400"
-            />
-            {errors.email && (
-              <span
-                id="email_error"
-                className="text-red-500 text-xs mt-1 font-medium"
+                {editRow ? "ذخیره تغییرات" : "افزودن"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1 text-base py-2 border border-gray-400 rounded-xl font-bold shadow-sm transition-all duration-200"
+                onClick={onClose}
               >
-                {errors.email}
-              </span>
-            )}
-          </div>
-          <DialogFooter className="flex flex-row gap-2 justify-between w-full mt-2">
-            <Button
-              type="submit"
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white text-base py-2 rounded-xl font-bold shadow-md transition-all duration-200"
-            >
-              {editRow ? "ذخیره تغییرات" : "افزودن"}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1 text-base py-2 border border-gray-400 rounded-xl font-bold shadow-sm transition-all duration-200"
-              onClick={onClose}
-            >
-              انصراف
-            </Button>
-          </DialogFooter>
-        </form>
+                انصراف
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

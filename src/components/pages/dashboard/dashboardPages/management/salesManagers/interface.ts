@@ -1,7 +1,9 @@
 export interface ISalesManager {
-  id: string;
-  first_name: string;
-  last_name: string;
-  phone_number: string;
-  email: string;
+  id: number;
+  name: string;
+  national_number: string;
+  student_id: number;
+  student_name?: string;
+  student_last_name?: string;
+  created_at?: string;
 }

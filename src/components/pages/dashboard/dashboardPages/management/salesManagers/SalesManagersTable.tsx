@@ -1,4 +1,4 @@
-import { ISalesManager } from "./interface";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -7,19 +7,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { ISalesManager } from "./interface";
 
 interface SalesManagersTableProps {
   data: ISalesManager[];
   onEdit: (row: ISalesManager) => void;
   onDelete: (row: ISalesManager) => void;
+  loading?: boolean;
 }
 
 export const SalesManagersTable = ({
   data,
   onEdit,
   onDelete,
+  loading,
 }: SalesManagersTableProps) => {
   return (
     <div className="w-full overflow-x-hidden p-2">
@@ -28,31 +30,37 @@ export const SalesManagersTable = ({
           <TableRow>
             <TableHead className="!text-center w-12">#</TableHead>
             <TableHead className="!text-center">نام</TableHead>
-            <TableHead className="!text-center">نام خانوادگی</TableHead>
-            <TableHead className="!text-center">شماره تماس</TableHead>
-            <TableHead className="!text-center">ایمیل</TableHead>
+            <TableHead className="!text-center">کد ملی</TableHead>
+            <TableHead className="!text-center">دانش‌آموز</TableHead>
             <TableHead className="!text-center">عملیات</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.length === 0 ? (
+          {loading ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+              <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                در حال بارگذاری...
+              </TableCell>
+            </TableRow>
+          ) : (data?.length ?? 0) === 0 ? (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center py-8 text-gray-500">
                 هیچ مسئول فروشی ثبت نشده است.
               </TableCell>
             </TableRow>
           ) : (
-            data.map((row, idx) => (
+            data?.map((row, idx) => (
               <TableRow key={row.id}>
                 <TableCell className="!text-center font-bold">
                   {idx + 1}
                 </TableCell>
-                <TableCell className="!text-center">{row.first_name}</TableCell>
-                <TableCell className="!text-center">{row.last_name}</TableCell>
+                <TableCell className="!text-center">{row.name}</TableCell>
                 <TableCell className="!text-center">
-                  {row.phone_number}
+                  {row.national_number}
                 </TableCell>
-                <TableCell className="!text-center">{row.email}</TableCell>
+                <TableCell className="!text-center">
+                  {row.student_name} {row.student_last_name}
+                </TableCell>
                 <TableCell className="!text-center">
                   <div className="flex gap-2 justify-center">
                     <Button

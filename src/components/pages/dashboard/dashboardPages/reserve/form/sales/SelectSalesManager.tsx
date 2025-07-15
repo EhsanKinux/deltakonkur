@@ -7,11 +7,13 @@ import { Controller, UseFormReturn } from "react-hook-form";
 import AsyncSelect from "react-select/async";
 
 interface ISalesManager {
-  id: string;
-  first_name: string;
-  last_name: string;
-  phone_number: string;
-  email: string;
+  id: number;
+  name: string;
+  national_number: string;
+  student_id: number;
+  student_name?: string;
+  student_last_name?: string;
+  created_at?: string;
 }
 
 type OptionType = {
@@ -26,7 +28,7 @@ const { accessToken } = authStore.getState();
 const fetchSalesManagers = async (inputValue: string, page: number) => {
   try {
     const response = await axios.get<{ results: ISalesManager[] }>(
-      `${BASE_API_URL}api/management/sales-managers/`,
+      `${BASE_API_URL}api/sales/sales-managers/`,
       {
         params: {
           search: inputValue,
@@ -40,8 +42,8 @@ const fetchSalesManagers = async (inputValue: string, page: number) => {
     );
 
     return response.data.results.map((manager) => ({
-      value: String(manager.id),
-      label: `${manager.first_name} ${manager.last_name}`,
+      value: String(manager.national_number),
+      label: `${manager.name}`,
     }));
   } catch (error) {
     console.error("Error fetching sales managers:", error);

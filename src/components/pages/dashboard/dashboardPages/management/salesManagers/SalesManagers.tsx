@@ -1,104 +1,113 @@
-import { useState } from "react";
+import SearchIcon from "@/assets/icons/search.svg";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import showToast from "@/components/ui/toast";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import AddEditSalesManagerDialog from "./dialogs/AddEditSalesManagerDialog";
+import DeleteSalesManagerDialog from "./dialogs/DeleteSalesManagerDialog";
 import { ISalesManager } from "./interface";
 import { SalesManagersTable } from "./SalesManagersTable";
-import { Button } from "@/components/ui/button";
-import AddEditSalesManagerDialog from "./dialogs/AddEditSalesManagerDialog";
-import { FaPlus } from "react-icons/fa";
-import DeleteSalesManagerDialog from "./dialogs/DeleteSalesManagerDialog";
-import { Input } from "@/components/ui/input";
-import SearchIcon from "@/assets/icons/search.svg";
-import showToast from "@/components/ui/toast";
+import { authStore } from "@/lib/store/authStore";
 
-const mockData: ISalesManager[] = [
-  {
-    id: "1",
-    first_name: "علی",
-    last_name: "محمدی",
-    phone_number: "09121234567",
-    email: "ali@example.com",
-  },
-  {
-    id: "2",
-    first_name: "زهرا",
-    last_name: "کاظمی",
-    phone_number: "09351234567",
-    email: "zahra@example.com",
-  },
-];
+const API_URL = BASE_API_URL + "/api/sales/sales-managers/";
 
 const SalesManagers = () => {
-  const [data, setData] = useState<ISalesManager[]>(mockData);
+  const [data, setData] = useState<ISalesManager[]>([]);
+  const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [editRow, setEditRow] = useState<ISalesManager | null>(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [rowToDelete, setRowToDelete] = useState<ISalesManager | null>(null);
-  const [filters, setFilters] = useState({
-    first_name: "",
-    last_name: "",
-    phone_number: "",
-    email: "",
-  });
+  const [search, setSearch] = useState("");
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
+  const { accessToken } = authStore.getState();
+
+  // گرفتن لیست
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(API_URL, {
+        params: search ? { search } : {},
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      setData(res.data.results);
+    } catch (e) {
+      showToast.error("خطا در دریافت داده‌ها");
+    }
+    setLoading(false);
   };
 
-  const filteredData = data.filter(
-    (item) =>
-      item.first_name
-        .toLowerCase()
-        .includes(filters.first_name.toLowerCase()) &&
-      item.last_name.toLowerCase().includes(filters.last_name.toLowerCase()) &&
-      item.phone_number
-        .toLowerCase()
-        .includes(filters.phone_number.toLowerCase()) &&
-      item.email.toLowerCase().includes(filters.email.toLowerCase())
-  );
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line
+  }, [search]);
 
+  // افزودن
   const handleAdd = () => {
     setEditRow(null);
     setOpenDialog(true);
   };
 
+  const handleSave = async (
+    manager: Omit<
+      ISalesManager,
+      "id" | "student_name" | "student_last_name" | "created_at"
+    > & { id?: number }
+  ) => {
+    try {
+      if (editRow) {
+        await axios.put(`${API_URL}${editRow.id}/`, manager, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        showToast.success("ویرایش شد");
+      } else {
+        await axios.post(API_URL, manager, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        showToast.success("افزوده شد");
+      }
+      setOpenDialog(false);
+      fetchData();
+    } catch {
+      showToast.error("خطا در ذخیره‌سازی");
+    }
+  };
+
+  // ویرایش
   const handleEdit = (row: ISalesManager) => {
     setEditRow(row);
     setOpenDialog(true);
   };
 
+  // حذف
   const handleDelete = (row: ISalesManager) => {
     setRowToDelete(row);
     setDeleteDialog(true);
   };
 
-  const confirmDelete = () => {
-    if (rowToDelete) {
-      setData((prev) => prev.filter((item) => item.id !== rowToDelete.id));
-      showToast.success(`مسئول فروش با موفقیت حذف شد.`);
+  const confirmDelete = async () => {
+    if (!rowToDelete) return;
+    try {
+      await axios.delete(`${API_URL}${rowToDelete.id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      showToast.success("حذف شد");
+      setDeleteDialog(false);
+      setRowToDelete(null);
+      fetchData();
+    } catch {
+      showToast.error("خطا در حذف");
     }
-    setDeleteDialog(false);
-    setRowToDelete(null);
-  };
-
-  const handleSave = (manager: ISalesManager) => {
-    if (
-      !manager.first_name ||
-      !manager.last_name ||
-      !manager.phone_number ||
-      !manager.email
-    ) {
-      showToast.error("لطفاً همه فیلدها را کامل کنید.");
-      return;
-    }
-    if (editRow) {
-      setData((prev) =>
-        prev.map((item) => (item.id === manager.id ? manager : item))
-      );
-      showToast.success("ویرایش مسئول فروش با موفقیت انجام شد.");
-    } else {
-      setData((prev) => [...prev, { ...manager, id: Date.now().toString() }]);
-      showToast.success("مسئول فروش جدید با موفقیت افزوده شد.");
-    }
-    setOpenDialog(false);
   };
 
   return (
@@ -115,7 +124,6 @@ const SalesManagers = () => {
               aria-label="افزودن مسئول فروش"
             >
               افزودن مسئول فروش
-              <FaPlus />
             </Button>
           </div>
           <div className="flex flex-col lg:flex-row items-center gap-2 py-2 w-full ">
@@ -126,61 +134,20 @@ const SalesManagers = () => {
                 className="absolute left-3 w-6 h-6 text-gray-500"
               />
               <Input
-                name="first_name"
-                value={filters.first_name}
-                onChange={handleFilterChange}
-                placeholder="جستجو براساس نام"
-                className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer pl-12"
-              />
-            </div>
-            <div className="relative flex items-center w-full text-14 rounded-[8px] ">
-              <img
-                src={SearchIcon}
-                alt="searchicon"
-                className="absolute left-3 w-6 h-6 text-gray-500"
-              />
-              <Input
-                name="last_name"
-                value={filters.last_name}
-                onChange={handleFilterChange}
-                placeholder="جستجو براساس نام خانوادگی"
-                className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer pl-12"
-              />
-            </div>
-            <div className="relative flex items-center w-full text-14 rounded-[8px] ">
-              <img
-                src={SearchIcon}
-                alt="searchicon"
-                className="absolute left-3 w-6 h-6 text-gray-500"
-              />
-              <Input
-                name="phone_number"
-                value={filters.phone_number}
-                onChange={handleFilterChange}
-                placeholder="جستجو براساس شماره تماس"
-                className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer pl-12"
-              />
-            </div>
-            <div className="relative flex items-center w-full text-14 rounded-[8px] ">
-              <img
-                src={SearchIcon}
-                alt="searchicon"
-                className="absolute left-3 w-6 h-6 text-gray-500"
-              />
-              <Input
-                name="email"
-                value={filters.email}
-                onChange={handleFilterChange}
-                placeholder="جستجو براساس ایمیل"
+                name="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="جستجو براساس نام یا کد ملی"
                 className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer pl-12"
               />
             </div>
           </div>
         </div>
         <SalesManagersTable
-          data={filteredData}
+          data={data}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          loading={loading}
         />
       </div>
       <AddEditSalesManagerDialog
