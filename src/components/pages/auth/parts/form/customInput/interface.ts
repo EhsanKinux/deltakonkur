@@ -9,4 +9,7 @@ export interface ICustomInput {
   name: FieldPath<z.infer<typeof formSchema>>;
   label: string;
   placeholder: string;
+  icon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  type?: string;
 }

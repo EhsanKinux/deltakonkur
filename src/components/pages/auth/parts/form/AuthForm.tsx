@@ -13,12 +13,14 @@ import { BASE_API_URL } from "@/lib/variables/variables";
 import api from "@/lib/apis/global-interceptor";
 import { showToast } from "@/components/ui/toast";
 import { AxiosError } from "axios";
+import { Eye, EyeOff, User, Lock } from "lucide-react";
 
 const AuthForm = () => {
   const navigate = useNavigate();
   const { setTokens, setUserRoles, userRoles, setCredentials } = authStore();
   const [isloading, setIsLoading] = useState(false);
   const [isRoleFetching, setIsRoleFetching] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const formSchema = authFormSchema();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -97,52 +99,61 @@ const AuthForm = () => {
       setIsLoading(false);
     }
   };
-  // console.log("accessToken", accessToken);
-  // console.log("refreshToken", refreshToken);
-  // console.log("userRole", userRole);
 
   return (
     <section className="flex flex-col justify-center items-center w-full">
-      <h1 className="font-bold text-2xl">دلتا کنکور</h1>
+      <h1 className="font-extrabold text-2xl text-blue-700 mb-1">خوش آمدید!</h1>
+      <p className="text-gray-500 text-sm mb-6">
+        برای ورود به حساب کاربری خود، اطلاعات زیر را وارد کنید.
+      </p>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 mt-8 w-full"
+          className="space-y-6 w-full"
         >
           <CustomInput
             control={form.control}
             name="tell"
             label="نام کاربری"
             placeholder="شماره تماس خود را وارد کنید"
+            rightIcon={<User className="w-5 h-5 text-gray-400" />}
           />
           <CustomInput
             control={form.control}
             name="password"
             label="رمز ورود"
             placeholder="رمز خود را وارد کنید"
+            icon={
+              <button
+                type="button"
+                tabIndex={-1}
+                className="focus:outline-none"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "مخفی کردن رمز" : "نمایش رمز"}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5 text-gray-500" />
+                )}
+              </button>
+            }
+            rightIcon={<Lock className="w-5 h-5 text-gray-400" />}
+            type={showPassword ? "text" : "password"}
           />
-          <div className="flex flex-col gap-4">
-            <Button type="submit" className="form-btn">
-              {isloading ? (
-                <>
-                  <Loader2 size={20} className="animate-spin" />
-                  &nbsp; درحال ورود...
-                </>
-              ) : (
-                "ورود"
-              )}
-            </Button>
-          </div>
+
+          <Button type="submit" className="form-btn w-full h-12 text-lg mt-2">
+            {isloading ? (
+              <>
+                <Loader2 size={20} className="animate-spin" />
+                &nbsp; درحال ورود...
+              </>
+            ) : (
+              "ورود"
+            )}
+          </Button>
         </form>
       </Form>
-      <footer className="flex justify-center gap-4 mt-4">
-        {/* <p className="text-14 font-normal text-gray-600">
-          {type === "sign-in" ? "حساب کاربری ندارید؟" : "ثبت نام کردم"}
-        </p>
-        <Link to={type === "sign-in" ? "/auth/signUp" : "/auth/signIn"} className="form-link">
-          {type === "sign-in" ? "ثبت نام" : "ورود"}
-        </Link> */}
-      </footer>
     </section>
   );
 };
