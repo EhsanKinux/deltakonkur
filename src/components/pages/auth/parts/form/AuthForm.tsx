@@ -92,9 +92,12 @@ const AuthForm = () => {
       const errorMessage =
         typeof axiosError.response?.data === "string"
           ? axiosError.response.data
-          : "Authentication failed.";
-      showToast.error(errorMessage);
-      console.error("Authentication failed:", error);
+          : "خطا در ورود به حساب کاربری!";
+      showToast.error(
+        errorMessage == "No active account found with the given credentials"
+          ? "نام کاربری یا رمز عبور اشتباه است."
+          : errorMessage
+      );
     } finally {
       setIsLoading(false);
     }

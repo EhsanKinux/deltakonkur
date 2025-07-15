@@ -44,7 +44,11 @@ api.interceptors.response.use(
             typeof axiosAuthError.response?.data === "string"
               ? axiosAuthError.response?.data
               : "Session expired, please log in again.";
-          showToast.error(errorMessage); // Show the server error message
+          showToast.error(
+            errorMessage == "No active account found with the given credentials"
+              ? "نام کاربری یا رمز عبور اشتباه است."
+              : errorMessage
+          ); // Show the server error message
           // window.location.href = "/auth/signIn";
           return Promise.reject(authError);
         }
@@ -54,7 +58,11 @@ api.interceptors.response.use(
           (typeof error.response?.data === "string"
             ? error.response.data
             : "Authentication error, please log in.");
-        showToast.error(errorMessage); // Show the server error message
+        showToast.error(
+          errorMessage == "No active account found with the given credentials"
+            ? "نام کاربری یا رمز عبور اشتباه است."
+            : errorMessage
+        ); // Show the server error message
         // window.location.href = "/auth/signIn";
       }
     }
@@ -63,7 +71,11 @@ api.interceptors.response.use(
       (typeof error.response?.data === "string"
         ? error.response.data
         : "An unexpected error occurred.");
-    showToast.error(errorMessage); // Show the server error message
+    showToast.error(
+      errorMessage == "No active account found with the given credentials"
+        ? "نام کاربری یا رمز عبور اشتباه است."
+        : errorMessage
+    ); // Show the server error message
     return Promise.reject(error);
   }
 );
