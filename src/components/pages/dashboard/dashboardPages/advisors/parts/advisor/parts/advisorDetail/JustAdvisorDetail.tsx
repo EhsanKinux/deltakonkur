@@ -358,35 +358,43 @@ const JustAdvisorDetail = () => {
         <span>بازگشت</span>
       </Button>
       <JustAdvisorInfo advisorData={advisorData} userRole={7} />
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
-        <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
+      <Tabs
+        value={activeTab}
+        onValueChange={handleTabChange}
+        className="mt-4  overflow-hidden"
+      >
+        <TabsList
+          dir="rtl"
+          className="flex items-center bg-slate-300 !rounded-xl w-auto min-w-0 overflow-x-auto overflow-y-hidden pr-4 md:justify-center"
+        >
           <TabsTrigger
             value="performance"
-            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2 mx-2 mr-52 md:mr-40 lg:mr-2"
           >
             عملکرد مشاور
           </TabsTrigger>
+
           <TabsTrigger
             value="studentTable"
-            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2 mx-2 min-w-max "
           >
             لیست دانش‌آموزان
           </TabsTrigger>
           <TabsTrigger
             value="assessment"
-            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2 mx-2 min-w-max "
           >
             نظرسنجی ها
           </TabsTrigger>
           <TabsTrigger
             value="accountingAdvisor"
-            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2 mx-2 min-w-max "
           >
             حسابداری
           </TabsTrigger>
           <TabsTrigger
             value="payHistory"
-            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2 mx-2 min-w-max "
           >
             دریافتی
           </TabsTrigger>
