@@ -23,6 +23,7 @@ import { payHistoryColumns } from "./parts/advisorPayHistoryTable/PayHistoryColu
 import { JustAdvisorColumnDef } from "./parts/advisorStudentTable/JustAdvisorColumnDef";
 import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
 import JustAdvisorInfo from "./parts/Info/JustAdvisorInfo";
+import AdvisorPerformanceChart from "./parts/AdvisorPerformanceChart";
 
 export interface AdvisorData {
   id: number;
@@ -66,7 +67,7 @@ const JustAdvisorDetail = () => {
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const activeTab = searchParams.get("tab") || "studentTable";
+  const activeTab = searchParams.get("tab") || "performance";
 
   const formatNumber = useCallback((number: string): string => {
     const num = parseFloat(number);
@@ -97,8 +98,9 @@ const JustAdvisorDetail = () => {
         );
         setAdvisorData(advisorResponse.data);
       } catch (error) {
-        console.error("Error fetching user/advisor data:", error);
-        navigate("/unauthorized");
+        if (!axios.isCancel(error)) {
+          console.error("خطا در دریافت اطلاعات دانشجویان مشاور:", error);
+        }
       }
     }
   }, [accessToken, navigate, userRoles]);
@@ -170,8 +172,7 @@ const JustAdvisorDetail = () => {
       setAdvisorStudents(studentData);
       setTotalPages(Math.ceil(data.count / 10).toString());
     } catch (error) {
-      if (axios.isCancel(error)) {
-      } else {
+      if (!axios.isCancel(error)) {
         console.error("خطا در دریافت اطلاعات دانشجویان مشاور:", error);
       }
     } finally {
@@ -213,8 +214,7 @@ const JustAdvisorDetail = () => {
       setPaymentHistory(data);
       setTotalPages(Math.ceil(data.count / 10).toString());
     } catch (error) {
-      if (axios.isCancel(error)) {
-      } else {
+      if (!axios.isCancel(error)) {
         console.error("خطا در دریافت اطلاعات دانشجویان مشاور:", error);
       }
     } finally {
@@ -361,6 +361,12 @@ const JustAdvisorDetail = () => {
       <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger
+            value="performance"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
+            عملکرد مشاور
+          </TabsTrigger>
+          <TabsTrigger
             value="studentTable"
             className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
           >
@@ -385,6 +391,11 @@ const JustAdvisorDetail = () => {
             دریافتی
           </TabsTrigger>
         </TabsList>
+        <TabsContent value="performance">
+          <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-[50vh] w-full">
+            <AdvisorPerformanceChart advisorData={advisorData} />
+          </div>
+        </TabsContent>
         <TabsContent value="studentTable">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-[150vh]">
             <JustAdvisorDetailTable
