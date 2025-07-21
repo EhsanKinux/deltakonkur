@@ -1,13 +1,56 @@
+import {
+  UserIcon,
+  UsersIcon,
+  IdentificationIcon,
+  DevicePhoneMobileIcon,
+  ClipboardIcon,
+  BanknotesIcon,
+} from "@heroicons/react/24/outline";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { appStore } from "@/lib/store/appStore";
 import { useEffect } from "react";
-import counselorProfile from "@/assets/icons/work.svg";
-import studentActive from "@/assets/icons/student-active.svg";
-import studentCancel from "@/assets/icons/student-cancel.svg";
-import studentStop from "@/assets/icons/student-stop.svg";
-import personCard from "@/assets/icons/person-card.svg";
-import callIcon from "@/assets/icons/call.svg";
 import { AdvisorDataResponse } from "@/functions/hooks/advisorsList/interface";
+
+const StatCard = ({
+  icon,
+  label,
+  value,
+  color,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string | number;
+  color: string;
+}) => (
+  <div
+    className={`flex flex-col items-center justify-center bg-white rounded-xl shadow p-4 w-full border-t-4 ${color}`}
+  >
+    <div className="mb-2">{icon}</div>
+    <div className="text-lg font-bold">{value}</div>
+    <div className="text-xs text-gray-500 mt-1">{label}</div>
+  </div>
+);
+
+const Skeleton = ({ className }: { className?: string }) => (
+  <div
+    className={`animate-pulse bg-slate-200 rounded ${className || ""}`}
+  ></div>
+);
+
+const ProfileCardSkeleton = () => (
+  <div className="flex-1 bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center min-w-[260px] h-full">
+    <Skeleton className="w-16 h-16 mb-4 rounded-full" />
+    <Skeleton className="w-32 h-6 mb-2" />
+    <Skeleton className="w-40 h-4 mb-2" />
+    <Skeleton className="w-40 h-4 mb-2" />
+    <Skeleton className="w-24 h-4 mt-3" />
+  </div>
+);
+
+const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text);
+  // You can add a toast here if you have a toast system
+};
 
 const formatNumber = (number: number | undefined): string => {
   if (number === undefined) return "0";
@@ -37,91 +80,102 @@ const AccountingAdvisorInfo = ({
   }, [advisorId, fetchAdvisorInfo]);
 
   return (
-    <div className="flex flex-col xl:flex-row justify-between w-full gap-3 p-4 mt-4 rounded-xl shadow-form relative bg-slate-100">
-      {/* personal info */}
-      <div className="flex justify-center xl:justify-between flex-1 gap-10 p-5">
-        <div className="h-full w-1/4">
-          {/* profile pic */}
-          <img src={counselorProfile} width={500} className="h-full" />
-        </div>
-        {/* details */}
-        <div className="min-h-full xl:flex-1 flex flex-col justify-center gap-1">
-          <h1 className="text-4xl font-bold mb-4">
-            {advisorInfo?.first_name} {advisorInfo?.last_name}
-          </h1>
-          <div className="flex gap-2 items-center">
-            <img src={callIcon} width={25} />
-            <h1 className="text-lg font-medium">
-              شماره تلفن: {advisorInfo?.phone_number}
-            </h1>
-          </div>
-          <div className="flex gap-2 items-center">
-            <img src={personCard} width={25} />
-            <h1 className="text-lg font-medium">
-              کد ملی: {advisorInfo?.national_id}
-            </h1>
-          </div>
-          <div className="flex gap-2 items-center">
-            <h2 className="text-base font-medium">
-              دریافتی کل :{" "}
-              <span className="text-blue-500 font-semibold">
-                {formatNumber(advisorDetailData?.total_wage)} ریال
-              </span>
-            </h2>
-          </div>
-        </div>
-      </div>
+    <div className="flex flex-col gap-6 w-full mx-auto mt-6">
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col gap-6 md:w-1/2">
+          {/* Profile Card */}
+          {advisorInfo?.first_name ? (
+            <div className="flex-1 bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center min-w-[260px]">
+              <div className="bg-blue-100 rounded-full p-4 mb-4">
+                <UserIcon className="w-16 h-16 text-blue-500" />
+              </div>
+              <div className="text-2xl font-bold mb-1">
+                {advisorInfo?.first_name} {advisorInfo?.last_name}
+              </div>
+              <div className="flex flex-col gap-2 w-full mt-2">
+                <div className="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2">
+                  <DevicePhoneMobileIcon className="w-5 h-5 text-blue-400" />
+                  <span className="text-gray-700 mt-1">
+                    {advisorInfo?.phone_number}
+                  </span>
+                  <button
+                    onClick={() =>
+                      copyToClipboard(advisorInfo?.phone_number || "")
+                    }
+                    className="ml-auto p-1 rounded hover:bg-blue-100 transition"
+                  >
+                    <ClipboardIcon className="w-4 h-4 text-blue-400" />
+                  </button>
+                </div>
+                <div className="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2">
+                  <IdentificationIcon className="w-5 h-5 text-blue-400" />
+                  <span className="text-gray-700 mt-1">
+                    {advisorInfo?.national_id}
+                  </span>
+                  <button
+                    onClick={() =>
+                      copyToClipboard(advisorInfo?.national_id || "")
+                    }
+                    className="ml-auto p-1 rounded hover:bg-blue-100 transition"
+                  >
+                    <ClipboardIcon className="w-4 h-4 text-blue-400" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <ProfileCardSkeleton />
+          )}
 
-      {/* students status */}
-      <div className="flex gap-2 justify-between items-center w-full xl:w-1/2 bg-slate-200 rounded-xl p-3">
-        <div className="flex flex-col gap-2 items-center w-1/3">
-          <img
-            src={studentActive}
-            width={70}
-            style={{
-              filter:
-                "invert(50%) sepia(86%) saturate(4975%) hue-rotate(90deg) brightness(105%) contrast(60%)",
-            }}
-          />
-          <h2 className="text-base font-medium">
-            دانش ‌آموزان فعال:{" "}
-            <span className="text-green-500 font-semibold">
-              {statusCounts.active}
-            </span>
-          </h2>
+          {/* Stats */}
+          {advisorInfo?.first_name ? (
+            <div className="flex-1 flex gap-4">
+              <StatCard
+                icon={<UsersIcon className="w-8 h-8 text-green-500" />}
+                label="دانش‌آموز فعال"
+                value={statusCounts.active}
+                color="border-green-400"
+              />
+              <StatCard
+                icon={<UsersIcon className="w-8 h-8 text-red-400" />}
+                label="دانش‌آموز کنسلی"
+                value={statusCounts.cancel}
+                color="border-red-400"
+              />
+              <StatCard
+                icon={<UsersIcon className="w-8 h-8 text-orange-400" />}
+                label="دانش‌آموز متوقف"
+                value={statusCounts.stop}
+                color="border-orange-400"
+              />
+            </div>
+          ) : (
+            <div className="flex-1 flex gap-4">
+              <Skeleton className="w-full h-20" />
+              <Skeleton className="w-full h-20" />
+              <Skeleton className="w-full h-20" />
+            </div>
+          )}
         </div>
-        <div className="flex flex-col gap-2 items-center w-1/3">
-          <img
-            src={studentCancel}
-            width={70}
-            style={{
-              filter:
-                "invert(11%) sepia(97%) saturate(7433%) hue-rotate(1deg) brightness(105%) contrast(70%)",
-            }}
-          />
-          <h2 className="text-base font-medium">
-            دانش آموزان کنسلی:{" "}
-            <span className="text-red-500 font-semibold">
-              {statusCounts.cancel}
+        {/* Wage Card */}
+        {advisorInfo?.first_name ? (
+          <div className="flex-1 bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center min-w-[260px]">
+            <div className="flex items-center gap-2 mb-4">
+              <BanknotesIcon className="w-7 h-7 text-green-500" />
+              <span className="font-bold text-xl text-blue-700">
+                دریافتی کل
+              </span>
+            </div>
+            <div className="text-gray-700 mb-2 font-semibold">
+              مجموع دریافتی:
+            </div>
+            <span className="font-mono text-2xl text-blue-600">
+              {formatNumber(advisorDetailData?.total_wage)} ریال
             </span>
-          </h2>
-        </div>
-        <div className="flex flex-col gap-2 items-center w-1/3">
-          <img
-            src={studentStop}
-            width={70}
-            style={{
-              filter:
-                "invert(70%) sepia(80%) saturate(600%) hue-rotate(350deg) brightness(90%) contrast(90%)",
-            }}
-          />
-          <h2 className="text-base font-medium">
-            دانش آموزان متوقف شده:{" "}
-            <span className="text-orange-500 font-semibold">
-              {statusCounts.stop}
-            </span>
-          </h2>
-        </div>
+          </div>
+        ) : (
+          <Skeleton className="w-full h-40" />
+        )}
       </div>
     </div>
   );
