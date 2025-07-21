@@ -3,22 +3,28 @@ import CustomSelect from "./parts/customSelect/CustomSelect";
 import { FormField, FormMessage } from "@/components/ui/form";
 import { IRegisterStudentService } from "@/lib/apis/reserve/interface";
 
-const Down = ({ form }: { form: UseFormReturn<IRegisterStudentService, undefined> }) => {
-  const { setValue, watch } = form;
-  
-  const fieldValue = watch("field");
-  const gradeValue = watch("grade");
+const Down = ({
+  form,
+}: {
+  form: UseFormReturn<IRegisterStudentService, undefined>;
+}) => {
+  // Removed unused: const { setValue, watch } = form;
+  // Removed unused: const fieldValue = watch("field");
+  // Removed unused: const gradeValue = watch("grade");
 
   return (
     <div className="flex justify-center items-center gap-8 w-full rounded-xl">
       <FormField
         control={form.control}
         name="field"
-        render={() => (
+        render={({ field }) => (
           <div className="flex flex-col w-full">
             <CustomSelect
-              value={fieldValue}
-              onValueChange={(value: string) => setValue("field", value)}
+              value={field.value}
+              onValueChange={field.onChange}
+              onBlur={field.onBlur}
+              name={field.name}
+              ref={field.ref}
               placeholder="رشته تحصیلی"
               options={[
                 { value: "ریاضی", label: "ریاضی" },
@@ -33,11 +39,14 @@ const Down = ({ form }: { form: UseFormReturn<IRegisterStudentService, undefined
       <FormField
         control={form.control}
         name="grade"
-        render={() => (
+        render={({ field }) => (
           <div className="flex flex-col w-full">
             <CustomSelect
-              value={gradeValue}
-              onValueChange={(value: string) => setValue("grade", value)}
+              value={field.value}
+              onValueChange={field.onChange}
+              onBlur={field.onBlur}
+              name={field.name}
+              ref={field.ref}
               placeholder="مقطع تحصیلی"
               options={[
                 { value: "10", label: "پایه دهم" },

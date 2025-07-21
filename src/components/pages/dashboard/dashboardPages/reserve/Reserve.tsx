@@ -13,7 +13,10 @@ import TopRight from "./form/topright/TopRight";
 import { submit_student_register_service } from "@/lib/apis/reserve/service";
 
 import showToast from "@/components/ui/toast";
+import { authStore } from "@/lib/store/authStore";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import axios from "axios";
 import { Loader2 } from "lucide-react";
 import PlansType from "./form/down/PlansType";
 import SelectSalesManager from "./form/sales/SelectSalesManager";
@@ -31,7 +34,10 @@ const Reserve = () => {
   const [isloading, setIsloading] = useState(false);
 
   const formSchema = registerFormSchema();
-  const form = useForm<z.infer<typeof formSchema>>({
+  type ReserveFormType = z.infer<typeof formSchema> & {
+    sales_manager?: string;
+  };
+  const form = useForm<ReserveFormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       // id:"",
@@ -49,10 +55,11 @@ const Reserve = () => {
       solar_date_day: "",
       solar_date_month: "",
       solar_date_year: "",
+      sales_manager: undefined,
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: ReserveFormType) => {
     setIsloading(true);
     // get current date
     const currentDateTime = new Date().toISOString();
@@ -72,7 +79,33 @@ const Reserve = () => {
     const loadingToastId = showToast.loading("در حال انجام عملیات ثبت...");
 
     try {
-      await submit_student_register_service(transformedData);
+      const student = await submit_student_register_service(transformedData);
+      const salesManagerId = form.getValues("sales_manager");
+      console.log(salesManagerId);
+      // اگر مسئول فروش انتخاب شده بود، دانش‌آموز را به او اختصاص بده
+      if (salesManagerId) {
+        try {
+          const { accessToken } = authStore.getState();
+          await axios.post(
+            `${BASE_API_URL}api/sales/sales-managers/${salesManagerId}/assign-student/`,
+            { student_id: student.id },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+          // خالی کردن مسئول فروش بعد از ارسال موفق
+          form.setValue("sales_manager", undefined);
+        } catch (error: unknown) {
+          const errorMessage =
+            error instanceof Error ? error.message : "Unknown error";
+          showToast.error(
+            `خطا در اختصاص دانش‌آموز به مسئول فروش: ${errorMessage}`
+          );
+        }
+      }
 
       // Reset form on successful registration
       form.reset();
@@ -219,7 +252,7 @@ const Reserve = () => {
                 <p className="text-gray-500 text-sm mb-4">
                   لطفا مسئول فروش را انتخاب نمایید.
                 </p>
-                <SelectSalesManager
+                <SelectSalesManager<ReserveFormType>
                   form={form}
                   name="sales_manager"
                   label="انتخاب مسئول فروش"

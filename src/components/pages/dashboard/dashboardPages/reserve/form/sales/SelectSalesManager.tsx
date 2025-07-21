@@ -3,7 +3,7 @@ import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Controller, UseFormReturn } from "react-hook-form";
+import { Controller, UseFormReturn, Path } from "react-hook-form";
 import AsyncSelect from "react-select/async";
 
 interface ISalesManager {
@@ -20,12 +20,6 @@ interface ISalesManager {
 type OptionType = {
   value: string;
   label: string;
-};
-
-type FormValues = {
-  first_name: string;
-  last_name: string;
-  national_number: string;
 };
 
 const { accessToken } = authStore.getState();
@@ -47,7 +41,7 @@ const fetchSalesManagers = async (inputValue: string, page: number) => {
     );
 
     return response.data.results.map((manager) => ({
-      value: String(manager.national_number),
+      value: String(manager.id),
       label: `${manager.first_name} ${manager.last_name}`,
     }));
   } catch (error) {
@@ -56,14 +50,16 @@ const fetchSalesManagers = async (inputValue: string, page: number) => {
   }
 };
 
-const SelectSalesManager = ({
-  form,
-  name = "sales_manager",
-}: {
-  form: UseFormReturn<FormValues>;
-  name?: string;
+type SelectSalesManagerProps<T = Record<string, any>> = {
+  form: UseFormReturn<T>;
+  name: Path<T>;
   label?: string;
-}) => {
+};
+
+const SelectSalesManager = <T extends Record<string, any>>({
+  form,
+  name,
+}: SelectSalesManagerProps<T>) => {
   const [page, setPage] = useState(1);
   const [options, setOptions] = useState<OptionType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -125,7 +121,13 @@ const SelectSalesManager = ({
                 onMenuScrollToBottom={fetchMoreOnScroll}
                 isLoading={isLoading}
                 loadingMessage={() => "در حال بارگذاری..."}
-                value={options.find((option) => option.value === field.value)}
+                value={
+                  form.watch(name)
+                    ? options.find(
+                        (option) => option.value === form.watch(name)
+                      )
+                    : null
+                }
                 onChange={(selectedOption) => {
                   field.onChange(selectedOption?.value || "");
                 }}
@@ -135,6 +137,10 @@ const SelectSalesManager = ({
                 onBlur={() => {
                   setSearchQuery("");
                 }}
+                menuPortalTarget={
+                  typeof window !== "undefined" ? document.body : null
+                }
+                menuPosition="fixed"
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
@@ -144,6 +150,24 @@ const SelectSalesManager = ({
 
                     borderRadius: "8px",
                     fontSize: "14px",
+                  }),
+                  menuPortal: (base) => ({
+                    ...base,
+                    zIndex: 9999,
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    zIndex: 9999,
+                    borderRadius: 8,
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
+                  }),
+                  menuList: (base) => ({
+                    ...base,
+                    backgroundColor: "#fff",
+                    maxHeight: 250,
+                    overflowY: "auto",
+                    padding: 0,
+                    borderRadius: 8,
                   }),
                 }}
               />
