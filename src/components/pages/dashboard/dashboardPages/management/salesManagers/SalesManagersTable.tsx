@@ -29,22 +29,30 @@ export const SalesManagersTable = ({
         <TableHeader className="bg-slate-300">
           <TableRow>
             <TableHead className="!text-center w-12">#</TableHead>
+            <TableHead className="!text-center">شناسه</TableHead>
             <TableHead className="!text-center">نام</TableHead>
+            <TableHead className="!text-center">نام خانوادگی</TableHead>
             <TableHead className="!text-center">کد ملی</TableHead>
-            <TableHead className="!text-center">دانش‌آموز</TableHead>
+            <TableHead className="!text-center">تعداد دانش‌آموز</TableHead>
+            <TableHead className="!text-center">تاریخ ایجاد</TableHead>
             <TableHead className="!text-center">عملیات</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {loading ? (
-            <TableRow>
-              <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                در حال بارگذاری...
-              </TableCell>
-            </TableRow>
+            // Skeleton loading rows
+            Array.from({ length: 10 }).map((_, idx) => (
+              <TableRow key={idx}>
+                {Array.from({ length: 8 }).map((_, colIdx) => (
+                  <TableCell key={colIdx} className="!text-center">
+                    <div className="h-4 w-full rounded bg-slate-200 animate-pulse" />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
           ) : (data?.length ?? 0) === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+              <TableCell colSpan={8} className="text-center py-8 text-gray-500">
                 هیچ مسئول فروشی ثبت نشده است.
               </TableCell>
             </TableRow>
@@ -54,12 +62,19 @@ export const SalesManagersTable = ({
                 <TableCell className="!text-center font-bold">
                   {idx + 1}
                 </TableCell>
-                <TableCell className="!text-center">{row.name}</TableCell>
+                <TableCell className="!text-center">{row.id}</TableCell>
+                <TableCell className="!text-center">{row.first_name}</TableCell>
+                <TableCell className="!text-center">{row.last_name}</TableCell>
                 <TableCell className="!text-center">
                   {row.national_number}
                 </TableCell>
                 <TableCell className="!text-center">
-                  {row.student_name} {row.student_last_name}
+                  {row.student_count}
+                </TableCell>
+                <TableCell className="!text-center">
+                  {row.created_at
+                    ? new Date(row.created_at).toLocaleDateString("fa-IR")
+                    : ""}
                 </TableCell>
                 <TableCell className="!text-center">
                   <div className="flex gap-2 justify-center">

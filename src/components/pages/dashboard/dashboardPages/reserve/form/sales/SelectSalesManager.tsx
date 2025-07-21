@@ -8,7 +8,8 @@ import AsyncSelect from "react-select/async";
 
 interface ISalesManager {
   id: number;
-  name: string;
+  first_name: string;
+  last_name: string;
   national_number: string;
   student_id: number;
   student_name?: string;
@@ -21,7 +22,11 @@ type OptionType = {
   label: string;
 };
 
-type FormValues = any;
+type FormValues = {
+  first_name: string;
+  last_name: string;
+  national_number: string;
+};
 
 const { accessToken } = authStore.getState();
 
@@ -43,7 +48,7 @@ const fetchSalesManagers = async (inputValue: string, page: number) => {
 
     return response.data.results.map((manager) => ({
       value: String(manager.national_number),
-      label: `${manager.name}`,
+      label: `${manager.first_name} ${manager.last_name}`,
     }));
   } catch (error) {
     console.error("Error fetching sales managers:", error);

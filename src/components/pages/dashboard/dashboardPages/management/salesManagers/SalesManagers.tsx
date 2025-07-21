@@ -1,4 +1,3 @@
-import SearchIcon from "@/assets/icons/search.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import showToast from "@/components/ui/toast";
@@ -10,6 +9,7 @@ import DeleteSalesManagerDialog from "./dialogs/DeleteSalesManagerDialog";
 import { ISalesManager } from "./interface";
 import { SalesManagersTable } from "./SalesManagersTable";
 import { authStore } from "@/lib/store/authStore";
+import { useSearchParams } from "react-router-dom";
 
 const API_URL = BASE_API_URL + "/api/sales/sales-managers/";
 
@@ -20,7 +20,17 @@ const SalesManagers = () => {
   const [editRow, setEditRow] = useState<ISalesManager | null>(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [rowToDelete, setRowToDelete] = useState<ISalesManager | null>(null);
-  const [search, setSearch] = useState("");
+  const [searchFields, setSearchFields] = useState({
+    first_name: "",
+    last_name: "",
+    national_number: "",
+    search: "",
+  });
+  const [page, setPage] = useState(1);
+  const [count, setCount] = useState(0);
+  const [next, setNext] = useState<string | null>(null);
+  const [previous, setPrevious] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { accessToken } = authStore.getState();
 
@@ -28,13 +38,23 @@ const SalesManagers = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
+      const params: Record<string, string> = { page: String(page) };
+      if (searchFields.first_name) params.first_name = searchFields.first_name;
+      if (searchFields.last_name) params.last_name = searchFields.last_name;
+      if (searchFields.national_number)
+        params.national_number = searchFields.national_number;
+      if (searchFields.search) params.search = searchFields.search;
+      setSearchParams(params);
       const res = await axios.get(API_URL, {
-        params: search ? { search } : {},
+        params,
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
       setData(res.data.results);
+      setCount(res.data.count);
+      setNext(res.data.next);
+      setPrevious(res.data.previous);
     } catch (e) {
       showToast.error("خطا در دریافت داده‌ها");
     }
@@ -42,9 +62,22 @@ const SalesManagers = () => {
   };
 
   useEffect(() => {
+    // اگر searchParams تغییر کرد، stateها را آپدیت کن
+    const pageParam = Number(searchParams.get("page")) || 1;
+    setPage(pageParam);
+    setSearchFields({
+      first_name: searchParams.get("first_name") || "",
+      last_name: searchParams.get("last_name") || "",
+      national_number: searchParams.get("national_number") || "",
+      search: searchParams.get("search") || "",
+    });
+    // eslint-disable-next-line
+  }, [searchParams]);
+
+  useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, [search]);
+  }, [page, searchFields]);
 
   // افزودن
   const handleAdd = () => {
@@ -52,12 +85,12 @@ const SalesManagers = () => {
     setOpenDialog(true);
   };
 
-  const handleSave = async (
-    manager: Omit<
-      ISalesManager,
-      "id" | "student_name" | "student_last_name" | "created_at"
-    > & { id?: number }
-  ) => {
+  const handleSave = async (manager: {
+    first_name: string;
+    last_name: string;
+    national_number: string;
+    id?: number;
+  }) => {
     try {
       if (editRow) {
         await axios.put(`${API_URL}${editRow.id}/`, manager, {
@@ -127,18 +160,52 @@ const SalesManagers = () => {
             </Button>
           </div>
           <div className="flex flex-col lg:flex-row items-center gap-2 py-2 w-full ">
-            <div className="relative flex items-center w-full text-14 rounded-[8px] ">
-              <img
-                src={SearchIcon}
-                alt="searchicon"
-                className="absolute left-3 w-6 h-6 text-gray-500"
+            <div className="relative flex items-center w-full text-14 rounded-[8px] gap-2 ">
+              <Input
+                name="first_name"
+                value={searchFields.first_name}
+                onChange={(e) => {
+                  setSearchFields((f) => ({
+                    ...f,
+                    first_name: e.target.value,
+                  }));
+                  setPage(1);
+                }}
+                placeholder="نام"
+                className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
+              />
+              <Input
+                name="last_name"
+                value={searchFields.last_name}
+                onChange={(e) => {
+                  setSearchFields((f) => ({ ...f, last_name: e.target.value }));
+                  setPage(1);
+                }}
+                placeholder="نام خانوادگی"
+                className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
+              />
+              <Input
+                name="national_number"
+                value={searchFields.national_number}
+                onChange={(e) => {
+                  setSearchFields((f) => ({
+                    ...f,
+                    national_number: e.target.value,
+                  }));
+                  setPage(1);
+                }}
+                placeholder="کد ملی"
+                className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
               />
               <Input
                 name="search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="جستجو براساس نام یا کد ملی"
-                className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer pl-12"
+                value={searchFields.search}
+                onChange={(e) => {
+                  setSearchFields((f) => ({ ...f, search: e.target.value }));
+                  setPage(1);
+                }}
+                placeholder="جستجو کلی (نام یا کد ملی)"
+                className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
               />
             </div>
           </div>
@@ -149,6 +216,28 @@ const SalesManagers = () => {
           onDelete={handleDelete}
           loading={loading}
         />
+        {/* Pagination controls below the table */}
+        <div className="flex justify-center items-center gap-2 mt-4">
+          <Button
+            variant="outline"
+            className="rounded-full border-slate-300 px-4 py-2 text-base font-bold transition-all duration-200 disabled:opacity-50"
+            disabled={!previous}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            صفحه قبل
+          </Button>
+          <span className="mx-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-700 font-bold text-base">
+            صفحه {page} از {Math.ceil(count / 10) || 1}
+          </span>
+          <Button
+            variant="outline"
+            className="rounded-full border-slate-300 px-4 py-2 text-base font-bold transition-all duration-200 disabled:opacity-50"
+            disabled={!next}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            صفحه بعد
+          </Button>
+        </div>
       </div>
       <AddEditSalesManagerDialog
         open={openDialog}
