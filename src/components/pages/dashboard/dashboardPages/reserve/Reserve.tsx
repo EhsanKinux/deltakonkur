@@ -278,9 +278,6 @@ const Reserve = () => {
                   "ثبت نام"
                 )}
               </Button>
-              <span className="text-gray-400 text-xs">
-                با ثبت نام، شما با قوانین سایت موافقت می‌کنید.
-              </span>
             </div>
           </div>
         </form>

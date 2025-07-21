@@ -27,6 +27,8 @@ interface AdvisorLevelAnalysis {
   content_delivered: boolean;
   level_up_eligible: boolean;
   level_down_risk: boolean;
+  level_up_reasons?: string[];
+  level_down_reasons?: string[];
 }
 
 const StatCard = ({
@@ -462,7 +464,7 @@ const JustAdvisorInfo = ({
                     </div>
                     <ul className="list-disc pr-6 text-green-800 text-sm space-y-1">
                       {(levelAnalysis.level_up_reasons ?? []).map(
-                        (reason, idx) => (
+                        (reason: string, idx: number) => (
                           <li key={idx} className="leading-6">
                             {reason}
                           </li>
@@ -481,7 +483,7 @@ const JustAdvisorInfo = ({
                     </div>
                     <ul className="list-disc pr-6 text-red-800 text-sm space-y-1">
                       {(levelAnalysis.level_down_reasons ?? []).map(
-                        (reason, idx) => (
+                        (reason: string, idx: number) => (
                           <li key={idx} className="leading-6">
                             {reason}
                           </li>
