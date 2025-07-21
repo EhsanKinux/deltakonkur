@@ -198,7 +198,7 @@ const Reserve = () => {
               </section>
               {/* Contact info */}
               <section
-                className="w-full xl:w-1/2 flex flex-col items-center gap-2 bg-white rounded-xl shadow p-6"
+                className="w-full xl:w-1/2 flex flex-col gap-2 bg-white rounded-xl shadow p-6"
                 aria-labelledby="contact-info-heading"
               >
                 <h2
@@ -240,7 +240,7 @@ const Reserve = () => {
 
               {/* Sales manager info */}
               <section
-                className="w-full xl:w-1/2 flex flex-col items-center gap-2 bg-white rounded-xl shadow p-6"
+                className="w-full xl:w-1/2 flex flex-col gap-2 bg-white rounded-xl shadow p-6"
                 aria-labelledby="sales-manager-info-heading"
               >
                 <h2
@@ -250,7 +250,7 @@ const Reserve = () => {
                   اطلاعات فروش
                 </h2>
                 <p className="text-gray-500 text-sm mb-4">
-                  لطفا مسئول فروش را انتخاب نمایید.
+                  لطفا مسئول فروش را انتخاب نمایید. (این قسمت اختیاری است)
                 </p>
                 <SelectSalesManager<ReserveFormType>
                   form={form}

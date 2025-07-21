@@ -111,9 +111,10 @@ const SalesManagers = () => {
       fetchData();
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
-      let errorMessage = "خطا در ذخیره اطلاعات.";
+      let errorMessage =
+        "خطا: دقت کنید این کد ملی از قبل موجود نباشد. در غیر اینصورت بعدا امتحان کنید.";
 
-      if (axiosError.response?.data) {
+      if (axiosError.response?.data && axiosError.response.status != 500) {
         const data = axiosError.response.data;
         if (typeof data === "string") {
           errorMessage = data;
@@ -184,7 +185,7 @@ const SalesManagers = () => {
       <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl mb-4">
         مسئولان فروش
       </h1>
-      <div className="flex flex-col justify-center items-center gap-3 p-10 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-[60vh] w-full overflow-auto">
+      <div className="flex flex-col justify-center items-center gap-3 p-5 lg:p-10 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-[60vh] w-full overflow-auto">
         <div className="w-full flex flex-col gap-4 mb-4">
           <div className="w-full flex justify-start">
             <Button
@@ -196,7 +197,7 @@ const SalesManagers = () => {
             </Button>
           </div>
           <div className="flex flex-col lg:flex-row items-center gap-2 py-2 w-full ">
-            <div className="relative flex items-center w-full text-14 rounded-[8px] gap-2 ">
+            <div className="relative flex items-center w-full text-14 rounded-[8px] gap-2 flex-col lg:flex-row">
               <Input
                 name="first_name"
                 value={searchFields.first_name}
@@ -256,18 +257,18 @@ const SalesManagers = () => {
         <div className="flex justify-center items-center gap-2 mt-4">
           <Button
             variant="outline"
-            className="rounded-full border-slate-300 px-4 py-2 text-base font-bold transition-all duration-200 disabled:opacity-50"
+            className="rounded-full border-slate-300 px-4 py-2 text-xs font-bold transition-all duration-200 disabled:opacity-50"
             disabled={!previous}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
             صفحه قبل
           </Button>
-          <span className="mx-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-700 font-bold text-base">
+          <span className="mx-2 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-700 font-bold text-xs">
             صفحه {page} از {Math.ceil(count / 10) || 1}
           </span>
           <Button
             variant="outline"
-            className="rounded-full border-slate-300 px-4 py-2 text-base font-bold transition-all duration-200 disabled:opacity-50"
+            className="rounded-full border-slate-300 px-4 py-2 text-xs font-bold transition-all duration-200 disabled:opacity-50"
             disabled={!next}
             onClick={() => setPage((p) => p + 1)}
           >
