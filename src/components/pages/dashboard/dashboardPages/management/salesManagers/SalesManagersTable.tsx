@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { ISalesManager } from "./interface";
+import { convertToShamsi } from "@/lib/utils/date/convertDate";
 
 interface SalesManagersTableProps {
   data: ISalesManager[];
@@ -72,9 +73,7 @@ export const SalesManagersTable = ({
                   {row.student_count}
                 </TableCell>
                 <TableCell className="!text-center">
-                  {row.created_at
-                    ? new Date(row.created_at).toLocaleDateString("fa-IR")
-                    : ""}
+                  {row.created_at ? convertToShamsi(row.created_at) : ""}
                 </TableCell>
                 <TableCell className="!text-center">
                   <div className="flex gap-2 justify-center">

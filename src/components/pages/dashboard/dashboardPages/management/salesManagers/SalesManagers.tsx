@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import showToast from "@/components/ui/toast";
 import { BASE_API_URL } from "@/lib/variables/variables";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import AddEditSalesManagerDialog from "./dialogs/AddEditSalesManagerDialog";
 import DeleteSalesManagerDialog from "./dialogs/DeleteSalesManagerDialog";
@@ -109,8 +109,44 @@ const SalesManagers = () => {
       }
       setOpenDialog(false);
       fetchData();
-    } catch {
-      showToast.error("خطا در ذخیره‌سازی");
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      let errorMessage = "خطا در ذخیره اطلاعات.";
+
+      if (axiosError.response?.data) {
+        const data = axiosError.response.data;
+        if (typeof data === "string") {
+          errorMessage = data;
+        } else if (
+          typeof data === "object" &&
+          data !== null &&
+          "national_number" in data
+        ) {
+          type NationalNumberErrorType = {
+            national_number?: string | string[];
+          };
+          const nationalNumberError = (data as NationalNumberErrorType)
+            .national_number;
+          if (
+            nationalNumberError ===
+            "مدیر فروش with this national number already exists."
+          ) {
+            errorMessage = "کد ملی وارد شده از قبل موجود است.";
+          } else if (typeof nationalNumberError === "string") {
+            errorMessage = nationalNumberError;
+          } else if (Array.isArray(nationalNumberError)) {
+            errorMessage =
+              nationalNumberError[0] ==
+              "مدیر فروش with this national number already exists."
+                ? "کد ملی وارد شده از قبل موجود است."
+                : nationalNumberError[0];
+          }
+        }
+      }
+
+      showToast.error(errorMessage);
+
+      // console.error(`خطا: ${err}`);
     }
   };
 

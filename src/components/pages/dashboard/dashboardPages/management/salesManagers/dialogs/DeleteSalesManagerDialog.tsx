@@ -34,7 +34,7 @@ const DeleteSalesManagerDialog = ({
           <DialogDescription className="text-gray-600 mt-2 text-start">
             آیا مطمئن هستید که می‌خواهید
             <span className="font-bold text-red-700 mx-1">
-              {manager?.first_name} {manager?.last_name}
+              {manager?.first_name} {manager?.last_name}{" "}
             </span>
             را حذف کنید؟ این عملیات غیرقابل بازگشت است.
           </DialogDescription>
