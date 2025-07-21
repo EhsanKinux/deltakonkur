@@ -3,7 +3,7 @@ import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Controller, UseFormReturn, Path } from "react-hook-form";
+import { Controller, UseFormReturn, Path, FieldValues } from "react-hook-form";
 import AsyncSelect from "react-select/async";
 
 interface ISalesManager {
@@ -50,13 +50,13 @@ const fetchSalesManagers = async (inputValue: string, page: number) => {
   }
 };
 
-type SelectSalesManagerProps<T = Record<string, any>> = {
+type SelectSalesManagerProps<T extends FieldValues = FieldValues> = {
   form: UseFormReturn<T>;
   name: Path<T>;
   label?: string;
 };
 
-const SelectSalesManager = <T extends Record<string, any>>({
+const SelectSalesManager = <T extends FieldValues = FieldValues>({
   form,
   name,
 }: SelectSalesManagerProps<T>) => {
