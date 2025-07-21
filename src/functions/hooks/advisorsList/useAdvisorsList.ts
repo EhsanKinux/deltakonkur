@@ -11,6 +11,7 @@ import {
   get_student_of_advisor,
   get_students_of_each_advisor,
   get_wage_of_advisor,
+  get_advisor_level_analysis,
 } from "@/lib/apis/advisors/service";
 import { appStore } from "@/lib/store/appStore";
 import { Advisor } from "@/lib/store/types";
@@ -329,6 +330,28 @@ export const useAdvisorsList = () => {
     [setLoading, setError]
   );
 
+  const fetchAdvisorLevelAnalysis = useCallback(
+    async (advisorId: number) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await get_advisor_level_analysis(advisorId);
+        return data;
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+          throw err;
+        } else {
+          setError("Failed to fetch advisor level analysis");
+          throw new Error("Failed to fetch advisor level analysis");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, setError]
+  );
+
   return {
     getAdvisorsData,
     advisorDelete,
@@ -350,5 +373,6 @@ export const useAdvisorsList = () => {
     deleteStudentAdvisor,
     fetchPaymentHistory,
     paymentHistory,
+    fetchAdvisorLevelAnalysis,
   };
 };
