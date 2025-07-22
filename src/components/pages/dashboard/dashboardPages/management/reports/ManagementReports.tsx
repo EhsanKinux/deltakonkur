@@ -1,7 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
 import { useState } from "react";
-import { User, Eye, Briefcase, AlertTriangle } from "lucide-react"; // آیکون‌های مناسب
+import {
+  User,
+  Eye,
+  Briefcase,
+  AlertTriangle,
+  FileSpreadsheet,
+  FileCheck2,
+  RefreshCcw,
+} from "lucide-react"; // آیکون‌های مناسب
 import axios from "axios";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
@@ -232,10 +240,11 @@ const ManagementReports = () => {
       {
         loading: "در حال دریافت و ساخت فایل اکسل...",
         success: "فایل اکسل با موفقیت ساخته شد!",
-        error: (err) =>
+        error: (err: unknown) =>
           typeof err === "string"
             ? err
-            : err?.message || "خطا در دریافت یا ساخت فایل اکسل!",
+            : (err as { message?: string })?.message ||
+              "خطا در دریافت یا ساخت فایل اکسل!",
       }
     );
   };
@@ -331,10 +340,11 @@ const ManagementReports = () => {
       {
         loading: "در حال انجام ترازبندی و ساخت فایل اکسل...",
         success: "ترازبندی انجام و فایل اکسل ساخته شد!",
-        error: (err) =>
+        error: (err: unknown) =>
           typeof err === "string"
             ? err
-            : err?.message || "خطا در ترازبندی یا ساخت فایل اکسل!",
+            : (err as { message?: string })?.message ||
+              "خطا در ترازبندی یا ساخت فایل اکسل!",
       }
     );
   };
@@ -397,8 +407,11 @@ const ManagementReports = () => {
                       <DialogTrigger asChild>
                         <Button
                           disabled={loading}
-                          className="bg-green-500 text-white hover:bg-green-700 rounded-xl"
+                          className="bg-green-500 text-white hover:bg-green-600 focus:ring-2 focus:ring-green-400 focus:outline-none transition-all duration-200 rounded-xl flex items-center gap-2 px-5 py-2 text-base font-bold shadow-md hover:shadow-lg"
+                          aria-label="ترازبندی مشاوران"
+                          title="ترازبندی سطح مشاوران و دریافت گزارش اکسل"
                         >
+                          <RefreshCcw size={20} className="ml-2" />
                           ترازبندی
                         </Button>
                       </DialogTrigger>
@@ -420,19 +433,20 @@ const ManagementReports = () => {
                           <DialogClose asChild>
                             <Button
                               variant="outline"
-                              className="rounded-xl border-gray-300"
+                              className="rounded-xl border-gray-300 px-4 py-2 text-base font-medium hover:bg-gray-100 focus:ring-2 focus:ring-gray-300"
                             >
                               انصراف
                             </Button>
                           </DialogClose>
                           <Button
-                            className="bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl font-bold px-6"
+                            className="bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl font-bold px-6 py-2 text-base flex items-center gap-2 focus:ring-2 focus:ring-yellow-400"
                             onClick={async () => {
                               setOpenAlignmentDialog(false);
                               await handleAlignmentAndExport();
                             }}
                             disabled={loading}
                           >
+                            <FileSpreadsheet size={18} className="ml-2" />
                             تایید و ادامه
                           </Button>
                         </div>
@@ -449,8 +463,11 @@ const ManagementReports = () => {
                       role.prefix
                     )
                   }
-                  className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl"
+                  className="bg-blue-500 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-all duration-200 rounded-xl flex items-center gap-2 px-5 py-2 text-base font-bold shadow-md hover:shadow-lg"
+                  aria-label="گزارش‌گیری تستی"
+                  title={`دریافت گزارش تستی اکسل برای ${role.name}`}
                 >
+                  <FileCheck2 size={20} className="ml-2" />
                   گزارش‌گیری تستی
                 </Button>
                 {/* Main report button with confirmation dialog for all roles */}
@@ -463,8 +480,11 @@ const ManagementReports = () => {
                   <DialogTrigger asChild>
                     <Button
                       disabled={loading}
-                      className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl"
+                      className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white focus:ring-2 focus:ring-slate-400 focus:outline-none transition-all duration-200 rounded-xl flex items-center gap-2 px-5 py-2 text-base font-bold shadow-md hover:shadow-lg"
+                      aria-label="گزارش‌گیری اصلی"
+                      title={`دریافت گزارش اکسل اصلی برای ${role.name}`}
                     >
+                      <FileSpreadsheet size={20} className="ml-2" />
                       گزارش‌گیری
                     </Button>
                   </DialogTrigger>
@@ -486,13 +506,13 @@ const ManagementReports = () => {
                       <DialogClose asChild>
                         <Button
                           variant="outline"
-                          className="rounded-xl border-gray-300"
+                          className="rounded-xl border-gray-300 px-4 py-2 text-base font-medium hover:bg-gray-100 focus:ring-2 focus:ring-gray-300"
                         >
                           انصراف
                         </Button>
                       </DialogClose>
                       <Button
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl font-bold px-6"
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl font-bold px-6 py-2 text-base flex items-center gap-2 focus:ring-2 focus:ring-yellow-400"
                         onClick={async () => {
                           setOpenDialog(null);
                           await handleFetchAndGenerate(
@@ -503,6 +523,7 @@ const ManagementReports = () => {
                         }}
                         disabled={loading}
                       >
+                        <FileSpreadsheet size={18} className="ml-2" />
                         تایید و ادامه
                       </Button>
                     </div>
