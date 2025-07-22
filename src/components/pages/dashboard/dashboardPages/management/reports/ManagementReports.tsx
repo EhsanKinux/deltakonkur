@@ -13,6 +13,7 @@ import {
   DialogDescription,
   DialogClose,
 } from "@/components/ui/dialog";
+import showToast from "@/components/ui/toast";
 
 interface IRole {
   name: string;
@@ -41,9 +42,24 @@ type SalesSummary = {
   total_earnings: number;
 };
 
+type LevelChange = {
+  advisor_id: number;
+  advisor_name: string;
+  old_level: number;
+  new_level: number;
+  change_type: string;
+  reason: string;
+  student_count: number;
+  monthly_satisfaction: number;
+  overall_satisfaction: number;
+  content_delivered: boolean;
+};
+
 const ManagementReports = () => {
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState<null | string>(null);
+  // Add state for alignment dialog
+  const [openAlignmentDialog, setOpenAlignmentDialog] = useState(false);
 
   const getCurrentShamsiDate = () => {
     const today = new Date().toISOString();
@@ -55,7 +71,7 @@ const ManagementReports = () => {
     rolePrefix: string
   ): Record<string, string | number>[] => {
     if (rolePrefix === "Sales") {
-      // مسئول فروش
+      // مسئولان فروش
       // Check if data is the wrapped object with sales_managers and summary
       if (
         data.length === 1 &&
@@ -77,8 +93,8 @@ const ManagementReports = () => {
           }
         ).summary;
         const rows = salesManagers.map((item) => ({
-          "شناسه مسئول فروش": String(item.sales_manager_id),
-          "نام مسئول فروش": String(item.sales_manager_name),
+          "شناسه مسئولان فروش": String(item.sales_manager_id),
+          "نام مسئولان فروش": String(item.sales_manager_name),
           "کد ملی": String(item.national_number),
           "تعداد دانش‌آموز": String(item.student_count),
           "تعداد دانش‌آموز فعال": String(item.active_student_count),
@@ -89,8 +105,8 @@ const ManagementReports = () => {
         }));
         // Add summary row
         rows.push({
-          "شناسه مسئول فروش": "جمع کل",
-          "نام مسئول فروش": "-",
+          "شناسه مسئولان فروش": "جمع کل",
+          "نام مسئولان فروش": "-",
           "کد ملی": "-",
           "تعداد دانش‌آموز": String(summary.total_students),
           "تعداد دانش‌آموز فعال": String(summary.total_active_students),
@@ -110,8 +126,8 @@ const ManagementReports = () => {
           amount: number;
         }>
       ).map((item) => ({
-        "شناسه مسئول فروش": item.sales_manager_id,
-        "نام مسئول فروش": item.sales_manager_name,
+        "شناسه مسئولان فروش": item.sales_manager_id,
+        "نام مسئولان فروش": item.sales_manager_name,
         "کد ملی": item.national_number,
         مبلغ: item.amount,
       }));
@@ -185,37 +201,142 @@ const ManagementReports = () => {
     filename: string,
     rolePrefix: string
   ) => {
-    try {
-      setLoading(true);
-      const data = await fetchReportData(endpoint);
-      console.log("Fetched data:", data, "Role:", rolePrefix);
-      // Updated condition to support object with sales_managers for Sales
-      if (
-        (rolePrefix === "Sales" &&
-          data &&
-          !Array.isArray(data) &&
-          typeof data === "object" &&
-          "sales_managers" in (data as Record<string, unknown>) &&
-          Array.isArray((data as Record<string, unknown>).sales_managers) &&
-          ((data as Record<string, unknown>).sales_managers as unknown[])
-            .length > 0) ||
-        (Array.isArray(data) && data.length > 0)
-      ) {
-        const transformedData = transformData(
-          rolePrefix === "Sales" && !Array.isArray(data)
-            ? [data as Record<string, unknown>]
-            : data,
-          rolePrefix
-        );
-        await generateExcel(transformedData, filename);
-      } else {
-        console.warn("No data available to generate Excel file");
+    setLoading(true);
+    await showToast.promise(
+      fetchReportData(endpoint)
+        .then((data) => {
+          // Updated condition to support object with sales_managers for Sales
+          if (
+            (rolePrefix === "Sales" &&
+              data &&
+              !Array.isArray(data) &&
+              typeof data === "object" &&
+              "sales_managers" in (data as Record<string, unknown>) &&
+              Array.isArray((data as Record<string, unknown>).sales_managers) &&
+              ((data as Record<string, unknown>).sales_managers as unknown[])
+                .length > 0) ||
+            (Array.isArray(data) && data.length > 0)
+          ) {
+            const transformedData = transformData(
+              rolePrefix === "Sales" && !Array.isArray(data)
+                ? [data as Record<string, unknown>]
+                : data,
+              rolePrefix
+            );
+            return generateExcel(transformedData, filename);
+          } else {
+            throw new Error("داده‌ای برای خروجی اکسل وجود ندارد.");
+          }
+        })
+        .finally(() => setLoading(false)),
+      {
+        loading: "در حال دریافت و ساخت فایل اکسل...",
+        success: "فایل اکسل با موفقیت ساخته شد!",
+        error: (err) =>
+          typeof err === "string"
+            ? err
+            : err?.message || "خطا در دریافت یا ساخت فایل اکسل!",
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
+    );
+  };
+
+  // Function to handle alignment POST and Excel export
+  const handleAlignmentAndExport = async () => {
+    setLoading(true);
+    await showToast.promise(
+      (async () => {
+        const { accessToken } = authStore.getState();
+        const response = await axios.post(
+          `${BASE_API_URL}/api/advisor/level/process-changes/`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const data = response.data;
+        if (data && data.level_changes && Array.isArray(data.level_changes)) {
+          if (data.level_changes.length === 0) {
+            showToast.warning(
+              "تغییری در سطح مشاوران اتفاق نیفتاده است. برای دریافت فایل اکسل، ابتدا لازم است تغییراتی در سطح مشاوران رخ داده باشد. لطفا بعدا دوباره امتحان کنید."
+            );
+            return;
+          }
+          // Transform for Excel
+          const excelData: Record<string, string | number>[] =
+            data.level_changes.map((item: LevelChange) => ({
+              "شناسه مشاور": item.advisor_id,
+              "نام مشاور": item.advisor_name,
+              "سطح قبلی": item.old_level,
+              "سطح جدید": item.new_level,
+              "نوع تغییر":
+                item.change_type === "level_up"
+                  ? "ارتقا"
+                  : item.change_type === "level_down"
+                  ? "سقوط"
+                  : "بدون تغییر",
+              دلیل: item.reason,
+              "تعداد دانش‌آموز": item.student_count,
+              "رضایت ماهانه": item.monthly_satisfaction,
+              "رضایت کلی": item.overall_satisfaction,
+              "محتوا تحویل داده شد": item.content_delivered ? "بله" : "خیر",
+            }));
+          if (data.summary) {
+            excelData.push({
+              "شناسه مشاور": "--- خلاصه ترازبندی مشاوران ---",
+              "نام مشاور": "",
+              "سطح قبلی": "",
+              "سطح جدید": "",
+              "نوع تغییر": "",
+              دلیل: "",
+              "تعداد دانش‌آموز": "",
+              "رضایت ماهانه": "",
+              "رضایت کلی": "",
+              "محتوا تحویل داده شد": "",
+            });
+            excelData.push({
+              "شناسه مشاور": "تعداد ارتقا یافته",
+              "نام مشاور": "تعداد سقوط کرده",
+              "سطح قبلی": "تعداد بدون تغییر",
+              "سطح جدید": "",
+              "نوع تغییر": "",
+              دلیل: "",
+              "تعداد دانش‌آموز": "",
+              "رضایت ماهانه": "",
+              "رضایت کلی": "",
+              "محتوا تحویل داده شد": "",
+            });
+            excelData.push({
+              "شناسه مشاور": data.summary.leveled_up,
+              "نام مشاور": data.summary.leveled_down,
+              "سطح قبلی": data.summary.no_change,
+              "سطح جدید": "",
+              "نوع تغییر": "",
+              دلیل: "",
+              "تعداد دانش‌آموز": "",
+              "رضایت ماهانه": "",
+              "رضایت کلی": "",
+              "محتوا تحویل داده شد": "",
+            });
+          }
+          await generateExcel(
+            excelData,
+            `Consultant_Alignment_${getCurrentShamsiDate()}.xlsx`
+          );
+        } else {
+          throw new Error("داده‌ای برای ترازبندی وجود ندارد.");
+        }
+      })().finally(() => setLoading(false)),
+      {
+        loading: "در حال انجام ترازبندی و ساخت فایل اکسل...",
+        success: "ترازبندی انجام و فایل اکسل ساخته شد!",
+        error: (err) =>
+          typeof err === "string"
+            ? err
+            : err?.message || "خطا در ترازبندی یا ساخت فایل اکسل!",
+      }
+    );
   };
 
   const roles: IRole[] = [
@@ -238,7 +359,7 @@ const ManagementReports = () => {
       },
     },
     {
-      name: "مسئول فروش",
+      name: "مسئولان فروش",
       icon: <Briefcase size={32} />,
       prefix: "Sales",
       endpoints: {
@@ -266,6 +387,59 @@ const ManagementReports = () => {
 
             <div className="flex flex-col gap-2 mt-2 w-full">
               <div className="flex flex-col w-full gap-2">
+                {/* Alignment button only for Consultant */}
+                {role.prefix === "Consultant" && (
+                  <>
+                    <Dialog
+                      open={openAlignmentDialog}
+                      onOpenChange={(open) => setOpenAlignmentDialog(open)}
+                    >
+                      <DialogTrigger asChild>
+                        <Button
+                          disabled={loading}
+                          className="bg-green-500 text-white hover:bg-green-700 rounded-xl"
+                        >
+                          ترازبندی
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-md p-0 overflow-hidden gap-0 border-0">
+                        <div className="bg-yellow-50 dark:bg-yellow-100/80 flex flex-col items-center justify-center p-6 rounded-t-xl border-b border-yellow-200">
+                          <AlertTriangle
+                            className="text-yellow-500 mb-2"
+                            size={40}
+                          />
+                          <DialogTitle className="text-yellow-800 text-xl font-bold mb-2">
+                            تایید ترازبندی
+                          </DialogTitle>
+                          <DialogDescription className="text-yellow-700 text-center text-base">
+                            این عملیات باعث تغییر سطح مشاوران در سرور می‌شود و
+                            نیازمند تایید شماست.
+                          </DialogDescription>
+                        </div>
+                        <div className="flex justify-end gap-2 p-4 bg-white rounded-b-xl">
+                          <DialogClose asChild>
+                            <Button
+                              variant="outline"
+                              className="rounded-xl border-gray-300"
+                            >
+                              انصراف
+                            </Button>
+                          </DialogClose>
+                          <Button
+                            className="bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl font-bold px-6"
+                            onClick={async () => {
+                              setOpenAlignmentDialog(false);
+                              await handleAlignmentAndExport();
+                            }}
+                            disabled={loading}
+                          >
+                            تایید و ادامه
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </>
+                )}
                 <Button
                   disabled={loading}
                   onClick={() =>
