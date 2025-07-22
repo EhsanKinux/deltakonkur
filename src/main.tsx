@@ -163,6 +163,10 @@ const SalesManagers = lazy(
       "./components/pages/dashboard/dashboardPages/management/salesManagers/SalesManagers"
     )
 );
+const ContentList = lazy(
+  () =>
+    import("./components/pages/dashboard/dashboardPages/content/ContentList")
+);
 
 const router = createBrowserRouter([
   {
@@ -520,6 +524,19 @@ const router = createBrowserRouter([
                 element={
                   <Suspense fallback={<Loading />}>
                     <ContentAdvisorDetail />
+                  </Suspense>
+                }
+                requiredRole={[0, 6]}
+              />
+            ),
+          },
+          {
+            path: "content/list",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <ContentList />
                   </Suspense>
                 }
                 requiredRole={[0, 6]}

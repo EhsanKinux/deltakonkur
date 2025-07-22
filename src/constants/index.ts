@@ -171,6 +171,13 @@ export const sidebarLinks = [
         label: "ارسال پیام",
         roles: [0, 6],
       },
+      {
+        id: 63,
+        imgURL: advisorsListIcon,
+        route: "/dashboard/content/list",
+        label: "لیست محتواها",
+        roles: [0, 6],
+      },
     ],
   },
   {
