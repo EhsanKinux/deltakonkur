@@ -1,10 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { convertToShamsi2 } from "@/lib/utils/date/convertDate";
 import { useState } from "react";
-import { User, Eye, Briefcase } from "lucide-react"; // آیکون‌های مناسب
+import { User, Eye, Briefcase, AlertTriangle } from "lucide-react"; // آیکون‌های مناسب
 import axios from "axios";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from "@/components/ui/dialog";
 
 interface IRole {
   name: string;
@@ -35,6 +43,7 @@ type SalesSummary = {
 
 const ManagementReports = () => {
   const [loading, setLoading] = useState(false);
+  const [openDialog, setOpenDialog] = useState<null | string>(null);
 
   const getCurrentShamsiDate = () => {
     const today = new Date().toISOString();
@@ -270,19 +279,61 @@ const ManagementReports = () => {
                 >
                   گزارش‌گیری تستی
                 </Button>
-                <Button
-                  disabled={loading}
-                  onClick={() =>
-                    handleFetchAndGenerate(
-                      role.endpoints.report,
-                      `${role.prefix}_${getCurrentShamsiDate()}.xlsx`,
-                      role.prefix
-                    )
+                {/* Main report button with confirmation dialog for all roles */}
+                <Dialog
+                  open={openDialog === role.prefix}
+                  onOpenChange={(open) =>
+                    setOpenDialog(open ? role.prefix : null)
                   }
-                  className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl"
                 >
-                  گزارش‌گیری
-                </Button>
+                  <DialogTrigger asChild>
+                    <Button
+                      disabled={loading}
+                      className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl"
+                    >
+                      گزارش‌گیری
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md p-0 overflow-hidden gap-0 border-0">
+                    <div className="bg-yellow-50 dark:bg-yellow-100/80 flex flex-col items-center justify-center p-6 rounded-t-xl border-b border-yellow-200">
+                      <AlertTriangle
+                        className="text-yellow-500 mb-2"
+                        size={40}
+                      />
+                      <DialogTitle className="text-yellow-800 text-xl font-bold mb-2">
+                        تایید گزارش‌گیری
+                      </DialogTitle>
+                      <DialogDescription className="text-yellow-700 text-center text-base">
+                        این دکمه باعث تغییر اطلاعات در سرور می‌شود و نیازمند
+                        تایید شماست.
+                      </DialogDescription>
+                    </div>
+                    <div className="flex justify-end gap-2 p-4 bg-white rounded-b-xl">
+                      <DialogClose asChild>
+                        <Button
+                          variant="outline"
+                          className="rounded-xl border-gray-300"
+                        >
+                          انصراف
+                        </Button>
+                      </DialogClose>
+                      <Button
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl font-bold px-6"
+                        onClick={async () => {
+                          setOpenDialog(null);
+                          await handleFetchAndGenerate(
+                            role.endpoints.report,
+                            `${role.prefix}_${getCurrentShamsiDate()}.xlsx`,
+                            role.prefix
+                          );
+                        }}
+                        disabled={loading}
+                      >
+                        تایید و ادامه
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </div>
