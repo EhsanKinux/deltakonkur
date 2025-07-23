@@ -179,6 +179,10 @@ const SupervisorDetail = lazy(
       "./components/pages/dashboard/dashboardPages/supervision/assess/SupervisorDetail.tsx"
     )
 );
+const ContentDetail = lazy(
+  () =>
+    import("./components/pages/dashboard/dashboardPages/content/ContentDetail")
+);
 
 const router = createBrowserRouter([
   {
@@ -575,6 +579,19 @@ const router = createBrowserRouter([
                 element={
                   <Suspense fallback={<Loading />}>
                     <ContentList />
+                  </Suspense>
+                }
+                requiredRole={[0, 6]}
+              />
+            ),
+          },
+          {
+            path: "content/:id",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <ContentDetail />
                   </Suspense>
                 }
                 requiredRole={[0, 6]}
