@@ -141,6 +141,13 @@ export const sidebarLinks = [
         label: "پیگیری",
         roles: [0, 4],
       },
+      {
+        id: 43,
+        imgURL: supervisionIcon,
+        route: "/dashboard/supervision/supervisorDetail/1",
+        label: "پروفایل ناظر",
+        roles: [0, 4],
+      },
     ],
   },
   {

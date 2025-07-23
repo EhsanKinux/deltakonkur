@@ -77,3 +77,6 @@ export const followup_complete = (token: string, body: any) =>
     method: "POST",
     body: JSON.stringify(body),
   });
+
+export const get_supervisor_profile = (id: string) =>
+  fetchInstance(`api/supervisor/profile/${id}/`, { method: "GET" });

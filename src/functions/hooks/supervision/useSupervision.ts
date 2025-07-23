@@ -7,10 +7,12 @@ import {
   send_notification,
   student_call_answering,
   student_call_answering2,
+  get_supervisor_profile,
 } from "@/lib/apis/supervision/service";
 import { useCallback, useState } from "react";
 import { IAssessments } from "./interface";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
+import { SupervisorProfile } from "./interface";
 
 interface StudentCallAnsweringParams {
   id: number;
@@ -158,11 +160,17 @@ export const useSupervision = () => {
           solar_date_month: item.student.solar_date_month,
           solar_date_year: item.student.solar_date_year,
           first_call: formatBoolean(item.first_call),
-          first_call_time: item.first_call_time ? convertToShamsi(item.first_call_time) : "-",
+          first_call_time: item.first_call_time
+            ? convertToShamsi(item.first_call_time)
+            : "-",
           second_call: formatBoolean(item.second_call),
-          second_call_time: item.second_call_time ? convertToShamsi(item.second_call_time) : "-",
+          second_call_time: item.second_call_time
+            ? convertToShamsi(item.second_call_time)
+            : "-",
           token: item.token,
-          completed_time: item.completed_time ? convertToShamsi(item.completed_time) : "-",
+          completed_time: item.completed_time
+            ? convertToShamsi(item.completed_time)
+            : "-",
           first_call_time2: item.first_call_time,
           first_call2: item.first_call,
           advisor_name: item.advisor_name ? item.advisor_name : "-",
@@ -183,7 +191,12 @@ export const useSupervision = () => {
   }, []);
 
   const handleSecondStudentCallAnswering = useCallback(
-    async ({ id, studentId, firstCall, firstCallTime }: StudentCallAnsweringParams) => {
+    async ({
+      id,
+      studentId,
+      firstCall,
+      firstCallTime,
+    }: StudentCallAnsweringParams) => {
       setLoading(true);
       setError("");
       const body = {
@@ -216,7 +229,12 @@ export const useSupervision = () => {
   );
 
   const handleSecondStudentCallAnsweringCompleted = useCallback(
-    async ({ id, studentId, firstCall, firstCallTime }: StudentCallAnsweringParams) => {
+    async ({
+      id,
+      studentId,
+      firstCall,
+      firstCallTime,
+    }: StudentCallAnsweringParams) => {
       setLoading(true);
       setError("");
       const body = {
@@ -270,6 +288,20 @@ export const useSupervision = () => {
     [setError, setLoading]
   );
 
+  const fetchSupervisorProfile = async (
+    id: string
+  ): Promise<SupervisorProfile | null> => {
+    try {
+      const response = await get_supervisor_profile(id);
+      if (response) {
+        return response as SupervisorProfile;
+      }
+      return null;
+    } catch (err) {
+      return null;
+    }
+  };
+
   return {
     submitAssassmentForm,
     error,
@@ -285,5 +317,6 @@ export const useSupervision = () => {
     handleSecondStudentCallAnsweringCompleted,
     getAssessmentsById,
     assessmentsById,
+    fetchSupervisorProfile,
   };
 };

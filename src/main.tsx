@@ -167,6 +167,18 @@ const ContentList = lazy(
   () =>
     import("./components/pages/dashboard/dashboardPages/content/ContentList")
 );
+const JustSupervisorDetail = lazy(
+  () =>
+    import(
+      "./components/pages/dashboard/dashboardPages/supervision/assess/JustSupervisorDetail.tsx"
+    )
+);
+const SupervisorDetail = lazy(
+  () =>
+    import(
+      "./components/pages/dashboard/dashboardPages/supervision/assess/SupervisorDetail.tsx"
+    )
+);
 
 const router = createBrowserRouter([
   {
@@ -472,6 +484,32 @@ const router = createBrowserRouter([
                 element={
                   <Suspense fallback={<Loading />}>
                     <SupervisionFollowUp />
+                  </Suspense>
+                }
+                requiredRole={[0, 4]}
+              />
+            ),
+          },
+          {
+            path: "supervision/justSupervisorDetail",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <JustSupervisorDetail />
+                  </Suspense>
+                }
+                requiredRole={[0, 4]}
+              />
+            ),
+          },
+          {
+            path: "supervision/supervisorDetail/:supervisorId",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <SupervisorDetail />
                   </Suspense>
                 }
                 requiredRole={[0, 4]}
