@@ -477,7 +477,7 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
                   }}
                 >
                   <TableCell className="!text-center font-bold border-slate-100">
-                    {idx + 1}
+                    {(mainPage - 1) * 10 + idx + 1}
                   </TableCell>
                   <TableCell className="!text-center border-slate-100">
                     {row.advisor.first_name} {row.advisor.last_name}

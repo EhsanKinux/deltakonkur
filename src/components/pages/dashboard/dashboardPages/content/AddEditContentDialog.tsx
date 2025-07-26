@@ -8,7 +8,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -203,8 +203,9 @@ const AddEditContentDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-white !rounded-2xl md:h-fit flex flex-col items-center max-h-[90vh] w-full max-w-md overflow-y-auto p-4">
-        <DialogHeader className="w-full">
+      <DialogContent className="bg-white !rounded-2xl md:h-fit flex flex-col max-h-[90vh] w-full max-w-md p-0">
+        {/* Fixed Header */}
+        <DialogHeader className="w-full p-4 border-b border-gray-200">
           <DialogTitle className="text-lg md:text-xl font-bold mb-1">
             {isEdit ? "ویرایش محتوا" : "افزودن محتوا"}
           </DialogTitle>
@@ -214,298 +215,314 @@ const AddEditContentDialog = ({
               : "برای افزودن محتوا، ماه و سال را انتخاب کنید."}
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="flex flex-col gap-5 mt-2 w-full"
-            autoComplete="off"
-          >
-            {isEdit ? (
-              <>
-                {/* نمایش فقط خواندنی اطلاعات مشاور */}
-                <div className="flex flex-col gap-1">
-                  <label className="font-semibold text-gray-700 mb-1">
-                    مشاور
-                  </label>
-                  <input
-                    type="text"
-                    value={(() => {
-                      const adv = advisors.find(
-                        (a) => a.id === editRow?.advisor_id
-                      );
-                      return adv
-                        ? `${adv.first_name} ${adv.last_name}`
-                        : editRow?.advisor_id || "-";
-                    })()}
-                    readOnly
-                    className="rounded-xl border border-slate-300 p-2 bg-gray-100 text-gray-700"
-                  />
-                </div>
-                {/* نمایش فقط خواندنی سال و ماه */}
-                <div className="flex flex-col gap-1">
-                  <label className="font-semibold text-gray-700 mb-1">
-                    سال شمسی
-                  </label>
-                  <input
-                    type="number"
-                    value={editRow?.solar_year || ""}
-                    readOnly
-                    className="rounded-xl border border-slate-300 p-2 bg-gray-100 text-gray-700"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="font-semibold text-gray-700 mb-1">
-                    ماه شمسی
-                  </label>
-                  <input
-                    type="text"
-                    value={(() => {
-                      const months = [
-                        "فروردین",
-                        "اردیبهشت",
-                        "خرداد",
-                        "تیر",
-                        "مرداد",
-                        "شهریور",
-                        "مهر",
-                        "آبان",
-                        "آذر",
-                        "دی",
-                        "بهمن",
-                        "اسفند",
-                      ];
-                      return editRow?.solar_month
-                        ? months[(editRow.solar_month || 1) - 1]
-                        : "";
-                    })()}
-                    readOnly
-                    className="rounded-xl border border-slate-300 p-2 bg-gray-100 text-gray-700"
-                  />
-                </div>
-                {/* فقط فیلدهای قابل ویرایش */}
-                <FormField
-                  control={form.control}
-                  name="is_delivered"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1 w-fit">
-                      <FormLabel className="font-semibold text-gray-700 mb-1">
-                        وضعیت تحویل
-                      </FormLabel>
-                      <FormControl>
-                        {/* سوییچ زیباتر برای وضعیت تحویل با پشتیبانی RTL */}
-                        <label className="relative w-full inline-flex items-center cursor-pointer select-none flex-row-reverse gap-2">
-                          <input
-                            type="checkbox"
-                            checked={field.value}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                            className="sr-only peer"
-                          />
-                          <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-green-400 rounded-full peer peer-checked:bg-green-500 transition-all duration-200"></div>
-                          <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full shadow-md transition-all duration-200 peer-checked:!left-6"></div>
-                          <span
-                            className={`mr-3 text-sm font-medium ${
-                              field.value ? "text-green-700" : "text-gray-500"
-                            }`}
-                          >
-                            {field.value ? "تحویل داده شده" : "در انتظار تحویل"}
-                          </span>
-                        </label>
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
-                    </FormItem>
-                  )}
-                />
-                {/* تاریخ تحویل با DatePicker شمسی */}
-                {form.watch("is_delivered") && (
+
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-4">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="flex flex-col gap-5 w-full"
+              autoComplete="off"
+            >
+              {isEdit ? (
+                <>
+                  {/* نمایش فقط خواندنی اطلاعات مشاور */}
+                  <div className="flex flex-col gap-1">
+                    <label className="font-semibold text-gray-700 mb-1">
+                      مشاور
+                    </label>
+                    <input
+                      type="text"
+                      value={(() => {
+                        const adv = advisors.find(
+                          (a) => a.id === editRow?.advisor_id
+                        );
+                        return adv
+                          ? `${adv.first_name} ${adv.last_name}`
+                          : editRow?.advisor_id || "-";
+                      })()}
+                      readOnly
+                      className="rounded-xl border border-slate-300 p-2 bg-gray-100 text-gray-700"
+                    />
+                  </div>
+                  {/* نمایش فقط خواندنی سال و ماه */}
+                  <div className="flex flex-col gap-1">
+                    <label className="font-semibold text-gray-700 mb-1">
+                      سال شمسی
+                    </label>
+                    <input
+                      type="number"
+                      value={editRow?.solar_year || ""}
+                      readOnly
+                      className="rounded-xl border border-slate-300 p-2 bg-gray-100 text-gray-700"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="font-semibold text-gray-700 mb-1">
+                      ماه شمسی
+                    </label>
+                    <input
+                      type="text"
+                      value={(() => {
+                        const months = [
+                          "فروردین",
+                          "اردیبهشت",
+                          "خرداد",
+                          "تیر",
+                          "مرداد",
+                          "شهریور",
+                          "مهر",
+                          "آبان",
+                          "آذر",
+                          "دی",
+                          "بهمن",
+                          "اسفند",
+                        ];
+                        return editRow?.solar_month
+                          ? months[(editRow.solar_month || 1) - 1]
+                          : "";
+                      })()}
+                      readOnly
+                      className="rounded-xl border border-slate-300 p-2 bg-gray-100 text-gray-700"
+                    />
+                  </div>
+                  {/* فقط فیلدهای قابل ویرایش */}
                   <FormField
                     control={form.control}
-                    name="delivered_at"
+                    name="is_delivered"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col gap-1">
+                      <FormItem className="flex flex-col gap-1 w-fit">
                         <FormLabel className="font-semibold text-gray-700 mb-1">
-                          تاریخ تحویل
+                          وضعیت تحویل
                         </FormLabel>
                         <FormControl>
-                          <div className="flex gap-2 items-center">
-                            <DatePicker
-                              value={field.value ? new Date(field.value) : null}
-                              onChange={(date) => {
-                                if (date) {
-                                  // تبدیل تاریخ شمسی به ISO
-                                  const gDate = date.toDate();
-                                  field.onChange(gDate.toISOString());
-                                } else {
-                                  field.onChange("");
-                                }
-                              }}
-                              calendar={persian}
-                              locale={persian_fa}
-                              calendarPosition="top-left"
-                              style={{
-                                direction: "rtl",
-                                height: "40px",
-                                width: "100%",
-                              }}
+                          {/* سوییچ زیباتر برای وضعیت تحویل با پشتیبانی RTL */}
+                          <label className="relative w-full inline-flex items-center cursor-pointer select-none flex-row-reverse gap-2">
+                            <input
+                              type="checkbox"
+                              checked={field.value}
+                              onChange={(e) => field.onChange(e.target.checked)}
+                              className="sr-only peer"
                             />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              className="px-2 text-xs rounded-[8px] text-gray-900 border-slate-400 hover:bg-slate-100"
-                              onClick={() => {
-                                const now = new Date();
-                                field.onChange(now.toISOString());
-                              }}
+                            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-green-400 rounded-full peer peer-checked:bg-green-500 transition-all duration-200"></div>
+                            <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full shadow-md transition-all duration-200 peer-checked:!left-6"></div>
+                            <span
+                              className={`mr-3 text-sm font-medium ${
+                                field.value ? "text-green-700" : "text-gray-500"
+                              }`}
                             >
-                              اکنون
-                            </Button>
-                          </div>
+                              {field.value
+                                ? "تحویل داده شده"
+                                : "در انتظار تحویل"}
+                            </span>
+                          </label>
                         </FormControl>
                         <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
                       </FormItem>
                     )}
                   />
-                )}
-                <FormField
-                  control={form.control}
-                  name="notes"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1">
-                      <FormLabel className="font-semibold text-gray-700 mb-1">
-                        محتوا
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="rounded-xl border border-slate-300"
-                        />
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
-                    </FormItem>
-                  )}
-                />
-              </>
-            ) : (
-              <>
-                {/* حالت ساخت جدید */}
-                <FormField
-                  control={form.control}
-                  name="solar_year"
-                  render={() => (
-                    <FormItem className="flex flex-col gap-1">
-                      <FormLabel className="font-semibold text-gray-700 mb-1">
-                        ماه و سال شمسی
-                      </FormLabel>
-                      <FormControl>
-                        <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className="w-full flex gap-2 items-center justify-between focus:ring-2 focus:ring-blue-400 px-4 py-2 text-base bg-white border-blue-300 shadow-sm hover:bg-blue-50 transition-all duration-200 rounded-xl"
-                              aria-label="انتخاب ماه و سال"
-                              style={{
-                                boxShadow: "0 2px 8px 0 rgba(0, 80, 255, 0.04)",
-                                borderWidth: 2,
-                              }}
-                            >
-                              <span className="flex items-center gap-2">
-                                <CalendarIcon className="h-5 w-5 opacity-70 text-blue-500" />
-                                <span className="font-bold text-blue-700">
-                                  {form.watch("solar_year")} /{" "}
-                                  {
-                                    months.find(
-                                      (m) =>
-                                        m.value === form.watch("solar_month")
-                                    )?.label
-                                  }
-                                </span>
-                              </span>
-                              <svg
-                                width="18"
-                                height="18"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                className="text-blue-400"
-                              >
-                                <path
-                                  d="M7 10l5 5 5-5"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            className="w-auto p-0 bg-blue-100 rounded-xl shadow-lg border border-blue-200"
-                            align="start"
-                          >
-                            <DatePicker
-                              value={pickerValue}
-                              onChange={(date) => {
-                                if (date) {
-                                  form.setValue(
-                                    "solar_year",
-                                    Number(date.year)
-                                  );
-                                  form.setValue(
-                                    "solar_month",
-                                    Number(date.month)
-                                  );
-                                  setPickerOpen(false);
+                  {/* تاریخ تحویل با DatePicker شمسی */}
+                  {form.watch("is_delivered") && (
+                    <FormField
+                      control={form.control}
+                      name="delivered_at"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col gap-1">
+                          <FormLabel className="font-semibold text-gray-700 mb-1">
+                            تاریخ تحویل
+                          </FormLabel>
+                          <FormControl>
+                            <div className="flex gap-2 items-center">
+                              <DatePicker
+                                value={
+                                  field.value ? new Date(field.value) : null
                                 }
-                              }}
-                              onlyMonthPicker
-                              calendar={persian}
-                              locale={persian_fa}
-                              className="red"
-                              calendarPosition="top-left"
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
-                    </FormItem>
+                                onChange={(date) => {
+                                  if (date) {
+                                    // تبدیل تاریخ شمسی به ISO
+                                    const gDate = date.toDate();
+                                    field.onChange(gDate.toISOString());
+                                  } else {
+                                    field.onChange("");
+                                  }
+                                }}
+                                calendar={persian}
+                                locale={persian_fa}
+                                calendarPosition="top-left"
+                                style={{
+                                  direction: "rtl",
+                                  height: "40px",
+                                  width: "100%",
+                                }}
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className="px-2 text-xs rounded-[8px] text-gray-900 border-slate-400 hover:bg-slate-100"
+                                onClick={() => {
+                                  const now = new Date();
+                                  field.onChange(now.toISOString());
+                                }}
+                              >
+                                اکنون
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
+                        </FormItem>
+                      )}
+                    />
                   )}
-                />
-                <FormField
-                  control={form.control}
-                  name="notes"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1">
-                      <FormLabel className="font-semibold text-gray-700 mb-1">
-                        توضیحات
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="rounded-xl border border-slate-300"
-                        />
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
-                    </FormItem>
-                  )}
-                />
-              </>
-            )}
-            <DialogFooter className="flex flex-row gap-2 justify-between w-full mt-2">
-              <Button
-                type="submit"
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white text-base py-2 rounded-xl font-bold shadow-md transition-all duration-200"
-              >
-                {isEdit ? "ذخیره تغییرات" : "افزودن"}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="flex-1 text-base py-2 border border-gray-400 rounded-xl font-bold shadow-sm transition-all duration-200"
-                onClick={onClose}
-              >
-                انصراف
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+                  <FormField
+                    control={form.control}
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-1">
+                        <FormLabel className="font-semibold text-gray-700 mb-1">
+                          محتوا
+                        </FormLabel>
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                            placeholder="محتوا یا توضیحات مربوطه را وارد کنید..."
+                            className="rounded-xl border border-slate-300 min-h-[100px] resize-none"
+                          />
+                        </FormControl>
+                        <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              ) : (
+                <>
+                  {/* حالت ساخت جدید */}
+                  <FormField
+                    control={form.control}
+                    name="solar_year"
+                    render={() => (
+                      <FormItem className="flex flex-col gap-1">
+                        <FormLabel className="font-semibold text-gray-700 mb-1">
+                          ماه و سال شمسی
+                        </FormLabel>
+                        <FormControl>
+                          <Popover
+                            open={pickerOpen}
+                            onOpenChange={setPickerOpen}
+                          >
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className="w-full flex gap-2 items-center justify-between focus:ring-2 focus:ring-blue-400 px-4 py-2 text-base bg-white border-blue-300 shadow-sm hover:bg-blue-50 transition-all duration-200 rounded-xl"
+                                aria-label="انتخاب ماه و سال"
+                                style={{
+                                  boxShadow:
+                                    "0 2px 8px 0 rgba(0, 80, 255, 0.04)",
+                                  borderWidth: 2,
+                                }}
+                              >
+                                <span className="flex items-center gap-2">
+                                  <CalendarIcon className="h-5 w-5 opacity-70 text-blue-500" />
+                                  <span className="font-bold text-blue-700">
+                                    {form.watch("solar_year")} /{" "}
+                                    {
+                                      months.find(
+                                        (m) =>
+                                          m.value === form.watch("solar_month")
+                                      )?.label
+                                    }
+                                  </span>
+                                </span>
+                                <svg
+                                  width="18"
+                                  height="18"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  className="text-blue-400"
+                                >
+                                  <path
+                                    d="M7 10l5 5 5-5"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-auto p-0 bg-blue-100 rounded-xl shadow-lg border border-blue-200"
+                              align="start"
+                            >
+                              <DatePicker
+                                value={pickerValue}
+                                onChange={(date) => {
+                                  if (date) {
+                                    form.setValue(
+                                      "solar_year",
+                                      Number(date.year)
+                                    );
+                                    form.setValue(
+                                      "solar_month",
+                                      Number(date.month)
+                                    );
+                                    setPickerOpen(false);
+                                  }
+                                }}
+                                onlyMonthPicker
+                                calendar={persian}
+                                locale={persian_fa}
+                                calendarPosition="top-left"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </FormControl>
+                        <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-1">
+                        <FormLabel className="font-semibold text-gray-700 mb-1">
+                          توضیحات (اختیاری)
+                        </FormLabel>
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                            placeholder="محتوا یا توضیحات مربوطه را وارد کنید..."
+                            className="rounded-xl border border-slate-300 min-h-[100px] resize-none placeholder:text-gray-500"
+                          />
+                        </FormControl>
+                        <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
+            </form>
+          </Form>
+        </div>
+
+        {/* Fixed Footer */}
+        <DialogFooter className="flex flex-row gap-2 justify-between w-full p-4 border-t border-gray-200">
+          <Button
+            type="submit"
+            onClick={form.handleSubmit(handleSubmit)}
+            className="flex-1 bg-green-600 hover:bg-green-700 text-white text-base py-2 rounded-xl font-bold shadow-md transition-all duration-200"
+          >
+            {isEdit ? "ذخیره تغییرات" : "افزودن"}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="flex-1 text-base py-2 border border-gray-400 rounded-xl font-bold shadow-sm transition-all duration-200"
+            onClick={onClose}
+          >
+            انصراف
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
