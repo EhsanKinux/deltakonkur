@@ -79,6 +79,7 @@ interface MainContentTabProps {
   handleConfirmDelete: () => void;
   handleEdit: (row: MainContentItem) => void;
   handleDelete: (row: MainContentItem) => void;
+  refreshKey: number; // برای force refresh
 }
 
 const getCurrentPersianYearMonth = () => {
@@ -119,6 +120,7 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
   handleConfirmDelete,
   handleEdit,
   handleDelete,
+  refreshKey,
 }) => {
   // --- Query Params ---
   const [searchParams, setSearchParams] = useSearchParams();
@@ -142,6 +144,7 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
   const [pickerOpen, setPickerOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [batchLoading, setBatchLoading] = useState(false);
+  // const [refreshKey, setRefreshKey] = useState(0); // برای force refresh
 
   // --- Sync state to query params ---
   useEffect(() => {
@@ -181,7 +184,7 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
     };
     fetchMainMonthly(mainPage, selectedYear, selectedMonth);
     // eslint-disable-next-line
-  }, [mainPage, selectedYear, selectedMonth]);
+  }, [mainPage, selectedYear, selectedMonth, refreshKey]); // اضافه کردن refreshKey
 
   // --- Sync state with query params on mount (for browser refresh) ---
   useEffect(() => {
@@ -265,6 +268,7 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
       setSelectedIds([]);
       // Refresh data
       setMainPage(1);
+      // setRefreshKey((prev) => prev + 1); // Force refresh
     } catch (e) {
       showToast.error("خطا در تحویل گروهی");
     }
@@ -273,136 +277,142 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
 
   return (
     <div className="flex flex-col gap-4 p-4 md:p-8 mt-2 bg-white shadow-lg rounded-2xl min-h-[60vh] w-full overflow-auto transition-all duration-300">
-      {/* Month/Year Picker */}
-      <div className="flex flex-col md:flex-row items-center gap-4 mb-4">
-        <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className="w-full md:w-64 flex gap-2 items-center justify-between focus:ring-2 focus:ring-blue-400 px-4 py-2 text-base bg-white border-blue-300 shadow-sm hover:bg-blue-50 transition-all duration-200 rounded-xl"
-              aria-label="انتخاب ماه و سال"
-              style={{
-                boxShadow: "0 2px 8px 0 rgba(0, 80, 255, 0.04)",
-                borderWidth: 2,
-              }}
-            >
-              <span className="flex items-center gap-2">
-                <CalendarIcon className="h-5 w-5 opacity-70 text-blue-500" />
-                <span className="font-bold text-blue-700">
-                  {selectedYear} /{" "}
-                  {months.find((m) => m.value === selectedMonth)?.label}
-                </span>
-              </span>
-              <svg
-                width="18"
-                height="18"
-                fill="none"
-                viewBox="0 0 24 24"
-                className="text-blue-400"
-              >
-                <path
-                  d="M7 10l5 5 5-5"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            className="w-auto p-0 bg-blue-100 rounded-xl shadow-lg border border-blue-200"
-            align="start"
-          >
-            <DatePicker
-              value={`${selectedYear}/${selectedMonth}`}
-              onChange={(date) => {
-                if (date) {
-                  setSelectedYear(Number(date.year));
-                  setSelectedMonth(Number(date.month));
-                  setMainPage(1);
-                  setPickerOpen(false);
-                }
-              }}
-              onlyMonthPicker
-              calendar={persian}
-              locale={persian_fa}
-              className="red"
-              calendarPosition="top-left"
-            />
-          </PopoverContent>
-        </Popover>
-        <Button
-          type="button"
-          onClick={() => {
-            const { year, month } = getCurrentPersianYearMonth();
-            setSelectedYear(year);
-            setSelectedMonth(month);
-            setMainPage(1);
-          }}
-          variant="secondary"
-          className="px-4 text-14 rounded-[8px] text-gray-900 border-slate-400 hover:bg-slate-100"
-        >
-          ماه جاری
-        </Button>
-      </div>
       {/* Add New Content Button */}
       <div className="w-full flex justify-start mb-4">
         <Button
-          className="hover:bg-green-100 text-green-700 border border-green-200 flex-1 text-base py-2 rounded-xl font-bold shadow-sm transition-all duration-200 flex gap-2 items-center max-w-xs"
+          className="bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 flex-1 text-base py-2 rounded-xl font-bold shadow-sm transition-all duration-200 flex gap-2 items-center"
           onClick={() => {
             setEditRow(null);
             setAddEditOpen(true);
           }}
           aria-label="افزودن محتوا"
         >
-          ایجاد محتوای جدید
+          ایجاد محتوای جدید +
         </Button>
       </div>
-      {/* Batch Deliver Controls */}
-      <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
-        <div className="flex items-center gap-2">
-          <Checkbox
-            checked={allUndeliveredSelected}
-            indeterminate={someUndeliveredSelected}
-            onCheckedChange={handleSelectAll}
-            disabled={mainLoading || undeliveredItems.length === 0}
-          />
-          <span className="text-sm text-gray-700">
-            انتخاب همه تحویل‌نشده‌ها
-          </span>
-        </div>
-        <Button
-          className="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2 rounded-xl shadow-md transition-all duration-200 focus:ring-2 focus:ring-green-400"
-          disabled={selectedIds.length === 0 || batchLoading}
-          onClick={handleBatchDeliver}
-        >
-          {batchLoading ? (
-            <>
-              <span className="animate-spin mr-2 inline-block align-middle">
-                <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    className="opacity-25"
-                  />
+
+      {/* Table Controls */}
+      <div className="flex flex-col lg:flex-row items-center justify-between mb-6 gap-4">
+        {/* Month/Year Picker */}
+        <div className="w-full lg:w-fit flex flex-col lg:flex-row items-center gap-4">
+          <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-full lg:w-64 flex gap-2 items-center justify-between focus:ring-2 focus:ring-blue-400 px-4 py-2 text-base bg-white border-blue-300 shadow-sm hover:bg-blue-50 transition-all duration-200 rounded-xl"
+                aria-label="انتخاب ماه و سال"
+                style={{
+                  boxShadow: "0 2px 8px 0 rgba(0, 80, 255, 0.04)",
+                  borderWidth: 2,
+                }}
+              >
+                <span className="flex items-center gap-2">
+                  <CalendarIcon className="h-5 w-5 opacity-70 text-blue-500" />
+                  <span className="font-bold text-blue-700">
+                    {selectedYear} /{" "}
+                    {months.find((m) => m.value === selectedMonth)?.label}
+                  </span>
+                </span>
+                <svg
+                  width="18"
+                  height="18"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  className="text-blue-400"
+                >
                   <path
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8z"
-                    className="opacity-75"
+                    d="M7 10l5 5 5-5"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
-              </span>
-              در حال تحویل...
-            </>
-          ) : (
-            "تحویل محتواهای انتخاب شده"
-          )}
-        </Button>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="w-auto p-0 bg-blue-100 rounded-xl shadow-lg border border-blue-200"
+              align="start"
+            >
+              <DatePicker
+                value={`${selectedYear}/${selectedMonth}`}
+                onChange={(date) => {
+                  if (date) {
+                    setSelectedYear(Number(date.year));
+                    setSelectedMonth(Number(date.month));
+                    setMainPage(1);
+                    setPickerOpen(false);
+                  }
+                }}
+                onlyMonthPicker
+                calendar={persian}
+                locale={persian_fa}
+                className="red"
+                calendarPosition="top-left"
+              />
+            </PopoverContent>
+          </Popover>
+          <Button
+            type="button"
+            onClick={() => {
+              const { year, month } = getCurrentPersianYearMonth();
+              setSelectedYear(year);
+              setSelectedMonth(month);
+              setMainPage(1);
+            }}
+            variant="secondary"
+            className="px-4 text-14 rounded-[8px] text-gray-900 border border-slate-400 hover:bg-slate-100 w-full lg:w-fit"
+          >
+            ماه جاری
+          </Button>
+        </div>
+
+        {/* Batch Deliver Controls */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 lg:w-fit">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              checked={allUndeliveredSelected}
+              indeterminate={someUndeliveredSelected}
+              onCheckedChange={handleSelectAll}
+              disabled={mainLoading || undeliveredItems.length === 0}
+            />
+            <span className="text-sm text-gray-700">
+              انتخاب همه تحویل‌نشده‌ها در این صفحه از جدول
+            </span>
+          </div>
+          <Button
+            className="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2 rounded-xl shadow-md transition-all duration-200 focus:ring-2 focus:ring-green-400"
+            disabled={selectedIds.length === 0 || batchLoading}
+            onClick={handleBatchDeliver}
+          >
+            {batchLoading ? (
+              <>
+                <span className="animate-spin mr-2 inline-block align-middle">
+                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      className="opacity-25"
+                    />
+                    <path
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                      className="opacity-75"
+                    />
+                  </svg>
+                </span>
+                در حال تحویل...
+              </>
+            ) : (
+              "تحویل محتواهای انتخاب شده"
+            )}
+          </Button>
+        </div>
       </div>
+
       {/* Table */}
       <div className="overflow-x-auto">
         <Table className="!rounded-xl border w-full md:min-w-[700px] bg-slate-50 shadow-sm">

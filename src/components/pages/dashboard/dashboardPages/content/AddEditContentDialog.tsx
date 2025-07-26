@@ -23,7 +23,23 @@ import {
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
-import DateObject from "react-date-object";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { DateObject } from "react-multi-date-picker";
+
+const getCurrentPersianYearMonth = () => {
+  const now = new Date();
+  const dateObj = new DateObject({
+    date: now,
+    calendar: persian,
+    locale: persian_fa,
+  });
+  return { year: Number(dateObj.year), month: Number(dateObj.month) };
+};
 
 interface AdvisorOption {
   id: number;
@@ -47,7 +63,7 @@ interface ContentDialogData {
 interface AddEditContentDialogProps {
   open: boolean;
   onClose: () => void;
-  onSave: (body: any) => void;
+  onSave: (body: EditFormType | CreateFormType) => void;
   editRow: ContentDialogData | null;
   advisors: AdvisorOption[];
 }
@@ -80,6 +96,9 @@ const AddEditContentDialog = ({
   // Determine mode
   const isEdit = !!editRow;
 
+  // Popover state for month/year picker (Add mode)
+  const [pickerOpen, setPickerOpen] = React.useState(false);
+
   // Form setup
   const form = useForm<EditFormType | CreateFormType>({
     resolver: zodResolver(isEdit ? editSchema : createSchema),
@@ -93,8 +112,8 @@ const AddEditContentDialog = ({
           notes: editRow?.notes || "",
         }
       : {
-          solar_year: 1403,
-          solar_month: 1,
+          solar_year: getCurrentPersianYearMonth().year,
+          solar_month: getCurrentPersianYearMonth().month,
           notes: "",
         },
   });
@@ -111,21 +130,30 @@ const AddEditContentDialog = ({
       });
     } else if (!isEdit) {
       form.reset({
-        solar_year: 1403,
-        solar_month: 1,
+        solar_year: getCurrentPersianYearMonth().year,
+        solar_month: getCurrentPersianYearMonth().month,
         notes: "",
       });
     }
     // eslint-disable-next-line
   }, [editRow, open, advisors]);
 
-  // Month/year picker handler
-  const handleMonthYearChange = (date: DateObject | null) => {
-    if (date) {
-      form.setValue("solar_year", Number(date.year));
-      form.setValue("solar_month", Number(date.month));
-    }
-  };
+  // تنظیم خودکار تاریخ تحویل وقتی وضعیت تحویل تغییر می‌کند
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (
+        name === "is_delivered" &&
+        "is_delivered" in value &&
+        value.is_delivered &&
+        "delivered_at" in value &&
+        !value.delivered_at
+      ) {
+        // اگر تحویل داده شده اما تاریخ تحویل نداریم، تاریخ فعلی را تنظیم کن
+        form.setValue("delivered_at", new Date().toISOString());
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   // رفع خطای any: نوع داده را مشخص کن
   const handleSubmit = (data: EditFormType | CreateFormType) => {
@@ -156,6 +184,22 @@ const AddEditContentDialog = ({
     form.watch("solar_year") && form.watch("solar_month")
       ? `${form.watch("solar_year")}/${form.watch("solar_month")}`
       : "";
+
+  // ماه‌ها برای نمایش فارسی
+  const months = [
+    { value: 1, label: "فروردین" },
+    { value: 2, label: "اردیبهشت" },
+    { value: 3, label: "خرداد" },
+    { value: 4, label: "تیر" },
+    { value: 5, label: "مرداد" },
+    { value: 6, label: "شهریور" },
+    { value: 7, label: "مهر" },
+    { value: 8, label: "آبان" },
+    { value: 9, label: "آذر" },
+    { value: 10, label: "دی" },
+    { value: 11, label: "بهمن" },
+    { value: 12, label: "اسفند" },
+  ];
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -272,50 +316,55 @@ const AddEditContentDialog = ({
                   )}
                 />
                 {/* تاریخ تحویل با DatePicker شمسی */}
-                <FormField
-                  control={form.control}
-                  name="delivered_at"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1">
-                      <FormLabel className="font-semibold text-gray-700 mb-1">
-                        تاریخ تحویل
-                      </FormLabel>
-                      <FormControl>
-                        <div className="flex gap-2 items-center">
-                          <DatePicker
-                            value={field.value ? new Date(field.value) : null}
-                            onChange={(date) => {
-                              if (date) {
-                                // تبدیل تاریخ شمسی به ISO
-                                const gDate = date.toDate();
-                                field.onChange(gDate.toISOString());
-                              } else {
-                                field.onChange("");
-                              }
-                            }}
-                            calendar={persian}
-                            locale={persian_fa}
-                            className="red"
-                            calendarPosition="top-left"
-                            style={{ direction: "rtl" }}
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            className="px-2 text-xs rounded-[8px] text-gray-900 border-slate-400 hover:bg-slate-100"
-                            onClick={() => {
-                              const now = new Date();
-                              field.onChange(now.toISOString());
-                            }}
-                          >
-                            اکنون
-                          </Button>
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
-                    </FormItem>
-                  )}
-                />
+                {form.watch("is_delivered") && (
+                  <FormField
+                    control={form.control}
+                    name="delivered_at"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-1">
+                        <FormLabel className="font-semibold text-gray-700 mb-1">
+                          تاریخ تحویل
+                        </FormLabel>
+                        <FormControl>
+                          <div className="flex gap-2 items-center">
+                            <DatePicker
+                              value={field.value ? new Date(field.value) : null}
+                              onChange={(date) => {
+                                if (date) {
+                                  // تبدیل تاریخ شمسی به ISO
+                                  const gDate = date.toDate();
+                                  field.onChange(gDate.toISOString());
+                                } else {
+                                  field.onChange("");
+                                }
+                              }}
+                              calendar={persian}
+                              locale={persian_fa}
+                              calendarPosition="top-left"
+                              style={{
+                                direction: "rtl",
+                                height: "40px",
+                                width: "100%",
+                              }}
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="px-2 text-xs rounded-[8px] text-gray-900 border-slate-400 hover:bg-slate-100"
+                              onClick={() => {
+                                const now = new Date();
+                                field.onChange(now.toISOString());
+                              }}
+                            >
+                              اکنون
+                            </Button>
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
+                      </FormItem>
+                    )}
+                  />
+                )}
                 <FormField
                   control={form.control}
                   name="notes"
@@ -347,15 +396,73 @@ const AddEditContentDialog = ({
                         ماه و سال شمسی
                       </FormLabel>
                       <FormControl>
-                        <DatePicker
-                          value={pickerValue}
-                          onChange={handleMonthYearChange}
-                          onlyMonthPicker
-                          calendar={persian}
-                          locale={persian_fa}
-                          className="red"
-                          calendarPosition="top-left"
-                        />
+                        <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="w-full flex gap-2 items-center justify-between focus:ring-2 focus:ring-blue-400 px-4 py-2 text-base bg-white border-blue-300 shadow-sm hover:bg-blue-50 transition-all duration-200 rounded-xl"
+                              aria-label="انتخاب ماه و سال"
+                              style={{
+                                boxShadow: "0 2px 8px 0 rgba(0, 80, 255, 0.04)",
+                                borderWidth: 2,
+                              }}
+                            >
+                              <span className="flex items-center gap-2">
+                                <CalendarIcon className="h-5 w-5 opacity-70 text-blue-500" />
+                                <span className="font-bold text-blue-700">
+                                  {form.watch("solar_year")} /{" "}
+                                  {
+                                    months.find(
+                                      (m) =>
+                                        m.value === form.watch("solar_month")
+                                    )?.label
+                                  }
+                                </span>
+                              </span>
+                              <svg
+                                width="18"
+                                height="18"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                className="text-blue-400"
+                              >
+                                <path
+                                  d="M7 10l5 5 5-5"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-auto p-0 bg-blue-100 rounded-xl shadow-lg border border-blue-200"
+                            align="start"
+                          >
+                            <DatePicker
+                              value={pickerValue}
+                              onChange={(date) => {
+                                if (date) {
+                                  form.setValue(
+                                    "solar_year",
+                                    Number(date.year)
+                                  );
+                                  form.setValue(
+                                    "solar_month",
+                                    Number(date.month)
+                                  );
+                                  setPickerOpen(false);
+                                }
+                              }}
+                              onlyMonthPicker
+                              calendar={persian}
+                              locale={persian_fa}
+                              className="red"
+                              calendarPosition="top-left"
+                            />
+                          </PopoverContent>
+                        </Popover>
                       </FormControl>
                       <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
                     </FormItem>

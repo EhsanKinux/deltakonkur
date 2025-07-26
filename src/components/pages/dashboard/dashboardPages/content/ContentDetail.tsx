@@ -110,6 +110,7 @@ const ContentDetail: React.FC = () => {
           </h2>
           <Button
             variant="outline"
+            className="px-4 text-14 rounded-[8px] text-gray-900 border border-slate-400 hover:bg-slate-100"
             onClick={() => {
               const params = new URLSearchParams();
               let year = searchParams.get("year");
