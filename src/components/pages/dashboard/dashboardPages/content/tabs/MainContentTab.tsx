@@ -75,7 +75,14 @@ interface MainContentTabProps {
   setEditRow: (v: ContentDialogData | null) => void;
   deleteRow: ContentDialogData | null;
   advisors: AdvisorOption[];
-  handleSave: (body: ContentDialogData) => void;
+  handleSave: (body: {
+    advisor_id?: number;
+    solar_year?: number;
+    solar_month?: number;
+    is_delivered?: boolean;
+    delivered_at?: string;
+    notes?: string;
+  }) => void;
   handleConfirmDelete: () => void;
   handleEdit: (row: MainContentItem) => void;
   handleDelete: (row: MainContentItem) => void;

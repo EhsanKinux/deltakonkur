@@ -104,7 +104,14 @@ const ContentList: React.FC = () => {
   };
 
   // افزودن محتوا (POST)
-  const handleSave = async (body: Partial<ContentDialogData>) => {
+  const handleSave = async (body: {
+    advisor_id?: number;
+    solar_year?: number;
+    solar_month?: number;
+    is_delivered?: boolean;
+    delivered_at?: string;
+    notes?: string;
+  }) => {
     const { accessToken } = authStore.getState();
 
     // حالت افزودن (editRow == null)
