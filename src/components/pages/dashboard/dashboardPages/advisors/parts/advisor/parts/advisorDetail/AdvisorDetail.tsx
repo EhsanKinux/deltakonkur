@@ -13,6 +13,8 @@ import { AdvisorDetailEntry } from "./interface";
 import { stColumns } from "./parts/advisorStudentTable/ColumnDef";
 import AdvisorAssessment from "./parts/assessments/AdvisorAssessment";
 import AdvisorInfo from "./parts/Info/AdvisorInfo";
+import AdvisorPerformanceChart from "./parts/AdvisorPerformanceChart";
+import type { AdvisorData } from "./JustAdvisorDetail";
 
 const AdvisorDetail = () => {
   const { advisorId } = useParams();
@@ -21,10 +23,36 @@ const AdvisorDetail = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [advisorData, setAdvisorData] = useState<AdvisorData | null>(null);
 
   const abortControllerRef = useRef<AbortController | null>(null); // اضافه کردن abortController
 
-  const activeTab = searchParams.get("tab") || "studentTable";
+  const activeTab = searchParams.get("tab") || "performance";
+
+  const fetchAdvisorData = useCallback(async () => {
+    if (!advisorId) return;
+
+    const { accessToken } = authStore.getState();
+
+    try {
+      const response = await axios.get(
+        `${BASE_API_URL}api/register/advisor/${advisorId}/`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      setAdvisorData(response.data);
+    } catch (error) {
+      console.error("خطا در دریافت اطلاعات مشاور:", error);
+    }
+  }, [advisorId]);
+
+  useEffect(() => {
+    fetchAdvisorData();
+  }, [fetchAdvisorData]);
 
   const getAdvisorStudents = useCallback(async () => {
     const { accessToken } = authStore.getState();
@@ -93,6 +121,7 @@ const AdvisorDetail = () => {
       setTotalPages(Math.ceil(data.count / 10).toString());
     } catch (error: unknown) {
       if (axios.isCancel(error)) {
+        // Request was cancelled, do nothing
       } else {
         console.error("خطا در دریافت اطلاعات دانشجویان مشاور:", error);
       }
@@ -142,6 +171,12 @@ const AdvisorDetail = () => {
       <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
         <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
           <TabsTrigger
+            value="performance"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
+            عملکرد مشاور
+          </TabsTrigger>
+          <TabsTrigger
             value="studentTable"
             className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
           >
@@ -154,6 +189,11 @@ const AdvisorDetail = () => {
             نظرسنجی ها
           </TabsTrigger>
         </TabsList>
+        <TabsContent value="performance">
+          <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-[50vh] w-full">
+            <AdvisorPerformanceChart advisorData={advisorData} />
+          </div>
+        </TabsContent>
         <TabsContent value="studentTable">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-[150vh]">
             <AdvisorDitailTable
