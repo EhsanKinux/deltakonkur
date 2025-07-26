@@ -80,6 +80,7 @@ interface MainContentTabProps {
   handleEdit: (row: MainContentItem) => void;
   handleDelete: (row: MainContentItem) => void;
   refreshKey: number; // برای force refresh
+  triggerRefresh: () => void; // برای فراخوانی refresh از parent
 }
 
 const getCurrentPersianYearMonth = () => {
@@ -121,6 +122,7 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
   handleEdit,
   handleDelete,
   refreshKey,
+  triggerRefresh,
 }) => {
   // --- Query Params ---
   const [searchParams, setSearchParams] = useSearchParams();
@@ -144,7 +146,6 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
   const [pickerOpen, setPickerOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [batchLoading, setBatchLoading] = useState(false);
-  // const [refreshKey, setRefreshKey] = useState(0); // برای force refresh
 
   // --- Sync state to query params ---
   useEffect(() => {
@@ -247,28 +248,25 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
     try {
       const { accessToken } = authStore.getState();
       const now = new Date().toISOString();
-      await Promise.all(
-        selectedIds.map((id) =>
-          axios.patch(
-            BASE_API_URL + `/api/content/contents/${id}/mark_delivered`,
-            {
-              is_delivered: true,
-              delivered_at: now,
-              notes: "تحویل گروهی توسط مدیر",
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          )
-        )
+
+      await axios.patch(
+        BASE_API_URL + "/api/content/contents/bulk-mark-delivered/",
+        {
+          content_ids: selectedIds,
+          delivered_at: now,
+          // notes: "تحویل گروهی توسط مدیر",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
+
       showToast.success("همه موارد انتخاب‌شده تحویل داده شدند.");
       setSelectedIds([]);
       // Refresh data
-      setMainPage(1);
-      // setRefreshKey((prev) => prev + 1); // Force refresh
+      triggerRefresh(); // Trigger parent refresh
     } catch (e) {
       showToast.error("خطا در تحویل گروهی");
     }

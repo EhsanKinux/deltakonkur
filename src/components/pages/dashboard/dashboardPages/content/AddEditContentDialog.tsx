@@ -379,13 +379,13 @@ const AddEditContentDialog = ({
                     render={({ field }) => (
                       <FormItem className="flex flex-col gap-1">
                         <FormLabel className="font-semibold text-gray-700 mb-1">
-                          محتوا
+                          محتوا (اختیاری)
                         </FormLabel>
                         <FormControl>
                           <Textarea
                             {...field}
                             placeholder="محتوا یا توضیحات مربوطه را وارد کنید..."
-                            className="rounded-xl border border-slate-300 min-h-[100px] resize-none"
+                            className="rounded-xl border border-slate-300 min-h-[100px] resize-none placeholder:text-gray-500"
                           />
                         </FormControl>
                         <FormMessage className="text-red-500 text-xs mt-1 font-medium" />

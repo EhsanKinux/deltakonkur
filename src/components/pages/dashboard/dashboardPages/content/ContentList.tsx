@@ -269,6 +269,7 @@ const ContentList: React.FC = () => {
               handleEdit={handleEdit}
               handleDelete={handleDelete}
               refreshKey={refreshKey}
+              triggerRefresh={triggerRefresh}
             />
           )}
         </TabsContent>
