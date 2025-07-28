@@ -36,7 +36,7 @@ const AdvisorDetail = () => {
 
     try {
       const response = await axios.get(
-        `${BASE_API_URL}api/register/advisor/${advisorId}/`,
+        `${BASE_API_URL}api/advisor/advisors/${advisorId}/`,
         {
           headers: {
             "Content-Type": "application/json",
