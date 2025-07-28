@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate, useParams } from "react-router-dom";
-import SupervisorInfo from "./parts/Info/SupervisorInfo";
+import SupervisorInfo from "./_components/Info/SupervisorInfo";
 
 const SupervisorDetail = () => {
   const navigate = useNavigate();

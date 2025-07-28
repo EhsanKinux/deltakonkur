@@ -7,7 +7,7 @@ import axios from "axios";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { AdvisorDetailEntry } from "../../advisors/parts/advisor/parts/advisorDetail/interface";
+import { AdvisorDetailEntry } from "../../advisors/_components/advisor/_components/advisorDetail/interface";
 import { examStColumns } from "../table/ExamAdvisorDetailColumnDef";
 import { ExamAdvisorDetailTable } from "../table/ExamAdvisorDetailTable";
 

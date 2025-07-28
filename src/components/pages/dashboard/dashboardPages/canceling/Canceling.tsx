@@ -8,7 +8,7 @@ import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { FormEntry } from "../advisors/parts/student/table/interfaces";
+import { FormEntry } from "../advisors/_components/student/table/interfaces";
 import { stColumns } from "./table/CancelingColumnDef";
 import { CancelingTable } from "./table/CancelingTable";
 

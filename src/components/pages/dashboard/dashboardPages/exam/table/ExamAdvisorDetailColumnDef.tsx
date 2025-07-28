@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { StudentWithDetails } from "../../advisors/parts/advisor/parts/advisorDetail/interface";
-import ActionButtons from "../advisorDetail/parts/ActionButtons";
+import { StudentWithDetails } from "../../advisors/_components/advisor/_components/advisorDetail/interface";
+import ActionButtons from "../advisorDetail/_components/ActionButtons";
 
 export const examStColumns: ColumnDef<StudentWithDetails>[] = [
   {

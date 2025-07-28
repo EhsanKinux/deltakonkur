@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { FormEntry } from "../../advisors/parts/student/table/interfaces";
+import { FormEntry } from "../../advisors/_components/student/table/interfaces";
 import CancelingDialogButton from "../dialog/CancelingDialogButton";
 
 export const stColumns: ColumnDef<FormEntry>[] = [

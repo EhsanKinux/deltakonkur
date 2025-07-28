@@ -2,7 +2,6 @@ import axios, { AxiosError } from "axios";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import { showToast } from "@/components/ui/toast";
-// import Cookies from 'js-cookie';
 
 const api = axios.create({
   baseURL: BASE_API_URL,

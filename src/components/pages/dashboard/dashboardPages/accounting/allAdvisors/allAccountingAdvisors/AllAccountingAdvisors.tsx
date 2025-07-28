@@ -1,4 +1,4 @@
-import AdvisorsList from "./parts/AdvisorsList";
+import AdvisorsList from "./_components/AdvisorsList";
 
 const AllAccountingAdvisors = () => {
   return (

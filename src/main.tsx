@@ -6,7 +6,7 @@ import ProtectedRoute from "./components/pages/auth/ProtectedRoute.tsx";
 import RedirectRoute from "./components/pages/auth/RedirectRoute.tsx";
 import Unauthorized from "./components/pages/auth/Unauthorized.tsx";
 import MonthlyFinancialSummary from "./components/pages/dashboard/dashboardPages/accounting/monthlyFinancialSummary/AccountingMonthlyFinancialSummary.tsx";
-import { DescriptionPage } from "./components/pages/dashboard/dashboardPages/supervision/assess/parts/recentAssassments/DescriptionPage.tsx";
+import { DescriptionPage } from "./components/pages/dashboard/dashboardPages/supervision/assess/_components/recentAssassments/DescriptionPage.tsx";
 import "./index.css";
 import ScrollToTop from "./lib/utils/ScrollToTop.tsx";
 
@@ -32,13 +32,13 @@ const SupervisionFollowUp = lazy(
 const JustAdvisorDetail = lazy(
   () =>
     import(
-      "./components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/JustAdvisorDetail.tsx"
+      "./components/pages/dashboard/dashboardPages/advisors/_components/advisor/_components/advisorDetail/JustAdvisorDetail.tsx"
     )
 );
 const ContentAdvisorDetail = lazy(
   () =>
     import(
-      "./components/pages/dashboard/dashboardPages/content/advisors/parts/contentAdvisorDetail/ContentAdvisorDetail.tsx"
+      "./components/pages/dashboard/dashboardPages/content/advisors/_components/contentAdvisorDetail/ContentAdvisorDetail.tsx"
     )
 );
 const ContentAdvisor = lazy(
@@ -50,7 +50,7 @@ const ContentAdvisor = lazy(
 const AccountingAdvisorDetail = lazy(
   () =>
     import(
-      "./components/pages/dashboard/dashboardPages/accounting/allAdvisors/allAccountingAdvisors/parts/advisorDetail/AccountingAdvisorDetail.tsx"
+      "./components/pages/dashboard/dashboardPages/accounting/allAdvisors/allAccountingAdvisors/_components/advisorDetail/AccountingAdvisorDetail.tsx"
     )
 );
 
@@ -111,25 +111,25 @@ const Canceling = lazy(
 const StudentTabs = lazy(
   () =>
     import(
-      "./components/pages/dashboard/dashboardPages/advisors/parts/student/tabs/StudentTabs.tsx"
+      "./components/pages/dashboard/dashboardPages/advisors/_components/student/tabs/StudentTabs.tsx"
     )
 );
 const AllAdvisors = lazy(
   () =>
     import(
-      "./components/pages/dashboard/dashboardPages/advisors/parts/advisor/AdvisorList.tsx"
+      "./components/pages/dashboard/dashboardPages/advisors/_components/advisor/AdvisorList.tsx"
     )
 );
 const NewAdvisor = lazy(
   () =>
     import(
-      "./components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorRegisteration/AdvisorRegisterForm.tsx"
+      "./components/pages/dashboard/dashboardPages/advisors/_components/advisor/_components/advisorRegisteration/AdvisorRegisterForm.tsx"
     )
 );
 const AdvisorDetail = lazy(
   () =>
     import(
-      "./components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/AdvisorDetail.tsx"
+      "./components/pages/dashboard/dashboardPages/advisors/_components/advisor/_components/advisorDetail/AdvisorDetail.tsx"
     )
 );
 const Content = lazy(

@@ -26,13 +26,13 @@ const SupervisionFollowUp = lazy(
 const JustAdvisorDetail = lazy(
   () =>
     import(
-      "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/JustAdvisorDetail"
+      "@/components/pages/dashboard/dashboardPages/advisors/_components/advisor/_components/advisorDetail/JustAdvisorDetail"
     )
 );
 const ContentAdvisorDetail = lazy(
   () =>
     import(
-      "@/components/pages/dashboard/dashboardPages/content/advisors/parts/contentAdvisorDetail/ContentAdvisorDetail"
+      "@/components/pages/dashboard/dashboardPages/content/advisors/_components/contentAdvisorDetail/ContentAdvisorDetail"
     )
 );
 const ContentAdvisor = lazy(
@@ -44,7 +44,7 @@ const ContentAdvisor = lazy(
 const AccountingAdvisorDetail = lazy(
   () =>
     import(
-      "@/components/pages/dashboard/dashboardPages/accounting/allAdvisors/allAccountingAdvisors/parts/advisorDetail/AccountingAdvisorDetail"
+      "@/components/pages/dashboard/dashboardPages/accounting/allAdvisors/allAccountingAdvisors/_components/advisorDetail/AccountingAdvisorDetail"
     )
 );
 const UserDetails = lazy(
@@ -99,25 +99,25 @@ const Canceling = lazy(
 const StudentTabs = lazy(
   () =>
     import(
-      "@/components/pages/dashboard/dashboardPages/advisors/parts/student/tabs/StudentTabs"
+      "@/components/pages/dashboard/dashboardPages/advisors/_components/student/tabs/StudentTabs"
     )
 );
 const AllAdvisors = lazy(
   () =>
     import(
-      "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/AdvisorList"
+      "@/components/pages/dashboard/dashboardPages/advisors/_components/advisor/AdvisorList"
     )
 );
 const NewAdvisor = lazy(
   () =>
     import(
-      "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorRegisteration/AdvisorRegisterForm"
+      "@/components/pages/dashboard/dashboardPages/advisors/_components/advisor/_components/advisorRegisteration/AdvisorRegisterForm"
     )
 );
 const AdvisorDetail = lazy(
   () =>
     import(
-      "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/AdvisorDetail"
+      "@/components/pages/dashboard/dashboardPages/advisors/_components/advisor/_components/advisorDetail/AdvisorDetail"
     )
 );
 const Content = lazy(

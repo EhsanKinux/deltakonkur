@@ -3,7 +3,6 @@ import { useAuth } from "@/lib/apis/authentication/useAuth";
 import { authStore } from "@/lib/store/authStore";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { IUserDetail } from "../dashboardPages/management/users/userDetail/interface";
-// import { getRoleName } from "@/lib/utils/roles/Roles";
 import { useProfile } from "@/functions/hooks/profile/useProfile";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";

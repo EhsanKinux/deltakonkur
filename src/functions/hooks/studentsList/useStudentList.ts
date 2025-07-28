@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { appStore } from "@/lib/store/appStore";
 
-import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/student/table/interfaces";
+import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/_components/student/table/interfaces";
 import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 import {
   change_advisor_of_student,

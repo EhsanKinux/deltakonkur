@@ -19,8 +19,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
-import CustomInputAssassment from "./parts/customInput/CustomInputAssassment";
-import RecentAssassments from "./parts/recentAssassments/RecentAssassments";
+import CustomInputAssassment from "./_components/customInput/CustomInputAssassment";
+import RecentAssassments from "./_components/recentAssassments/RecentAssassments";
 
 interface StudentCallResponse {
   id: number;

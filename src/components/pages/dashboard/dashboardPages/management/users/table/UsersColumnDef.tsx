@@ -2,7 +2,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import UserDialogButton from "./delete/UserDialogButton";
 import { IUsers2 } from "@/lib/store/useUsersStore";
 
-// import StudentDialogButtons from "./parts/StudentDialogButtons";
 
 export const userColumns: ColumnDef<IUsers2>[] = [
   {

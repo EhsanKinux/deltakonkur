@@ -3,9 +3,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import AccountingIncome from "./parts/AccountingIncome";
-import AccountingOutcome from "./parts/AccountingOutcome";
-import AccountingNetProfit from "./parts/AccountingNetProfit";
+import AccountingIncome from "./_components/AccountingIncome";
+import AccountingNetProfit from "./_components/AccountingNetProfit";
+import AccountingOutcome from "./_components/AccountingOutcome";
 
 const MonthlyFinancialSummary = () => {
   const [searchParams, setSearchParams] = useSearchParams();

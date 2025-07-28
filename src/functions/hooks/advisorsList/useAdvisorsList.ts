@@ -1,4 +1,4 @@
-import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/table/interfaces";
+import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/_components/advisor/_components/table/interfaces";
 import {
   advisor_students,
   advisor_update,
@@ -15,8 +15,7 @@ import {
 } from "@/lib/apis/advisors/service";
 import { appStore } from "@/lib/store/appStore";
 import { Advisor } from "@/lib/store/types";
-// import { Advisor } from "@/lib/store/types";
-import { AdvisorDetailEntry } from "@/components/pages/dashboard/dashboardPages/advisors/parts/advisor/parts/advisorDetail/interface";
+import { AdvisorDetailEntry } from "@/components/pages/dashboard/dashboardPages/advisors/_components/advisor/_components/advisorDetail/interface";
 import { ISubmitAdvisorRegisterService } from "@/lib/apis/advisors/interface";
 import { useCallback, useState } from "react";
 import { AdvisorDataResponse, PaymentHistoryRecord } from "./interface";

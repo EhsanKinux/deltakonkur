@@ -8,13 +8,19 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import SearchIcon from "@/assets/icons/search.svg";
-//   import { StudentWithDetails2 } from "../advisor/parts/advisorDetail/interface";
 import { StudentWithDetails2 } from "@/functions/hooks/advisorsList/interface";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -23,7 +29,10 @@ interface AllAdvisorDetailTableProps {
   data: StudentWithDetails2[];
 }
 
-export function AllAdvisorDetailTable({ columns, data }: AllAdvisorDetailTableProps) {
+export function AllAdvisorDetailTable({
+  columns,
+  data,
+}: AllAdvisorDetailTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -70,10 +79,16 @@ export function AllAdvisorDetailTable({ columns, data }: AllAdvisorDetailTablePr
     <div className="w-full overflow-auto p-10 absolute top-0 right-0 left-0 bottom-0">
       <div className="flex items-center gap-2 py-4">
         <div className="relative flex items-center w-[50%] text-14 rounded-[8px]">
-          <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
+          <img
+            src={SearchIcon}
+            alt="searchicon"
+            className="absolute left-3 w-6 h-6 text-gray-500"
+          />
           <Input
             placeholder="جستجو براساس نام"
-            value={(table.getColumn("first_name")?.getFilterValue() as string) ?? ""}
+            value={
+              (table.getColumn("first_name")?.getFilterValue() as string) ?? ""
+            }
             onChange={(event) => {
               table.setPageIndex(0);
               table.getColumn("first_name")?.setFilterValue(event.target.value);
@@ -82,10 +97,16 @@ export function AllAdvisorDetailTable({ columns, data }: AllAdvisorDetailTablePr
           />
         </div>
         <div className="relative flex items-center w-[50%] text-14  rounded-[8px]">
-          <img src={SearchIcon} alt="searchicon" className="absolute left-3 w-6 h-6 text-gray-500" />
+          <img
+            src={SearchIcon}
+            alt="searchicon"
+            className="absolute left-3 w-6 h-6 text-gray-500"
+          />
           <Input
             placeholder="جستجو براساس نام خانوادگی"
-            value={(table.getColumn("last_name")?.getFilterValue() as string) ?? ""}
+            value={
+              (table.getColumn("last_name")?.getFilterValue() as string) ?? ""
+            }
             onChange={(event) => {
               table.setPageIndex(0);
               table.getColumn("last_name")?.setFilterValue(event.target.value);
@@ -101,7 +122,12 @@ export function AllAdvisorDetailTable({ columns, data }: AllAdvisorDetailTablePr
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id} className="!text-center">
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 );
               })}
@@ -113,7 +139,9 @@ export function AllAdvisorDetailTable({ columns, data }: AllAdvisorDetailTablePr
             table.getRowModel().rows.map((row) => (
               <TableRow
                 // className={`hover:bg-slate-200 border-b-slate-400`}
-                className={`hover:bg-slate-200 border-b-slate-400 ${getRowBgColor(row.original.status)}`}
+                className={`hover:bg-slate-200 border-b-slate-400 ${getRowBgColor(
+                  row.original.status
+                )}`}
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
@@ -152,7 +180,8 @@ export function AllAdvisorDetailTable({ columns, data }: AllAdvisorDetailTablePr
           </Button>
         </div>
         <span className="text-slate-600 text-sm">
-          صفحه {table.getState().pagination.pageIndex + 1} از {table.getPageCount()}
+          صفحه {table.getState().pagination.pageIndex + 1} از{" "}
+          {table.getPageCount()}
         </span>
       </div>
     </div>

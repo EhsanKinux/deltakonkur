@@ -1,9 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import SearchByDay from "./parts/SearchByDay";
-import SearchByName from "./parts/SearchByName";
-import StudentSupervisorAssessment from "./parts/StudentSupervisorAssessments";
+import SearchByDay from "./_components/SearchByDay";
+import SearchByName from "./_components/SearchByName";
+import StudentSupervisorAssessment from "./_components/StudentSupervisorAssessments";
 
 const SupervisionSearchingTabs = () => {
   // Use search params to manage query string

@@ -12,7 +12,7 @@ import { accountingStore } from "@/lib/store/accountingStore";
 import { IallAdvisors, IallStudents } from "@/lib/store/types";
 import { useCallback, useState } from "react";
 import { IJsonData, IJsonTestData } from "./interface";
-import { IStudentAdvisor } from "@/components/pages/dashboard/dashboardPages/accounting/allStudents/parts/interfaces";
+import { IStudentAdvisor } from "@/components/pages/dashboard/dashboardPages/accounting/allStudents/_components/interfaces";
 import { IRestartStudent, IStopStudent } from "@/lib/apis/accounting/interface";
 
 export const useAccounting = () => {
@@ -22,7 +22,9 @@ export const useAccounting = () => {
   const [advisorDataLoaded, setAdvisorDataLoaded] = useState(false);
   const [jsonTestData, setJsonTestData] = useState<IJsonTestData[]>();
   const [jsonData, setJsonData] = useState<IJsonData[]>();
-  const [studentAdvisorData, setStudentAdvisorData] = useState<IStudentAdvisor[]>([]);
+  const [studentAdvisorData, setStudentAdvisorData] = useState<
+    IStudentAdvisor[]
+  >([]);
 
   const addStudentData = accountingStore((state) => state.addAllstudents);
   const addAlladvisors = accountingStore((state) => state.addAlladvisors);

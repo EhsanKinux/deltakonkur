@@ -180,7 +180,7 @@ const ManagementReports = () => {
     filename: string
   ) => {
     const { utils, writeFile } = await import(
-      "../parts/ExelXLSX/SheetJSWrapper"
+      "../_components/ExelXLSX/SheetJSWrapper"
     );
     const worksheet = utils.json_to_sheet(data);
 

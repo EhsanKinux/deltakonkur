@@ -1,7 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { FormEntry } from "../../advisors/parts/student/table/interfaces";
-
-// import StudentDialogButtons from "./parts/StudentDialogButtons";
+import { FormEntry } from "../../advisors/_components/student/table/interfaces";
 
 export const stColumns: ColumnDef<FormEntry>[] = [
   {

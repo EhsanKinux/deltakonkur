@@ -18,7 +18,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
-import CustomInputAssassment from "../dashboard/dashboardPages/supervision/assess/parts/customInput/CustomInputAssassment";
+import CustomInputAssassment from "../dashboard/dashboardPages/supervision/assess/_components/customInput/CustomInputAssassment";
 
 const ExternalForm = () => {
   const { token } = useParams(); // Extract token from URL params

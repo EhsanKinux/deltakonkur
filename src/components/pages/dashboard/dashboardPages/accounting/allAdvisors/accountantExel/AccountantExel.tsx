@@ -35,7 +35,9 @@ const AccountantExel = () => {
   };
 
   const generateExcel = async (data: ITransformedData[], filename: string) => {
-    const { utils, writeFile } = await import("../parts/ExelXLSX/SheetJSWrapper");
+    const { utils, writeFile } = await import(
+      "../_components/ExelXLSX/SheetJSWrapper"
+    );
     const worksheet = utils.json_to_sheet(data);
     const workbook = utils.book_new();
     utils.book_append_sheet(workbook, worksheet, "Sheet1");

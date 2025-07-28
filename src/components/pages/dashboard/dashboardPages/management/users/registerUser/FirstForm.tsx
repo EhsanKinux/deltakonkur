@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import CustomUserInput from "./parts/CustomUserInput";
+import CustomUserInput from "./_components/CustomUserInput";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { registerUserFormSchema } from "@/lib/schema/Schema";
@@ -29,14 +29,24 @@ const FirstForm: React.FC<FirstFormProps> = ({ onSubmit, isLoading }) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 w-3/4 px-8">
         <div className="flex flex-col gap-5">
-          <CustomUserInput control={form.control} name="first_name" label="نام" placeHolder="نام کاربر" />
+          <CustomUserInput
+            control={form.control}
+            name="first_name"
+            label="نام"
+            placeHolder="نام کاربر"
+          />
           <CustomUserInput
             control={form.control}
             name="last_name"
             label="نام خانوادگی"
             placeHolder="نام خانوادگی کاربر"
           />
-          <CustomUserInput control={form.control} name="national_id" label="کد ملی" placeHolder="کد ملی کاربر" />
+          <CustomUserInput
+            control={form.control}
+            name="national_id"
+            label="کد ملی"
+            placeHolder="کد ملی کاربر"
+          />
           <CustomUserInput
             control={form.control}
             name="phone_number"

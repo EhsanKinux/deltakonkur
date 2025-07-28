@@ -7,10 +7,10 @@ import { debounce } from "lodash";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { StudentTable } from "../table/StudentTable";
-import { activeAccountingStColumns } from "./parts/ActiveColumnAccountingStDef";
-import { cancelAccountingStColumns } from "./parts/CancelColumnAccountingStDef";
-import { IStudentAdvisor } from "./parts/interfaces";
-import { stopAccountingStColumns } from "./parts/StopColumnAccountingStDef";
+import { activeAccountingStColumns } from "./_components/ActiveColumnAccountingStDef";
+import { cancelAccountingStColumns } from "./_components/CancelColumnAccountingStDef";
+import { IStudentAdvisor } from "./_components/interfaces";
+import { stopAccountingStColumns } from "./_components/StopColumnAccountingStDef";
 
 const AllAccountingStudents = () => {
   /** شروع **/

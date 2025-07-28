@@ -1,7 +1,6 @@
 import { IUserDetail } from "@/components/pages/dashboard/dashboardPages/management/users/userDetail/interface";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
-// import axios from "axios";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../global-interceptor";

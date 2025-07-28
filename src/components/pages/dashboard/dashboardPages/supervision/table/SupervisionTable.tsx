@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FormEntry } from "../../advisors/parts/student/table/interfaces";
+import { FormEntry } from "../../advisors/_components/student/table/interfaces";
 import {
   flexRender,
   getCoreRowModel,

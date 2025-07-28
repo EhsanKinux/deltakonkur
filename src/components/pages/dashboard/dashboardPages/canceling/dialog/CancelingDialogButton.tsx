@@ -1,8 +1,8 @@
 import userDeleteIcon from "@/assets/icons/userRemove.svg";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { FormEntry } from "../../advisors/parts/student/table/interfaces";
-import CancelConfirmation from "./parts/CancelConfirmation";
+import { FormEntry } from "../../advisors/_components/student/table/interfaces";
+import CancelConfirmation from "./_components/CancelConfirmation";
 import useModalHistory from "@/hooks/useBackButton";
 
 const CancelingDialogButton = ({ formData }: { formData: FormEntry }) => {

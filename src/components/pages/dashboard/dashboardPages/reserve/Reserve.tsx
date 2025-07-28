@@ -6,9 +6,9 @@ import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import Down from "./form/down/Down";
-import TopLeft from "./form/topleft/TopLeft";
-import TopRight from "./form/topright/TopRight";
+import Down from "./_components/down/Down";
+import TopLeft from "./_components/topleft/TopLeft";
+import TopRight from "./_components/topright/TopRight";
 
 import { submit_student_register_service } from "@/lib/apis/reserve/service";
 
@@ -18,8 +18,8 @@ import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
-import PlansType from "./form/down/PlansType";
-import SelectSalesManager from "./form/sales/SelectSalesManager";
+import PlansType from "./_components/down/PlansType";
+import SelectSalesManager from "./_components/sales/SelectSalesManager";
 
 interface CustomError extends Error {
   response?: {

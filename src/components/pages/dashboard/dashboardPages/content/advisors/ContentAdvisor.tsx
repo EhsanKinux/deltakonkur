@@ -5,8 +5,8 @@ import axios from "axios";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { advisorColumn } from "./parts/table/AdvisorColumnDef";
-import { AdvisorTable } from "./parts/table/AdvisorTable";
+import { advisorColumn } from "./_components/table/AdvisorColumnDef";
+import { AdvisorTable } from "./_components/table/AdvisorTable";
 
 const ContentAdvisor = () => {
   const [advisors, setAdvisors] = useState([]);

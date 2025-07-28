@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IFormattedStudentAdvisor } from "../allStudents/parts/interfaces";
+import { IFormattedStudentAdvisor } from "../allStudents/_components/interfaces";
 import {
   flexRender,
   getCoreRowModel,

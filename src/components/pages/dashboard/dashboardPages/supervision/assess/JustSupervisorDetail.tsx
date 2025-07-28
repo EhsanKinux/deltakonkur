@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
-import JustSupervisorInfo from "./parts/Info/JustSupervisorInfo";
+import JustSupervisorInfo from "./_components/Info/JustSupervisorInfo";
 
 const JustSupervisorDetail = () => {
   const navigate = useNavigate();

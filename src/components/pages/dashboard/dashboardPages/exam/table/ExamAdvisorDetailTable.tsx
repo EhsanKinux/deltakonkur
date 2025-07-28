@@ -17,7 +17,7 @@ import SearchIcon from "@/assets/icons/search.svg";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { StudentWithDetails } from "../../advisors/parts/advisor/parts/advisorDetail/interface";
+import { StudentWithDetails } from "../../advisors/_components/advisor/_components/advisorDetail/interface";
 
 interface ExamAdvisorDetailTableProps {
   columns: ColumnDef<StudentWithDetails>[];

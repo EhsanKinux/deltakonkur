@@ -12,8 +12,8 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
 import { IUserDetail } from "./interface";
-import CustomUserDetailInput from "./parts/CustomUserDetailInput";
-import UserDetailSelectRoles from "./parts/selectRoles/UserDetailSelectRoles";
+import CustomUserDetailInput from "./_components/CustomUserDetailInput";
+import UserDetailSelectRoles from "./_components/selectRoles/UserDetailSelectRoles";
 
 const UserDetails = () => {
   const { userId } = useParams();

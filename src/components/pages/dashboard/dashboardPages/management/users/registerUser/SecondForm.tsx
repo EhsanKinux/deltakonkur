@@ -1,6 +1,6 @@
 import { useForm, UseFormReturn } from "react-hook-form";
 
-import SelectRoles from "./parts/selectRoles/SelectRoles";
+import SelectRoles from "./_components/selectRoles/SelectRoles";
 import { Button } from "@/components/ui/button";
 
 interface FormValues {
@@ -12,7 +12,6 @@ interface SecondFormProps {
 }
 
 const SecondForm: React.FC<SecondFormProps> = ({ userId }) => {
-
   const form: UseFormReturn<FormValues> = useForm<FormValues>({
     defaultValues: {
       roles: [], // Set default value for roles
@@ -29,7 +28,10 @@ const SecondForm: React.FC<SecondFormProps> = ({ userId }) => {
         <SelectRoles form={form} userId={userId} />
       </div>
       <div className="flex flex-col justify-center items-center w-full mt-4">
-        <Button onClick={handleReset} className="form-btn w-full hover:bg-blue-800">
+        <Button
+          onClick={handleReset}
+          className="form-btn w-full hover:bg-blue-800"
+        >
           بازگشت و ثبت کاربر جدید
         </Button>
       </div>

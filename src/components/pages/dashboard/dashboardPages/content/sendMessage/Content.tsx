@@ -7,8 +7,8 @@ import axios from "axios";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { contentAdvisorColumns } from "./parts/table/ContentAdvisorColumnDef";
-import { ContentAdvisorTable } from "./parts/table/ContentAdvisorTable";
+import { contentAdvisorColumns } from "./_components/table/ContentAdvisorColumnDef";
+import { ContentAdvisorTable } from "./_components/table/ContentAdvisorTable";
 
 const Content = () => {
   const [advisors, setAdvisors] = useState([]);

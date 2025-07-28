@@ -1,12 +1,11 @@
 import Wallpaper from "@/assets/images/wallpaper2.jpg";
-import AuthForm from "../parts/form/AuthForm";
+import AuthForm from "../_components/form/AuthForm";
 import { authStore } from "@/lib/store/authStore";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
 import api from "@/lib/apis/global-interceptor";
 import { BASE_API_URL } from "@/lib/variables/variables";
-// import Wallpaper from "@/assets/images/bgwallpaper.png";
 
 const AuthLayout = () => {
   const { setUserRoles, setTokens } = authStore();
