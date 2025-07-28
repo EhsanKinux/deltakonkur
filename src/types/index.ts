@@ -67,6 +67,10 @@ export interface Advisor extends BasePerson {
   national_id?: string;
   bank_account?: string;
   student_count?: number;
+  overall_satisfaction?: number;
+  current_month_satisfaction?: number;
+  overallSatisfaction?: string;
+  currentMonthSatisfaction?: string;
 }
 
 export interface AdvisorDetail extends Advisor {

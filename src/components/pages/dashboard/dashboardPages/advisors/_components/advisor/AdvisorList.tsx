@@ -1,27 +1,34 @@
+import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { debounce } from "lodash";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BASE_API_URL } from "@/lib/variables/variables";
-import axios from "axios";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { AdvisorDataTable } from "../table/AdvisorDataTable";
-import { columns } from "./_components/table/ColumnDef";
-import { authStore } from "@/lib/store/authStore";
-import { Advisor } from "@/lib/store/types";
+
+// New utilities and types
+import { api } from "@/lib/services/api";
+import { useApiState } from "@/hooks/useApiState";
+import { DataTable } from "@/components/ui/DataTable";
+import { Advisor, TableColumn } from "@/types";
+
+// =============================================================================
+// ADVISOR LIST COMPONENT
+// =============================================================================
 
 const AdvisorList = () => {
-  const [advisors, setAdvisors] = useState([]);
+  const [advisors, setAdvisors] = useState<Advisor[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [totalPages, setTotalPages] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const abortControllerRef = useRef<AbortController | null>(null);
+  // New utilities
+  const { loading, executeWithLoading } = useApiState();
 
   const activeTab = searchParams.get("tab") || "mathAdvisors";
 
-  const getAdvisors = useCallback(async () => {
-    const { accessToken } = authStore.getState(); // گرفتن accessToken از authStore
+  // =============================================================================
+  // API CALLS
+  // =============================================================================
 
+  const getAdvisors = useCallback(async () => {
     const field =
       searchParams.get("tab") === "mathAdvisors"
         ? "ریاضی"
@@ -29,31 +36,18 @@ const AdvisorList = () => {
         ? "تجربی"
         : "علوم انسانی";
 
-    const page = searchParams.get("page") || 1;
+    const page = searchParams.get("page") || "1";
     const firstName = searchParams.get("first_name") || "";
     const lastName = searchParams.get("last_name") || "";
 
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
-    abortControllerRef.current = new AbortController();
-    const signal = abortControllerRef.current.signal;
-
     try {
-      setIsLoading(true);
-      const { data } = await axios.get(`${BASE_API_URL}api/advisor/advisors/`, {
-        params: {
+      const response = await executeWithLoading(async () => {
+        return await api.getPaginated<Advisor>("api/advisor/advisors/", {
           field,
-          page,
+          page: parseInt(page),
           first_name: firstName,
           last_name: lastName,
-        },
-        signal,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`, // اضافه کردن هدر Authorization
-        },
+        });
       });
 
       const levelMapping: { [key: string]: string } = {
@@ -64,49 +58,156 @@ const AdvisorList = () => {
         "5": "ارشد 2",
       };
 
-      const formattedData = data.results?.map((advisor: Advisor) => ({
+      const formattedData = response.results.map((advisor) => ({
         ...advisor,
         overallSatisfaction: advisor?.overall_satisfaction
           ? (advisor?.overall_satisfaction * 100).toFixed(2)
-          : 0,
+          : "0",
         currentMonthSatisfaction: advisor?.current_month_satisfaction
           ? (advisor?.current_month_satisfaction * 100).toFixed(2)
-          : 0,
+          : "0",
         level: levelMapping[advisor.level.toString()] || advisor.level,
-      }));
+      })) as Advisor[];
 
       setAdvisors(formattedData);
-      setTotalPages(Number(data.count / 10).toFixed(0));
-    } catch (error: unknown) {
-      if (axios.isCancel(error)) {
-      } else {
-        console.error("خطا در دریافت اطلاعات مشاوران:", error);
-      }
+      setTotalPages(Math.ceil(response.count / 10));
+    } catch (error) {
+      console.error("Error fetching advisors:", error);
+      // Error handling is now managed by useApiState
     }
-    setIsLoading(false);
-  }, [searchParams, setAdvisors]);
+  }, [searchParams, executeWithLoading]);
 
-  const debouncedGetAdvisors = useCallback(debounce(getAdvisors, 50), [
-    getAdvisors,
-  ]);
+  // =============================================================================
+  // SEARCH HANDLING
+  // =============================================================================
+
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      setSearchTerm(value);
+      // Update URL params for search
+      const newSearchParams = new URLSearchParams(searchParams);
+      if (value) {
+        newSearchParams.set("first_name", value);
+      } else {
+        newSearchParams.delete("first_name");
+      }
+      // This will trigger useEffect and refetch data
+    }, 300),
+    [searchParams]
+  );
+
+  // =============================================================================
+  // PAGINATION HANDLING
+  // =============================================================================
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("page", page.toString());
+      // This will trigger useEffect and refetch data
+    },
+    [searchParams]
+  );
+
+  // =============================================================================
+  // ACTIONS HANDLERS
+  // =============================================================================
+
+  const handleEdit = useCallback((advisor: Advisor) => {
+    // TODO: Implement edit functionality
+    console.log("Edit advisor:", advisor);
+  }, []);
+
+  const handleDelete = useCallback((advisor: Advisor) => {
+    // TODO: Implement delete functionality
+    console.log("Delete advisor:", advisor);
+  }, []);
+
+  const handleView = useCallback((advisor: Advisor) => {
+    // TODO: Implement view functionality
+    console.log("View advisor:", advisor);
+  }, []);
+
+  // =============================================================================
+  // TABLE COLUMNS CONFIGURATION
+  // =============================================================================
+
+  const columns: TableColumn<Advisor>[] = [
+    {
+      key: "name",
+      header: "نام و نام خانوادگی",
+      accessorKey: "first_name",
+      cell: (_, row) => `${row.first_name} ${row.last_name}`,
+      sortable: true,
+    },
+    {
+      key: "phone",
+      header: "شماره تماس",
+      accessorKey: "phone_number",
+      sortable: true,
+    },
+    {
+      key: "field",
+      header: "رشته",
+      accessorKey: "field",
+      sortable: true,
+    },
+    {
+      key: "level",
+      header: "سطح",
+      accessorKey: "level",
+      sortable: true,
+    },
+    {
+      key: "student_count",
+      header: "تعداد دانش‌آموز",
+      accessorKey: "student_count",
+      sortable: true,
+    },
+    {
+      key: "overall_satisfaction",
+      header: "رضایت کلی",
+      accessorKey: "overall_satisfaction",
+      cell: (_, row) => `${row.overallSatisfaction}%`,
+      sortable: true,
+    },
+    {
+      key: "current_month_satisfaction",
+      header: "رضایت ماه جاری",
+      accessorKey: "current_month_satisfaction",
+      cell: (_, row) => `${row.currentMonthSatisfaction}%`,
+      sortable: true,
+    },
+  ];
+
+  // =============================================================================
+  // TAB HANDLING
+  // =============================================================================
+
+  const handleTabChange = useCallback(
+    (value: string) => {
+      setSearchParams({ tab: value, page: "1" });
+    },
+    [setSearchParams]
+  );
+
+  // =============================================================================
+  // EFFECTS
+  // =============================================================================
 
   useEffect(() => {
-    debouncedGetAdvisors();
-    return () => {
-      debouncedGetAdvisors.cancel();
-    };
-  }, [searchParams]);
-
-  const handleTabChange = (value: string) => {
-    setSearchParams({ tab: value, page: "1" });
     getAdvisors();
-  };
+  }, [getAdvisors]);
 
   useEffect(() => {
     if (!searchParams.get("tab")) {
       setSearchParams({ tab: activeTab, page: "1" });
     }
-  }, []);
+  }, [activeTab, setSearchParams, searchParams]);
+
+  // =============================================================================
+  // RENDER
+  // =============================================================================
 
   return (
     <section className="">
@@ -137,11 +238,27 @@ const AdvisorList = () => {
         </TabsList>
         <TabsContent value={activeTab}>
           <div className="flex flex-col justify-center items-center gap-3 mt-4 bg-slate-100 rounded-xl relative min-h-[150vh]">
-            <AdvisorDataTable
-              columns={columns}
-              data={advisors}
-              totalPages={totalPages}
-              isLoading={isLoading}
+            <DataTable
+              data={advisors as unknown as Record<string, unknown>[]}
+              columns={
+                columns as unknown as TableColumn<Record<string, unknown>>[]
+              }
+              loading={loading}
+              search={{
+                value: searchTerm,
+                onChange: handleSearch,
+                placeholder: "جستجو در مشاوران...",
+              }}
+              pagination={{
+                currentPage: parseInt(searchParams.get("page") || "1"),
+                totalPages,
+                onPageChange: handlePageChange,
+              }}
+              actions={{
+                onEdit: (row) => handleEdit(row as unknown as Advisor),
+                onDelete: (row) => handleDelete(row as unknown as Advisor),
+                onView: (row) => handleView(row as unknown as Advisor),
+              }}
             />
           </div>
         </TabsContent>

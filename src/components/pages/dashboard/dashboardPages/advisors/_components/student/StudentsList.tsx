@@ -1,102 +1,203 @@
-import { BASE_API_URL } from "@/lib/variables/variables";
-import axios from "axios";
-import { debounce } from "lodash";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { DataTable } from "../table/DataTable";
-import { stColumns } from "./table/ColumnStDef";
-import { authStore } from "@/lib/store/authStore";
+import { debounce } from "lodash";
+
+// New utilities and types
+import { api } from "@/lib/services/api";
+import { useApiState } from "@/hooks/useApiState";
+import { useRefresh } from "@/hooks/useRefresh";
+import { DataTable } from "@/components/ui/DataTable";
+import { Student, TableColumn } from "@/types";
+
+// Legacy imports (will be updated later)
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { FormEntry } from "./table/interfaces";
+import { stColumns } from "./table/ColumnStDef";
+
+// =============================================================================
+// STUDENTS LIST COMPONENT
+// =============================================================================
 
 const StudentsList = () => {
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState<Student[]>([]);
   const [searchParams] = useSearchParams();
-  const [totalPages, setTotalPages] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const abortControllerRef = useRef<AbortController | null>(null); // اضافه کردن abortController
+  // New utilities
+  const { loading, executeWithLoading } = useApiState();
+  const { refresh } = useRefresh();
+
+  // =============================================================================
+  // API CALLS
+  // =============================================================================
 
   const getStudents = useCallback(async () => {
-    const { accessToken } = authStore.getState(); // گرفتن accessToken از authStore
-    // اگر ریکوئست قبلی وجود داشت، کنسل کن
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
-    abortControllerRef.current = new AbortController();
-    const signal = abortControllerRef.current.signal;
-    const page = searchParams.get("page") || 1;
+    const page = searchParams.get("page") || "1";
     const firstName = searchParams.get("first_name") || "";
     const lastName = searchParams.get("last_name") || "";
 
     try {
-      setIsLoading(true);
-      const { data } = await axios.get(
-        `${BASE_API_URL}api/register/students-no-advisor/`,
-        {
-          params: {
-            page,
+      const response = await executeWithLoading(async () => {
+        return await api.getPaginated<Student>(
+          "api/register/students-no-advisor/",
+          {
+            page: parseInt(page),
             first_name: firstName,
             last_name: lastName,
-          },
-          signal, // ارسال سیگنال
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`, // اضافه کردن هدر Authorization
-          },
-        }
-      );
+          }
+        );
+      });
 
-      const formattedData = data.results?.map((student: FormEntry) => ({
+      const formattedData = response.results.map((student) => ({
         ...student,
-        created: convertToShamsi(student.created),
+        created: convertToShamsi(student.created || ""),
         date_of_birth: student.date_of_birth
           ? convertToShamsi(student.date_of_birth)
           : student.date_of_birth,
         grade:
-          student.grade == "10"
+          student.grade === "10"
             ? "پایه دهم"
-            : student.grade == "11"
+            : student.grade === "11"
             ? "پایه یازدهم"
-            : student.grade == "12"
+            : student.grade === "12"
             ? "پایه دوازدهم"
             : "فارغ‌التحصیل",
       }));
 
       setStudents(formattedData);
-      setTotalPages(Number(data.count / 10).toFixed(0));
-    } catch (error: unknown) {
-      if (axios.isCancel(error)) {
-      } else {
-        console.error("خطا در دریافت اطلاعات دانش آموزان:", error);
-      }
+      setTotalPages(Math.ceil(response.count / 10));
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      // Error handling is now managed by useApiState
     }
-    setIsLoading(false);
-  }, [searchParams, setStudents]);
+  }, [searchParams, executeWithLoading]);
 
-  // Debounce کردن تابع getStudents
-  const debouncedgetStudents = useCallback(debounce(getStudents, 50), [
-    getStudents,
-  ]);
+  // =============================================================================
+  // SEARCH HANDLING
+  // =============================================================================
+
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      setSearchTerm(value);
+      // Update URL params for search
+      const newSearchParams = new URLSearchParams(searchParams);
+      if (value) {
+        newSearchParams.set("first_name", value);
+      } else {
+        newSearchParams.delete("first_name");
+      }
+      // This will trigger useEffect and refetch data
+    }, 300),
+    [searchParams]
+  );
+
+  // =============================================================================
+  // PAGINATION HANDLING
+  // =============================================================================
+
+  const handlePageChange = useCallback((page: number) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("page", page.toString());
+    // This will trigger useEffect and refetch data
+  }, [searchParams]);
+
+  // =============================================================================
+  // ACTIONS HANDLERS
+  // =============================================================================
+
+  const handleEdit = useCallback((student: Student) => {
+    // TODO: Implement edit functionality
+    console.log("Edit student:", student);
+  }, []);
+
+  const handleDelete = useCallback((student: Student) => {
+    // TODO: Implement delete functionality
+    console.log("Delete student:", student);
+  }, []);
+
+  const handleView = useCallback((student: Student) => {
+    // TODO: Implement view functionality
+    console.log("View student:", student);
+  }, []);
+
+  // =============================================================================
+  // TABLE COLUMNS CONFIGURATION
+  // =============================================================================
+
+  const columns: TableColumn<Student>[] = [
+    {
+      key: "name",
+      header: "نام و نام خانوادگی",
+      accessorKey: "first_name",
+      cell: (_, row) => `${row.first_name} ${row.last_name}`,
+      sortable: true,
+    },
+    {
+      key: "phone",
+      header: "شماره تماس",
+      accessorKey: "phone_number",
+      sortable: true,
+    },
+    {
+      key: "school",
+      header: "مدرسه",
+      accessorKey: "school",
+      sortable: true,
+    },
+    {
+      key: "field",
+      header: "رشته",
+      accessorKey: "field",
+      sortable: true,
+    },
+    {
+      key: "grade",
+      header: "پایه",
+      accessorKey: "grade",
+      sortable: true,
+    },
+    {
+      key: "created",
+      header: "تاریخ ثبت‌نام",
+      accessorKey: "created",
+      sortable: true,
+    },
+  ];
+
+  // =============================================================================
+  // EFFECTS
+  // =============================================================================
 
   useEffect(() => {
-    debouncedgetStudents();
-    return () => {
-      debouncedgetStudents.cancel();
-    };
-  }, [searchParams]);
+    getStudents();
+  }, [getStudents]);
+
+  // =============================================================================
+  // RENDER
+  // =============================================================================
 
   return (
     <section className="max-h-screen">
-      {/* <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl">دانش‌آموزان</h1> */}
-
       <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-[150vh]">
         <DataTable
-          columns={stColumns}
           data={students}
-          totalPages={totalPages}
-          isLoading={isLoading}
+          columns={columns}
+          loading={loading}
+          search={{
+            value: searchTerm,
+            onChange: handleSearch,
+            placeholder: "جستجو در دانش‌آموزان...",
+          }}
+          pagination={{
+            currentPage: parseInt(searchParams.get("page") || "1"),
+            totalPages,
+            onPageChange: handlePageChange,
+          }}
+          actions={{
+            onEdit: handleEdit,
+            onDelete: handleDelete,
+            onView: handleView,
+          }}
         />
       </div>
     </section>
