@@ -63,7 +63,7 @@ export function FilterPanel({
       </div>
 
       {/* Filter Fields */}
-      <div className="grid grid-col grid-cols-2 lg:grid-cols-3 xl:flex xl:flex-row gap-6">
+      <div className="grid grid-col grid-cols-1 lg:grid-cols-3 xl:flex xl:flex-row gap-6">
         {fields.map((field) => (
           <div key={field.key} className="flex-1 relative group">
             <div className="relative">
