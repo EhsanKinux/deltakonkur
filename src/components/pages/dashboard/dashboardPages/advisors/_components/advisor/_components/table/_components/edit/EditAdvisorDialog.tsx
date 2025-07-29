@@ -20,8 +20,10 @@ import showToast from "@/components/ui/toast";
 
 const EditAdvisorDialog = ({
   setEditDialogOpen,
+  onRefreshData,
 }: {
   setEditDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onRefreshData?: () => void;
 }) => {
   const { advisorInfo, updatAdvisor } = useAdvisorsList();
   // const navigate = useNavigate();
@@ -66,10 +68,12 @@ const EditAdvisorDialog = ({
         showToast.dismiss(loadingToastId);
         showToast.success("ویرایش اظلاعات با موفقیت انجام شد.");
 
-        // Set a timeout before reloading the page
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000); // 3-second delay
+        // Refresh data instead of reloading the page
+        if (onRefreshData) {
+          setTimeout(() => {
+            onRefreshData();
+          }, 1000);
+        }
       } catch (error) {
         showToast.dismiss(loadingToastId);
         let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";

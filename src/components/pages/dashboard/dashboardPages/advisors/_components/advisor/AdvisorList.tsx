@@ -1,11 +1,17 @@
 import { useCallback, useEffect, useState, useRef, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/lib/services/api";
 import { useApiState } from "@/hooks/useApiState";
 import { DataTable } from "@/components/ui/DataTable";
 import { FilterPanel } from "@/components/ui/FilterPanel";
 import { Advisor, TableColumn } from "@/types";
+import { Dialog } from "@/components/ui/dialog";
+import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
+import useModalHistory from "@/hooks/useBackButton";
+import EditAdvisorDialog from "./_components/table/_components/edit/EditAdvisorDialog";
+import DeleteConfirmation from "./_components/table/_components/delete/DeleteConfirmation";
+import { FormEntry } from "./_components/table/interfaces";
 
 // =============================================================================
 // ADVISOR LIST COMPONENT
@@ -25,6 +31,11 @@ const AdvisorList = () => {
 
   const { loading, executeWithLoading } = useApiState();
   const activeTab = searchParams.get("tab") || "mathAdvisors";
+
+  // Navigation and modal management
+  const navigate = useNavigate();
+  const { modalState, openModal, closeModal } = useModalHistory();
+  const { fetchAdvisorInfo } = useAdvisorsList();
 
   // Reference to track abort controller for API requests
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -222,17 +233,42 @@ const AdvisorList = () => {
   // =============================================================================
   // ACTIONS HANDLERS
   // =============================================================================
-  const handleEdit = useCallback((advisor: Record<string, unknown>) => {
-    console.log("Edit advisor:", advisor);
-  }, []);
+  const handleEdit = useCallback(
+    async (advisor: Record<string, unknown>) => {
+      try {
+        await fetchAdvisorInfo(advisor.id as string);
+        openModal("edit");
+      } catch (error) {
+        console.error("Error fetching advisor info for edit:", error);
+      }
+    },
+    [fetchAdvisorInfo, openModal]
+  );
 
-  const handleDelete = useCallback((advisor: Record<string, unknown>) => {
-    console.log("Delete advisor:", advisor);
-  }, []);
+  const handleDelete = useCallback(
+    (advisor: Record<string, unknown>) => {
+      // Store the advisor data for delete confirmation
+      setSelectedAdvisorForDelete(advisor);
+      openModal("delete");
+    },
+    [openModal]
+  );
 
-  const handleView = useCallback((advisor: Record<string, unknown>) => {
-    console.log("View advisor:", advisor);
-  }, []);
+  const handleView = useCallback(
+    (advisor: Record<string, unknown>) => {
+      navigate(`/dashboard/advisors/${advisor.id}`);
+    },
+    [navigate]
+  );
+
+  // State for storing advisor data for delete confirmation
+  const [selectedAdvisorForDelete, setSelectedAdvisorForDelete] =
+    useState<Record<string, unknown> | null>(null);
+
+  // Callback to refresh data after successful operations
+  const handleRefreshData = useCallback(() => {
+    getAdvisors();
+  }, [getAdvisors]);
 
   // =============================================================================
   // TABLE COLUMNS CONFIGURATION
@@ -385,6 +421,7 @@ const AdvisorList = () => {
             />
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <DataTable
+                enableRowClick
                 data={advisors as unknown as Record<string, unknown>[]}
                 columns={
                   columns as unknown as TableColumn<Record<string, unknown>>[]
@@ -408,6 +445,54 @@ const AdvisorList = () => {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Edit Dialog */}
+      <Dialog
+        open={modalState.edit}
+        onOpenChange={() => {
+          closeModal();
+          setSelectedAdvisorForDelete(null);
+        }}
+      >
+        <EditAdvisorDialog
+          setEditDialogOpen={() => {
+            closeModal();
+            setSelectedAdvisorForDelete(null);
+          }}
+          onRefreshData={handleRefreshData}
+        />
+      </Dialog>
+
+      {/* Delete Dialog */}
+      <Dialog
+        open={modalState.delete}
+        onOpenChange={() => {
+          closeModal();
+          setSelectedAdvisorForDelete(null);
+        }}
+      >
+        {selectedAdvisorForDelete && (
+          <DeleteConfirmation
+            setDeleteDialogOpen={() => {
+              closeModal();
+              setSelectedAdvisorForDelete(null);
+            }}
+            onRefreshData={handleRefreshData}
+            formData={
+              {
+                id: String(selectedAdvisorForDelete.id),
+                first_name: selectedAdvisorForDelete.first_name as string,
+                last_name: selectedAdvisorForDelete.last_name as string,
+                field: selectedAdvisorForDelete.field as string,
+                phone_number: selectedAdvisorForDelete.phone_number as string,
+                national_id: selectedAdvisorForDelete.national_id as string,
+                bank_account: selectedAdvisorForDelete.bank_account as string,
+                level: String(selectedAdvisorForDelete.level),
+              } as FormEntry
+            }
+          />
+        )}
+      </Dialog>
     </section>
   );
 };

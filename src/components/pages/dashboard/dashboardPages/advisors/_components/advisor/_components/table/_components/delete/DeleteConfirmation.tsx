@@ -13,9 +13,11 @@ import { FormEntry } from "../../interfaces";
 const DeleteConfirmation = ({
   setDeleteDialogOpen,
   formData,
+  onRefreshData,
 }: {
   setDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   formData: FormEntry;
+  onRefreshData?: () => void;
 }) => {
   const handleDeleteConfirm = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -29,7 +31,7 @@ const DeleteConfirmation = ({
         success: () => {
           setTimeout(() => {
             setDeleteDialogOpen(false);
-            window.location.reload();
+            onRefreshData?.();
           }, 1500);
           return "حذف با موفقیت انجام شد!";
         },
