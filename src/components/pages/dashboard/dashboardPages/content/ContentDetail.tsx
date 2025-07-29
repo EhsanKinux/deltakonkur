@@ -138,7 +138,7 @@ const ContentDetail: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <div className="font-semibold text-gray-700 mb-1">مشاور:</div>
-              <div className="bg-slate-100 rounded-lg p-2">
+              <div className="bg-slate-100 rounded-[8px] p-2">
                 {data.advisor.first_name} {data.advisor.last_name}
                 <span className="text-xs text-gray-500 ml-2">
                   ({data.advisor.phone_number})
@@ -149,7 +149,7 @@ const ContentDetail: React.FC = () => {
               <div className="font-semibold text-gray-700 mb-1">
                 سال/ماه شمسی:
               </div>
-              <div className="bg-slate-100 rounded-lg p-2">
+              <div className="bg-slate-100 rounded-[8px] p-2">
                 {data.solar_year} / {data.persian_month_name}
               </div>
             </div>
@@ -157,7 +157,7 @@ const ContentDetail: React.FC = () => {
               <div className="font-semibold text-gray-700 mb-1">
                 تاریخ ایجاد:
               </div>
-              <div className="bg-slate-100 rounded-lg p-2">
+              <div className="bg-slate-100 rounded-[8px] p-2">
                 {convertToShamsi(data.created)}
               </div>
             </div>
@@ -165,7 +165,7 @@ const ContentDetail: React.FC = () => {
               <div className="font-semibold text-gray-700 mb-1">
                 تاریخ بروزرسانی:
               </div>
-              <div className="bg-slate-100 rounded-lg p-2">
+              <div className="bg-slate-100 rounded-[8px] p-2">
                 {convertToShamsi(data.updated)}
               </div>
             </div>
@@ -173,7 +173,7 @@ const ContentDetail: React.FC = () => {
               <div className="font-semibold text-gray-700 mb-1">
                 وضعیت تحویل:
               </div>
-              <div className="bg-slate-100 rounded-lg p-2">
+              <div className="bg-slate-100 rounded-[8px] p-2">
                 {data.is_delivered ? (
                   <span className="text-green-700 font-bold">
                     تحویل داده شده
@@ -189,13 +189,13 @@ const ContentDetail: React.FC = () => {
               <div className="font-semibold text-gray-700 mb-1">
                 تاریخ تحویل:
               </div>
-              <div className="bg-slate-100 rounded-lg p-2">
+              <div className="bg-slate-100 rounded-[8px] p-2">
                 {data.delivered_at ? convertToShamsi(data.delivered_at) : "-"}
               </div>
             </div>
             <div className="md:col-span-2">
               <div className="font-semibold text-gray-700 mb-1">توضیحات:</div>
-              <div className="bg-slate-100 rounded-lg p-2 min-h-[40px]">
+              <div className="bg-slate-100 rounded-[8px] p-2 min-h-[40px]">
                 {data.notes || <span className="text-gray-400">-</span>}
               </div>
             </div>

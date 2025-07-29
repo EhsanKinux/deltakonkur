@@ -89,7 +89,7 @@ const Dashboard = () => {
       </div>
       {userRoles && userRoles.includes(0) && (
         <div className="mt-8 flex justify-center gap-8">
-          <div className="flex flex-col items-center bg-blue-100 p-4 rounded-lg shadow-lg">
+          <div className="flex flex-col items-center bg-blue-100 p-4 rounded-[8px] shadow-lg">
             <span className="text-4xl font-bold text-blue-600">
               {totalStudents}
             </span>
@@ -97,7 +97,7 @@ const Dashboard = () => {
               کل دانش‌آموزان
             </span>
           </div>
-          <div className="flex flex-col items-center bg-green-100 p-4 rounded-lg shadow-lg">
+          <div className="flex flex-col items-center bg-green-100 p-4 rounded-[8px] shadow-lg">
             <span className="text-4xl font-bold text-green-600">
               {totalActiveStudentsCount}
             </span>

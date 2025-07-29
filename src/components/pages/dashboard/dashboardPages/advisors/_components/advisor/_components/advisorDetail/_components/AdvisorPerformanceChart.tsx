@@ -179,7 +179,7 @@ const AdvisorPerformanceChart: React.FC<AdvisorPerformanceChartProps> = ({
           <p className="mb-2">{error}</p>
           <button
             onClick={fetchChartData}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="px-4 py-2 bg-blue-500 text-white rounded-[8px] hover:bg-blue-600"
           >
             تلاش مجدد
           </button>
@@ -254,7 +254,7 @@ const AdvisorPerformanceChart: React.FC<AdvisorPerformanceChartProps> = ({
       {/* Chart Type Toggle */}
       <div className="flex justify-center gap-2 w-full mb-2">
         <button
-          className={`flex-1 py-2 rounded-lg text-sm font-bold transition border ${
+          className={`flex-1 py-2 rounded-[8px] text-sm font-bold transition border ${
             chartType === "bar"
               ? "bg-blue-500 text-white border-blue-500"
               : "bg-white text-blue-500 border-blue-300"
@@ -264,7 +264,7 @@ const AdvisorPerformanceChart: React.FC<AdvisorPerformanceChartProps> = ({
           نمودار ستونی
         </button>
         <button
-          className={`flex-1 py-2 rounded-lg text-sm font-bold transition border ${
+          className={`flex-1 py-2 rounded-[8px] text-sm font-bold transition border ${
             chartType === "line"
               ? "bg-blue-500 text-white border-blue-500"
               : "bg-white text-blue-500 border-blue-300"

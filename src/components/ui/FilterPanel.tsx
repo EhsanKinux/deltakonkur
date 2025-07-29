@@ -108,7 +108,7 @@ export function FilterPanel({
       className={`bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-200 p-6 ${className}`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="w-full flex flex-col gap-2 md:flex-row md:items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="bg-blue-600 p-2 rounded-[10px]">
             <Filter className="h-5 w-5 text-white" />
@@ -118,20 +118,20 @@ export function FilterPanel({
             <p className="text-sm text-gray-600">جستجو و فیلتر کردن اطلاعات</p>
           </div>
           {hasActiveFilters && (
-            <span className="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+            <span className="hidden md:block bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
               {fields.filter((f) => f.value.trim() !== "").length} فیلتر فعال
             </span>
           )}
         </div>
         {hasActiveFilters && onClearAll && (
           <Button
-            variant="ghost"
+            variant="default"
             size="sm"
             onClick={onClearAll}
-            className="text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 "
+            className="text-white bg-red-500  hover:bg-red-700 border border-red-200 "
           >
             <X className="h-4 w-4 ml-2" />
-            پاک کردن همه
+            حذف همه فیلترها
           </Button>
         )}
       </div>

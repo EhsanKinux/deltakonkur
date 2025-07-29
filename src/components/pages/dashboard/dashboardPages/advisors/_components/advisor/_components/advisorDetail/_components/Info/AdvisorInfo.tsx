@@ -229,7 +229,7 @@ const AdvisorInfo = ({ advisorId }: { advisorId: string }) => {
                   {advisorInfo?.first_name} {advisorInfo?.last_name}
                 </div>
                 <div className="flex flex-col gap-2 w-full mt-2">
-                  <div className="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-2 bg-slate-50 rounded-[8px] px-3 py-2">
                     <DevicePhoneMobileIcon className="w-5 h-5 text-blue-400" />
                     <span className="text-gray-700 mt-1">
                       {advisorInfo?.phone_number}
@@ -243,7 +243,7 @@ const AdvisorInfo = ({ advisorId }: { advisorId: string }) => {
                       <ClipboardIcon className="w-4 h-4 text-blue-400" />
                     </button>
                   </div>
-                  <div className="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-2 bg-slate-50 rounded-[8px] px-3 py-2">
                     <IdentificationIcon className="w-5 h-5 text-blue-400" />
                     <span className="text-gray-700 mt-1">
                       {advisorInfo?.national_id}

@@ -264,7 +264,7 @@ const Reserve = () => {
             <div className="flex flex-col items-center gap-2 pt-4 border-t border-slate-300">
               <Button
                 type="submit"
-                className="form-btn w-full max-w-xs py-3 text-lg font-bold rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-all"
+                className="form-btn w-full max-w-xs py-3 text-lg font-bold rounded-[8px] bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-all"
                 disabled={isloading}
                 aria-busy={isloading}
                 aria-label="ثبت نام"
