@@ -48,7 +48,7 @@ const SearchContentTab: React.FC = () => {
     try {
       const { accessToken } = authStore.getState();
       const res = await axios.get(
-        BASE_API_URL + "/api/content/contents/search/",
+        BASE_API_URL + "api/content/contents/search/",
         {
           params: { page: pageNum, q },
           headers: { Authorization: `Bearer ${accessToken}` },

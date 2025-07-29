@@ -256,7 +256,7 @@ const ManagementReports = () => {
       (async () => {
         const { accessToken } = authStore.getState();
         const response = await axios.post(
-          `${BASE_API_URL}/api/advisor/level/process-changes/`,
+          `${BASE_API_URL}api/advisor/level/process-changes/`,
           {},
           {
             headers: {
@@ -355,8 +355,8 @@ const ManagementReports = () => {
       icon: <User size={32} />,
       prefix: "Consultant",
       endpoints: {
-        report: "/api/register/accountant",
-        testReport: "/api/register/test-accountant",
+        report: "api/register/accountant",
+        testReport: "api/register/test-accountant",
       },
     },
     {
@@ -364,8 +364,8 @@ const ManagementReports = () => {
       icon: <Eye size={32} />,
       prefix: "Supervisor",
       endpoints: {
-        report: "/api/supervisor/accountant",
-        testReport: "/api/supervisor/test-accountant",
+        report: "api/supervisor/accountant",
+        testReport: "api/supervisor/test-accountant",
       },
     },
     {
@@ -373,8 +373,8 @@ const ManagementReports = () => {
       icon: <Briefcase size={32} />,
       prefix: "Sales",
       endpoints: {
-        report: "/api/sales/accountant",
-        testReport: "/api/sales/test-accountant",
+        report: "api/sales/accountant",
+        testReport: "api/sales/test-accountant",
       },
     },
   ];

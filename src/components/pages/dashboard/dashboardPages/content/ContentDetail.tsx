@@ -93,7 +93,7 @@ const ContentDetail: React.FC = () => {
     setError("");
     const { accessToken } = authStore.getState();
     axios
-      .get(`${BASE_API_URL}/api/content/contents/${id}/`, {
+      .get(`${BASE_API_URL}api/content/contents/${id}/`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
       .then((res) => setData(res.data))

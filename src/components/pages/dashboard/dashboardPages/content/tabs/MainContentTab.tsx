@@ -175,7 +175,7 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
       try {
         const { accessToken } = authStore.getState();
         const res = await axios.get(
-          BASE_API_URL + "/api/content/contents/monthly-contents/",
+          BASE_API_URL + "api/content/contents/monthly-contents/",
           {
             params: { page: pageNum, solar_year: year, solar_month: month },
             headers: { Authorization: `Bearer ${accessToken}` },
@@ -257,7 +257,7 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
       const now = new Date().toISOString();
 
       await axios.patch(
-        BASE_API_URL + "/api/content/contents/bulk-mark-delivered/",
+        BASE_API_URL + "api/content/contents/bulk-mark-delivered/",
         {
           content_ids: selectedIds,
           delivered_at: now,

@@ -46,7 +46,7 @@ const StatsContentTab: React.FC = () => {
       try {
         const { accessToken } = authStore.getState();
         const res = await fetch(
-          BASE_API_URL + "/api/content/contents/statistics/",
+          BASE_API_URL + "api/content/contents/statistics/",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
