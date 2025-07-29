@@ -138,6 +138,12 @@ const AdvisorList = () => {
   // =============================================================================
   const handleTabChange = useCallback(
     (value: string) => {
+      // Reset search fields when tab changes
+      setSearchFields({
+        first_name: "",
+        last_name: "",
+      });
+
       const newSearchParams = new URLSearchParams();
       newSearchParams.set("tab", value);
       newSearchParams.set("page", "1");
