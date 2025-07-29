@@ -1,9 +1,17 @@
-import { Loader2 } from "lucide-react";
-
 const Loading = () => {
   return (
-    <div className="w-full h-screen flex justify-center items-center gap-2">
-      <Loader2 size={20} className="animate-spin max-h-screen" />در حال لود کردن...
+    <div className="w-full h-[85vh] flex justify-center items-center">
+      <div className="flex gap-1">
+        <div className="w-3 h-3 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce"></div>
+        <div
+          className="w-3 h-3 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce"
+          style={{ animationDelay: "0.1s" }}
+        ></div>
+        <div
+          className="w-3 h-3 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce"
+          style={{ animationDelay: "0.2s" }}
+        ></div>
+      </div>
     </div>
   );
 };
