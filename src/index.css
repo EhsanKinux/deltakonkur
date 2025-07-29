@@ -7,7 +7,7 @@
   padding: 0;
   box-sizing: border-box;
   direction: rtl;
-  font-family: "yekanBakh";
+  font-family: "BYekan";
   scroll-behavior: smooth;
 }
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -42,10 +42,14 @@
 }
 
 @font-face {
-  font-family: "yekanBakh";
-  src: url("/src/assets/fonts/Yekan Bakh Regular.ttf") format("truetype");
+  font-family: "BYekan";
+  src: url("/src/assets/fonts/BYekan.woff2") format("woff2"),
+    url("/src/assets/fonts/BYekan.woff") format("woff"),
+    url("/src/assets/fonts/BYekan.ttf") format("truetype"),
+    url("/src/assets/fonts/BYekan.eot") format("embedded-opentype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @layer utilities {
