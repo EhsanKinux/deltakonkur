@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 // New utilities and types
 import { DataTable } from "@/components/ui/DataTable";
 import { FilterPanel } from "@/components/ui/FilterPanel";
+import type { FilterField } from "@/components/ui/FilterPanel";
 import { useApiState } from "@/hooks/useApiState";
 import { api } from "@/lib/services/api";
 import { Student, TableColumn } from "@/types";
@@ -60,7 +61,7 @@ const StudentsList = () => {
       "10": "پایه دهم",
       "11": "پایه یازدهم",
       "12": "پایه دوازدهم",
-      graduate: "فارغ‌التحصیل",
+      "13": "فارغ‌التحصیل",
     }),
     []
   );
@@ -153,11 +154,14 @@ const StudentsList = () => {
 
         // Set new timeout for search
         searchTimeoutRef.current = setTimeout(() => {
-          const newSearchParams = new URLSearchParams();
+          const newSearchParams = new URLSearchParams(searchParams);
 
           Object.entries(updatedFields).forEach(([key, val]) => {
-            if (val.trim()) {
+            if (val.trim() !== "") {
               newSearchParams.set(key, val);
+            } else {
+              // Remove parameter if it's empty
+              newSearchParams.delete(key);
             }
           });
 
@@ -168,7 +172,7 @@ const StudentsList = () => {
         return updatedFields;
       });
     },
-    [setSearchParams]
+    [setSearchParams, searchParams]
   );
 
   const handleClearAllFilters = useCallback(() => {
@@ -181,8 +185,14 @@ const StudentsList = () => {
       first_name: "",
       last_name: "",
     });
-    setSearchParams({ page: "1" });
-  }, [setSearchParams]);
+
+    // Preserve the tab parameter when clearing filters
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete("first_name");
+    newSearchParams.delete("last_name");
+    newSearchParams.set("page", "1");
+    setSearchParams(newSearchParams);
+  }, [setSearchParams, searchParams]);
 
   // =============================================================================
   // PAGINATION HANDLING
@@ -262,11 +272,6 @@ const StudentsList = () => {
       accessorKey: "field",
     },
     {
-      key: "date_of_birth",
-      header: "تاریخ تولد",
-      accessorKey: "date_of_birth",
-    },
-    {
       key: "grade",
       header: "مقطع تحصیلی",
       accessorKey: "grade",
@@ -282,18 +287,20 @@ const StudentsList = () => {
   // FILTER FIELDS CONFIGURATION
   // =============================================================================
 
-  const filterFields = [
+  const filterFields: FilterField[] = [
     {
       key: "first_name",
       placeholder: "نام",
       value: searchFields.first_name,
       onChange: (value: string) => handleSearchFieldChange("first_name", value),
+      type: "text" as const,
     },
     {
       key: "last_name",
       placeholder: "نام خانوادگی",
       value: searchFields.last_name,
       onChange: (value: string) => handleSearchFieldChange("last_name", value),
+      type: "text" as const,
     },
   ];
 
