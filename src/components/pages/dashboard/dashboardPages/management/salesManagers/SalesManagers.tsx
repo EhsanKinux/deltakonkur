@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { debounce } from "lodash";
 
 // New utilities and types
 import { api } from "@/lib/services/api";
@@ -9,10 +8,11 @@ import { useApiState } from "@/hooks/useApiState";
 import { useToastPromise } from "@/hooks/useToastPromise";
 import { DataTable } from "@/components/ui/DataTable";
 import { FilterPanel } from "@/components/ui/FilterPanel";
-import { SalesManager, TableColumn } from "@/types";
+import { TableColumn } from "@/types";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 
-// Legacy imports
+// Local imports
+import { ISalesManager } from "./interface";
 import AddEditSalesManagerDialog from "./dialogs/AddEditSalesManagerDialog";
 import DeleteSalesManagerDialog from "./dialogs/DeleteSalesManagerDialog";
 
@@ -21,7 +21,10 @@ import DeleteSalesManagerDialog from "./dialogs/DeleteSalesManagerDialog";
 // =============================================================================
 
 const SalesManagers = () => {
-  const [data, setData] = useState<SalesManager[]>([]);
+  // =============================================================================
+  // STATE MANAGEMENT
+  // =============================================================================
+  const [data, setData] = useState<ISalesManager[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState(1);
   const [searchFields, setSearchFields] = useState({
@@ -30,27 +33,66 @@ const SalesManagers = () => {
     national_number: "",
   });
   const [openDialog, setOpenDialog] = useState(false);
-  const [editRow, setEditRow] = useState<SalesManager | null>(null);
+  const [editRow, setEditRow] = useState<ISalesManager | null>(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
-  const [rowToDelete, setRowToDelete] = useState<SalesManager | null>(null);
+  const [rowToDelete, setRowToDelete] = useState<ISalesManager | null>(null);
 
   // New utilities
   const { loading, executeWithLoading } = useApiState();
   const { executeWithToast } = useToastPromise();
 
-  // =============================================================================
-  // API CALLS
-  // =============================================================================
+  // Reference to track abort controller for API requests
+  const abortControllerRef = useRef<AbortController | null>(null);
+  // Reference to track search timeout
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const fetchData = async () => {
+  // =============================================================================
+  // MEMOIZED VALUES
+  // =============================================================================
+  // Memoize search parameters to avoid unnecessary API calls
+  const searchParamsMemo = useMemo(() => {
     const page = searchParams.get("page") || "1";
     const firstName = searchParams.get("first_name") || "";
     const lastName = searchParams.get("last_name") || "";
     const nationalNumber = searchParams.get("national_number") || "";
 
+    return { page, firstName, lastName, nationalNumber };
+  }, [searchParams]);
+
+  // Separate memoized values for API call dependencies
+  const apiDependencies = useMemo(
+    () => ({
+      page: searchParamsMemo.page,
+      firstName: searchParamsMemo.firstName,
+      lastName: searchParamsMemo.lastName,
+      nationalNumber: searchParamsMemo.nationalNumber,
+    }),
+    [
+      searchParamsMemo.page,
+      searchParamsMemo.firstName,
+      searchParamsMemo.lastName,
+      searchParamsMemo.nationalNumber,
+    ]
+  );
+
+  // =============================================================================
+  // API CALLS
+  // =============================================================================
+
+  const fetchData = useCallback(async () => {
+    // Cancel previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Create new AbortController for the current request
+    abortControllerRef.current = new AbortController();
+
+    const { page, firstName, lastName, nationalNumber } = apiDependencies;
+
     try {
       const response = await executeWithLoading(async () => {
-        return await api.getPaginated<SalesManager>(
+        return await api.getPaginated<ISalesManager>(
           "api/sales/sales-managers/",
           {
             page: parseInt(page),
@@ -63,10 +105,14 @@ const SalesManagers = () => {
 
       setData(response.results);
       setTotalPages(Math.ceil(response.count / 10));
-    } catch (error) {
-      console.error("Error fetching sales managers:", error);
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === "AbortError") {
+        console.log("Request was aborted");
+      } else {
+        console.error("Error fetching sales managers:", error);
+      }
     }
-  };
+  }, [apiDependencies, executeWithLoading]);
 
   // =============================================================================
   // SEARCH HANDLING
@@ -74,36 +120,40 @@ const SalesManagers = () => {
 
   const handleSearchFieldChange = useCallback(
     (field: string, value: string) => {
-      // Update local state immediately for responsive UI
-      setSearchFields((prev) => ({ ...prev, [field]: value }));
-    },
-    []
-  );
+      setSearchFields((prev) => {
+        const updatedFields = { ...prev, [field]: value };
 
-  // Debounced function for API calls
-  const debouncedSearch = useCallback(
-    debounce((searchFields: Record<string, string>) => {
-      const newSearchParams = new URLSearchParams();
-
-      // Add all search fields to URL params
-      Object.entries(searchFields).forEach(([field, value]) => {
-        if (value.trim()) {
-          newSearchParams.set(field, value);
+        // Clear previous timeout
+        if (searchTimeoutRef.current) {
+          clearTimeout(searchTimeoutRef.current);
         }
-      });
 
-      newSearchParams.set("page", "1");
-      setSearchParams(newSearchParams);
-    }, 500),
+        // Set new timeout for search
+        searchTimeoutRef.current = setTimeout(() => {
+          const newSearchParams = new URLSearchParams();
+
+          Object.entries(updatedFields).forEach(([key, val]) => {
+            if (val.trim()) {
+              newSearchParams.set(key, val);
+            }
+          });
+
+          newSearchParams.set("page", "1");
+          setSearchParams(newSearchParams);
+        }, 600); // 600ms delay for better UX
+
+        return updatedFields;
+      });
+    },
     [setSearchParams]
   );
 
-  // Effect to trigger debounced search when searchFields change
-  useEffect(() => {
-    debouncedSearch(searchFields);
-  }, [searchFields, debouncedSearch]);
-
   const handleClearAllFilters = useCallback(() => {
+    // Clear search timeout if exists
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
     setSearchFields({
       first_name: "",
       last_name: "",
@@ -116,73 +166,83 @@ const SalesManagers = () => {
   // PAGINATION HANDLING
   // =============================================================================
 
-  const handlePageChange = (page: number) => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set("page", page.toString());
-    setSearchParams(newSearchParams);
-  };
+  const handlePageChange = useCallback(
+    (page: number) => {
+      console.log("Page change requested:", page); // Debug log
+
+      // Create new search params from current URL params
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("page", page.toString());
+
+      setSearchParams(newSearchParams);
+    },
+    [searchParams, setSearchParams]
+  );
 
   // =============================================================================
   // ACTIONS HANDLERS
   // =============================================================================
 
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     setEditRow(null);
     setOpenDialog(true);
-  };
+  }, []);
 
-  const handleSave = async (manager: {
-    first_name: string;
-    last_name: string;
-    national_number: string;
-    id?: number;
-  }) => {
-    const isEdit = !!editRow;
-    const promise = isEdit
-      ? api.put(`api/sales/sales-managers/${editRow!.id}/`, manager)
-      : api.post("api/sales/sales-managers/", manager);
+  const handleSave = useCallback(
+    async (manager: {
+      first_name: string;
+      last_name: string;
+      national_number: string;
+      id?: number;
+    }) => {
+      const isEdit = !!editRow;
+      const promise = isEdit
+        ? api.put(`api/sales/sales-managers/${editRow!.id}/`, manager)
+        : api.post("api/sales/sales-managers/", manager);
 
-    await executeWithToast(promise, {
-      loadingMessage: isEdit ? "در حال ویرایش..." : "در حال افزودن...",
-      successMessage: isEdit ? "ویرایش شد" : "افزوده شد",
-      errorMessage: (error) => {
-        // Handle specific error cases
-        if (error && typeof error === "object" && "response" in error) {
-          const axiosError = error as { response?: { data?: unknown } };
-          const data = axiosError.response?.data;
+      await executeWithToast(promise, {
+        loadingMessage: isEdit ? "در حال ویرایش..." : "در حال افزودن...",
+        successMessage: isEdit ? "ویرایش شد" : "افزوده شد",
+        errorMessage: (error) => {
+          // Handle specific error cases
+          if (error && typeof error === "object" && "response" in error) {
+            const axiosError = error as { response?: { data?: unknown } };
+            const data = axiosError.response?.data;
 
-          if (data && typeof data === "object" && "national_number" in data) {
-            const nationalNumberError = (
-              data as { national_number?: string | string[] }
-            ).national_number;
-            if (
-              nationalNumberError ===
-              "مدیر فروش with this national number already exists."
-            ) {
-              return "کد ملی وارد شده از قبل موجود است.";
+            if (data && typeof data === "object" && "national_number" in data) {
+              const nationalNumberError = (
+                data as { national_number?: string | string[] }
+              ).national_number;
+              if (
+                nationalNumberError ===
+                "مدیر فروش with this national number already exists."
+              ) {
+                return "کد ملی وارد شده از قبل موجود است.";
+              }
             }
           }
-        }
-        return "خطا در عملیات";
-      },
-      onSuccess: () => {
-        setOpenDialog(false);
-        fetchData();
-      },
-    });
-  };
+          return "خطا در عملیات";
+        },
+        onSuccess: () => {
+          setOpenDialog(false);
+          fetchData();
+        },
+      });
+    },
+    [editRow, executeWithToast, fetchData]
+  );
 
-  const handleEdit = (row: Record<string, unknown>) => {
-    setEditRow(row as unknown as SalesManager);
+  const handleEdit = useCallback((row: Record<string, unknown>) => {
+    setEditRow(row as unknown as ISalesManager);
     setOpenDialog(true);
-  };
+  }, []);
 
-  const handleDelete = (row: Record<string, unknown>) => {
-    setRowToDelete(row as unknown as SalesManager);
+  const handleDelete = useCallback((row: Record<string, unknown>) => {
+    setRowToDelete(row as unknown as ISalesManager);
     setDeleteDialog(true);
-  };
+  }, []);
 
-  const confirmDelete = async () => {
+  const confirmDelete = useCallback(async () => {
     if (!rowToDelete) return;
 
     await executeWithToast(
@@ -197,7 +257,7 @@ const SalesManagers = () => {
         },
       }
     );
-  };
+  }, [rowToDelete, executeWithToast, fetchData]);
 
   // =============================================================================
   // TABLE COLUMNS CONFIGURATION
@@ -269,18 +329,39 @@ const SalesManagers = () => {
   // EFFECTS
   // =============================================================================
 
+  // Initialize search fields from URL params on mount
+  useEffect(() => {
+    const firstName = searchParams.get("first_name") || "";
+    const lastName = searchParams.get("last_name") || "";
+    const nationalNumber = searchParams.get("national_number") || "";
+
+    setSearchFields({
+      first_name: firstName,
+      last_name: lastName,
+      national_number: nationalNumber,
+    });
+  }, []); // Empty dependency array to run only on mount
+
+  // Fetch data when dependencies change
   useEffect(() => {
     fetchData();
-  }, [searchParams]);
 
-  // Update search fields from URL params
+    // Cleanup: Cancel ongoing request on unmount or before new request
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [fetchData]);
+
+  // Cleanup effect for search timeout
   useEffect(() => {
-    setSearchFields({
-      first_name: searchParams.get("first_name") || "",
-      last_name: searchParams.get("last_name") || "",
-      national_number: searchParams.get("national_number") || "",
-    });
-  }, [searchParams]);
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // =============================================================================
   // RENDER
@@ -296,11 +377,11 @@ const SalesManagers = () => {
         {/* Add Button */}
         <div className="w-full flex justify-start">
           <Button
-            className="hover:bg-green-100 text-green-700 border border-green-200 text-base py-2 rounded-xl font-bold shadow-sm transition-all duration-200 flex gap-2 items-center"
+            className="w-full bg-white hover:bg-green-100 text-green-700 border border-green-200 text-base py-2 rounded-xl font-bold shadow-sm transition-all duration-200 flex gap-2 items-center"
             onClick={handleAdd}
             aria-label="افزودن مسئول فروش"
           >
-            افزودن مسئول فروش
+            افزودن مسئول فروش جدید +
           </Button>
         </div>
 
@@ -335,13 +416,13 @@ const SalesManagers = () => {
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         onSave={handleSave}
-        editRow={editRow as unknown as Record<string, unknown>}
+        editRow={editRow}
       />
       <DeleteSalesManagerDialog
         open={deleteDialog}
         onClose={() => setDeleteDialog(false)}
         onConfirm={confirmDelete}
-        manager={rowToDelete as unknown as Record<string, unknown>}
+        manager={rowToDelete}
       />
     </div>
   );

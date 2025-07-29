@@ -24,6 +24,9 @@ const StudentTabs = () => {
 
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange} className="">
+      <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl mb-6">
+        لیست دانش‌آموزان
+      </h1>
       <TabsList className="flex justify-center items-center bg-slate-300 !rounded-xl w-fit">
         <TabsTrigger
           value="noAdvisorStudents"

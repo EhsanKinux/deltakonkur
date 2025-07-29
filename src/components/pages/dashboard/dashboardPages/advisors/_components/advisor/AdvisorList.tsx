@@ -1,9 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { debounce } from "lodash";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-// New utilities and types
 import { api } from "@/lib/services/api";
 import { useApiState } from "@/hooks/useApiState";
 import { DataTable } from "@/components/ui/DataTable";
@@ -18,7 +15,6 @@ const AdvisorList = () => {
   // =============================================================================
   // STATE MANAGEMENT
   // =============================================================================
-
   const [advisors, setAdvisors] = useState<Advisor[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState(1);
@@ -27,27 +23,81 @@ const AdvisorList = () => {
     last_name: "",
   });
 
-  // New utilities
   const { loading, executeWithLoading } = useApiState();
-
-  // Get active tab from URL params, default to mathAdvisors
   const activeTab = searchParams.get("tab") || "mathAdvisors";
+
+  // Reference to track abort controller for API requests
+  const abortControllerRef = useRef<AbortController | null>(null);
+  // Reference to track search timeout
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // =============================================================================
+  // MEMOIZED VALUES
+  // =============================================================================
+  // Memoize field mapping to avoid recalculation
+  const fieldMapping = useMemo(() => {
+    return {
+      mathAdvisors: "ریاضی",
+      experimentalAdvisors: "تجربی",
+      humanitiesAdvisors: "علوم انسانی",
+    };
+  }, []);
+
+  // Memoize level mapping to avoid recreation on every render
+  const levelMapping = useMemo(
+    () => ({
+      "1": "سطح 1",
+      "2": "سطح 2",
+      "3": "سطح 3",
+      "4": "ارشد 1",
+      "5": "ارشد 2",
+    }),
+    []
+  );
+
+  // Memoize current field based on active tab
+  const currentField = useMemo(() => {
+    return fieldMapping[activeTab as keyof typeof fieldMapping] || "ریاضی";
+  }, [activeTab, fieldMapping]);
+
+  // Memoize search parameters to avoid unnecessary API calls
+  const searchParamsMemo = useMemo(() => {
+    const page = searchParams.get("page") || "1";
+    const firstName = searchParams.get("first_name") || "";
+    const lastName = searchParams.get("last_name") || "";
+
+    return { page, firstName, lastName };
+  }, [searchParams]);
+
+  // Separate memoized values for API call dependencies
+  const apiDependencies = useMemo(
+    () => ({
+      field: currentField,
+      page: searchParamsMemo.page,
+      firstName: searchParamsMemo.firstName,
+      lastName: searchParamsMemo.lastName,
+    }),
+    [
+      currentField,
+      searchParamsMemo.page,
+      searchParamsMemo.firstName,
+      searchParamsMemo.lastName,
+    ]
+  );
 
   // =============================================================================
   // API CALLS
   // =============================================================================
-
   const getAdvisors = useCallback(async () => {
-    const field =
-      activeTab === "mathAdvisors"
-        ? "ریاضی"
-        : activeTab === "experimentalAdvisors"
-        ? "تجربی"
-        : "علوم انسانی";
+    // Cancel previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
 
-    const page = searchParams.get("page") || "1";
-    const firstName = searchParams.get("first_name") || "";
-    const lastName = searchParams.get("last_name") || "";
+    // Create new AbortController for the current request
+    abortControllerRef.current = new AbortController();
+
+    const { field, page, firstName, lastName } = apiDependencies;
 
     try {
       const response = await executeWithLoading(async () => {
@@ -59,14 +109,6 @@ const AdvisorList = () => {
         });
       });
 
-      const levelMapping: { [key: string]: string } = {
-        "1": "سطح 1",
-        "2": "سطح 2",
-        "3": "سطح 3",
-        "4": "ارشد 1",
-        "5": "ارشد 2",
-      };
-
       const formattedData = response.results.map((advisor) => ({
         ...advisor,
         overallSatisfaction: advisor?.overall_satisfaction
@@ -75,20 +117,25 @@ const AdvisorList = () => {
         currentMonthSatisfaction: advisor?.current_month_satisfaction
           ? (advisor?.current_month_satisfaction * 100).toFixed(2)
           : "0",
-        level: levelMapping[advisor.level.toString()] || advisor.level,
+        level:
+          levelMapping[advisor.level.toString() as keyof typeof levelMapping] ||
+          advisor.level,
       })) as Advisor[];
 
       setAdvisors(formattedData);
       setTotalPages(Math.ceil(response.count / 10));
-    } catch (error) {
-      console.error("Error fetching advisors:", error);
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === "AbortError") {
+        console.log("Request was aborted");
+      } else {
+        console.error("Error fetching advisors:", error);
+      }
     }
-  }, [activeTab, searchParams, executeWithLoading]);
+  }, [apiDependencies, executeWithLoading, levelMapping]);
 
   // =============================================================================
   // TAB HANDLING
   // =============================================================================
-
   const handleTabChange = useCallback(
     (value: string) => {
       const newSearchParams = new URLSearchParams();
@@ -102,46 +149,48 @@ const AdvisorList = () => {
   // =============================================================================
   // SEARCH HANDLING
   // =============================================================================
-
   const handleSearchFieldChange = useCallback(
     (field: string, value: string) => {
-      // Update local state immediately for responsive UI
-      setSearchFields((prev) => ({ ...prev, [field]: value }));
-    },
-    []
-  );
+      setSearchFields((prev) => {
+        const updatedFields = { ...prev, [field]: value };
 
-  // Debounced function for API calls
-  const debouncedSearch = useCallback(
-    debounce((searchFields: Record<string, string>) => {
-      const newSearchParams = new URLSearchParams();
-
-      // Preserve the current tab
-      newSearchParams.set("tab", activeTab);
-
-      // Add all search fields to URL params
-      Object.entries(searchFields).forEach(([field, value]) => {
-        if (value.trim()) {
-          newSearchParams.set(field, value);
+        // Clear previous timeout
+        if (searchTimeoutRef.current) {
+          clearTimeout(searchTimeoutRef.current);
         }
+
+        // Set new timeout for search
+        searchTimeoutRef.current = setTimeout(() => {
+          const newSearchParams = new URLSearchParams();
+          newSearchParams.set("tab", activeTab);
+
+          Object.entries(updatedFields).forEach(([key, val]) => {
+            if (val.trim()) {
+              newSearchParams.set(key, val);
+            }
+          });
+
+          newSearchParams.set("page", "1");
+          setSearchParams(newSearchParams);
+        }, 600); // 600ms delay for better UX
+
+        return updatedFields;
       });
-
-      newSearchParams.set("page", "1");
-      setSearchParams(newSearchParams);
-    }, 500),
-    [setSearchParams, activeTab]
+    },
+    [activeTab, setSearchParams]
   );
-
-  // Effect to trigger debounced search when searchFields change
-  useEffect(() => {
-    debouncedSearch(searchFields);
-  }, [searchFields, debouncedSearch]);
 
   const handleClearAllFilters = useCallback(() => {
+    // Clear search timeout if exists
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
     setSearchFields({
       first_name: "",
       last_name: "",
     });
+
     const newSearchParams = new URLSearchParams();
     newSearchParams.set("tab", activeTab);
     newSearchParams.set("page", "1");
@@ -151,11 +200,14 @@ const AdvisorList = () => {
   // =============================================================================
   // PAGINATION HANDLING
   // =============================================================================
-
   const handlePageChange = useCallback(
     (page: number) => {
+      console.log("Page change requested:", page); // Debug log
+
+      // Create new search params from current URL params
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set("page", page.toString());
+
       setSearchParams(newSearchParams);
     },
     [searchParams, setSearchParams]
@@ -164,29 +216,21 @@ const AdvisorList = () => {
   // =============================================================================
   // ACTIONS HANDLERS
   // =============================================================================
-
   const handleEdit = useCallback((advisor: Record<string, unknown>) => {
-    // TODO: Navigate to edit page or open edit modal
     console.log("Edit advisor:", advisor);
-    // Example: navigate(`/dashboard/advisors/edit/${advisor.id}`);
   }, []);
 
   const handleDelete = useCallback((advisor: Record<string, unknown>) => {
-    // TODO: Show delete confirmation dialog
     console.log("Delete advisor:", advisor);
-    // Example: setDeleteDialog({ open: true, advisor });
   }, []);
 
   const handleView = useCallback((advisor: Record<string, unknown>) => {
-    // TODO: Navigate to advisor detail page
     console.log("View advisor:", advisor);
-    // Example: navigate(`/dashboard/advisors/${advisor.id}`);
   }, []);
 
   // =============================================================================
   // TABLE COLUMNS CONFIGURATION
   // =============================================================================
-
   const columns: TableColumn<Record<string, unknown>>[] = [
     {
       key: "first_name",
@@ -240,7 +284,6 @@ const AdvisorList = () => {
   // =============================================================================
   // FILTER FIELDS CONFIGURATION
   // =============================================================================
-
   const filterFields = [
     {
       key: "first_name",
@@ -259,7 +302,6 @@ const AdvisorList = () => {
   // =============================================================================
   // EFFECTS
   // =============================================================================
-
   // Initialize search fields from URL params on mount
   useEffect(() => {
     const firstName = searchParams.get("first_name") || "";
@@ -269,17 +311,32 @@ const AdvisorList = () => {
       first_name: firstName,
       last_name: lastName,
     });
-  }, []); // Only run once on mount
+  }, []); // Empty dependency array to run only on mount
 
   // Fetch advisors when dependencies change
   useEffect(() => {
     getAdvisors();
+
+    // Cleanup: Cancel ongoing request on unmount or before new request
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [getAdvisors]);
+
+  // Cleanup effect for search timeout
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // =============================================================================
   // RENDER
   // =============================================================================
-
   return (
     <section className="">
       <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl mb-6">
@@ -309,7 +366,6 @@ const AdvisorList = () => {
         </TabsList>
         <TabsContent value={activeTab}>
           <div className="flex flex-col gap-6 mt-6">
-            {/* Filter Panel */}
             <FilterPanel
               fields={filterFields}
               onClearAll={handleClearAllFilters}
@@ -321,8 +377,6 @@ const AdvisorList = () => {
                   : "علوم انسانی"
               }`}
             />
-
-            {/* DataTable */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <DataTable
                 data={advisors as unknown as Record<string, unknown>[]}

@@ -1,5 +1,4 @@
-import { debounce } from "lodash";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
 // New utilities and types
@@ -9,6 +8,14 @@ import { useApiState } from "@/hooks/useApiState";
 import { api } from "@/lib/services/api";
 import { Student, TableColumn } from "@/types";
 
+// Dialog imports
+import { Dialog } from "@/components/ui/dialog";
+import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
+import useModalHistory from "@/hooks/useBackButton";
+import DeleteConfirmationDialog from "./table/_components/delete/DeleteConfirmationDialog";
+import { EditStudentDialog } from "./table/_components/edit/EditStudentDialog";
+import { FormData } from "@/lib/store/types";
+
 // Legacy imports (will be updated later)
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 
@@ -17,6 +24,9 @@ import { convertToShamsi } from "@/lib/utils/date/convertDate";
 // =============================================================================
 
 const StudentsList = () => {
+  // =============================================================================
+  // STATE MANAGEMENT
+  // =============================================================================
   const [students, setStudents] = useState<Student[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState(1);
@@ -24,18 +34,74 @@ const StudentsList = () => {
     first_name: "",
     last_name: "",
   });
+  const [selectedStudent, setSelectedStudent] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
 
   // New utilities
   const { loading, executeWithLoading } = useApiState();
+
+  // Dialog management
+  const { fetchStudentInfo } = useStudentList();
+  const { modalState, openModal, closeModal } = useModalHistory();
+
+  // Reference to track abort controller for API requests
+  const abortControllerRef = useRef<AbortController | null>(null);
+  // Reference to track search timeout
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // =============================================================================
+  // MEMOIZED VALUES
+  // =============================================================================
+  // Memoize grade mapping to avoid recreation on every render
+  const gradeMapping = useMemo(
+    () => ({
+      "10": "پایه دهم",
+      "11": "پایه یازدهم",
+      "12": "پایه دوازدهم",
+      graduate: "فارغ‌التحصیل",
+    }),
+    []
+  );
+
+  // Memoize search parameters to avoid unnecessary API calls
+  const searchParamsMemo = useMemo(() => {
+    const page = searchParams.get("page") || "1";
+    const firstName = searchParams.get("first_name") || "";
+    const lastName = searchParams.get("last_name") || "";
+
+    return { page, firstName, lastName };
+  }, [searchParams]);
+
+  // Separate memoized values for API call dependencies
+  const apiDependencies = useMemo(
+    () => ({
+      page: searchParamsMemo.page,
+      firstName: searchParamsMemo.firstName,
+      lastName: searchParamsMemo.lastName,
+    }),
+    [
+      searchParamsMemo.page,
+      searchParamsMemo.firstName,
+      searchParamsMemo.lastName,
+    ]
+  );
 
   // =============================================================================
   // API CALLS
   // =============================================================================
 
   const getStudents = useCallback(async () => {
-    const page = searchParams.get("page") || "1";
-    const firstName = searchParams.get("first_name") || "";
-    const lastName = searchParams.get("last_name") || "";
+    // Cancel previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Create new AbortController for the current request
+    abortControllerRef.current = new AbortController();
+
+    const { page, firstName, lastName } = apiDependencies;
 
     try {
       const response = await executeWithLoading(async () => {
@@ -56,21 +122,20 @@ const StudentsList = () => {
           ? convertToShamsi(student.date_of_birth)
           : student.date_of_birth,
         grade:
-          student.grade === "10"
-            ? "پایه دهم"
-            : student.grade === "11"
-            ? "پایه یازدهم"
-            : student.grade === "12"
-            ? "پایه دوازدهم"
-            : "فارغ‌التحصیل",
+          gradeMapping[student.grade as keyof typeof gradeMapping] ||
+          "فارغ‌التحصیل",
       }));
 
       setStudents(formattedData);
       setTotalPages(Math.ceil(response.count / 10));
-    } catch (error) {
-      console.error("Error fetching students:", error);
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === "AbortError") {
+        console.log("Request was aborted");
+      } else {
+        console.error("Error fetching students:", error);
+      }
     }
-  }, [searchParams, executeWithLoading]);
+  }, [apiDependencies, executeWithLoading, gradeMapping]);
 
   // =============================================================================
   // SEARCH HANDLING
@@ -78,36 +143,40 @@ const StudentsList = () => {
 
   const handleSearchFieldChange = useCallback(
     (field: string, value: string) => {
-      // Update local state immediately for responsive UI
-      setSearchFields((prev) => ({ ...prev, [field]: value }));
-    },
-    []
-  );
+      setSearchFields((prev) => {
+        const updatedFields = { ...prev, [field]: value };
 
-  // Debounced function for API calls
-  const debouncedSearch = useCallback(
-    debounce((searchFields: Record<string, string>) => {
-      const newSearchParams = new URLSearchParams();
-
-      // Add all search fields to URL params
-      Object.entries(searchFields).forEach(([field, value]) => {
-        if (value.trim()) {
-          newSearchParams.set(field, value);
+        // Clear previous timeout
+        if (searchTimeoutRef.current) {
+          clearTimeout(searchTimeoutRef.current);
         }
-      });
 
-      newSearchParams.set("page", "1");
-      setSearchParams(newSearchParams);
-    }, 500),
+        // Set new timeout for search
+        searchTimeoutRef.current = setTimeout(() => {
+          const newSearchParams = new URLSearchParams();
+
+          Object.entries(updatedFields).forEach(([key, val]) => {
+            if (val.trim()) {
+              newSearchParams.set(key, val);
+            }
+          });
+
+          newSearchParams.set("page", "1");
+          setSearchParams(newSearchParams);
+        }, 600); // 600ms delay for better UX
+
+        return updatedFields;
+      });
+    },
     [setSearchParams]
   );
 
-  // Effect to trigger debounced search when searchFields change
-  useEffect(() => {
-    debouncedSearch(searchFields);
-  }, [searchFields, debouncedSearch]);
-
   const handleClearAllFilters = useCallback(() => {
+    // Clear search timeout if exists
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
     setSearchFields({
       first_name: "",
       last_name: "",
@@ -121,8 +190,12 @@ const StudentsList = () => {
 
   const handlePageChange = useCallback(
     (page: number) => {
+      console.log("Page change requested:", page); // Debug log
+
+      // Create new search params from current URL params
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set("page", page.toString());
+
       setSearchParams(newSearchParams);
     },
     [searchParams, setSearchParams]
@@ -132,23 +205,21 @@ const StudentsList = () => {
   // ACTIONS HANDLERS
   // =============================================================================
 
-  const handleEdit = useCallback((student: Record<string, unknown>) => {
-    // TODO: Navigate to edit page or open edit modal
-    console.log("Edit student:", student);
-    // Example: navigate(`/dashboard/students/edit/${student.id}`);
-  }, []);
+  const handleEdit = useCallback(
+    async (student: Record<string, unknown>) => {
+      openModal("edit");
+      await fetchStudentInfo(student.id as string);
+    },
+    [openModal, fetchStudentInfo]
+  );
 
-  const handleDelete = useCallback((student: Record<string, unknown>) => {
-    // TODO: Show delete confirmation dialog
-    console.log("Delete student:", student);
-    // Example: setDeleteDialog({ open: true, student });
-  }, []);
-
-  const handleView = useCallback((student: Record<string, unknown>) => {
-    // TODO: Navigate to student detail page
-    console.log("View student:", student);
-    // Example: navigate(`/dashboard/students/${student.id}`);
-  }, []);
+  const handleDelete = useCallback(
+    (student: Record<string, unknown>) => {
+      openModal("delete");
+      setSelectedStudent(student);
+    },
+    [openModal]
+  );
 
   // =============================================================================
   // TABLE COLUMNS CONFIGURATION
@@ -230,17 +301,37 @@ const StudentsList = () => {
   // EFFECTS
   // =============================================================================
 
+  // Initialize search fields from URL params on mount
+  useEffect(() => {
+    const firstName = searchParams.get("first_name") || "";
+    const lastName = searchParams.get("last_name") || "";
+
+    setSearchFields({
+      first_name: firstName,
+      last_name: lastName,
+    });
+  }, []); // Empty dependency array to run only on mount
+
+  // Fetch students when dependencies change
   useEffect(() => {
     getStudents();
+
+    // Cleanup: Cancel ongoing request on unmount or before new request
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [getStudents]);
 
-  // Update search fields from URL params
+  // Cleanup effect for search timeout
   useEffect(() => {
-    setSearchFields({
-      first_name: searchParams.get("first_name") || "",
-      last_name: searchParams.get("last_name") || "",
-    });
-  }, [searchParams]);
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // =============================================================================
   // RENDER
@@ -248,7 +339,7 @@ const StudentsList = () => {
 
   return (
     <section className="max-h-screen">
-      <div className="flex flex-col gap-6 p-6">
+      <div className="flex flex-col gap-0">
         {/* Filter Panel */}
         <FilterPanel
           fields={filterFields}
@@ -271,10 +362,21 @@ const StudentsList = () => {
             actions={{
               onEdit: handleEdit,
               onDelete: handleDelete,
-              onView: handleView,
             }}
+            enableRowClick={false}
           />
         </div>
+
+        {/* Dialogs */}
+        <Dialog open={modalState.edit} onOpenChange={() => closeModal()}>
+          <EditStudentDialog />
+        </Dialog>
+        <Dialog open={modalState.delete} onOpenChange={() => closeModal()}>
+          <DeleteConfirmationDialog
+            setDeleteDialogOpen={() => modalState.delete}
+            formData={(selectedStudent as FormData) || {}}
+          />
+        </Dialog>
       </div>
     </section>
   );
