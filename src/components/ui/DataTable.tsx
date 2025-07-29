@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -7,10 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { TableProps, TableColumn } from "@/types";
-import { Search, Edit, Trash2 } from "lucide-react";
+import { TableColumn, TableProps } from "@/types";
+import { Edit, Search, Trash2 } from "lucide-react";
+import { useMemo } from "react";
 
 // =============================================================================
 // DATA TABLE COMPONENT

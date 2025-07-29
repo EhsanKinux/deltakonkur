@@ -1,8 +1,8 @@
-import React, { lazy, Suspense } from "react";
-import { RouteObject } from "react-router-dom";
 import Loading from "@/components/loader/Loading";
 import ProtectedRoute from "@/components/pages/auth/ProtectedRoute";
 import RedirectRoute from "@/components/pages/auth/RedirectRoute";
+import { lazy, Suspense } from "react";
+import { RouteObject } from "react-router-dom";
 
 // Lazy load components
 const ExamAdvisroDetail = lazy(

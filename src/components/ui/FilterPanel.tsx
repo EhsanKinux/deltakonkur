@@ -1,7 +1,6 @@
-import React from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, X, Filter, ChevronDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ChevronDown, Filter, Search, X } from "lucide-react";
 
 // =============================================================================
 // FILTER PANEL COMPONENT
