@@ -23,6 +23,7 @@ export function DataTable<T extends Record<string, unknown>>({
   pagination,
   search,
   actions,
+  enableRowClick = false,
 }: TableProps<T>) {
   // =============================================================================
   // SEARCH AND FILTERING
@@ -145,7 +146,7 @@ export function DataTable<T extends Record<string, unknown>>({
             placeholder={search.placeholder || "جستجو..."}
             value={search.value}
             onChange={(e) => search.onChange(e.target.value)}
-            className="pl-10 pr-4 h-10 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+            className="pl-10 pr-4 h-10 rounded-[8px] border-gray-300 focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
       )}
@@ -183,8 +184,12 @@ export function DataTable<T extends Record<string, unknown>>({
               return (
                 <TableRow
                   key={index}
-                  className="hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
-                  onClick={() => actions?.onView?.(item)}
+                  className={`hover:bg-gray-50 transition-colors duration-200 ${
+                    enableRowClick ? "cursor-pointer" : ""
+                  }`}
+                  onClick={
+                    enableRowClick ? () => actions?.onView?.(item) : undefined
+                  }
                 >
                   <TableCell className="!text-center font-bold text-gray-600">
                     {rowNumber}
@@ -238,7 +243,7 @@ export function DataTable<T extends Record<string, unknown>>({
       {/* Pagination */}
       {pagination && (
         <div className="flex items-center justify-between mt-4 px-2">
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-xl px-5 py-1">
             صفحه {pagination.currentPage} از {pagination.totalPages}
           </div>
           <div className="flex items-center space-x-2 space-x-reverse">
@@ -249,7 +254,7 @@ export function DataTable<T extends Record<string, unknown>>({
                 pagination.onPageChange(pagination.currentPage - 1)
               }
               disabled={pagination.currentPage <= 1}
-              className="px-4 py-2 rounded-lg border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 rounded-[8px] border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               قبلی
             </Button>
@@ -260,7 +265,7 @@ export function DataTable<T extends Record<string, unknown>>({
                 pagination.onPageChange(pagination.currentPage + 1)
               }
               disabled={pagination.currentPage >= pagination.totalPages}
-              className="px-4 py-2 rounded-lg border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 rounded-[8px] border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               بعدی
             </Button>

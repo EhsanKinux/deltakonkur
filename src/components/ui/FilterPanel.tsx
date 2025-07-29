@@ -36,7 +36,7 @@ export function FilterPanel({
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="bg-blue-600 p-2 rounded-lg">
+          <div className="bg-blue-600 p-2 rounded-[10px]">
             <Filter className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -54,7 +54,7 @@ export function FilterPanel({
             variant="ghost"
             size="sm"
             onClick={onClearAll}
-            className="text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200"
+            className="text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 "
           >
             <X className="h-4 w-4 ml-2" />
             پاک کردن همه
@@ -63,19 +63,16 @@ export function FilterPanel({
       </div>
 
       {/* Filter Fields */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-col grid-cols-2 lg:grid-cols-3 xl:flex xl:flex-row gap-6">
         {fields.map((field) => (
-          <div key={field.key} className="relative group">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {field.placeholder}
-            </label>
+          <div key={field.key} className="flex-1 relative group">
             <div className="relative">
               <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 group-focus-within:text-blue-600 transition-colors" />
               <Input
                 placeholder={`جستجو در ${field.placeholder}...`}
                 value={field.value}
                 onChange={(e) => field.onChange(e.target.value)}
-                className="pr-12 pl-4 h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-all duration-200 hover:border-blue-400 bg-white shadow-sm"
+                className="pr-12 pl-4 h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-all duration-200 hover:border-blue-400 bg-white shadow-sm placeholder:text-gray-500"
               />
               {field.value && (
                 <Button

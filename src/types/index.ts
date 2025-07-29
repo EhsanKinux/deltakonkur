@@ -196,6 +196,7 @@ export interface TableProps<T = Record<string, unknown>> {
     onDelete?: (row: T) => void;
     onView?: (row: T) => void;
   };
+  enableRowClick?: boolean;
 }
 
 // =============================================================================
