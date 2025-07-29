@@ -46,7 +46,7 @@ const StatsContentTab: React.FC = () => {
       try {
         const { accessToken } = authStore.getState();
         const res = await fetch(
-          BASE_API_URL + "/api/content/contents/statistics/",
+          BASE_API_URL + "api/content/contents/statistics/",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -73,25 +73,25 @@ const StatsContentTab: React.FC = () => {
       ) : statistics ? (
         <>
           <div className="flex flex-wrap gap-6 mb-6">
-            <div className="bg-blue-50 rounded-xl shadow p-4 min-w-[180px] text-center">
+            <div className="bg-blue-50 rounded-xl w-full lg:w-1/5 shadow p-4 min-w-[180px] text-center">
               <div className="text-gray-500 text-xs">کل محتوا</div>
               <div className="text-2xl font-bold text-blue-700">
                 {statistics.total}
               </div>
             </div>
-            <div className="bg-green-50 rounded-xl shadow p-4 min-w-[180px] text-center">
+            <div className="bg-green-50 rounded-xl w-full lg:w-1/5 shadow p-4 min-w-[180px] text-center">
               <div className="text-gray-500 text-xs">تحویل شده</div>
               <div className="text-2xl font-bold text-green-700">
                 {statistics.delivered}
               </div>
             </div>
-            <div className="bg-yellow-50 rounded-xl shadow p-4 min-w-[180px] text-center">
+            <div className="bg-yellow-50 rounded-xl w-full lg:w-1/5 shadow p-4 min-w-[180px] text-center">
               <div className="text-gray-500 text-xs">در انتظار تحویل</div>
               <div className="text-2xl font-bold text-yellow-600">
                 {statistics.pending}
               </div>
             </div>
-            <div className="bg-purple-50 rounded-xl shadow p-4 min-w-[180px] text-center">
+            <div className="bg-purple-50 rounded-xl w-full lg:w-1/5 shadow p-4 min-w-[180px] text-center">
               <div className="text-gray-500 text-xs">درصد تحویل</div>
               <div className="text-2xl font-bold text-purple-700">
                 {statistics.delivery_rate}%

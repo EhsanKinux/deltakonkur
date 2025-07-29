@@ -11,7 +11,7 @@ import { SalesManagersTable } from "./SalesManagersTable";
 import { authStore } from "@/lib/store/authStore";
 import { useSearchParams } from "react-router-dom";
 
-const API_URL = BASE_API_URL + "/api/sales/sales-managers/";
+const API_URL = BASE_API_URL + "api/sales/sales-managers/";
 
 const SalesManagers = () => {
   const [data, setData] = useState<ISalesManager[]>([]);

@@ -119,7 +119,7 @@ const ContentList: React.FC = () => {
       const { solar_year, solar_month, notes } = body;
       await showToast.promise(
         axios.post(
-          BASE_API_URL + "/api/content/contents/create-monthly-content/",
+          BASE_API_URL + "api/content/contents/create-monthly-content/",
           {
             solar_year,
             solar_month,
@@ -167,7 +167,7 @@ const ContentList: React.FC = () => {
 
       await showToast.promise(
         axios.patch(
-          BASE_API_URL + `/api/content/contents/${editRow.id}/`,
+          BASE_API_URL + `api/content/contents/${editRow.id}/`,
           {
             is_delivered,
             delivered_at: formattedDeliveredAt,
@@ -208,7 +208,7 @@ const ContentList: React.FC = () => {
 
     const { accessToken } = authStore.getState();
     await showToast.promise(
-      axios.delete(BASE_API_URL + `/api/content/contents/${deleteRow.id}/`, {
+      axios.delete(BASE_API_URL + `api/content/contents/${deleteRow.id}/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
