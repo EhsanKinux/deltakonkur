@@ -140,10 +140,84 @@ const ManagementReports = () => {
         مبلغ: item.amount,
       }));
     } else if (rolePrefix === "Supervisor") {
-      // ناظر: ستون‌ها دقیقا مطابق API و انگلیسی بماند
-      return (data as Array<Record<string, string | number>>).map((item) => ({
-        ...item,
-      }));
+      // ناظر: Handle both main report (with supervisors array and summary) and test report (simple array)
+      if (
+        data.length === 1 &&
+        typeof data[0] === "object" &&
+        data[0] !== null &&
+        "supervisors" in data[0] &&
+        "summary" in data[0]
+      ) {
+        // Main supervisor report format
+        const supervisorData = data[0] as {
+          supervisors: Array<{
+            supervisor_id: number;
+            supervisor_name: string;
+            bank_account: string;
+            active_student_count: number;
+            inactive_student_count: number;
+            total_earnings: number;
+            level: number;
+            last_withdraw: string | null;
+            days_since_last_withdraw: number | null;
+          }>;
+          summary: {
+            total_supervisors: number;
+            total_active_students: number;
+            total_inactive_students: number;
+            total_earnings: number;
+          };
+        };
+
+        const rows = supervisorData.supervisors.map((item) => ({
+          "شناسه ناظر": String(item.supervisor_id),
+          "نام ناظر": String(item.supervisor_name),
+          "حساب بانکی": String(item.bank_account),
+          "تعداد دانش‌آموز فعال": String(item.active_student_count),
+          "تعداد دانش‌آموز غیرفعال": String(item.inactive_student_count),
+          "درآمد کل": String(item.total_earnings),
+          سطح: String(item.level),
+          "آخرین برداشت": item.last_withdraw || "بدون برداشت",
+          "روزهای گذشته از آخرین برداشت":
+            item.days_since_last_withdraw || "بدون برداشت",
+        }));
+
+        // Add summary row
+        rows.push({
+          "شناسه ناظر": "جمع کل",
+          "نام ناظر": "-",
+          "حساب بانکی": "-",
+          "تعداد دانش‌آموز فعال": String(
+            supervisorData.summary.total_active_students
+          ),
+          "تعداد دانش‌آموز غیرفعال": String(
+            supervisorData.summary.total_inactive_students
+          ),
+          "درآمد کل": String(supervisorData.summary.total_earnings),
+          سطح: "-",
+          "آخرین برداشت": "-",
+          "روزهای گذشته از آخرین برداشت": "-",
+        });
+
+        return rows;
+      } else {
+        // Test supervisor report format (simple array)
+        return (
+          data as Array<{
+            supervisor_id: number;
+            supervisor_name: string;
+            bank_account: string;
+            amount: number;
+            last_withdraw: string | null;
+          }>
+        ).map((item) => ({
+          "شناسه ناظر": String(item.supervisor_id),
+          "نام ناظر": String(item.supervisor_name),
+          "حساب بانکی": String(item.bank_account),
+          مبلغ: String(item.amount),
+          "آخرین برداشت": item.last_withdraw || "بدون برداشت",
+        }));
+      }
     } else {
       // مشاور
       return (
@@ -213,20 +287,51 @@ const ManagementReports = () => {
     await showToast.promise(
       fetchReportData(endpoint)
         .then((data) => {
-          // Updated condition to support object with sales_managers for Sales
-          if (
-            (rolePrefix === "Sales" &&
+          // Handle different data structures for different roles
+          let hasData = false;
+
+          if (rolePrefix === "Supervisor") {
+            // For supervisor reports, check if it's the main report format (object with supervisors array)
+            if (
+              data &&
+              !Array.isArray(data) &&
+              typeof data === "object" &&
+              "supervisors" in (data as Record<string, unknown>) &&
+              Array.isArray((data as Record<string, unknown>).supervisors) &&
+              ((data as Record<string, unknown>).supervisors as unknown[])
+                .length > 0
+            ) {
+              hasData = true;
+            } else if (Array.isArray(data) && data.length > 0) {
+              // Test report format (simple array)
+              hasData = true;
+            }
+          } else if (rolePrefix === "Sales") {
+            // For sales reports, check if it's the new format (object with sales_managers array)
+            if (
               data &&
               !Array.isArray(data) &&
               typeof data === "object" &&
               "sales_managers" in (data as Record<string, unknown>) &&
               Array.isArray((data as Record<string, unknown>).sales_managers) &&
               ((data as Record<string, unknown>).sales_managers as unknown[])
-                .length > 0) ||
-            (Array.isArray(data) && data.length > 0)
-          ) {
+                .length > 0
+            ) {
+              hasData = true;
+            } else if (Array.isArray(data) && data.length > 0) {
+              // Old format (simple array)
+              hasData = true;
+            }
+          } else {
+            // For other roles (Consultant), check if it's a simple array
+            hasData = Array.isArray(data) && data.length > 0;
+          }
+
+          if (hasData) {
             const transformedData = transformData(
-              rolePrefix === "Sales" && !Array.isArray(data)
+              rolePrefix === "Supervisor" && !Array.isArray(data)
+                ? [data as Record<string, unknown>]
+                : rolePrefix === "Sales" && !Array.isArray(data)
                 ? [data as Record<string, unknown>]
                 : data,
               rolePrefix
