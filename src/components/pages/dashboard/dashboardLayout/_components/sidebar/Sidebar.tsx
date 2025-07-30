@@ -99,7 +99,7 @@ const Sidebar = () => {
       <motion.section
         variants={sidebarVariants}
         animate={isCollapsed ? "collapsed" : "expanded"}
-        className="min-h-screen flex-shrink-0 flex flex-col justify-between max-md:hidden relative overflow-hidden border-l border-slate-200/50"
+        className="min-h-screen flex-shrink-0 flex flex-col justify-between max-lg:hidden relative overflow-hidden border-l border-slate-200/50"
         style={{
           background:
             "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 25%, #a5b4fc 50%, #818cf8 75%, #6366f1 100%)",

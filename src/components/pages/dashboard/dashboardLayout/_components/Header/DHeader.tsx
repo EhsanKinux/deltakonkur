@@ -138,7 +138,7 @@ export default function DHeader() {
         {/* Right Section - Mobile Menu */}
         <div className="flex items-center gap-4 flex-1 ">
           {/* Mobile Menu */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <MobileNav />
           </div>
         </div>

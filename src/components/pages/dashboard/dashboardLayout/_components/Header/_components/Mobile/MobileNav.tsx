@@ -71,7 +71,7 @@ const MobileNav = () => {
   };
 
   return (
-    <section className="w-full md:hidden">
+    <section className="w-full">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
           <motion.button
