@@ -146,15 +146,15 @@ export const registerFormSchema = () =>
       .max(125, { message: "نام ورودی بیش از حد مجاز است" }),
     phone_number: z
       .string()
-      .min(11, { message: "شماره نا معتبر است" })
+      .min(11, { message: "شماره نامعتبر است" })
       .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
     home_phone: z
       .string()
-      .min(1, { message: "شماره نا معتبر است" })
+      .min(1, { message: "شماره نامعتبر است" })
       .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
     parent_phone: z
       .string()
-      .min(11, { message: "شماره نا معتبر است" })
+      .min(11, { message: "شماره نامعتبر است" })
       .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
     field: z.string().min(1, { message: "رشته‌ی تحصیلی را انتخاب کنید" }),
     grade: z.string().min(1, { message: "مقطع تحصیلی را انتخاب کنید" }),
@@ -180,11 +180,11 @@ export const registerAdvisorFormSchema = () =>
     field: z.string().min(1, { message: "رشته‌ی تحصیلی را انتخاب کنید" }),
     phone_number: z
       .string()
-      .min(8, { message: "شماره نا معتبر است" })
+      .min(8, { message: "شماره نامعتبر است" })
       .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
     national_id: z
       .string()
-      .min(1, { message: "کد نا معتبر است" })
+      .min(1, { message: "کد نامعتبر است" })
       .max(10, { message: "کد ورودی بیش از حد مجاز است" }),
     bank_account: z.string(),
     level: z.string().min(1, { message: "سطح مشاور را انتخاب کنید" }),

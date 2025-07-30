@@ -157,7 +157,7 @@ const Reserve = () => {
   };
 
   return (
-    <section className="flex flex-col items-center justify-center bg-slate-100 rounded-2xl shadow-form px-5 py-10 xl:p-10 mx-auto w-full">
+    <section className="flex flex-col items-center justify-center bg-white rounded-2xl shadow-form px-5 py-10 xl:p-10 mx-auto w-full">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -180,7 +180,7 @@ const Reserve = () => {
             <div className="flex flex-col xl:flex-row gap-4 xl:gap-10 w-full">
               {/* Personal Info */}
               <section
-                className="w-full xl:w-1/2 flex flex-col items-center gap-2 bg-white rounded-xl shadow p-6"
+                className="w-full xl:w-1/2 flex flex-col items-center gap-2 bg-white rounded-xl shadow p-6 border"
                 aria-labelledby="personal-info-heading"
               >
                 <div className="w-full flex flex-col gap-2 justify-center">
@@ -198,7 +198,7 @@ const Reserve = () => {
               </section>
               {/* Contact info */}
               <section
-                className="w-full xl:w-1/2 flex flex-col gap-2 bg-white rounded-xl shadow p-6"
+                className="w-full xl:w-1/2 flex flex-col gap-2 bg-white rounded-xl shadow p-6 border"
                 aria-labelledby="contact-info-heading"
               >
                 <h2
@@ -218,7 +218,7 @@ const Reserve = () => {
             <div className="flex flex-col xl:flex-row gap-4 xl:gap-10 w-full">
               {/* Education info */}
               <section
-                className="w-full xl:w-1/2 flex flex-col gap-4 bg-white rounded-xl shadow p-6"
+                className="w-full xl:w-1/2 flex flex-col gap-4 bg-white rounded-xl shadow p-6 border"
                 aria-labelledby="education-info-heading"
               >
                 <h2
@@ -240,7 +240,7 @@ const Reserve = () => {
 
               {/* Sales manager info */}
               <section
-                className="w-full xl:w-1/2 flex flex-col gap-2 bg-white rounded-xl shadow p-6"
+                className="w-full xl:w-1/2 flex flex-col gap-2 bg-white rounded-xl shadow p-6 border"
                 aria-labelledby="sales-manager-info-heading"
               >
                 <h2
@@ -264,7 +264,7 @@ const Reserve = () => {
             <div className="flex flex-col items-center gap-2 pt-4 border-t border-slate-300">
               <Button
                 type="submit"
-                className="form-btn w-full max-w-xs py-3 text-lg font-bold rounded-[8px] bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-all"
+                className="form-btn w-full max-w-xs text-lg font-bold rounded-[8px] bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-all"
                 disabled={isloading}
                 aria-busy={isloading}
                 aria-label="ثبت نام"
