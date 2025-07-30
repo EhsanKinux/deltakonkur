@@ -8,7 +8,13 @@ import { FormData } from "@/lib/store/types";
 import DeleteConfirmationDialog from "./delete/DeleteConfirmationDialog";
 import { EditStudentDialog } from "./edit/EditStudentDialog";
 
-const StudentDialogButtons = ({ formData }: { formData: FormData }) => {
+const StudentDialogButtons = ({
+  formData,
+  onSuccess,
+}: {
+  formData: FormData;
+  onSuccess?: () => void;
+}) => {
   const { fetchStudentInfo } = useStudentList();
   const { modalState, openModal, closeModal } = useModalHistory();
 
@@ -42,13 +48,10 @@ const StudentDialogButtons = ({ formData }: { formData: FormData }) => {
         </Button>
       </div>
       <Dialog open={modalState.edit} onOpenChange={() => closeModal()}>
-        <EditStudentDialog />
+        <EditStudentDialog onSuccess={onSuccess} />
       </Dialog>
       <Dialog open={modalState.delete} onOpenChange={() => closeModal()}>
-        <DeleteConfirmationDialog
-          setDeleteDialogOpen={() => modalState.delete}
-          formData={formData}
-        />
+        <DeleteConfirmationDialog formData={formData} onSuccess={onSuccess} />
       </Dialog>
     </>
   );

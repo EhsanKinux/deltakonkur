@@ -36,7 +36,7 @@ import SelectStudentSupervisor from "./_components/selectSupervisor/SelectSuperv
 import AdvisorChangeDate from "../../../../advisorChangeDate/AdvisorChangeDate";
 import SupervisorChangeDate from "../../../../supervisorChangeDate/SupervisorChangeDate";
 
-export function EditStudentDialog() {
+export function EditStudentDialog({ onSuccess }: { onSuccess?: () => void }) {
   const { studentInfo, updateStudentInfo } = useStudentList();
   const formSchema = editStudentFormSchema();
 
@@ -292,9 +292,15 @@ export function EditStudentDialog() {
 
         showToast.dismiss(loadingToastId);
         showToast.success("ویرایش اطلاعات با موفقیت انجام شد!");
-        setTimeout(() => {
+        // Close the modal
+        if (dialogCloseRef.current) {
+          dialogCloseRef.current.click();
+        }
+        if (onSuccess) {
+          onSuccess();
+        } else {
           window.location.reload();
-        }, 1200);
+        }
       }
     } catch (error: unknown) {
       showToast.dismiss(loadingToastId);

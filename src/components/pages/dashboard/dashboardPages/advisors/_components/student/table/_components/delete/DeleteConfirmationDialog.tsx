@@ -10,15 +10,17 @@ import {
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import { showToast } from "@/components/ui/toast";
 import { FormData } from "@/lib/store/types";
+import { useRef } from "react";
 
 const DeleteConfirmationDialog = ({
-  setDeleteDialogOpen,
   formData,
+  onSuccess,
 }: {
-  setDeleteDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   formData: FormData;
+  onSuccess?: () => void;
 }) => {
   const { deleteStudent } = useStudentList();
+  const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
   const handleDeleteConfirm = async () => {
     const loadingToastId = showToast.loading("در حال حذف کردن...");
@@ -28,17 +30,21 @@ const DeleteConfirmationDialog = ({
       showToast.success(
         `حذف کردن ${formData?.first_name} ${formData?.last_name} با موفقیت انجام شد!`
       );
-      setTimeout(() => {
-        setDeleteDialogOpen(false);
+
+      // Close the modal
+      if (dialogCloseRef.current) {
+        dialogCloseRef.current.click();
+      }
+      if (onSuccess) {
+        onSuccess();
+      } else {
         window.location.reload();
-      }, 2000);
+      }
     } catch (error: unknown) {
       showToast.dismiss(loadingToastId);
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
       showToast.error(`خطا: ${errorMessage}`);
-    } finally {
-      setDeleteDialogOpen(false);
     }
   };
 
@@ -59,7 +65,10 @@ const DeleteConfirmationDialog = ({
             حذف دانش‌آموز
           </Button>
           <DialogClose asChild>
-            <Button className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2">
+            <Button
+              className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
+              ref={dialogCloseRef}
+            >
               لغو
             </Button>
           </DialogClose>

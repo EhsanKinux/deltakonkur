@@ -236,6 +236,11 @@ const AllStudentsList = () => {
     [openModal]
   );
 
+  // Add refresh callback for dialogs
+  const handleRefreshTable = useCallback(() => {
+    getStudents();
+  }, [getStudents]);
+
   // =============================================================================
   // TABLE COLUMNS CONFIGURATION
   // =============================================================================
@@ -398,12 +403,13 @@ const AllStudentsList = () => {
 
         {/* Dialogs */}
         <Dialog open={modalState.edit} onOpenChange={() => closeModal()}>
-          <EditStudentDialog />
+          <EditStudentDialog onSuccess={handleRefreshTable} />
         </Dialog>
         <Dialog open={modalState.delete} onOpenChange={() => closeModal()}>
           <DeleteConfirmationDialog
             setDeleteDialogOpen={() => modalState.delete}
             formData={(selectedStudent as FormData) || {}}
+            onSuccess={handleRefreshTable}
           />
         </Dialog>
       </div>
