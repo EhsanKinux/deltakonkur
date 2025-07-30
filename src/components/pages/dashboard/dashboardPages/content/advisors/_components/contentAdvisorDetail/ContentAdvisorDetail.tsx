@@ -1,5 +1,4 @@
-import backIcon from "@/assets/icons/back.svg";
-import { Button } from "@/components/ui/button";
+import BackButton from "@/components/ui/BackButton";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { IAdvisorContent } from "@/functions/hooks/content/interface";
 import { authStore } from "@/lib/store/authStore";
@@ -19,7 +18,7 @@ const ContentAdvisorDetail = () => {
   const [totalPages, setTotalPages] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const abortControllerRef = useRef<AbortController | null>(null); // اضافه کردن abortController
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const getAdvisorContent = useCallback(async () => {
     const { accessToken } = authStore.getState();
@@ -58,6 +57,7 @@ const ContentAdvisorDetail = () => {
       setTotalPages(Math.ceil(data.count / 10).toString());
     } catch (error: unknown) {
       if (axios.isCancel(error)) {
+        // Request was cancelled, do nothing
       } else {
         console.error("خطا در دریافت اطلاعات دانشجویان مشاور:", error);
       }
@@ -67,19 +67,14 @@ const ContentAdvisorDetail = () => {
 
   // Debounce کردن تابع
   const debouncedgetAdvisorContent = useCallback(
-    debounce(getAdvisorContent, 50),
+    debounce(getAdvisorContent, 500),
     [getAdvisorContent]
   );
 
   useEffect(() => {
     debouncedgetAdvisorContent();
-    return () => {
-      debouncedgetAdvisorContent.cancel();
-    };
-  }, [searchParams]);
+  }, [debouncedgetAdvisorContent]);
 
-  // const navigate = useNavigate();
-  // const { getAdvisorContent, advisorContent } = useContent();
   const { fetchAdvisorInfo, advisorInfo } = useAdvisorsList();
 
   useEffect(() => {
@@ -88,26 +83,14 @@ const ContentAdvisorDetail = () => {
     }
   }, [fetchAdvisorInfo, advisorId]);
 
-  // useEffect(() => {
-  //   if (advisorId) {
-  //     getAdvisorContent(advisorId);
-  //   }
-  // }, [advisorId, getAdvisorContent]);
-
-  const goBackToContentAdvisor = () => {
-    // navigate("/dashboard/content/advisors");
-    window.history.go(-1);
-  };
-
   return (
     <div className="h-screen">
-      <Button
+      <BackButton
+        fallbackRoute="/dashboard/content/advisors"
         className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600"
-        onClick={goBackToContentAdvisor}
       >
-        <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
-        <span>بازگشت</span>
-      </Button>
+        بازگشت
+      </BackButton>
       <div className="flex justify-center items-center gap-3 mt-4 p-16 shadow-sidebar bg-slate-100 rounded-xl ">
         <h1>
           مشخصات ارسال پیام به {advisorInfo?.first_name}{" "}

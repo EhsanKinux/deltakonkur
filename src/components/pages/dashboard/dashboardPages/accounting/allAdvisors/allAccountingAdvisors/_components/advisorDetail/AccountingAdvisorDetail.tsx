@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import BackButton from "@/components/ui/BackButton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -6,14 +6,13 @@ import AccountingAdvisorInfo from "./_components/AccountingAdvisorInfo";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { accountStColumns } from "./_components/ColumnDef";
-import backIcon from "@/assets/icons/back.svg";
-import {
+import type { AdvisorData } from "../../../../../advisors/_components/advisor/_components/advisorDetail/JustAdvisorDetail";
+import { AllAdvisorDetailTable } from "../../../../table/AllAdvisorDetailTable";
+import AdvisorPerformanceChart from "../../../../../advisors/_components/advisor/_components/advisorDetail/_components/AdvisorPerformanceChart";
+import type {
   AdvisorStudentData,
   StudentWithDetails2,
 } from "@/functions/hooks/advisorsList/interface";
-import { AllAdvisorDetailTable } from "../../../../table/AllAdvisorDetailTable";
-import AdvisorPerformanceChart from "../../../../../advisors/_components/advisor/_components/advisorDetail/_components/AdvisorPerformanceChart";
-import type { AdvisorData } from "../../../../../advisors/_components/advisor/_components/advisorDetail/JustAdvisorDetail";
 
 const formatNumber = (number: string): string => {
   const num = parseFloat(number);
@@ -106,28 +105,22 @@ const AccountingAdvisorDetail = () => {
 
   // console.log("advisorDetailData", advisorDetailData);
 
-  const goToAdisors = () => {
-    // navigate("/dashboard/accounting/allAdvisors");
-    window.history.go(-1);
+  const handleTabChange = (value: string) => {
+    setSearchParams({ tab: value });
   };
 
   if (!advisorId) {
     return <div>Loading...</div>;
   }
 
-  const handleTabChange = (value: string) => {
-    setSearchParams({ tab: value });
-  };
-
   return (
     <div className="h-screen">
-      <Button
+      <BackButton
+        fallbackRoute="/dashboard/accounting/allAdvisors"
         className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600"
-        onClick={goToAdisors}
       >
-        <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
-        <span>بازگشت</span>
-      </Button>
+        بازگشت
+      </BackButton>
       <AccountingAdvisorInfo
         advisorId={advisorId}
         advisorDetailData={advisorDetailData}

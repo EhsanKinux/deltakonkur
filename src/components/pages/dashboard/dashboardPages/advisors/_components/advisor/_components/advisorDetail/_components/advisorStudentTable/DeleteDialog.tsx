@@ -49,10 +49,65 @@ const DeleteDialog = ({
       return;
     }
 
-    // Find the student advisor with "active" status and matching advisor ID
+    console.log("Student advisor data:", studentAdvisorData);
+    console.log("Form data advisor:", formData.advisor);
+    console.log("Form data advisor_id:", formData.advisor_id);
+    console.log("Form data wholeId:", formData.wholeId);
+
+    // First try to use wholeId if available (this is the student-advisor relationship ID)
+    if (formData.wholeId) {
+      showToast.promise(
+        fetchInstance(`api/register/student-advisors/${formData.wholeId}/`, {
+          method: "DELETE",
+        }),
+        {
+          loading: "در حال حذف...",
+          success: () => {
+            setTimeout(() => {
+              setDeleteDialogOpen(false);
+              window.location.reload();
+            }, 1500);
+            return "حذف با موفقیت انجام شد!";
+          },
+          error: (err: unknown) => {
+            // err is likely an Error with a string message (possibly JSON)
+            if (err && typeof err === "object" && "message" in err) {
+              const errorMessage = (err as { message: string }).message;
+              try {
+                const parsed = JSON.parse(errorMessage);
+                if (
+                  parsed &&
+                  typeof parsed === "object" &&
+                  "message" in parsed
+                ) {
+                  return "خطا: " + (parsed as { message: string }).message;
+                }
+              } catch {
+                // Not JSON, just show the message
+                return errorMessage.includes("detail")
+                  ? "خطا: " + errorMessage.split(`"`)[3]
+                  : "خطایی رخ داده است";
+              }
+              return errorMessage.includes("detail")
+                ? "خطا: " + errorMessage.split(`"`)[3]
+                : "خطایی رخ داده است";
+            }
+            return "خطایی رخ داده است";
+          },
+        }
+      );
+      return;
+    }
+
+    // Fallback: Find the student advisor with "active" status and matching advisor ID
+    // Try to match with both advisor and advisor_id fields, handling both string and number types
     const activeAdvisor = (studentAdvisorData as StudentAdvisorData).find(
-      (advisor) => advisor.advisor === formData.advisor
+      (advisor) =>
+        String(advisor.advisor) === String(formData.advisor) ||
+        String(advisor.advisor) === String(formData.advisor_id)
     );
+
+    console.log("Found active advisor:", activeAdvisor);
 
     if (!activeAdvisor) {
       showToast.error(

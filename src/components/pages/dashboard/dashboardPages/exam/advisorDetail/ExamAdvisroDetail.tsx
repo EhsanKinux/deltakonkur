@@ -1,5 +1,4 @@
-import backIcon from "@/assets/icons/back.svg";
-import { Button } from "@/components/ui/button";
+import BackButton from "@/components/ui/BackButton";
 import { authStore } from "@/lib/store/authStore";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { BASE_API_URL } from "@/lib/variables/variables";
@@ -18,7 +17,7 @@ const ExamAdvisroDetail = () => {
   const [totalPages, setTotalPages] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const abortControllerRef = useRef<AbortController | null>(null); // اضافه کردن abortController
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const getAdvisorStudents = useCallback(async () => {
     const { accessToken } = authStore.getState();
@@ -70,7 +69,7 @@ const ExamAdvisroDetail = () => {
       // ترکیب اطلاعات دانشجویان با اطلاعات دریافتی قبلی
       const studentsData = data.results.map(
         (entry: AdvisorDetailEntry, index: number) => ({
-          ...studentsDetails[index], // اضافه کردن اطلاعات جدید
+          ...studentsDetails[index],
           advisor: entry.advisor,
           wholeId: entry.id,
           status: entry.status,
@@ -89,6 +88,7 @@ const ExamAdvisroDetail = () => {
       setTotalPages(Math.ceil(data.count / 10).toString());
     } catch (error: unknown) {
       if (axios.isCancel(error)) {
+        // Request was cancelled, do nothing
       } else {
         console.error("خطا در دریافت اطلاعات دانشجویان مشاور:", error);
       }
@@ -98,20 +98,13 @@ const ExamAdvisroDetail = () => {
 
   // Debounce کردن تابع getAdvisorStudents
   const debouncedgetAdvisorStudents = useCallback(
-    debounce(getAdvisorStudents, 50),
+    debounce(getAdvisorStudents, 500),
     [getAdvisorStudents]
   );
 
   useEffect(() => {
     debouncedgetAdvisorStudents();
-    return () => {
-      debouncedgetAdvisorStudents.cancel();
-    };
-  }, [searchParams]);
-
-  const goToAdisors = () => {
-    window.history.go(-1);
-  };
+  }, [debouncedgetAdvisorStudents]);
 
   if (!advisorId) {
     return <div>Loading...</div>;
@@ -119,13 +112,12 @@ const ExamAdvisroDetail = () => {
 
   return (
     <div className="h-screen">
-      <Button
+      <BackButton
+        fallbackRoute="/dashboard/exam"
         className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600"
-        onClick={goToAdisors}
       >
-        <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
-        <span>بازگشت</span>
-      </Button>
+        بازگشت
+      </BackButton>
       <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
         <ExamAdvisorDetailTable
           columns={examStColumns}

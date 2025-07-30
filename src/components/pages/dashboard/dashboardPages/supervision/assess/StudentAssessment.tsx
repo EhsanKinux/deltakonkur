@@ -1,4 +1,4 @@
-import backIcon from "@/assets/icons/back.svg";
+import BackButton from "@/components/ui/BackButton";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,31 +22,12 @@ import { z } from "zod";
 import CustomInputAssassment from "./_components/customInput/CustomInputAssassment";
 import RecentAssassments from "./_components/recentAssassments/RecentAssassments";
 
-interface StudentCallResponse {
-  id: number;
-  student: number;
-  first_call: boolean;
-  first_call_time: string;
-  second_call: boolean;
-  second_call_time: string | null;
-  token: string;
-  completed_time: string | null;
-  created: string;
-}
-
 const StudentAssessment = () => {
   const { studentId } = useParams();
-  const {
-    submitAssassmentForm,
-    // handleStudentCallAnswering,
-    // fetchFollowUpStudents,
-    // followUpStudents,
-    handleStudentCallAnswering2,
-    sendNotif,
-  } = useSupervision();
+  const { submitAssassmentForm, handleStudentCallAnswering2 } =
+    useSupervision();
 
   const { fetchStudentInfo, studentInfo } = useStudentList();
-  // const navigate = useNavigate();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isloading, setIsloading] = useState(false);
@@ -56,10 +37,6 @@ const StudentAssessment = () => {
       fetchStudentInfo(studentId);
     }
   }, [fetchStudentInfo, studentId]);
-
-  // useEffect(() => {
-  //   fetchFollowUpStudents();
-  // }, [fetchFollowUpStudents]);
 
   const formSchema = studentAssessment();
   const form = useForm({
@@ -79,7 +56,6 @@ const StudentAssessment = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    // console.log("Form submitted with data:", data);
     if (studentId) {
       const dataTransformed = {
         student: studentId,
@@ -98,74 +74,40 @@ const StudentAssessment = () => {
         console.table(dataTransformed);
         const loadingToastId = showToast.loading("در حال ثبت نظرسنجی...");
         await submitAssassmentForm(dataTransformed);
-        form.reset();
         showToast.dismiss(loadingToastId);
-        showToast.success("نظرسنجی با موفقیت ثبت شد!");
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        showToast.success("نظرسنجی با موفقیت ثبت شد");
+        setIsSubmitting(false);
       } catch (error) {
-        showToast.dismiss(); // Dismiss any active toast
-        showToast.error("خطایی در ثبت نظرسنجی رخ داده است!");
-      } finally {
+        showToast.error("خطا در ثبت نظرسنجی");
         setIsSubmitting(false);
       }
     }
   };
 
-  // handleStudentCallAnswering(parseInt(studentId, 10));
-
-  // const getStudentFollowUpId = () => {
-  //   if (studentId) {
-  //     const student = followUpStudents.find((student) => student.student_id === parseInt(studentId, 10));
-
-  //     return student ? student.id : null; // Return null if not found
-  //   }
-  // };
-
   const handleNonResponsive = async () => {
     if (studentId) {
-      setIsloading(true);
       try {
-        const response = await handleStudentCallAnswering2(
-          parseInt(studentId, 10)
-        );
-
-        // Use type assertion to assume the response type
-        const responseData = response as unknown as StudentCallResponse;
-
-        // Safely extract the token using optional chaining
-        const token = responseData?.token;
-
-        // Check if the token exists before calling sendNotif
-        if (token) {
-          await sendNotif(token);
-          showToast.success("ثبت عدم پاسخگویی اول با موفقیت انجام شد!");
-        } else {
-          showToast.error("Token not found in response.");
-        }
+        setIsloading(true);
+        const loadingToastId = showToast.loading("در حال ثبت...");
+        await handleStudentCallAnswering2(parseInt(studentId, 10));
+        showToast.dismiss(loadingToastId);
+        showToast.success("با موفقیت ثبت شد");
+        setIsloading(false);
       } catch (error) {
-        showToast.error("خطایی در ثبت عدم پاسخگویی رخ داده است!");
-      } finally {
+        showToast.error("خطا در ثبت");
         setIsloading(false);
       }
     }
   };
 
-  const goBackToSupervision = () => {
-    // navigate("/dashboard/supervision");
-    window.history.go(-1);
-  };
-
   return (
     <section className="flex flex-col overflow-hidden">
-      <Button
+      <BackButton
+        fallbackRoute="/dashboard/supervision"
         className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600"
-        onClick={goBackToSupervision}
       >
-        <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
-        <span>بازگشت</span>
-      </Button>
+        بازگشت
+      </BackButton>
       <div className="mt-8 flex flex-col items-center justify-center bg-slate-100 rounded-xl overflow-hidden pb-10 shadow-form">
         <div className="w-full bg-slate-400 rounded-b-full flex justify-center items-center gap-3 flex-col p-5">
           {/* <img src={AddAdvisor} width={500} /> */}

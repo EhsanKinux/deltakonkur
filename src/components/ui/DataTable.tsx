@@ -24,6 +24,8 @@ export function DataTable<T extends Record<string, unknown>>({
   search,
   actions,
   enableRowClick = false,
+  onRowClick,
+  getRowClassName,
 }: TableProps<T>) {
   // =============================================================================
   // SEARCH AND FILTERING
@@ -44,6 +46,19 @@ export function DataTable<T extends Record<string, unknown>>({
 
     return result;
   }, [data, search?.value]);
+
+  // =============================================================================
+  // HELPER FUNCTIONS
+  // =============================================================================
+
+  // Check if we should show the actions column (only if there are visible action buttons)
+  const shouldShowActionsColumn = useMemo(() => {
+    if (!actions) return false;
+
+    // Don't show actions column if only onView is provided (since it's handled via row clicks)
+    const hasVisibleActions = actions.onEdit || actions.onDelete;
+    return hasVisibleActions;
+  }, [actions]);
 
   // =============================================================================
   // RENDER FUNCTIONS
@@ -81,7 +96,7 @@ export function DataTable<T extends Record<string, unknown>>({
                     {column.header}
                   </TableHead>
                 ))}
-                {actions && (
+                {shouldShowActionsColumn && (
                   <TableHead className="!text-center w-32 font-semibold text-gray-700">
                     عملیات
                   </TableHead>
@@ -99,7 +114,7 @@ export function DataTable<T extends Record<string, unknown>>({
                       <div className="h-4 w-20 rounded bg-slate-200 animate-pulse mx-auto" />
                     </TableCell>
                   ))}
-                  {actions && (
+                  {shouldShowActionsColumn && (
                     <TableCell className="!text-center">
                       <div className="flex gap-2 justify-center">
                         <div className="h-8 w-8 rounded bg-slate-200 animate-pulse" />
@@ -167,7 +182,7 @@ export function DataTable<T extends Record<string, unknown>>({
                   {column.header}
                 </TableHead>
               ))}
-              {actions && (
+              {shouldShowActionsColumn && (
                 <TableHead className="!text-center w-32 font-semibold text-gray-700">
                   عملیات
                 </TableHead>
@@ -186,9 +201,9 @@ export function DataTable<T extends Record<string, unknown>>({
                   key={index}
                   className={`hover:bg-gray-50 transition-colors duration-200 ${
                     enableRowClick ? "cursor-pointer" : ""
-                  }`}
+                  } ${getRowClassName?.(item) || ""}`}
                   onClick={
-                    enableRowClick ? () => actions?.onView?.(item) : undefined
+                    enableRowClick ? () => onRowClick?.(item) : undefined
                   }
                 >
                   <TableCell className="!text-center font-bold text-gray-600">
@@ -202,13 +217,13 @@ export function DataTable<T extends Record<string, unknown>>({
                       {renderCell(column, item)}
                     </TableCell>
                   ))}
-                  {actions && (
+                  {shouldShowActionsColumn && (
                     <TableCell
                       className="!text-center"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="flex gap-2 justify-center">
-                        {actions.onEdit && (
+                        {actions?.onEdit && (
                           <Button
                             variant="ghost"
                             size="icon"
@@ -219,7 +234,7 @@ export function DataTable<T extends Record<string, unknown>>({
                             <Edit className="h-4 w-4" />
                           </Button>
                         )}
-                        {actions.onDelete && (
+                        {actions?.onDelete && (
                           <Button
                             variant="ghost"
                             size="icon"

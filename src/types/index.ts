@@ -197,6 +197,8 @@ export interface TableProps<T = Record<string, unknown>> {
     onView?: (row: T) => void;
   };
   enableRowClick?: boolean;
+  onRowClick?: (row: T) => void;
+  getRowClassName?: (row: T) => string;
 }
 
 // =============================================================================

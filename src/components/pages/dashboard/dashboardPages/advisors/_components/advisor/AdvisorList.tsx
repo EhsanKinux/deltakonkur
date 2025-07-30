@@ -421,7 +421,7 @@ const AdvisorList = () => {
             />
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <DataTable
-                enableRowClick
+                enableRowClick={true}
                 data={advisors as unknown as Record<string, unknown>[]}
                 columns={
                   columns as unknown as TableColumn<Record<string, unknown>>[]
@@ -432,13 +432,14 @@ const AdvisorList = () => {
                   totalPages,
                   onPageChange: handlePageChange,
                 }}
+                onRowClick={(row) =>
+                  handleView(row as unknown as Record<string, unknown>)
+                }
                 actions={{
                   onEdit: (row) =>
                     handleEdit(row as unknown as Record<string, unknown>),
                   onDelete: (row) =>
                     handleDelete(row as unknown as Record<string, unknown>),
-                  onView: (row) =>
-                    handleView(row as unknown as Record<string, unknown>),
                 }}
               />
             </div>

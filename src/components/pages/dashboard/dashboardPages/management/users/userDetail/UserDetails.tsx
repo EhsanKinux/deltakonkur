@@ -1,4 +1,4 @@
-import backIcon from "@/assets/icons/back.svg";
+import BackButton from "@/components/ui/BackButton";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import showToast from "@/components/ui/toast";
@@ -18,7 +18,6 @@ import UserDetailSelectRoles from "./_components/selectRoles/UserDetailSelectRol
 const UserDetails = () => {
   const { userId } = useParams();
   const { getUserDetailInfo, userInfo } = useUsers();
-  // const navigate = useNavigate();
   const [isloading, setIsloading] = useState(false);
 
   useEffect(() => {
@@ -58,7 +57,6 @@ const UserDetails = () => {
         ...data,
         id: String(userInfo.id),
       };
-      // console.log(modifiedData);
       const loadingToastId = showToast.loading("در حال انجام عملیات ویرایش...");
       try {
         const response = await update_user_info(modifiedData);
@@ -96,19 +94,16 @@ const UserDetails = () => {
 
   const handleBackClick = () => {
     form.reset();
-    // navigate("/dashboard/users");
-    window.history.go(-1);
   };
 
   return (
     <>
-      <Button
+      <BackButton
+        fallbackRoute="/dashboard/management/users"
         className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600"
-        onClick={handleBackClick}
       >
-        <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
-        <span>بازگشت</span>
-      </Button>
+        بازگشت
+      </BackButton>
       <section className="mt-8 flex flex-col items-center justify-center bg-slate-100 rounded-xl pb-10 shadow-form">
         <div className="w-full bg-slate-400 rounded-b-full flex justify-center items-center gap-3 flex-col p-5">
           {/* <img src={AddAdvisor} width={500} /> */}

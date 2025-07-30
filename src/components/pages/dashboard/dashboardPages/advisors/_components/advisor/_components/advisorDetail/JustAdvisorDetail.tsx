@@ -349,7 +349,7 @@ const JustAdvisorDetail = () => {
   }
 
   return (
-    <div className="h-screen">
+    <div>
       <Button
         className="flex gap-2 pt-4 pb-3 font-bold text-base text-slate-600 rounded hover:text-blue-600"
         onClick={goToAdvisors}
