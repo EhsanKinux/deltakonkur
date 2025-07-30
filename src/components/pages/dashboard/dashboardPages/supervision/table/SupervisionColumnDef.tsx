@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { FormEntry } from "../../advisors/_components/student/table/interfaces";
+import { FormData } from "@/lib/store/types";
 
-export const stColumns: ColumnDef<FormEntry>[] = [
+export const stColumns: ColumnDef<FormData>[] = [
   {
     accessorKey: "first_name",
     header: "نام",

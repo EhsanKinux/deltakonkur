@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FormEntry } from "../../advisors/_components/student/table/interfaces";
+import { FormData } from "@/lib/store/types";
 import {
   flexRender,
   getCoreRowModel,
@@ -18,8 +18,8 @@ import {
 } from "@tanstack/react-table";
 
 interface CancelingTableProps {
-  columns: ColumnDef<FormEntry>[];
-  data: FormEntry[];
+  columns: ColumnDef<FormData>[];
+  data: FormData[];
   isLoading: boolean;
   totalPages: string;
 }

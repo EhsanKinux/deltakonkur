@@ -3,12 +3,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import showToast from "@/components/ui/toast";
 import { authStore } from "@/lib/store/authStore";
+import { FormData } from "@/lib/store/types";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { FormEntry } from "../advisors/_components/student/table/interfaces";
 import { stColumns } from "./table/CancelingColumnDef";
 import { CancelingTable } from "./table/CancelingTable";
 
@@ -18,7 +18,7 @@ const Canceling = () => {
     searchParams.get("first_name") || ""
   );
   const [lastName, setLastName] = useState(searchParams.get("last_name") || "");
-  const [students, setStudents] = useState<FormEntry[]>([]);
+  const [students, setStudents] = useState<FormData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [totalPages, setTotalPages] = useState("");
 
@@ -59,9 +59,9 @@ const Canceling = () => {
         showToast.warning("دانش‌آموزی با این نام یافت نشد");
       }
 
-      const formattedData = data.results?.map((student: FormEntry) => ({
+      const formattedData = data.results?.map((student: FormData) => ({
         ...student,
-        created: convertToShamsi(student.created),
+        created: student.created ? convertToShamsi(student.created) : "",
         date_of_birth: student.date_of_birth
           ? convertToShamsi(student.date_of_birth)
           : student.date_of_birth,
@@ -79,6 +79,7 @@ const Canceling = () => {
       setTotalPages(Math.ceil(data.count / 10).toString());
     } catch (error: unknown) {
       if (axios.isCancel(error)) {
+        // Request was cancelled, do nothing
       } else {
         console.error("خطا در دریافت اطلاعات:", error);
       }

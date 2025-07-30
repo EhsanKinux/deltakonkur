@@ -10,9 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { FormData } from "@/lib/store/types";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FormEntry } from "../../advisors/_components/student/table/interfaces";
 import {
   flexRender,
   getCoreRowModel,
@@ -20,8 +20,8 @@ import {
 } from "@tanstack/react-table";
 
 interface SupervisionFollowUpTableProps {
-  columns: ColumnDef<FormEntry>[];
-  data: FormEntry[];
+  columns: ColumnDef<FormData>[];
+  data: FormData[];
   isLoading: boolean;
   totalPages: string;
 }

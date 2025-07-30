@@ -1,4 +1,4 @@
-import { FormEntry } from "../../../student/table/interfaces";
+import { FormEntry } from "../../_components/table/interfaces";
 
 export interface ProcessedStudentData extends FormEntry {
   status: string | null;

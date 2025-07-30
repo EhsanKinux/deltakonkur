@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { FormEntry } from "../../advisors/_components/student/table/interfaces";
+import { FormData } from "@/lib/store/types";
 import FollowUpDialogButtons from "../followUp/_components/FollowUpDialogButtons";
 
-export const followUpStColumns: ColumnDef<FormEntry>[] = [
+export const followUpStColumns: ColumnDef<FormData>[] = [
   {
     accessorKey: "first_name",
     header: "نام",

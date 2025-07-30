@@ -13,8 +13,8 @@ import { Student, TableColumn } from "@/types";
 import { Dialog } from "@/components/ui/dialog";
 import { useStudentList } from "@/functions/hooks/studentsList/useStudentList";
 import useModalHistory from "@/hooks/useBackButton";
-import DeleteConfirmationDialog from "./table/_components/delete/DeleteConfirmationDialog";
-import { EditStudentDialog } from "./table/_components/edit/EditStudentDialog";
+import DeleteConfirmationDialog from "./_components/delete/DeleteConfirmationDialog";
+import { EditStudentDialog } from "./_components/edit/EditStudentDialog";
 import { FormData } from "@/lib/store/types";
 
 // Legacy imports (will be updated later)
@@ -407,7 +407,6 @@ const AllStudentsList = () => {
         </Dialog>
         <Dialog open={modalState.delete} onOpenChange={() => closeModal()}>
           <DeleteConfirmationDialog
-            setDeleteDialogOpen={() => modalState.delete}
             formData={(selectedStudent as FormData) || {}}
             onSuccess={handleRefreshTable}
           />

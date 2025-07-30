@@ -33,8 +33,8 @@ import PlansType from "./_components/PlansType";
 import SelectStudentAdvisor from "./_components/selectAdvisor/SelectStudentAdvisor";
 import TellNumbers from "./_components/tel-numbers/TellNumbers";
 import SelectStudentSupervisor from "./_components/selectSupervisor/SelectSupervisor";
-import AdvisorChangeDate from "../../../../advisorChangeDate/AdvisorChangeDate";
-import SupervisorChangeDate from "../../../../supervisorChangeDate/SupervisorChangeDate";
+import AdvisorChangeDate from "../../../advisorChangeDate/AdvisorChangeDate";
+import SupervisorChangeDate from "../../../supervisorChangeDate/SupervisorChangeDate";
 
 export function EditStudentDialog({ onSuccess }: { onSuccess?: () => void }) {
   const { studentInfo, updateStudentInfo } = useStudentList();

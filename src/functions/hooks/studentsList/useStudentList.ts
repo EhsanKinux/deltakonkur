@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import { appStore } from "@/lib/store/appStore";
-
-import { FormEntry } from "@/components/pages/dashboard/dashboardPages/advisors/_components/student/table/interfaces";
+import { FormData } from "@/lib/store/types";
 import { ISubmitStudentRegisterService } from "@/lib/apis/reserve/interface";
 import {
   change_advisor_of_student,
@@ -31,14 +30,14 @@ export const useStudentList = () => {
     const data = await get_registered_students();
 
     // Transform the data to convert grade to string
-    const transformedData = data.map((student: FormEntry) => ({
+    const transformedData = data.map((student: FormData) => ({
       ...student,
       date_of_birth: convertToShamsi2(student.date_of_birth),
       grade: student.grade.toString(),
     }));
 
     // Add transformed data to your state
-    transformedData.forEach((student: FormEntry) => addFormData(student));
+    transformedData.forEach((student: FormData) => addFormData(student));
   }, [addFormData]);
 
   const deleteStudent = async (studentId: string) => {

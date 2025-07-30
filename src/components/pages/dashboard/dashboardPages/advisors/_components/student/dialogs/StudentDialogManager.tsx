@@ -1,7 +1,8 @@
 import { Dialog } from "@/components/ui/dialog";
 import { Student } from "@/types";
-import { EditStudentDialog } from "./EditStudentDialog";
-import { DeleteStudentDialog } from "./DeleteStudentDialog";
+import { FormData } from "@/lib/store/types";
+import { EditStudentDialog } from "../_components/edit/EditStudentDialog";
+import DeleteConfirmationDialog from "../_components/delete/DeleteConfirmationDialog";
 import useModalHistory from "@/hooks/useBackButton";
 
 // =============================================================================
@@ -12,7 +13,7 @@ export type DialogType = "edit" | "delete" | null;
 
 export interface DialogState {
   type: DialogType;
-  data?: Student;
+  data?: Student | FormData;
 }
 
 // =============================================================================
@@ -23,11 +24,6 @@ export interface StudentDialogManagerProps {
   dialogState: DialogState;
   onClose: () => void;
   onSuccess: () => void;
-  onFetchStudent: (id: string) => Promise<Student | null>;
-  onUpdateStudent: (data: any) => Promise<boolean>;
-  onDeleteStudent: (id: string, name?: string) => Promise<boolean>;
-  onUpdateAdvisor: (params: any) => Promise<boolean>;
-  onUpdateSupervisor: (params: any) => Promise<boolean>;
 }
 
 // =============================================================================
@@ -38,11 +34,6 @@ export const StudentDialogManager = ({
   dialogState,
   onClose,
   onSuccess,
-  onFetchStudent,
-  onUpdateStudent,
-  onDeleteStudent,
-  onUpdateAdvisor,
-  onUpdateSupervisor,
 }: StudentDialogManagerProps) => {
   const { modalState, closeModal } = useModalHistory();
 
@@ -67,23 +58,13 @@ export const StudentDialogManager = ({
   const renderDialog = () => {
     switch (dialogState.type) {
       case "edit":
-        return (
-          <EditStudentDialog
-            studentId={dialogState.data?.id}
-            onSuccess={handleSuccess}
-            onFetchStudent={onFetchStudent}
-            onUpdateStudent={onUpdateStudent}
-            onUpdateAdvisor={onUpdateAdvisor}
-            onUpdateSupervisor={onUpdateSupervisor}
-          />
-        );
+        return <EditStudentDialog onSuccess={handleSuccess} />;
 
       case "delete":
         return (
-          <DeleteStudentDialog
-            student={dialogState.data}
+          <DeleteConfirmationDialog
+            formData={dialogState.data as FormData}
             onSuccess={handleSuccess}
-            onDeleteStudent={onDeleteStudent}
           />
         );
 

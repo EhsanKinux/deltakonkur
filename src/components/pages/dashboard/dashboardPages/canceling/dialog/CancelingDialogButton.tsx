@@ -1,11 +1,11 @@
 import userDeleteIcon from "@/assets/icons/userRemove.svg";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { FormEntry } from "../../advisors/_components/student/table/interfaces";
+import { FormData } from "@/lib/store/types";
 import CancelConfirmation from "./_components/CancelConfirmation";
 import useModalHistory from "@/hooks/useBackButton";
 
-const CancelingDialogButton = ({ formData }: { formData: FormEntry }) => {
+const CancelingDialogButton = ({ formData }: { formData: FormData }) => {
   const { modalState, openModal, closeModal } = useModalHistory();
 
   const handleOpenCancelDialog = (e: React.MouseEvent) => {
