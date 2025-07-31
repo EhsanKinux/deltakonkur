@@ -17,11 +17,26 @@ export const contentFormSchema = () =>
 export const updateUserFormSchema = () =>
   z.object({
     id: z.string(),
-    first_name: z.string().min(1, { message: "لطفا نام را وارد کنید" }),
-    last_name: z.string().min(1, { message: "لطفا نام خانوادگی را وارد کنید" }),
-    national_id: z.string().min(1, { message: "کد ملی وارد نشده است" }),
-    phone_number: z.string().min(1, { message: "شماره تلفن را وارد کنید" }),
-    // role: z.string().min(1, { message: "نوع کاربر را مشخص کنید" }),
+    first_name: z
+      .string()
+      .min(1, { message: "لطفا نام را وارد کنید" })
+      .min(2, { message: "نام باید حداقل 2 کاراکتر باشد" })
+      .max(50, { message: "نام نمی‌تواند بیشتر از 50 کاراکتر باشد" }),
+    last_name: z
+      .string()
+      .min(1, { message: "لطفا نام خانوادگی را وارد کنید" })
+      .min(2, { message: "نام خانوادگی باید حداقل 2 کاراکتر باشد" })
+      .max(50, { message: "نام خانوادگی نمی‌تواند بیشتر از 50 کاراکتر باشد" }),
+    national_id: z
+      .string()
+      .min(1, { message: "کد ملی وارد نشده است" })
+      .regex(/^\d{10}$/, { message: "کد ملی باید دقیقاً 10 رقم باشد" }),
+    phone_number: z
+      .string()
+      .min(1, { message: "شماره تلفن را وارد کنید" })
+      .regex(/^09\d{9}$/, {
+        message: "شماره تلفن باید با 09 شروع شود و 11 رقم باشد",
+      }),
   });
 
 export const registerUserFormSchema = () =>

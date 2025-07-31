@@ -11,9 +11,11 @@ interface RoleOption {
 interface UserDetailSelectRolesProps {
   userId: number | null;
   initialRoles: number[]; // Prop for initial roles as an array of numbers
+  refreshTable: () => void;
 }
 
 const UserDetailSelectRoles = ({
+  refreshTable,
   userId,
   initialRoles,
 }: UserDetailSelectRolesProps) => {
@@ -81,6 +83,7 @@ const UserDetailSelectRoles = ({
         }
 
         setSelectedRoles(selectedValues); // Update the local state
+        refreshTable();
       } catch (error) {
         showToast.error("خطا در تغییر نقش کاربر، لطفا دوباره تلاش کنید");
         console.error("Error:", error);
@@ -91,14 +94,14 @@ const UserDetailSelectRoles = ({
   };
 
   return (
-    <div className="flex flex-col justify-center items-center w-full">
-      <p className="font-semibold text-red-600">
+    <div className="flex flex-col justify-center items-center w-full gap-2">
+      <p className="font-semibold text-red-600 text-sm">
         دقت داشته باشید با انتخاب هر یک از نقش های کاربر، در لحظه انتخاب اعمال
         میشود و درصورت حذف آن در لحظه نقش کاربر حذف میگردد!&ensp;
-        <span className="font-bold text-sm text-slate-500">
-          ( انتخاب نوع کاربر مشاور حتما باید در واحد مشاوران ثبت گردد)
-        </span>
       </p>
+      <span className="font-bold text-sm text-slate-500">
+        ( انتخاب نوع کاربر مشاور حتما باید در واحد مشاوران ثبت گردد)
+      </span>
       <Select
         isMulti
         value={roles.filter((role) => selectedRoles.includes(role.value))}
