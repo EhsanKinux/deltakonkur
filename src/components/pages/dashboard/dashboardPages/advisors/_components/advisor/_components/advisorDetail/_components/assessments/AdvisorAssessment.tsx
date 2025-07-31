@@ -259,7 +259,7 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
 
         {/* Description Modal */}
         <Dialog open={isDescriptionModalOpen} onOpenChange={handleCloseModal}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-white">
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-white  w-[90%] rounded-xl">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-gray-800 text-right">
                 جزئیات نظرسنجی

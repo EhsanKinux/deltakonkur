@@ -113,7 +113,7 @@ const StopDialog = ({
   }, [warning]);
 
   return (
-    <DialogContent className="bg-white !rounded-xl shadow-xl border-0 max-w-md mx-auto">
+    <DialogContent className="bg-white !rounded-xl shadow-xl border-0 max-w-md mx-auto w-[90%]">
       <DialogHeader className="text-center pb-4">
         <div className="mx-auto mb-4 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
           <AlertTriangle className="w-6 h-6 text-red-600" />
