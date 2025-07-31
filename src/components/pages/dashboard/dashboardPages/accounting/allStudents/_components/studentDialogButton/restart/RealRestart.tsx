@@ -11,8 +11,16 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { IRestartStudent } from "@/lib/apis/accounting/interface";
 import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
+import showToast from "@/components/ui/toast";
+import { Play, AlertCircle, CheckCircle } from "lucide-react";
 
-const RealRestart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
+const RealRestart = ({
+  rowData,
+  onSuccess,
+}: {
+  rowData: IFormattedStudentAdvisor;
+  onSuccess?: () => void;
+}) => {
   const [warning, setWarning] = useState<string | null>(null);
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
@@ -27,6 +35,8 @@ const RealRestart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
         return;
       }
 
+      const loadingToastId = showToast.loading("در حال ادامه دانش‌آموز...");
+
       const body: IRestartStudent = {
         id: String(rowData?.id),
         student: String(rowData?.studentId),
@@ -40,11 +50,18 @@ const RealRestart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
       };
 
       await restartStudent(body);
+
+      showToast.dismiss(loadingToastId);
+      showToast.success(
+        `ادامه ${rowData?.first_name} ${rowData?.last_name} با موفقیت انجام شد!`
+      );
+
       console.log(body);
       dialogCloseRef.current?.click(); // Close the dialog
       // navigate("/dashboard/accounting/allStudents");
-      window.location.reload();
+      onSuccess?.();
     } catch (error) {
+      showToast.error("خطایی در ادامه دانش‌آموز رخ داده است!");
       console.error("Failed to reset student:", error);
     }
   };
@@ -64,32 +81,48 @@ const RealRestart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
 
   return (
     <>
-      <DialogContent className="bg-slate-100 !rounded-[10px]">
-        <DialogHeader>
-          <DialogTitle>تمدید دانش آموز</DialogTitle>
-          <DialogDescription>
-            برای دوباره ادامه دادن دانش آموز بر روی ری استارت کلیک کنید
+      <DialogContent className="bg-white !rounded-xl shadow-xl border-0 max-w-md mx-auto">
+        <DialogHeader className="text-center pb-4">
+          <div className="mx-auto mb-4 w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+            <Play className="w-6 h-6 text-orange-600" />
+          </div>
+          <DialogTitle className="text-xl font-bold text-gray-900 text-center">
+            ادامه دانش‌آموز
+          </DialogTitle>
+          <DialogDescription className="text-gray-600 mt-2">
+            <div className="flex items-center gap-2 justify-center mb-2">
+              <CheckCircle className="w-4 h-4 text-gray-500" />
+              <span className="text-sm">فعال‌سازی مجدد</span>
+            </div>
+            <p className="text-sm leading-relaxed text-center">
+              آیا می‌خواهید این دانش‌آموز را مجدداً فعال کنید؟ این عملیات وضعیت
+              دانش‌آموز را به فعال تغییر می‌دهد.
+            </p>
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
-          {warning && <p className="text-red-500">{warning}</p>}
-          <DialogFooter>
-            <div className="flex justify-between items-center w-full">
-              <Button
-                className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
-                onClick={onSubmit}
-              >
-                ری‌استارت
-              </Button>
-              <DialogClose asChild>
-                <Button
-                  ref={dialogCloseRef}
-                  className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
-                >
-                  لغو
-                </Button>
-              </DialogClose>
+          {warning && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-red-500" />
+              <p className="text-red-700 text-sm">{warning}</p>
             </div>
+          )}
+          <DialogFooter className="flex gap-3 pt-4">
+            <Button
+              className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+              onClick={onSubmit}
+            >
+              ادامه دانش‌آموز
+            </Button>
+            <DialogClose asChild>
+              <Button
+                ref={dialogCloseRef}
+                variant="outline"
+                className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-3 rounded-lg transition-colors duration-200"
+              >
+                لغو
+              </Button>
+            </DialogClose>
           </DialogFooter>
         </div>
       </DialogContent>

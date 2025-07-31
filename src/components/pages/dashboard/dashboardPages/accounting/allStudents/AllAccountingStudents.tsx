@@ -17,6 +17,10 @@ import {
   IFormattedStudentAdvisor,
 } from "./_components/interfaces";
 
+// Dialog button components
+import ActiveStDialogButtons from "./_components/studentDialogButton/ActiveStDialogButtons";
+import StopStDialogButtons from "./_components/studentDialogButton/StopStDialogButtons";
+
 // =============================================================================
 // ALL ACCOUNTING STUDENTS COMPONENT
 // =============================================================================
@@ -166,6 +170,13 @@ const AllAccountingStudents = () => {
   }, [apiDependencies, executeWithLoading, gradeMapping]);
 
   // =============================================================================
+  // CALLBACKS
+  // =============================================================================
+  const handleRefreshData = useCallback(() => {
+    getStudents();
+  }, [getStudents]);
+
+  // =============================================================================
   // TAB HANDLING
   // =============================================================================
   const handleTabChange = useCallback(
@@ -303,6 +314,11 @@ const AllAccountingStudents = () => {
       accessorKey: "grade",
     },
     {
+      key: "package_price",
+      header: "هزینه پکیج",
+      accessorKey: "package_price",
+    },
+    {
       key: "advisor_name",
       header: "نام مشاور",
       accessorKey: "advisor_name",
@@ -322,6 +338,30 @@ const AllAccountingStudents = () => {
       header: "روزهای باقی‌مانده",
       accessorKey: "left_days_to_expire",
     },
+    {
+      key: "actions",
+      header: "عملیات",
+      accessorKey: "actions",
+      cell: (value: unknown, row: Record<string, unknown>) => {
+        const student = row as unknown as IFormattedStudentAdvisor;
+        if (student.status === "active") {
+          return (
+            <ActiveStDialogButtons
+              rowData={student}
+              onSuccess={handleRefreshData}
+            />
+          );
+        } else if (student.status === "stop") {
+          return (
+            <StopStDialogButtons
+              rowData={student}
+              onSuccess={handleRefreshData}
+            />
+          );
+        }
+        return "-";
+      },
+    },
   ];
 
   // =============================================================================
@@ -329,15 +369,16 @@ const AllAccountingStudents = () => {
   // =============================================================================
   const getRowClassName = useCallback((row: Record<string, unknown>) => {
     const status = row.status as string;
-    const baseClasses = "transition-all duration-200 hover:shadow-sm";
+    const baseClasses =
+      "transition-all duration-300 hover:shadow-lg border-l-4";
 
     if (status === "active") {
-      return `${baseClasses} bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-l-green-500 hover:from-green-100 hover:to-emerald-100`;
+      return `${baseClasses} bg-gradient-to-r from-green-50 to-emerald-50 border-l-green-500 hover:from-green-100 hover:to-emerald-100 hover:border-l-green-600`;
     }
     if (status === "stop") {
-      return `${baseClasses} bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-l-amber-500 hover:from-amber-100 hover:to-yellow-100`;
+      return `${baseClasses} bg-gradient-to-r from-amber-50 to-yellow-50 border-l-amber-500 hover:from-amber-100 hover:to-yellow-100 hover:border-l-amber-600`;
     }
-    return `${baseClasses} bg-gradient-to-r from-red-50 to-rose-50 border-l-4 border-l-red-500 hover:from-red-100 hover:to-rose-100`;
+    return `${baseClasses} bg-gradient-to-r from-red-50 to-rose-50 border-l-red-500 hover:from-red-100 hover:to-rose-100 hover:border-l-red-600`;
   }, []);
 
   // =============================================================================
@@ -456,22 +497,23 @@ const AllAccountingStudents = () => {
             />
 
             {/* Status Legend */}
-            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2">
+            <div className="p-4 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200 shadow-sm">
+              <h4 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                 راهنمای وضعیت دانش‌آموزان:
               </h4>
               <div className="flex items-center gap-6 text-xs text-gray-600">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span>فعال</span>
+                <div className="flex items-center gap-2 bg-green-100 px-3 py-1 rounded-full">
+                  <div className="w-3 h-3 bg-green-500 rounded-full shadow-sm"></div>
+                  <span className="font-medium">فعال</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
-                  <span>متوقف</span>
+                <div className="flex items-center gap-2 bg-amber-100 px-3 py-1 rounded-full">
+                  <div className="w-3 h-3 bg-amber-500 rounded-full shadow-sm"></div>
+                  <span className="font-medium">متوقف</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <span>لغو شده</span>
+                <div className="flex items-center gap-2 bg-red-100 px-3 py-1 rounded-full">
+                  <div className="w-3 h-3 bg-red-500 rounded-full shadow-sm"></div>
+                  <span className="font-medium">لغو شده</span>
                 </div>
               </div>
             </div>

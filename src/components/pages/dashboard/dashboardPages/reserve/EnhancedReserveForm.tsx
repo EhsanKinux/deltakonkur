@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
+import EnhancedSelect from "@/components/ui/EnhancedSelect";
 import { Form } from "@/components/ui/form";
+import FormSection from "@/components/ui/FormSection";
+import SmartInput from "@/components/ui/SmartInput";
 import {
   AlertCircle,
   CheckCircle,
@@ -10,9 +13,8 @@ import {
   User,
   Users,
 } from "lucide-react";
-import EnhancedSelect from "@/components/ui/EnhancedSelect";
-import FormSection from "@/components/ui/FormSection";
-import SmartInput from "@/components/ui/SmartInput";
+import PlansType from "./_components/down/PlansType";
+import SelectSalesManager from "./_components/sales/SelectSalesManager";
 import {
   FIELD_OPTIONS,
   FORM_SECTIONS,
@@ -20,11 +22,9 @@ import {
   HELP_GUIDE,
 } from "./constants/formOptions";
 import { useReserveForm } from "./hooks/useReserveForm";
-import SelectSalesManager from "./_components/sales/SelectSalesManager";
-import PlansType from "./_components/down/PlansType";
 
 const EnhancedReserveForm = () => {
-  const { form, isLoading, onSubmit, resetKey, resetForm } = useReserveForm();
+  const { form, isLoading, onSubmit, resetKey } = useReserveForm();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-8 px-4 rounded-xl">

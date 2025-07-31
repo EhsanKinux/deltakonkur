@@ -22,12 +22,20 @@ import { z } from "zod";
 import { IFormattedStudentAdvisor } from "../../interfaces";
 import { IRestartStudent } from "@/lib/apis/accounting/interface";
 import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
+import showToast from "@/components/ui/toast";
+import { Calendar, Clock, Plus, AlertCircle } from "lucide-react";
 
 const restartInput = () =>
   z.object({
     day: z.string(),
   });
-const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
+const Restart = ({
+  rowData,
+  onSuccess,
+}: {
+  rowData: IFormattedStudentAdvisor;
+  onSuccess?: () => void;
+}) => {
   const formSchema = restartInput();
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -54,6 +62,8 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
         return;
       }
 
+      const loadingToastId = showToast.loading("در حال تمدید دانش‌آموز...");
+
       const body: IRestartStudent = {
         id: String(rowData?.id),
         student: String(rowData?.studentId),
@@ -67,10 +77,17 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
       };
 
       await resetStudent(body);
+
+      showToast.dismiss(loadingToastId);
+      showToast.success(
+        `تمدید ${rowData?.first_name} ${rowData?.last_name} با موفقیت انجام شد!`
+      );
+
       dialogCloseRef.current?.click(); // Close the dialog
       // navigate("/dashboard/accounting/allStudents");
-      window.location.reload();
+      onSuccess?.();
     } catch (error) {
+      showToast.error("خطایی در تمدید دانش‌آموز رخ داده است!");
       console.error("Failed to reset student:", error);
     }
   };
@@ -90,57 +107,75 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
 
   return (
     <>
-      <DialogContent className="bg-slate-100 !rounded-[10px]">
-        <DialogHeader>
-          <DialogTitle>تمدید دانش آموز</DialogTitle>
-          <DialogDescription>
-            مقدار تمدید روز را به عدد وارد کنید و سپس دکمه ی ثبت تمدید را بزنید
+      <DialogContent className="bg-white !rounded-xl shadow-xl border-0 max-w-md mx-auto">
+        <DialogHeader className="text-center pb-4">
+          <div className="mx-auto mb-4 w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+            <Calendar className="w-6 h-6 text-green-600" />
+          </div>
+          <DialogTitle className="text-xl font-bold text-gray-900 text-center">
+            تمدید دانش‌آموز
+          </DialogTitle>
+          <DialogDescription className="text-gray-600 mt-2">
+            <div className="flex items-center gap-2 justify-center mb-2">
+              <Clock className="w-4 h-4 text-gray-500" />
+              <span className="text-sm">افزودن روز به مدت زمان</span>
+            </div>
+            <p className="text-sm leading-relaxed text-center">
+              تعداد روزهایی که می‌خواهید به مدت زمان دانش‌آموز اضافه کنید را
+              وارد کنید.
+            </p>
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
-          {warning && <p className="text-red-500">{warning}</p>}
+          {warning && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-red-500" />
+              <p className="text-red-700 text-sm">{warning}</p>
+            </div>
+          )}
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="day"
                 render={({ field }) => (
-                  <div className={`flex justify-center flex-col w-full gap-2`}>
-                    <FormLabel className="pt-2 font-bold text-slate-500">
-                      تعداد روز را اضافه کنید
+                  <div className="space-y-3">
+                    <FormLabel className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                      <Plus className="w-4 h-4" />
+                      تعداد روز تمدید:
                     </FormLabel>
                     <FormControl>
                       <Input
                         id="day"
-                        className="w-full text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
+                        className="w-full h-12 text-center text-lg font-medium border-2 border-gray-200 hover:border-green-300 focus:border-green-500 transition-colors duration-200 rounded-lg"
                         type="number"
+                        placeholder="مثال: 30"
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage className="form-message mt-2" />
+                    <FormMessage className="text-red-500 text-xs" />
+                    <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
+                      💡 تعداد روز را به عدد وارد کنید (مثال: 30 روز)
+                    </div>
                   </div>
                 )}
               />
-              <DialogFooter>
-                <div className="flex justify-between items-center w-full">
+              <DialogFooter className="flex gap-3 pt-4">
+                <Button
+                  type="submit"
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+                >
+                  ثبت تمدید
+                </Button>
+                <DialogClose asChild>
                   <Button
-                    type="submit"
-                    className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+                    ref={dialogCloseRef}
+                    variant="outline"
+                    className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-3 rounded-lg transition-colors duration-200"
                   >
-                    ثبت تمدید
+                    لغو
                   </Button>
-                  <DialogClose asChild>
-                    <Button
-                      ref={dialogCloseRef}
-                      className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2"
-                    >
-                      لغو
-                    </Button>
-                  </DialogClose>
-                </div>
+                </DialogClose>
               </DialogFooter>
             </form>
           </Form>
