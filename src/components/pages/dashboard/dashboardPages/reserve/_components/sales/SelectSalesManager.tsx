@@ -104,7 +104,7 @@ const SelectSalesManager = <T extends FieldValues = FieldValues>({
       control={form.control}
       name={name}
       render={() => (
-        <FormItem className="flex flex-col rounded-xl w-full p-2">
+        <FormItem className="flex flex-col rounded-xl w-full">
           <Controller
             name={name}
             control={form.control}

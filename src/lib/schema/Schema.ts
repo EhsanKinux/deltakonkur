@@ -175,7 +175,7 @@ export const registerAdvisorFormSchema = () =>
       .max(125, { message: "نام ورودی بیش از حد مجاز است" }),
     last_name: z
       .string()
-      .min(1, { message: "لطفا نام مدرسه را وارد کنید" })
+      .min(1, { message: "لطفا نام خانوادگی را وارد کنید" })
       .max(125, { message: "نام ورودی بیش از حد مجاز است" }),
     field: z.string().min(1, { message: "رشته‌ی تحصیلی را انتخاب کنید" }),
     phone_number: z
@@ -184,8 +184,9 @@ export const registerAdvisorFormSchema = () =>
       .max(13, { message: "شماره ورودی بیش از حد مجاز است" }),
     national_id: z
       .string()
-      .min(1, { message: "کد نامعتبر است" })
-      .max(10, { message: "کد ورودی بیش از حد مجاز است" }),
+      .min(10, { message: "کد ملی باید 10 رقم باشد" })
+      .max(10, { message: "کد ملی باید 10 رقم باشد" })
+      .regex(/^\d{10}$/, { message: "کد ملی باید فقط شامل اعداد باشد" }),
     bank_account: z.string(),
     level: z.string().min(1, { message: "سطح مشاور را انتخاب کنید" }),
   });

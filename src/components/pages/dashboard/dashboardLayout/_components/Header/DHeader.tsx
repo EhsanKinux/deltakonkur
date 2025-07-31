@@ -44,7 +44,6 @@ const getPersianBreadcrumb = (
     "/dashboard/advisors",
     "/dashboard/advisors/register",
     "/dashboard/students",
-    "/dashboard/accounting",
     "/dashboard/accounting/allAdvisors",
     "/dashboard/accounting/allStudents",
     "/dashboard/accounting/monthlyFinancialSummary",

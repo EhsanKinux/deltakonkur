@@ -1,7 +1,6 @@
-import { useController, UseFormReturn } from "react-hook-form";
-import CustomFieldSelect from "../../../../../advisorRegisteration/_components/customSelect/CustomFieldSelect";
+import { UseFormReturn } from "react-hook-form";
 import { ISubmitAdvisorRegisterService } from "@/lib/apis/advisors/interface";
-import { FormControl, FormItem, FormMessage } from "@/components/ui/form";
+import EnhancedSelect from "@/components/ui/EnhancedSelect";
 
 const SelectField = ({
   form,
@@ -10,34 +9,23 @@ const SelectField = ({
 }) => {
   const { control } = form;
 
-  const {
-    field: { onChange, value },
-    fieldState: { error },
-  } = useController({
-    name: "field",
-    control,
-    defaultValue: "",
-  });
-
   return (
-    <FormItem>
-      {/* <FormLabel>سطح مشاور</FormLabel> */}
-      <FormControl>
-        <CustomFieldSelect
-          value={value}
-          onValueChange={(value: string) => onChange(value)}
-          placeholder="رشته تحصیلی"
-          options={[
-            { value: "ریاضی", label: "ریاضی" },
-            { value: "تجربی", label: "تجربی" },
-            { value: "علوم انسانی", label: "علوم انسانی" },
-          ]}
-        />
-      </FormControl>
-      {error && (
-        <FormMessage className="form-message mt-2">{error.message}</FormMessage>
-      )}
-    </FormItem>
+    <EnhancedSelect<ISubmitAdvisorRegisterService>
+      control={control}
+      name="field"
+      label="رشته تحصیلی"
+      placeholder="رشته تحصیلی را انتخاب کنید"
+      options={[
+        { value: "ریاضی", label: "ریاضی", description: "رشته ریاضی و فیزیک" },
+        { value: "تجربی", label: "تجربی", description: "رشته علوم تجربی" },
+        {
+          value: "علوم انسانی",
+          label: "علوم انسانی",
+          description: "رشته علوم انسانی",
+        },
+      ]}
+      required
+    />
   );
 };
 

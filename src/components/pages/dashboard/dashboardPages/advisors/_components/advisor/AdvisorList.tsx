@@ -407,7 +407,7 @@ const AdvisorList = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value={activeTab}>
-          <div className="flex flex-col gap-6 mt-6">
+          <div className="flex flex-col gap-2">
             <FilterPanel
               fields={filterFields}
               onClearAll={handleClearAllFilters}
