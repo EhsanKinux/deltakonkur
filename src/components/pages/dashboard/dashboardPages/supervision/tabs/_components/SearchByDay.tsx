@@ -1,59 +1,86 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import showToast from "@/components/ui/toast";
-import { authStore } from "@/lib/store/authStore";
+import { DataTable } from "@/components/ui/DataTable";
+import { FilterPanel } from "@/components/ui/FilterPanel";
+import { useApiState } from "@/hooks/useApiState";
+import { api } from "@/lib/services/api";
 import { FormData } from "@/lib/store/types";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { BASE_API_URL } from "@/lib/variables/variables";
-import axios from "axios";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { stColumns } from "../../table/SupervisionColumnDef";
-import { SupervisionTable } from "../../table/SupervisionTable";
+import { TableColumn } from "@/types";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
+// =============================================================================
+// SEARCH BY DAY COMPONENT
+// =============================================================================
 
 const SearchByDay = () => {
+  // =============================================================================
+  // STATE MANAGEMENT
+  // =============================================================================
+  const [students, setStudents] = useState<FormData[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [solarDay, setSolarDay] = useState(searchParams.get("solar_day") || "");
-  const [students, setStudents] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [totalPages, setTotalPages] = useState("");
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchFields, setSearchFields] = useState({
+    solar_day: "",
+  });
 
+  const { loading, executeWithLoading } = useApiState();
+  const navigate = useNavigate();
+
+  // Reference to track abort controller for API requests
   const abortControllerRef = useRef<AbortController | null>(null);
+  // Reference to track search timeout
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const activeSolarDay = searchParams.get("solar_day");
+  // =============================================================================
+  // MEMOIZED VALUES
+  // =============================================================================
+  // Memoize search parameters to avoid unnecessary API calls
+  const searchParamsMemo = useMemo(() => {
+    const page = searchParams.get("page") || "1";
+    const solarDay = searchParams.get("solar_day") || "";
 
-  const fetchStudents = useCallback(async () => {
-    if (!solarDay) return;
+    return { page, solarDay };
+  }, [searchParams]);
 
-    const { accessToken } = authStore.getState();
+  // Separate memoized values for API call dependencies
+  const apiDependencies = useMemo(
+    () => ({
+      page: searchParamsMemo.page,
+      solarDay: searchParamsMemo.solarDay,
+    }),
+    [searchParamsMemo.page, searchParamsMemo.solarDay]
+  );
 
-    // لغو درخواست قبلی در صورت وجود
+  // =============================================================================
+  // API CALLS
+  // =============================================================================
+  const getStudents = useCallback(async () => {
+    // Cancel previous request if it exists
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
+
+    // Create new AbortController for the current request
     abortControllerRef.current = new AbortController();
-    const signal = abortControllerRef.current.signal;
+
+    const { page, solarDay } = apiDependencies;
+
+    // Only fetch if solar day is provided
+    if (!solarDay) {
+      setStudents([]);
+      setTotalPages(1);
+      return;
+    }
 
     try {
-      setIsLoading(true);
-      const { data } = await axios.get(`${BASE_API_URL}api/register/students`, {
-        params: {
+      const response = await executeWithLoading(async () => {
+        return await api.getPaginated<FormData>("api/register/students", {
           solar_date_day: solarDay,
-          page: searchParams.get("page") || 1, // گرفتن مقدار صفحه از searchParams
-        },
-        signal,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
+          page: parseInt(page),
+        });
       });
 
-      if (data.results?.length === 0) {
-        showToast.warning("دانش‌آموزی در این تاریخ یافت نشد");
-      }
-
-      const formattedData = data.results?.map((student: FormData) => ({
+      const formattedData = response.results.map((student) => ({
         ...student,
         created: student.created ? convertToShamsi(student.created) : "",
         grade:
@@ -67,78 +94,228 @@ const SearchByDay = () => {
       }));
 
       setStudents(formattedData);
-      setTotalPages(Number(data.count / 10).toFixed(0));
+      setTotalPages(Math.ceil(response.count / 10));
     } catch (error: unknown) {
-      if (axios.isCancel(error)) {
-        // Request was cancelled, do nothing
+      if (error instanceof Error && error.name === "AbortError") {
+        console.log("Request was aborted");
       } else {
-        console.error("خطا در دریافت اطلاعات:", error);
+        console.error("Error fetching students:", error);
       }
-    } finally {
-      setIsLoading(false);
     }
-  }, [activeSolarDay, searchParams]); // فچ هنگام تغییر solarDay یا searchParams اجرا می‌شود
+  }, [apiDependencies, executeWithLoading]);
 
-  useEffect(() => {
-    fetchStudents();
-  }, [fetchStudents]); // فچ خودکار هنگام تغییر searchParams
+  // =============================================================================
+  // SEARCH HANDLING
+  // =============================================================================
+  const handleSearchFieldChange = useCallback(
+    (field: string, value: string) => {
+      // Validate solar day input (1-31)
+      if (field === "solar_day") {
+        if (value !== "" && (Number(value) < 1 || Number(value) > 31)) {
+          return;
+        }
+      }
 
-  const handleSearch = () => {
-    if (!solarDay) {
-      showToast.warning("لطفاً یک روز معتبر وارد کنید.");
-      return;
+      setSearchFields((prev) => {
+        const updatedFields = { ...prev, [field]: value };
+
+        // Clear previous timeout
+        if (searchTimeoutRef.current) {
+          clearTimeout(searchTimeoutRef.current);
+        }
+
+        // Set new timeout for search
+        searchTimeoutRef.current = setTimeout(() => {
+          const newSearchParams = new URLSearchParams();
+          newSearchParams.set("tab", "SearchByDay");
+
+          Object.entries(updatedFields).forEach(([key, val]) => {
+            if (val.trim()) {
+              newSearchParams.set(key, val);
+            }
+          });
+
+          newSearchParams.set("page", "1");
+          setSearchParams(newSearchParams);
+        }, 600); // 600ms delay for better UX
+
+        return updatedFields;
+      });
+    },
+    [setSearchParams]
+  );
+
+  const handleClearAllFilters = useCallback(() => {
+    // Clear search timeout if exists
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
     }
 
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set("solar_day", solarDay);
-    newSearchParams.set("page", "1"); // جستجو را از صفحه اول شروع کند
+    setSearchFields({
+      solar_day: "",
+    });
+
+    const newSearchParams = new URLSearchParams();
+    newSearchParams.set("tab", "SearchByDay");
+    newSearchParams.set("page", "1");
     setSearchParams(newSearchParams);
-  };
+  }, [setSearchParams]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value === "" || (Number(value) >= 1 && Number(value) <= 31)) {
-      setSolarDay(value);
-    }
-  };
+  // =============================================================================
+  // PAGINATION HANDLING
+  // =============================================================================
+  const handlePageChange = useCallback(
+    (page: number) => {
+      console.log("Page change requested:", page); // Debug log
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && solarDay) {
-      handleSearch();
-    }
-  };
+      // Create new search params from current URL params
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("page", page.toString());
 
+      setSearchParams(newSearchParams);
+    },
+    [searchParams, setSearchParams]
+  );
+
+  // =============================================================================
+  // ROW CLICK HANDLING
+  // =============================================================================
+  const handleView = useCallback(
+    (student: Record<string, unknown>) => {
+      navigate(`/dashboard/supervision/${student.id}`);
+    },
+    [navigate]
+  );
+
+  // =============================================================================
+  // TABLE COLUMNS CONFIGURATION
+  // =============================================================================
+  const columns: TableColumn<Record<string, unknown>>[] = [
+    {
+      key: "first_name",
+      header: "نام",
+      accessorKey: "first_name",
+    },
+    {
+      key: "last_name",
+      header: "نام خانوادگی",
+      accessorKey: "last_name",
+    },
+    {
+      key: "advisor_name",
+      header: "نام مشاور",
+      accessorKey: "advisor_name",
+    },
+    {
+      key: "school",
+      header: "نام مدرسه",
+      accessorKey: "school",
+    },
+    {
+      key: "phone_number",
+      header: "شماره همراه",
+      accessorKey: "phone_number",
+    },
+    {
+      key: "home_phone",
+      header: "شماره تلفن منزل",
+      accessorKey: "home_phone",
+    },
+    {
+      key: "parent_phone",
+      header: "شماره همراه والدین",
+      accessorKey: "parent_phone",
+    },
+    {
+      key: "field",
+      header: "رشته تحصیلی",
+      accessorKey: "field",
+    },
+    {
+      key: "grade",
+      header: "مقطع تحصیلی",
+      accessorKey: "grade",
+    },
+    {
+      key: "created",
+      header: "تاریخ ثبت",
+      accessorKey: "created",
+    },
+  ];
+
+  // =============================================================================
+  // FILTER FIELDS CONFIGURATION
+  // =============================================================================
+  const filterFields = [
+    {
+      key: "solar_day",
+      placeholder: "روز مورد نظر (1-31)",
+      value: searchFields.solar_day,
+      onChange: (value: string) => handleSearchFieldChange("solar_day", value),
+      type: "number" as const,
+      min: 1,
+      max: 31,
+    },
+  ];
+
+  // =============================================================================
+  // EFFECTS
+  // =============================================================================
+  // Initialize search fields from URL params on mount
+  useEffect(() => {
+    const solarDay = searchParams.get("solar_day") || "";
+
+    setSearchFields({
+      solar_day: solarDay,
+    });
+  }, []); // Empty dependency array to run only on mount
+
+  // Fetch students when dependencies change
+  useEffect(() => {
+    getStudents();
+
+    // Cleanup: Cancel ongoing request on unmount or before new request
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [getStudents]);
+
+  // Cleanup effect for search timeout
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // =============================================================================
+  // RENDER
+  // =============================================================================
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-col-reverse xl:items-end w-full gap-2 xl:flex-row p-4 mt-4 rounded-xl shadow-form bg-slate-100">
-        <Button
-          className="bg-blue-600 text-slate-100 hover:bg-blue-700 hover:text-white rounded-xl pt-2"
-          onClick={handleSearch}
-          disabled={!solarDay}
-        >
-          جستجو
-        </Button>
-        <div className="w-full">
-          <Label htmlFor="day">روز مورد نظر را به عدد وارد کنید:</Label>
-          <Input
-            id="day"
-            type="number"
-            min={1}
-            max={31}
-            value={solarDay}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyPress}
-            className="text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500"
+    <div className="p-2">
+      <div className="flex flex-col gap-2">
+        <FilterPanel
+          fields={filterFields}
+          onClearAll={handleClearAllFilters}
+          title="جستجو براساس روز"
+        />
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <DataTable
+            enableRowClick={true}
+            data={students as unknown as Record<string, unknown>[]}
+            columns={columns}
+            loading={loading}
+            pagination={{
+              currentPage: parseInt(searchParams.get("page") || "1"),
+              totalPages,
+              onPageChange: handlePageChange,
+            }}
+            onRowClick={handleView}
           />
         </div>
-      </div>
-      <div className="flex flex-col justify-center items-center gap-3 p-16 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
-        <SupervisionTable
-          columns={stColumns}
-          data={students}
-          totalPages={totalPages}
-          isLoading={isLoading}
-        />
       </div>
     </div>
   );

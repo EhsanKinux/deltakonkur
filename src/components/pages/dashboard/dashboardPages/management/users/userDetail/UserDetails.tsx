@@ -65,16 +65,16 @@ const UserDetails = () => {
           success: `${modifiedData.first_name} ${modifiedData.last_name} با موفقیت بروزرسانی شد`,
           error: (error: unknown) => {
             let errorMessage = "خطا در ویرایش اطلاعات، لطفا دوباره تلاش کنید";
-            if (error instanceof Error) {
-              try {
-                const errorJson = JSON.parse(error.message);
-                if (errorJson.national_id) {
-                  errorMessage = "کد ملی حتما باید 10 رقم باشد و تکراری نباشد!";
-                }
-              } catch (parseError) {
-                console.error("Error parsing the error message:", parseError);
-              }
+        if (error instanceof Error) {
+          try {
+            const errorJson = JSON.parse(error.message);
+            if (errorJson.national_id) {
+              errorMessage = "کد ملی حتما باید 10 رقم باشد و تکراری نباشد!";
             }
+          } catch (parseError) {
+            console.error("Error parsing the error message:", parseError);
+          }
+        }
             return errorMessage;
           },
         });
@@ -110,12 +110,12 @@ const UserDetails = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       {/* Header */}
       <div className="max-w-4xl mx-auto">
-        <BackButton
-          fallbackRoute="/dashboard/management/users"
+      <BackButton
+        fallbackRoute="/dashboard/management/users"
           className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors duration-200 mb-6"
-        >
+      >
           بازگشت به لیست کاربران
-        </BackButton>
+      </BackButton>
 
         {/* Main Content */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
@@ -226,39 +226,39 @@ const UserDetails = () => {
                   </div>
                   <h3 className="text-lg font-semibold text-gray-800">
                     ویرایش اطلاعات
-                  </h3>
-                </div>
+          </h3>
+        </div>
 
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-6"
-                  >
+          >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <CustomUserDetailInput
-                        control={form.control}
-                        name="first_name"
-                        label="نام"
-                        placeHolder="نام کاربر"
-                      />
-                      <CustomUserDetailInput
-                        control={form.control}
-                        name="last_name"
-                        label="نام خانوادگی"
-                        placeHolder="نام خانوادگی کاربر"
-                      />
-                      <CustomUserDetailInput
-                        control={form.control}
-                        name="national_id"
-                        label="کد ملی"
-                        placeHolder="کد ملی کاربر"
-                      />
-                      <CustomUserDetailInput
-                        control={form.control}
-                        name="phone_number"
-                        label="شماره همراه"
-                        placeHolder="شماره همراه کاربر"
-                      />
+              <CustomUserDetailInput
+                control={form.control}
+                name="first_name"
+                label="نام"
+                placeHolder="نام کاربر"
+              />
+              <CustomUserDetailInput
+                control={form.control}
+                name="last_name"
+                label="نام خانوادگی"
+                placeHolder="نام خانوادگی کاربر"
+              />
+              <CustomUserDetailInput
+                control={form.control}
+                name="national_id"
+                label="کد ملی"
+                placeHolder="کد ملی کاربر"
+              />
+              <CustomUserDetailInput
+                control={form.control}
+                name="phone_number"
+                label="شماره همراه"
+                placeHolder="شماره همراه کاربر"
+              />
                     </div>
 
                     {/* Roles Selection */}
@@ -271,32 +271,32 @@ const UserDetails = () => {
                           نقش‌های کاربر
                         </h4>
                       </div>
-                      <UserDetailSelectRoles
-                        userId={userInfo?.id ? Number(userInfo.id) : null}
-                        initialRoles={userInfo?.roles || []}
-                      />
-                    </div>
+              <UserDetailSelectRoles
+                userId={userInfo?.id ? Number(userInfo.id) : null}
+                initialRoles={userInfo?.roles || []}
+              />
+            </div>
 
                     {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                      <Button
-                        type="submit"
+              <Button
+                type="submit"
                         disabled={isloading}
                         className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3 px-6 font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
-                      >
-                        {isloading ? (
-                          <>
+              >
+                {isloading ? (
+                  <>
                             <Loader2 className="h-4 w-4 ml-2 animate-spin" />
                             در حال ذخیره...
-                          </>
-                        ) : (
+                  </>
+                ) : (
                           <>
                             <Save className="h-4 w-4 ml-2" />
                             ذخیره تغییرات
                           </>
-                        )}
-                      </Button>
-                      <Button
+                )}
+              </Button>
+              <Button
                         type="button"
                         onClick={handleCancelEdit}
                         disabled={isloading}
@@ -304,10 +304,10 @@ const UserDetails = () => {
                       >
                         <X className="h-4 w-4 ml-2" />
                         انصراف
-                      </Button>
-                    </div>
-                  </form>
-                </Form>
+              </Button>
+            </div>
+          </form>
+        </Form>
               </div>
             )}
 

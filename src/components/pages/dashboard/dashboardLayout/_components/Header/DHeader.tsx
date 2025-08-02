@@ -29,6 +29,8 @@ const getPersianBreadcrumb = (
     "/dashboard/management/roles": "نقش‌ها",
     "/dashboard/management/reports": "گزارش‌گیری",
     "/dashboard/management/permissions": "دسترسی‌ها",
+    "/dashboard/supervision": "نظارت",
+    "/dashboard/supervision/followup": "پیگیری",
     "/dashboard/settings": "تنظیمات",
     "/dashboard/profile": "پروفایل",
     "/dashboard/analytics": "تحلیل‌ها",

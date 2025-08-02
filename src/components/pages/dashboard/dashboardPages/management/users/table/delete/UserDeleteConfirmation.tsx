@@ -67,7 +67,7 @@ const UserDeleteConfirmation = ({
 
   return (
     <DialogContent
-      className="bg-white !rounded-2xl border-0 shadow-2xl max-w-md mx-auto"
+      className="bg-white !rounded-2xl border-0 shadow-2xl max-w-md mx-auto w-[90%]"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header with Warning Icon */}
@@ -84,7 +84,7 @@ const UserDeleteConfirmation = ({
       </DialogHeader>
 
       {/* User Information Card */}
-      <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-200">
+      <div className="bg-gray-50 rounded-xl p-4 mb-3 border border-gray-200">
         <div className="flex items-center space-x-3 space-x-reverse">
           <div className="flex-shrink-0">
             <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -112,7 +112,7 @@ const UserDeleteConfirmation = ({
       </div>
 
       {/* Warning Message */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-3">
         <div className="flex items-start space-x-3 space-x-reverse">
           <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
           <div className="text-sm text-amber-800">

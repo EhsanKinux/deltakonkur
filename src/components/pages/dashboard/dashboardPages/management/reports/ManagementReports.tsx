@@ -388,7 +388,7 @@ const ManagementReports = () => {
         {roles.map((role) => (
           <div
             key={role.name}
-            className="flex flex-col items-center gap-4 p-5 rounded-xl bg-slate-100 flex-1 w-full"
+            className="flex flex-col items-center gap-4 p-5 rounded-xl bg-white flex-1 w-full shadow-md py-8"
           >
             <div className="flex flex-col items-center gap-2  border rounded-full p-5 border-primary aspect-square">
               {role.icon}
@@ -453,6 +453,18 @@ const ManagementReports = () => {
                       </DialogContent>
                     </Dialog>
                   </>
+                )}
+
+                {role.prefix === "Supervisor" && (
+                  <Button
+                    disabled={true}
+                    className="bg-green-500 text-white hover:bg-green-600 focus:ring-2 focus:ring-green-400 focus:outline-none transition-all duration-200 rounded-xl flex items-center gap-2 px-5 py-2 text-base font-bold shadow-md hover:shadow-lg"
+                    aria-label="ترازبندی ناظران"
+                    title="ترازبندی سطح ناظران و دریافت گزارش اکسل"
+                  >
+                    <RefreshCcw size={20} className="ml-2" />
+                    ترازبندی (به زودی)
+                  </Button>
                 )}
                 <Button
                   disabled={loading}

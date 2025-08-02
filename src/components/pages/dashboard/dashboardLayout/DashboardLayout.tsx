@@ -29,7 +29,7 @@ const DashboardLayout = () => {
           >
             <div
               id="dashboard-content"
-              className="h-full p-4 md:p-6 overflow-y-auto custom-scrollbar bg-[#f5f5f5]"
+              className="h-full overflow-y-auto custom-scrollbar bg-[#f5f5f5]"
             >
               <Outlet />
             </div>

@@ -16,8 +16,10 @@ export interface FilterField {
   placeholder: string;
   value: string;
   onChange: (value: string) => void;
-  type?: "text" | "select";
+  type?: "text" | "select" | "number";
   options?: FilterFieldOption[];
+  min?: number;
+  max?: number;
 }
 
 interface FilterPanelProps {
@@ -58,6 +60,35 @@ export function FilterPanel({
                 size="sm"
                 onClick={() => field.onChange("")}
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    if (field.type === "number") {
+      return (
+        <div className="relative group">
+          <div className="relative">
+            <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 group-focus-within:text-blue-600 transition-colors" />
+            <Input
+              type="number"
+              min={field.min}
+              max={field.max}
+              placeholder={field.placeholder}
+              value={field.value}
+              onChange={(e) => field.onChange(e.target.value)}
+              className="pr-12 pl-4 h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-all duration-200 hover:border-blue-400 bg-white shadow-sm placeholder:text-gray-500"
+            />
+            {field.value && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => field.onChange("")}
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full"
               >
                 <X className="h-4 w-4" />
               </Button>
