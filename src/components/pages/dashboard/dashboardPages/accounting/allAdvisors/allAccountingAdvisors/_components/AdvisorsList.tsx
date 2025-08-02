@@ -377,7 +377,7 @@ const AdvisorsList = () => {
                   : "علوم انسانی"
               }`}
             />
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 ">
               <DataTable
                 data={advisors as unknown as Record<string, unknown>[]}
                 columns={columns}

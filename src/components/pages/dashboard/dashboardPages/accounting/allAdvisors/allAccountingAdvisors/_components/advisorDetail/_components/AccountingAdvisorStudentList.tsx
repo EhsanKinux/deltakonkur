@@ -251,7 +251,7 @@ const AccountingAdvisorStudentList = ({
   return (
     <section className="space-y-6">
       {/* Filter Panel */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 ">
         <h3>راهنمای جدول</h3>
         {/* Status Legend */}
         <div className="mt-4 flex gap-6 text-sm">
@@ -271,7 +271,7 @@ const AccountingAdvisorStudentList = ({
       </div>
 
       {/* DataTable */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 ">
         <DataTable
           data={students as unknown as Record<string, unknown>[]}
           columns={columns as unknown as TableColumn<Record<string, unknown>>[]}

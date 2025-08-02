@@ -8,17 +8,25 @@ import { api } from "@/lib/services/api";
 import { TableColumn } from "@/types";
 
 // Shared components
-import AssessmentDetailModal from "@/components/pages/dashboard/dashboardPages/supervision/assess/_components/AssessmentDetailModal";
+import AssessmentDetailModal from "../AssessmentDetailModal";
 
 // Legacy imports
-import { IStudentAssessment } from "@/components/pages/dashboard/dashboardPages/supervision/assess/interface";
+import { IStudentAssessment } from "../../interface";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 
 // =============================================================================
-// ADVISOR ASSESSMENT COMPONENT
+// RECENT ASSESSMENTS COMPONENT
 // =============================================================================
 
-const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
+interface RecentAssessmentsProps {
+  studentId: string | undefined;
+  refreshKey?: number; // Add refresh key prop
+}
+
+const RecentAssessments = ({
+  studentId,
+  refreshKey = 0,
+}: RecentAssessmentsProps) => {
   // =============================================================================
   // STATE MANAGEMENT
   // =============================================================================
@@ -50,15 +58,16 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
   const apiDependencies = useMemo(
     () => ({
       page: searchParamsMemo.page,
+      refreshKey, // Include refreshKey in dependencies
     }),
-    [searchParamsMemo.page]
+    [searchParamsMemo.page, refreshKey]
   );
 
   // =============================================================================
   // API CALLS
   // =============================================================================
   const getAssessments = useCallback(async () => {
-    if (!advisorId) return;
+    if (!studentId) return;
 
     // Cancel previous request if it exists
     if (abortControllerRef.current) {
@@ -73,8 +82,9 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
     try {
       const response = await executeWithLoading(async () => {
         return await api.getPaginated<IStudentAssessment>(
-          `api/supervisor/advisor/assessments/${advisorId}/`,
+          `api/supervisor/assessment/`,
           {
+            student_id: studentId,
             page: parseInt(page),
           }
         );
@@ -83,6 +93,7 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
       const formattedData = response.results.map((assessment) => ({
         ...assessment,
         created: convertToShamsi(assessment.created),
+        advisor_name: assessment.advisor_name ? assessment.advisor_name : "-",
       }));
 
       setAssessments(formattedData);
@@ -94,7 +105,7 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
         console.error("Error fetching assessments:", error);
       }
     }
-  }, [advisorId, apiDependencies, executeWithLoading]);
+  }, [studentId, apiDependencies, executeWithLoading]);
 
   // =============================================================================
   // PAGINATION HANDLING
@@ -135,9 +146,9 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
   // =============================================================================
   const columns: TableColumn<Record<string, unknown>>[] = [
     {
-      key: "student_name",
-      header: "نام دانش‌آموز",
-      accessorKey: "student_name",
+      key: "advisor_name",
+      header: "نام مشاور",
+      accessorKey: "advisor_name",
     },
     {
       key: "plan_score",
@@ -236,7 +247,7 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
         </div>
 
         {/* DataTable */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 ">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
           <DataTable
             data={assessments as unknown as Record<string, unknown>[]}
             columns={columns}
@@ -257,11 +268,11 @@ const AdvisorAssessment = ({ advisorId }: { advisorId: string }) => {
           isOpen={isDescriptionModalOpen}
           onClose={handleCloseModal}
           assessment={selectedAssessment}
-          showStudentName={true}
+          showAdvisorName={true}
         />
       </div>
     </section>
   );
 };
 
-export default AdvisorAssessment;
+export default RecentAssessments;

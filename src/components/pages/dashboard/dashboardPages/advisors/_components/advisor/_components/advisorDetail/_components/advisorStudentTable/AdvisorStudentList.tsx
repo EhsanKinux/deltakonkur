@@ -408,7 +408,7 @@ const AdvisorStudentList = ({ advisorId }: AdvisorStudentListProps) => {
         </div>
 
         {/* DataTable */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 ">
           <DataTable
             data={students as unknown as Record<string, unknown>[]}
             columns={columns}

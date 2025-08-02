@@ -112,3 +112,5 @@ export { default as BackButton } from "./BackButton";
 export { default as Toast } from "./toast";
 export { ResponsiveTabs } from "./ResponsiveTabs";
 export type { TabItem, ResponsiveTabsProps } from "./ResponsiveTabs";
+export { default as PageHeader } from "./PageHeader";
+export type { PageHeaderProps } from "./PageHeader";

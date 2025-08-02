@@ -7,13 +7,8 @@ import { useApiState } from "@/hooks/useApiState";
 import { api } from "@/lib/services/api";
 import { TableColumn } from "@/types";
 
-// Dialog components
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+// Shared components
+import AssessmentDetailModal from "../../assess/_components/AssessmentDetailModal";
 
 // Legacy imports
 import { IStudentAssessment } from "@/components/pages/dashboard/dashboardPages/supervision/assess/interface";
@@ -260,129 +255,14 @@ const StudentSupervisorAssessment = () => {
           />
         </div>
 
-        {/* Description Modal */}
-        <Dialog open={isDescriptionModalOpen} onOpenChange={handleCloseModal}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-white w-[90%] rounded-xl">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-gray-800 text-right">
-                جزئیات نظرسنجی
-              </DialogTitle>
-            </DialogHeader>
-
-            {selectedAssessment && (
-              <div className="space-y-6">
-                {/* Student Info Section */}
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">
-                        {selectedAssessment.student_name?.charAt(0) || "د"}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-800 text-lg">
-                        {selectedAssessment.student_name || "نامشخص"}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        مشاور: {selectedAssessment.advisor_name || "نامشخص"}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        تاریخ ثبت: {selectedAssessment.created}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Scores Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
-                    <div className="text-sm text-gray-600 mb-1">
-                      برنامه‌ریزی
-                    </div>
-                    <div className="text-lg font-bold text-blue-600">
-                      {selectedAssessment.plan_score || "-"}
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
-                    <div className="text-sm text-gray-600 mb-1">گزارش‌کار</div>
-                    <div className="text-lg font-bold text-green-600">
-                      {selectedAssessment.report_score || "-"}
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
-                    <div className="text-sm text-gray-600 mb-1">تماس تلفنی</div>
-                    <div className="text-lg font-bold text-purple-600">
-                      {selectedAssessment.phone_score || "-"}
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
-                    <div className="text-sm text-gray-600 mb-1">
-                      برخورد مشاور
-                    </div>
-                    <div className="text-lg font-bold text-orange-600">
-                      {selectedAssessment.advisor_behaviour_score || "-"}
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
-                    <div className="text-sm text-gray-600 mb-1">
-                      پیگیری و جدیت
-                    </div>
-                    <div className="text-lg font-bold text-red-600">
-                      {selectedAssessment.followup_score || "-"}
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
-                    <div className="text-sm text-gray-600 mb-1">
-                      عملکرد انگیزشی
-                    </div>
-                    <div className="text-lg font-bold text-indigo-600">
-                      {selectedAssessment.motivation_score || "-"}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Overall Score */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-sm text-gray-600 mb-1">
-                        نمره کلی مشاور
-                      </div>
-                      <div className="text-2xl font-bold text-green-700">
-                        {selectedAssessment.advisor_score || "-"}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm text-gray-600 mb-1">
-                        تعداد آزمون
-                      </div>
-                      <div className="text-lg font-bold text-blue-700">
-                        {selectedAssessment.exam_score || "-"}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Description Section */}
-                <div className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl p-4 border border-amber-200">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs">💬</span>
-                    </div>
-                    <h4 className="font-semibold text-gray-800">
-                      توضیحات و نظرات
-                    </h4>
-                  </div>
-                  <div className="bg-white rounded-xl p-4 border border-amber-200 shadow-sm">
-                    <p className="text-gray-700 leading-relaxed text-right whitespace-pre-wrap">
-                      {selectedAssessment.description || "توضیحی ثبت نشده است."}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+        {/* Assessment Detail Modal */}
+        <AssessmentDetailModal
+          isOpen={isDescriptionModalOpen}
+          onClose={handleCloseModal}
+          assessment={selectedAssessment}
+          showStudentName={true}
+          showAdvisorName={true}
+        />
       </div>
     </div>
   );

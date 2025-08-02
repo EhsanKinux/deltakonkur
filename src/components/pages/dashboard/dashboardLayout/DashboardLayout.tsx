@@ -25,12 +25,9 @@ const DashboardLayout = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex-1 overflow-hidden"
+            className="flex-1 overflow-hidden  overflow-y-auto"
           >
-            <div
-              id="dashboard-content"
-              className="h-full overflow-y-auto custom-scrollbar bg-[#f5f5f5]"
-            >
+            <div id="dashboard-content" className="h-full custom-scrollbar">
               <Outlet />
             </div>
           </motion.div>

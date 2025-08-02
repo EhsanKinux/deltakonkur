@@ -6,7 +6,23 @@ import { useSupervision } from "@/functions/hooks/supervision/useSupervision";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const FollowUpDialogButtons = (formData: any) => {
+interface FollowUpData extends Record<string, unknown> {
+  id: number;
+  student_id: number;
+  first_call2: boolean;
+  first_call_time2: string | null;
+  token: string;
+}
+
+interface FollowUpDialogButtonsProps {
+  formData: FollowUpData;
+  onRefresh?: () => void;
+}
+
+const FollowUpDialogButtons = ({
+  formData,
+  onRefresh,
+}: FollowUpDialogButtonsProps) => {
   const {
     handleSecondStudentCallAnswering,
     sendNotif,
@@ -17,29 +33,23 @@ const FollowUpDialogButtons = (formData: any) => {
 
   const handleCompleteStudent = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    // const token = formData.formData.token;
-
-    // Show loading toast notification and keep the reference
 
     try {
-      const id = formData.formData.id;
-      const firstCall = formData.formData.first_call2;
-      const firstCallTime = formData.formData.first_call_time2;
+      const id = formData.id;
+      const firstCall = formData.first_call2;
+      const firstCallTime = formData.first_call_time2 || "";
 
       await handleSecondStudentCallAnsweringCompleted({
         id,
-        studentId: formData.formData.student_id,
+        studentId: formData.student_id,
         firstCall,
         firstCallTime,
       });
 
-      showToast.success("در حال هدایت برای پر کردن فرم نظرسنجی دانش آموز...");
-      const studentId = formData.formData.student_id;
-      setTimeout(() => {
-        navigate(`/dashboard/supervision/${studentId}`);
-      }, 2000); // 2-second delay before navigation
+      showToast.success("به فرم نظرسنجی دانش آموز هدایت شدید.");
+      const studentId = formData.student_id;
+      navigate(`/dashboard/supervision/${studentId}`);
     } catch (error) {
-      // Dismiss the loading toast and show error notification
       showToast.error("خطا در تکمیل فرآیند: " + (error || "مشکلی رخ داده است"));
       console.error("Failed to complete student follow-up:", error);
     }
@@ -53,23 +63,26 @@ const FollowUpDialogButtons = (formData: any) => {
       const loadingToastId = showToast.loading("در حال پردازش...");
 
       try {
-        const id = formData.formData.id;
-        const firstCall = formData.formData.first_call2;
-        const firstCallTime = formData.formData.first_call_time2;
+        const id = formData.id;
+        const firstCall = formData.first_call2;
+        const firstCallTime = formData.first_call_time2 || "";
 
         await handleSecondStudentCallAnswering({
           id,
-          studentId: formData.formData.student_id,
+          studentId: formData.student_id,
           firstCall,
           firstCallTime,
         });
-        await sendNotif(formData.formData.token);
+        await sendNotif(formData.token);
         showToast.dismiss(loadingToastId);
         showToast.success("ثبت عدم پاسخگویی دوم با موفقیت انجام شد!");
 
-        setTimeout(() => {
-          window.location.reload(); // Reload the page after a 3-second delay
-        }, 3000);
+        // Call onRefresh instead of reloading the page
+        if (onRefresh) {
+          setTimeout(() => {
+            onRefresh();
+          }, 1000);
+        }
       } catch (error) {
         showToast.dismiss(loadingToastId);
         showToast.error("خطایی در ثبت عدم پاسخگویی رخ داده است!");
@@ -81,29 +94,34 @@ const FollowUpDialogButtons = (formData: any) => {
 
   return (
     <>
-      <div className="flex">
+      <div className="flex gap-2">
         <Button
-          className={`cursor-pointer flex gap-2 hover:!bg-green-100 rounded-[5px] ${
-            loading ? "disabled:opacity-50" : ""
+          className={`cursor-pointer flex items-center gap-2 hover:!bg-green-500 hover:text-white border border-green-400 font-medium rounded-lg text-xs px-3 py-2 transition-all duration-200 hover:shadow-md hover:scale-105 bg-green-50 text-green-700 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           onClick={handleCompleteStudent}
           disabled={loading}
         >
-          <img className="w-5" src={formCheck} alt="userDeleteIcon" />
+          <img className="w-4 h-4" src={formCheck} alt="تکمیل" />
           <span>تکمیل</span>
         </Button>
         <Button
-          className={`cursor-pointer flex gap-2 hover:!bg-red-200 rounded-[5px] ${
-            loading ? "disabled:opacity-50" : ""
+          className={`cursor-pointer flex items-center gap-2 hover:!bg-red-500 hover:text-white border border-red-400 font-medium rounded-lg text-xs px-3 py-2 transition-all duration-200 hover:shadow-md hover:scale-105 bg-red-50 text-red-700 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           onClick={handleSecondAnswering}
           disabled={loading}
         >
-          <img className="w-5" src={callNotAnswerIcon} alt="userEditIcon" />
+          <img
+            className="w-4 h-4"
+            src={callNotAnswerIcon}
+            alt="عدم پاسخگویی دوم"
+          />
           <span>عدم پاسخگویی دوم</span>
         </Button>
       </div>
     </>
   );
 };
+
 export default FollowUpDialogButtons;
