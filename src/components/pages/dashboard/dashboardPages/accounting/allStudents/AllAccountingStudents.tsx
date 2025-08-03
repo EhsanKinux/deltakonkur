@@ -65,46 +65,50 @@ const AllAccountingStudents = () => {
         }
       );
 
-      const formattedData = data.results?.map((item: IStudentAdvisor) => ({
-        id: item.id, // ID from the student object
-        studentId: item.student.id,
+      const formattedData =
+        data.results
+          ?.filter((item: IStudentAdvisor) => item && item.id) // Filter out null items and items without id
+          ?.map((item: IStudentAdvisor) => ({
+            id: item.id, // ID from the student object
+            studentId: item.student?.id || "", // Add null check for student.id
 
-        advisor: item.advisor,
-        created: convertToShamsi(item.student.created),
-        expire_date: convertToShamsi(item.expire_date),
-        left_days_to_expire:
-          status == "cancel" ? "-" : item.left_days_to_expire,
-        first_name: item.student.first_name,
-        last_name: item.student.last_name,
-        date_of_birth: item.student.date_of_birth,
-        phone_number: item.student.phone_number,
-        parent_phone: item.student.parent_phone,
-        home_phone: item.student.home_phone,
-        school: item.student.school,
-        field: item.student.field,
-        created_at: item.student.created_at,
-        solar_date_day: item.student.solar_date_day,
-        solar_date_month: item.student.solar_date_month,
-        solar_date_year: item.student.solar_date_year,
-        stop_date: item.stop_date,
-        ended_date: item.ended_date,
-        status: item.status,
-        advisor_name: item.advisor_name,
-        package_price: item.student.package_price,
-        grade:
-          item.student.grade == "10"
-            ? "پایه دهم"
-            : item.student.grade == "11"
-            ? "پایه یازدهم"
-            : item.student.grade == "12"
-            ? "پایه دوازدهم"
-            : "فارغ‌التحصیل",
-      }));
+            advisor: item.advisor || "",
+            created: convertToShamsi(item.student?.created || ""),
+            expire_date: convertToShamsi(item.expire_date || ""),
+            left_days_to_expire:
+              status == "cancel" ? "-" : item.left_days_to_expire || "",
+            first_name: item.student?.first_name || "",
+            last_name: item.student?.last_name || "",
+            date_of_birth: item.student?.date_of_birth || "",
+            phone_number: item.student?.phone_number || "",
+            parent_phone: item.student?.parent_phone || "",
+            home_phone: item.student?.home_phone || "",
+            school: item.student?.school || "",
+            field: item.student?.field || "",
+            created_at: item.student?.created_at || "",
+            solar_date_day: item.student?.solar_date_day || "",
+            solar_date_month: item.student?.solar_date_month || "",
+            solar_date_year: item.student?.solar_date_year || "",
+            stop_date: item.stop_date || "",
+            ended_date: item.ended_date || "",
+            status: item.status || "",
+            advisor_name: item.advisor_name || "",
+            package_price: item.student?.package_price || 0,
+            grade:
+              item.student?.grade == "10"
+                ? "پایه دهم"
+                : item.student?.grade == "11"
+                ? "پایه یازدهم"
+                : item.student?.grade == "12"
+                ? "پایه دوازدهم"
+                : "فارغ‌التحصیل",
+          })) || [];
 
       setStudents(formattedData);
       setTotalPages(Number(data.count / 10).toFixed(0));
     } catch (error: unknown) {
       if (axios.isCancel(error)) {
+        // Request was cancelled, do nothing
       } else {
         setStudents([]);
         console.error("خطا در دریافت اطلاعات مشاوران:", error);
