@@ -16,5 +16,5 @@ export interface IRestartStudent {
   solar_date_month: string;
   solar_date_year: string;
   expire_date: string;
-  stop_date: string;
+  stop_date: string | null;
 }

@@ -37,8 +37,8 @@ const RealRestart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
         solar_date_day: String(rowData?.solar_date_day),
         solar_date_month: String(rowData?.solar_date_month),
         solar_date_year: String(rowData?.solar_date_year),
-        expire_date: rowData?.expire_date,
-        stop_date: rowData?.stop_date, // assuming no stop date in this case
+        expire_date: rowData?.original_expire_date || new Date().toISOString(),
+        stop_date: rowData?.original_stop_date || null, // Use original date format
       };
 
       await restartStudent(body);

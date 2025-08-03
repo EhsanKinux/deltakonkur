@@ -94,6 +94,11 @@ const AllAccountingStudents = () => {
             status: item.status || "",
             advisor_name: item.advisor_name || "",
             package_price: item.student?.package_price || 0,
+            // Preserve original date formats for API operations
+            original_expire_date: item.expire_date || "",
+            original_stop_date: item.stop_date || "",
+            original_ended_date: item.ended_date || "",
+            original_created: item.student?.created || "",
             grade:
               item.student?.grade == "10"
                 ? "پایه دهم"

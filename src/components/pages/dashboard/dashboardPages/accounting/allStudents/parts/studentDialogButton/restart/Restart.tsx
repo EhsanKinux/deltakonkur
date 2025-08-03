@@ -45,8 +45,12 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       const now = new Date();
-      const expireDate = new Date(now);
-      expireDate.setDate(expireDate.getDate() + parseInt(data.day, 10));
+      // Set the time to the beginning of the current day to ensure proper day calculation
+      now.setHours(0, 0, 0, 0);
+      // Create a new date with the same time but add the specified number of days + 1 for inclusive counting
+      const expireDate = new Date(
+        now.getTime() + (parseInt(data.day, 10) + 1) * 24 * 60 * 60 * 1000
+      );
 
       if (rowData?.stop_date && rowData?.status === "stop") {
         setWarning(
@@ -64,7 +68,7 @@ const Restart = ({ rowData }: { rowData: IFormattedStudentAdvisor }) => {
         solar_date_month: String(rowData?.solar_date_month),
         solar_date_year: String(rowData?.solar_date_year),
         expire_date: expireDate.toISOString(),
-        stop_date: rowData?.stop_date, // assuming no stop date in this case
+        stop_date: rowData?.original_stop_date || null, // Use original date format
       };
 
       await resetStudent(body);
