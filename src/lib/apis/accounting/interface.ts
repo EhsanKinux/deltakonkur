@@ -5,6 +5,7 @@ export interface IStopStudent {
   status: string;
   expire_date?: string;
   stop_date: string;
+  stop_reason?: number | null;
 }
 
 export interface IRestartStudent {

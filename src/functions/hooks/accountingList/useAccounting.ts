@@ -22,7 +22,9 @@ export const useAccounting = () => {
   const [advisorDataLoaded, setAdvisorDataLoaded] = useState(false);
   const [jsonTestData, setJsonTestData] = useState<IJsonTestData[]>();
   const [jsonData, setJsonData] = useState<IJsonData[]>();
-  const [studentAdvisorData, setStudentAdvisorData] = useState<IStudentAdvisor[]>([]);
+  const [studentAdvisorData, setStudentAdvisorData] = useState<
+    IStudentAdvisor[]
+  >([]);
 
   const addStudentData = accountingStore((state) => state.addAllstudents);
   const addAlladvisors = accountingStore((state) => state.addAlladvisors);
@@ -69,11 +71,13 @@ export const useAccounting = () => {
       studentId,
       advisorId,
       stopDate,
+      stopReason,
     }: {
       id: string;
       studentId: string;
       advisorId: string;
       stopDate: string;
+      stopReason?: number | null;
     }) => {
       setLoading(true);
       setError("");
@@ -84,6 +88,7 @@ export const useAccounting = () => {
           advisor: String(advisorId),
           status: "stop",
           stop_date: stopDate,
+          stop_reason: stopReason,
         };
         await stop_student_advisor(body);
       } catch (err) {

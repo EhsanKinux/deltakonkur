@@ -20,13 +20,20 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import showToast from "@/components/ui/toast";
 import { useAccounting } from "@/functions/hooks/accountingList/useAccounting";
 import { cn } from "@/lib/utils/cn/cn";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns-jalali";
 import { faIR } from "date-fns-jalali/locale";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
@@ -38,6 +45,7 @@ import { IFormattedStudentAdvisor } from "../../interfaces";
 export const stopFormSchema = () =>
   z.object({
     stopDate: z.string().optional(),
+    stopReason: z.number().nullable().optional(),
   });
 
 const StopDialog = ({
@@ -56,8 +64,14 @@ const StopDialog = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       stopDate: "",
+      stopReason: null,
     },
   });
+
+  const stopReasonOptions = [
+    { value: "1", label: "توقف به دلیل عدم تمدید" },
+    { value: "2", label: "توقف به دلیل درخواست دانش آموز" },
+  ];
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     // First, check if the student has already stopped
@@ -80,7 +94,8 @@ const StopDialog = ({
           id: rowData?.id,
           studentId: rowData?.studentId,
           advisorId: rowData?.advisor,
-          stopDate: stopDate, // Pass the stopDate to the stopStudent function
+          stopDate: stopDate,
+          stopReason: data.stopReason,
         });
 
         showToast.dismiss(loadingToastId);
@@ -113,28 +128,74 @@ const StopDialog = ({
   }, [warning]);
 
   return (
-    <DialogContent className="bg-slate-100 !rounded-[10px]">
+    <DialogContent className="bg-slate-100 !rounded-[10px] max-w-md">
       <DialogHeader>
-        <DialogTitle>تایید توقف</DialogTitle>
-        <DialogDescription className="flex flex-col gap-2">
-          <span>آیا از توقف این دانش‌آموز مطمئن هستید؟</span>
-          <span className="text-red-400">
-            در صورتی که تاریخی انتخاب نکنید، تاریخ امروز به صورت خودکار ثبت
-            میگردد.
+        <DialogTitle className="text-xl font-bold text-gray-800">
+          تایید توقف
+        </DialogTitle>
+        <DialogDescription className="flex flex-col gap-3">
+          <span className="text-gray-600">
+            آیا از توقف این دانش‌آموز مطمئن هستید؟
           </span>
+          <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+            <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+            <span className="text-amber-700 text-sm">
+              در صورتی که تاریخی انتخاب نکنید، تاریخ امروز به صورت خودکار ثبت
+              میگردد.
+            </span>
+          </div>
         </DialogDescription>
       </DialogHeader>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4 "
+          className="flex flex-col gap-6"
         >
+          <FormField
+            control={form.control}
+            name="stopReason"
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-full">
+                <FormLabel className="font-semibold text-gray-700 mb-2">
+                  دلیل توقف:
+                </FormLabel>
+                <Select
+                  onValueChange={(value) =>
+                    field.onChange(value === "null" ? null : Number(value))
+                  }
+                  value={field.value?.toString() || "null"}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full text-16 rounded-[8px] text-gray-900 border-slate-400 hover:border-blue-400 focus:border-blue-500 transition-colors">
+                      <SelectValue placeholder="انتخاب دلیل توقف" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-white rounded-xl shadow-lg border border-gray-200">
+                    <SelectItem value="null" className="text-gray-500">
+                      بدون دلیل خاص
+                    </SelectItem>
+                    {stopReasonOptions.map((option) => (
+                      <SelectItem
+                        key={option.value}
+                        value={option.value}
+                        className="hover:bg-blue-50"
+                      >
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="form-message mt-1" />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="stopDate"
             render={({ field }) => (
               <FormItem className="flex justify-center flex-col w-full">
-                <FormLabel className="pt-2 font-bold text-slate-500">
+                <FormLabel className="font-semibold text-gray-700 mb-2">
                   تاریخ توقف:
                 </FormLabel>
                 <Popover>
@@ -143,7 +204,7 @@ const StopDialog = ({
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-full text-16 placeholder:text-16 rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 flex gap-4",
+                          "w-full text-16 rounded-[8px] text-gray-900 border-slate-400 hover:border-blue-400 focus:border-blue-500 transition-colors flex gap-4",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -157,7 +218,7 @@ const StopDialog = ({
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent
-                    className="w-auto p-0 bg-blue-100"
+                    className="w-auto p-0 bg-white border border-gray-200"
                     align="start"
                   >
                     <DatePicker
@@ -170,24 +231,27 @@ const StopDialog = ({
                       locale={persian_fa}
                       className="red"
                       calendarPosition="top-left"
-                      // containerClassName="w-full"
                     />
                   </PopoverContent>
                 </Popover>
-                <FormMessage className="form-message mt-2" />
+                <FormMessage className="form-message mt-1" />
               </FormItem>
             )}
           />
+
           <DialogFooter>
-            <div className="flex justify-between items-center w-full">
+            <div className="flex justify-between items-center w-full gap-3">
               <Button
                 type="submit"
-                className="bg-blue-500 text-white hover:bg-blue-700 rounded-xl pt-2"
+                className="bg-red-500 text-white hover:bg-red-600 rounded-xl pt-2 px-6 transition-colors"
               >
                 توقف دانش‌آموز
               </Button>
               <DialogClose asChild>
-                <Button className="bg-gray-300 text-black hover:bg-slate-700 hover:text-white rounded-xl pt-2">
+                <Button
+                  variant="outline"
+                  className="bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300 rounded-xl pt-2 px-6 transition-colors"
+                >
                   لغو
                 </Button>
               </DialogClose>
