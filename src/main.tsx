@@ -5,7 +5,6 @@ import Loading from "./components/loader/Loading.tsx";
 import ProtectedRoute from "./components/pages/auth/ProtectedRoute.tsx";
 import RedirectRoute from "./components/pages/auth/RedirectRoute.tsx";
 import Unauthorized from "./components/pages/auth/Unauthorized.tsx";
-import MonthlyFinancialSummary from "./components/pages/dashboard/dashboardPages/accounting/monthlyFinancialSummary/AccountingMonthlyFinancialSummary.tsx";
 import { DescriptionPage } from "./components/pages/dashboard/dashboardPages/supervision/assess/_components/recentAssassments/DescriptionPage.tsx";
 import "./index.css";
 import ScrollToTop from "./lib/utils/ScrollToTop.tsx";
@@ -51,6 +50,12 @@ const AccountingAdvisorDetail = lazy(
   () =>
     import(
       "./components/pages/dashboard/dashboardPages/accounting/allAdvisors/allAccountingAdvisors/_components/advisorDetail/AccountingAdvisorDetail.tsx"
+    )
+);
+const MonthlyFinancialReport = lazy(
+  () =>
+    import(
+      "./components/pages/dashboard/dashboardPages/accounting/monthlyFinancialReport"
     )
 );
 
@@ -353,12 +358,12 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "accounting/monthlyFinancialSummary",
+            path: "accounting/monthlyFinancialReport",
             element: (
               <ProtectedRoute
                 element={
                   <Suspense fallback={<Loading />}>
-                    <MonthlyFinancialSummary />
+                    <MonthlyFinancialReport />
                   </Suspense>
                 }
                 requiredRole={[0, 3]}

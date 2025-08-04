@@ -1,14 +1,15 @@
 import logOutIcon from "@/assets/icons/logout.svg";
+import logo from "@/assets/images/DeltaKonkur_Logo.png";
 import { Button } from "@/components/ui/button";
 import { sidebarLinks } from "@/constants";
 import { authStore } from "@/lib/store/authStore";
 import { cn } from "@/lib/utils/cn/cn";
+import * as Tooltip from "@radix-ui/react-tooltip";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronRight } from "lucide-react";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import LinkWithChildren from "./_components/LinkWithChilderen";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Home } from "lucide-react";
-import * as Tooltip from "@radix-ui/react-tooltip";
 
 export interface SidebarLink {
   id: number;
@@ -150,9 +151,9 @@ const Sidebar = () => {
                 to="/dashboard"
                 className="flex items-center gap-3 group cursor-pointer"
               >
-                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 via-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-300">
-                  <Home className="w-6 h-6 text-white" />
-                </div>
+                {/* <div className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-300"> */}
+                <img src={logo} alt="logo" className="w-10 h-10" />
+                {/* </div> */}
                 <AnimatePresence>
                   {!isCollapsed && (
                     <motion.h1

@@ -1,4 +1,5 @@
 import AuthForm from "../_components/form/AuthForm";
+import logo from "@/assets/images/DeltaKonkur_Logo.png";
 
 const SignIn = () => {
   return (
@@ -98,7 +99,7 @@ const SignIn = () => {
             <div className="lg:hidden text-center mb-8 animate-fade-in-down">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-600 rounded-2xl shadow-lg animate-glow-pulse mb-4">
                 <span className="text-3xl font-extrabold text-white drop-shadow-lg">
-                  Δ
+                  <img src={logo} alt="logo" className="w-6 h-6" />
                 </span>
               </div>
               <h2 className="text-2xl font-bold text-gray-900 tracking-tight mb-2">
