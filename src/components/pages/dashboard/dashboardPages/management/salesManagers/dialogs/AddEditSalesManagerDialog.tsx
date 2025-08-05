@@ -236,7 +236,7 @@ const AddEditSalesManagerDialog = ({
                         <SelectValue placeholder="سطح مسئول فروش را انتخاب کنید" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       <SelectItem value="1">سطح 1 - مبتدی</SelectItem>
                       <SelectItem value="2">سطح 2 - متوسط</SelectItem>
                       <SelectItem value="3">سطح 3 - پیشرفته</SelectItem>
