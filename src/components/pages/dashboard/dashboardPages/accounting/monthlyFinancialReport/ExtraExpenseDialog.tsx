@@ -1,22 +1,22 @@
-import React, { useEffect } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { Button } from "@/components/ui/button";
 import {
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Tag, FileText, Save, X } from "lucide-react";
-import { ExtraExpense, expenseCategories } from "./types";
-import PersianDatePicker from "./PersianDatePicker";
-import FormattedAmountInput from "./FormattedAmountInput";
-import SmartInput from "@/components/ui/SmartInput";
 import EnhancedSelect from "@/components/ui/EnhancedSelect";
+import SmartInput from "@/components/ui/SmartInput";
+import { Textarea } from "@/components/ui/textarea";
 import showToast from "@/components/ui/toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FileText, Save, Tag, X } from "lucide-react";
 import moment from "moment-jalaali";
+import React, { useEffect } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import * as z from "zod";
+import FormattedAmountInput from "./FormattedAmountInput";
+import PersianDatePicker from "./PersianDatePicker";
+import { ExtraExpense, expenseCategoriesDialog } from "./types";
 
 moment.loadPersian({ dialect: "persian-modern" });
 
@@ -200,7 +200,7 @@ const ExtraExpenseDialog: React.FC<ExtraExpenseDialogProps> = ({
               name="category"
               label="دسته‌بندی"
               placeholder="دسته‌بندی را انتخاب کنید"
-              options={expenseCategories}
+              options={expenseCategoriesDialog}
               icon={Tag}
               required={true}
             />

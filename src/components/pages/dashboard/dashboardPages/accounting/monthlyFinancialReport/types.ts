@@ -83,25 +83,6 @@ export interface FinancialRecordsResponse {
   results: FinancialRecord[];
 }
 
-// Monthly Revenue interfaces
-export interface MonthlyRevenue {
-  id: number;
-  solar_year: number;
-  solar_month: number;
-  total_revenue: number;
-  active_students_count: number;
-  prolonging_students_count: number;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface MonthlyRevenueResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: MonthlyRevenue[];
-}
-
 // Monthly Costs interfaces
 export interface MonthlyCost {
   id: number;
@@ -123,7 +104,26 @@ export interface MonthlyCostsResponse {
   results: MonthlyCost[];
 }
 
-// Historical Data interfaces
+// Monthly Revenue interfaces
+export interface MonthlyRevenue {
+  id: number;
+  solar_year: number;
+  solar_month: number;
+  total_revenue: number;
+  active_students_count: number;
+  prolonging_students_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MonthlyRevenueResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: MonthlyRevenue[];
+}
+
+// Historical Data interface
 export interface HistoricalData {
   id: number;
   solar_year: number;
@@ -144,14 +144,7 @@ export interface HistoricalData {
   updated_at: string;
 }
 
-export interface HistoricalDataResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: HistoricalData[];
-}
-
-// Extra Expenses interfaces
+// Extra Expense interfaces
 export interface ExtraExpense {
   id: number;
   title: string;
@@ -276,17 +269,29 @@ export const persianMonths = [
 
 // Category options for extra expenses
 export const expenseCategories = [
-  { value: "Office", label: "دفتری" },
-  { value: "Marketing", label: "بازاریابی" },
-  { value: "Technology", label: "تکنولوژی" },
-  { value: "Salary", label: "حقوق" },
-  { value: "Utilities", label: "آب و برق" },
-  { value: "Other", label: "سایر" },
+  { value: "", label: "همه" },
+  { value: "office", label: "دفتری" },
+  { value: "marketing", label: "بازاریابی" },
+  { value: "technology", label: "تکنولوژی" },
+  { value: "salary", label: "حقوق" },
+  { value: "utilities", label: "آب و برق" },
+  { value: "other", label: "سایر" },
+];
+
+// Category options for extra expenses dialog
+export const expenseCategoriesDialog = [
+  { value: "office", label: "دفتری" },
+  { value: "marketing", label: "بازاریابی" },
+  { value: "technology", label: "تکنولوژی" },
+  { value: "salary", label: "حقوق" },
+  { value: "utilities", label: "آب و برق" },
+  { value: "other", label: "سایر" },
 ];
 
 // Record types
 export const recordTypes = [
+  { value: "", label: "همه" },
   { value: "accountant", label: "حسابدار" },
-  { value: "manager", label: "مدیر" },
+  { value: "manual", label: "دستی" },
   { value: "system", label: "سیستم" },
 ];

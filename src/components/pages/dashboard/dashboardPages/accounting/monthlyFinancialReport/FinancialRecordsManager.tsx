@@ -1,34 +1,32 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  useMemo,
-} from "react";
-import { useSearchParams } from "react-router-dom";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { DataTable } from "@/components/ui/DataTable";
-import { FilterPanel } from "@/components/ui/FilterPanel";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { History } from "lucide-react";
-import { api } from "@/lib/services/api";
-import { useApiState } from "@/hooks/useApiState";
+import { FilterPanel } from "@/components/ui/FilterPanel";
 import showToast from "@/components/ui/toast";
+import { useApiState } from "@/hooks/useApiState";
+import { api } from "@/lib/services/api";
+import moment from "moment-jalaali";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   FinancialRecord,
   formatNumber,
-  recordTypes,
   persianMonths,
+  recordTypes,
   TableColumn,
 } from "./types";
-import moment from "moment-jalaali";
 
 moment.loadPersian({ dialect: "persian-modern" });
 
@@ -65,80 +63,11 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // =============================================================================
-  // MOCK DATA FOR TESTING
-  // =============================================================================
-  const USE_MOCK_DATA = true; // Set to false to use real API data
-
-  const mockRecords: FinancialRecord[] = useMemo(
-    () => [
-      {
-        id: 1,
-        solar_year: selectedYear,
-        solar_month: selectedMonth,
-        total_revenue: 1500000000,
-        active_students_count: 1250,
-        prolonging_students_count: 180,
-        total_costs: 800000000,
-        advisor_costs: 400000000,
-        supervisor_costs: 200000000,
-        sales_manager_costs: 150000000,
-        extra_expenses: 50000000,
-        total_profit: 700000000,
-        profit_margin_percentage: 46.67,
-        record_type: "monthly",
-        notes:
-          "سوابق مالی ماهانه مرکز آموزشی - شامل تمام درآمدها و هزینه‌های ثبت شده",
-        created_at: "2024-01-15T10:30:00Z",
-        updated_at: "2024-01-15T10:30:00Z",
-      },
-      {
-        id: 2,
-        solar_year: selectedYear,
-        solar_month: selectedMonth,
-        total_revenue: 1200000000,
-        active_students_count: 1100,
-        prolonging_students_count: 150,
-        total_costs: 700000000,
-        advisor_costs: 350000000,
-        supervisor_costs: 180000000,
-        sales_manager_costs: 120000000,
-        extra_expenses: 50000000,
-        total_profit: 500000000,
-        profit_margin_percentage: 41.67,
-        record_type: "weekly",
-        notes: "گزارش هفتگی مالی - بررسی روند درآمد و هزینه‌ها",
-        created_at: "2024-01-10T14:20:00Z",
-        updated_at: "2024-01-10T14:20:00Z",
-      },
-      {
-        id: 3,
-        solar_year: selectedYear,
-        solar_month: selectedMonth,
-        total_revenue: 1800000000,
-        active_students_count: 1400,
-        prolonging_students_count: 220,
-        total_costs: 900000000,
-        advisor_costs: 450000000,
-        supervisor_costs: 220000000,
-        sales_manager_costs: 180000000,
-        extra_expenses: 50000000,
-        total_profit: 900000000,
-        profit_margin_percentage: 50.0,
-        record_type: "monthly",
-        notes: "سوابق مالی ماهانه با رشد قابل توجه در تعداد دانشجویان",
-        created_at: "2024-01-20T09:15:00Z",
-        updated_at: "2024-01-20T09:15:00Z",
-      },
-    ],
-    [selectedYear, selectedMonth]
-  );
-
-  // =============================================================================
   // MEMOIZED VALUES
   // =============================================================================
   // Memoize search parameters to avoid unnecessary API calls
   const searchParamsMemo = useMemo(() => {
-    const page = searchParams.get("page") || "1";
+    const page = searchParams.get("records_page") || "1";
     const notesSearch = searchParams.get("notes_search") || "";
     const recordType = searchParams.get("record_type") || "";
     const profitMin = searchParams.get("profit_min") || "";
@@ -208,83 +137,28 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
     } = apiDependencies;
 
     try {
-      if (USE_MOCK_DATA) {
-        // Use mock data for testing
-        await new Promise((resolve) => setTimeout(resolve, 800)); // Simulate API delay
+      const params: Record<string, unknown> = {
+        page: parseInt(page),
+        solar_year: solarYear,
+        solar_month: solarMonth,
+      };
 
-        // Filter mock data based on search parameters
-        let filteredRecords = mockRecords;
+      if (notesSearch) params.notes_search = notesSearch;
+      if (recordType) params.record_type = recordType;
+      if (profitMin) params.profit_min = parseInt(profitMin);
+      if (profitMax) params.profit_max = parseInt(profitMax);
+      if (revenueMin) params.revenue_min = parseInt(revenueMin);
+      if (revenueMax) params.revenue_max = parseInt(revenueMax);
 
-        if (notesSearch) {
-          filteredRecords = filteredRecords.filter((record) =>
-            record.notes.toLowerCase().includes(notesSearch.toLowerCase())
-          );
-        }
+      const response = await executeWithLoading(async () => {
+        return await api.getPaginated<FinancialRecord>(
+          "api/finances/financial-records/",
+          params
+        );
+      });
 
-        if (recordType) {
-          filteredRecords = filteredRecords.filter(
-            (record) => record.record_type === recordType
-          );
-        }
-
-        if (profitMin) {
-          filteredRecords = filteredRecords.filter(
-            (record) => record.total_profit >= parseInt(profitMin)
-          );
-        }
-
-        if (profitMax) {
-          filteredRecords = filteredRecords.filter(
-            (record) => record.total_profit <= parseInt(profitMax)
-          );
-        }
-
-        if (revenueMin) {
-          filteredRecords = filteredRecords.filter(
-            (record) => record.total_revenue >= parseInt(revenueMin)
-          );
-        }
-
-        if (revenueMax) {
-          filteredRecords = filteredRecords.filter(
-            (record) => record.total_revenue <= parseInt(revenueMax)
-          );
-        }
-
-        // Simulate pagination
-        const startIndex = (parseInt(page) - 1) * 10;
-        const endIndex = startIndex + 10;
-        const paginatedRecords = filteredRecords.slice(startIndex, endIndex);
-
-        setRecords(paginatedRecords);
-        setTotalPages(Math.ceil(filteredRecords.length / 10));
-
-        showToast.success("سوابق مالی با موفقیت دریافت شد (داده‌های تست)");
-      } else {
-        // Use real API
-        const params: Record<string, unknown> = {
-          page: parseInt(page),
-          solar_year: solarYear,
-          solar_month: solarMonth,
-        };
-
-        if (notesSearch) params.notes_search = notesSearch;
-        if (recordType) params.record_type = recordType;
-        if (profitMin) params.profit_min = parseInt(profitMin);
-        if (profitMax) params.profit_max = parseInt(profitMax);
-        if (revenueMin) params.revenue_min = parseInt(revenueMin);
-        if (revenueMax) params.revenue_max = parseInt(revenueMax);
-
-        const response = await executeWithLoading(async () => {
-          return await api.getPaginated<FinancialRecord>(
-            "api/finances/financial-records/",
-            params
-          );
-        });
-
-        setRecords(response.results);
-        setTotalPages(Math.ceil(response.count / 10));
-      }
+      setRecords(response.results);
+      setTotalPages(Math.ceil(response.count / 10));
     } catch (error: unknown) {
       if (error instanceof Error && error.name === "AbortError") {
         console.log("Request was aborted");
@@ -293,7 +167,7 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
         showToast.error("خطا در دریافت لیست سوابق مالی");
       }
     }
-  }, [apiDependencies, executeWithLoading, USE_MOCK_DATA, mockRecords]);
+  }, [apiDependencies, executeWithLoading]);
 
   // =============================================================================
   // SEARCH HANDLING
@@ -310,22 +184,24 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
 
         // Set new timeout for search
         searchTimeoutRef.current = setTimeout(() => {
-          const newSearchParams = new URLSearchParams();
+          const newSearchParams = new URLSearchParams(searchParams);
 
           Object.entries(updatedFields).forEach(([key, val]) => {
             if (val.trim()) {
               newSearchParams.set(key, val);
+            } else {
+              newSearchParams.delete(key);
             }
           });
 
-          newSearchParams.set("page", "1");
+          newSearchParams.set("records_page", "1");
           setSearchParams(newSearchParams);
         }, 600); // 600ms delay for better UX
 
         return updatedFields;
       });
     },
-    [setSearchParams]
+    [setSearchParams, searchParams]
   );
 
   const handleClearAllFilters = useCallback(() => {
@@ -343,10 +219,17 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
       revenue_max: "",
     });
 
-    const newSearchParams = new URLSearchParams();
-    newSearchParams.set("page", "1");
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("records_page", "1");
+    // Clear all filter params
+    newSearchParams.delete("notes_search");
+    newSearchParams.delete("record_type");
+    newSearchParams.delete("profit_min");
+    newSearchParams.delete("profit_max");
+    newSearchParams.delete("revenue_min");
+    newSearchParams.delete("revenue_max");
     setSearchParams(newSearchParams);
-  }, [setSearchParams]);
+  }, [setSearchParams, searchParams]);
 
   // =============================================================================
   // PAGINATION HANDLING
@@ -357,7 +240,7 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
 
       // Create new search params from current URL params
       const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set("page", page.toString());
+      newSearchParams.set("records_page", page.toString());
 
       setSearchParams(newSearchParams);
     },
@@ -372,10 +255,6 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
     setSelectedRecord(financialRecord);
     setIsDetailsDialogOpen(true);
   }, []);
-
-  const handleRefreshData = useCallback(() => {
-    fetchRecords();
-  }, [fetchRecords]);
 
   // =============================================================================
   // TABLE COLUMNS CONFIGURATION
@@ -549,7 +428,7 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
       revenue_min: revenueMin,
       revenue_max: revenueMax,
     });
-  }, []); // Empty dependency array to run only on mount
+  }, [searchParams]); // Add searchParams as dependency to update when URL changes
 
   // Fetch records when dependencies change
   useEffect(() => {
@@ -579,7 +458,7 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
+        <div className="p-5">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">سوابق مالی</h2>
           <p className="text-gray-600">
             مشاهده و مدیریت سوابق مالی ماه{" "}
@@ -587,14 +466,6 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
             {selectedYear}
           </p>
         </div>
-        <Button
-          onClick={handleRefreshData}
-          variant="outline"
-          className="bg-white hover:bg-gray-50"
-        >
-          <History className="w-4 h-4 ml-2" />
-          بروزرسانی
-        </Button>
       </div>
 
       {/* Filter Panel */}
@@ -614,7 +485,7 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
             }
             loading={loading}
             pagination={{
-              currentPage: parseInt(searchParams.get("page") || "1"),
+              currentPage: parseInt(searchParams.get("records_page") || "1"),
               totalPages,
               onPageChange: handlePageChange,
             }}

@@ -1,30 +1,22 @@
-import React, { useState } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ResponsiveTabs, TabItem } from "@/components/ui/ResponsiveTabs";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { DataTable } from "@/components/ui/DataTable";
-import {
-  Users,
-  UserCheck,
-  Building2,
-  TrendingUp,
-  TrendingDown,
-  Eye,
-  EyeOff,
-  DollarSign,
-} from "lucide-react";
-import { FinancialDetailsProps, formatNumber } from "./types";
+import { ResponsiveTabs, TabItem } from "@/components/ui/ResponsiveTabs";
 import { TableColumn } from "@/types";
+import {
+  Building2,
+  DollarSign,
+  TrendingDown,
+  TrendingUp,
+  UserCheck,
+  Users,
+} from "lucide-react";
+import React, { useState } from "react";
 import ExtraExpensesManager from "./ExtraExpensesManager";
+import { FinancialDetailsProps, formatNumber } from "./types";
 
 const FinancialDetails: React.FC<FinancialDetailsProps> = ({ data }) => {
-  const [showAmounts, setShowAmounts] = useState(true);
   const [activeTab, setActiveTab] = useState("revenue");
-
-  const toggleAmounts = () => {
-    setShowAmounts(!showAmounts);
-  };
 
   // Revenue table columns
   const revenueColumns: TableColumn<(typeof data.revenue_details)[0]>[] = [
@@ -40,7 +32,7 @@ const FinancialDetails: React.FC<FinancialDetailsProps> = ({ data }) => {
       accessorKey: "package_price",
       cell: (value) => (
         <span className="text-gray-600">
-          {showAmounts ? formatNumber(Number(value)) : "***"} تومان
+          {formatNumber(Number(value))} تومان
         </span>
       ),
     },
@@ -50,7 +42,7 @@ const FinancialDetails: React.FC<FinancialDetailsProps> = ({ data }) => {
       accessorKey: "revenue",
       cell: (value) => (
         <span className="text-green-600 font-medium">
-          {showAmounts ? formatNumber(Number(value)) : "***"} تومان
+          {formatNumber(Number(value))} تومان
         </span>
       ),
     },
@@ -86,7 +78,7 @@ const FinancialDetails: React.FC<FinancialDetailsProps> = ({ data }) => {
       accessorKey: "amount",
       cell: (value) => (
         <span className="text-red-600 font-medium">
-          {showAmounts ? formatNumber(Number(value)) : "***"} تومان
+          {formatNumber(Number(value))} تومان
         </span>
       ),
     },
@@ -118,7 +110,7 @@ const FinancialDetails: React.FC<FinancialDetailsProps> = ({ data }) => {
       accessorKey: "amount",
       cell: (value) => (
         <span className="text-red-600 font-medium">
-          {showAmounts ? formatNumber(Number(value)) : "***"} تومان
+          {formatNumber(Number(value))} تومان
         </span>
       ),
     },
@@ -158,8 +150,7 @@ const FinancialDetails: React.FC<FinancialDetailsProps> = ({ data }) => {
               <div>
                 <span className="text-sm text-gray-600">کل درآمد:</span>
                 <span className="text-sm font-medium text-green-600 mr-2">
-                  {showAmounts ? formatNumber(manager.total_earnings) : "***"}{" "}
-                  تومان
+                  {formatNumber(manager.total_earnings)} تومان
                 </span>
               </div>
             </div>
@@ -186,8 +177,7 @@ const FinancialDetails: React.FC<FinancialDetailsProps> = ({ data }) => {
                     accessorKey: "package_price",
                     cell: (value) => (
                       <span className="text-gray-600">
-                        {showAmounts ? formatNumber(Number(value)) : "***"}{" "}
-                        تومان
+                        {formatNumber(Number(value))} تومان
                       </span>
                     ),
                   },
@@ -197,8 +187,7 @@ const FinancialDetails: React.FC<FinancialDetailsProps> = ({ data }) => {
                     accessorKey: "earnings",
                     cell: (value) => (
                       <span className="text-green-600">
-                        {showAmounts ? formatNumber(Number(value)) : "***"}{" "}
-                        تومان
+                        {formatNumber(Number(value))} تومان
                       </span>
                     ),
                   },
@@ -228,19 +217,6 @@ const FinancialDetails: React.FC<FinancialDetailsProps> = ({ data }) => {
                 جزئیات درآمد
               </h3>
             </div>
-            <Button variant="outline" size="sm" onClick={toggleAmounts}>
-              {showAmounts ? (
-                <>
-                  <EyeOff className="w-4 h-4 ml-2" />
-                  مخفی کردن مبالغ
-                </>
-              ) : (
-                <>
-                  <Eye className="w-4 h-4 ml-2" />
-                  نمایش مبالغ
-                </>
-              )}
-            </Button>
           </div>
           <DataTable
             data={data.revenue_details || []}
@@ -324,7 +300,6 @@ const FinancialDetails: React.FC<FinancialDetailsProps> = ({ data }) => {
       className="bg-white rounded-xl shadow-sm border"
       showHeader={true}
       headerClassName="border-b border-gray-200"
-      contentClassName="p-6"
     />
   );
 };

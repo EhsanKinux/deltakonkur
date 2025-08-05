@@ -16,6 +16,7 @@ import { Plus } from "lucide-react";
 import { api } from "@/lib/services/api";
 import { useApiState } from "@/hooks/useApiState";
 import showToast from "@/components/ui/toast";
+import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import {
   ExtraExpense,
   formatNumber,
@@ -25,6 +26,7 @@ import {
 } from "./types";
 import ExtraExpenseDialog from "./ExtraExpenseDialog";
 import ExtraExpenseDetailsDialog from "./ExtraExpenseDetailsDialog";
+import DeleteExpenseDialog from "./DeleteExpenseDialog";
 
 interface ExtraExpensesManagerProps {
   selectedYear: number;
@@ -53,7 +55,7 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState(1);
   const [searchFields, setSearchFields] = useState({
-    title: "",
+    search: "",
     category: "",
     amount_min: "",
     amount_max: "",
@@ -63,6 +65,7 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
   const { loading, executeWithLoading } = useApiState();
@@ -74,20 +77,20 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
   // =============================================================================
   // Memoize search parameters to avoid unnecessary API calls
   const searchParamsMemo = useMemo(() => {
-    const page = searchParams.get("page") || "1";
-    const title = searchParams.get("title") || "";
-    const category = searchParams.get("category") || "";
-    const amountMin = searchParams.get("amount_min") || "";
-    const amountMax = searchParams.get("amount_max") || "";
+    const page = searchParams.get("expenses_page") || "1";
+    const search = searchParams.get("expense_search") || "";
+    const category = searchParams.get("expense_category") || "";
+    const amountMin = searchParams.get("expense_amount_min") || "";
+    const amountMax = searchParams.get("expense_amount_max") || "";
 
-    return { page, title, category, amountMin, amountMax };
+    return { page, search, category, amountMin, amountMax };
   }, [searchParams]);
 
   // Separate memoized values for API call dependencies
   const apiDependencies = useMemo(
     () => ({
       page: searchParamsMemo.page,
-      title: searchParamsMemo.title,
+      search: searchParamsMemo.search,
       category: searchParamsMemo.category,
       amountMin: searchParamsMemo.amountMin,
       amountMax: searchParamsMemo.amountMax,
@@ -96,7 +99,7 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
     }),
     [
       searchParamsMemo.page,
-      searchParamsMemo.title,
+      searchParamsMemo.search,
       searchParamsMemo.category,
       searchParamsMemo.amountMin,
       searchParamsMemo.amountMax,
@@ -119,7 +122,7 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
 
     const {
       page,
-      title,
+      search,
       category,
       amountMin,
       amountMax,
@@ -134,7 +137,7 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
         solar_month: solarMonth,
       };
 
-      if (title) params.title = title;
+      if (search) params.search = search;
       if (category) params.category = category;
       if (amountMin) params.amount_min = parseInt(amountMin);
       if (amountMax) params.amount_max = parseInt(amountMax);
@@ -226,22 +229,33 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
 
         // Set new timeout for search
         searchTimeoutRef.current = setTimeout(() => {
-          const newSearchParams = new URLSearchParams();
+          const newSearchParams = new URLSearchParams(searchParams);
+
+          // Map field names to URL parameter names
+          const fieldToParamMap: Record<string, string> = {
+            search: "expense_search",
+            category: "expense_category",
+            amount_min: "expense_amount_min",
+            amount_max: "expense_amount_max",
+          };
 
           Object.entries(updatedFields).forEach(([key, val]) => {
+            const paramName = fieldToParamMap[key] || key;
             if (val.trim()) {
-              newSearchParams.set(key, val);
+              newSearchParams.set(paramName, val);
+            } else {
+              newSearchParams.delete(paramName);
             }
           });
 
-          newSearchParams.set("page", "1");
+          newSearchParams.set("expenses_page", "1");
           setSearchParams(newSearchParams);
         }, 600); // 600ms delay for better UX
 
         return updatedFields;
       });
     },
-    [setSearchParams]
+    [setSearchParams, searchParams]
   );
 
   const handleClearAllFilters = useCallback(() => {
@@ -251,16 +265,21 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
     }
 
     setSearchFields({
-      title: "",
+      search: "",
       category: "",
       amount_min: "",
       amount_max: "",
     });
 
-    const newSearchParams = new URLSearchParams();
-    newSearchParams.set("page", "1");
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("expenses_page", "1");
+    // Clear all filter params
+    newSearchParams.delete("expense_search");
+    newSearchParams.delete("expense_category");
+    newSearchParams.delete("expense_amount_min");
+    newSearchParams.delete("expense_amount_max");
     setSearchParams(newSearchParams);
-  }, [setSearchParams]);
+  }, [setSearchParams, searchParams]);
 
   // =============================================================================
   // PAGINATION HANDLING
@@ -271,7 +290,7 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
 
       // Create new search params from current URL params
       const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set("page", page.toString());
+      newSearchParams.set("expenses_page", page.toString());
 
       setSearchParams(newSearchParams);
     },
@@ -294,19 +313,24 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
     setIsDialogOpen(true);
   }, []);
 
-  const handleDelete = useCallback(
-    (expense: Record<string, unknown>) => {
-      const extraExpense = expense as unknown as ExtraExpense;
-      if (
-        window.confirm(
-          `آیا از حذف هزینه "${extraExpense.title}" اطمینان دارید؟`
-        )
-      ) {
-        deleteExpense(extraExpense.id);
-      }
-    },
-    [deleteExpense]
-  );
+  const handleDelete = useCallback((expense: Record<string, unknown>) => {
+    const extraExpense = expense as unknown as ExtraExpense;
+    setSelectedExpense(extraExpense);
+    setIsDeleteDialogOpen(true);
+  }, []);
+
+  const handleDeleteConfirm = useCallback(() => {
+    if (selectedExpense) {
+      deleteExpense(selectedExpense.id);
+      setIsDeleteDialogOpen(false);
+      setSelectedExpense(null);
+    }
+  }, [selectedExpense, deleteExpense]);
+
+  const handleDeleteCancel = useCallback(() => {
+    setIsDeleteDialogOpen(false);
+    setSelectedExpense(null);
+  }, []);
 
   const handleView = useCallback((expense: Record<string, unknown>) => {
     const extraExpense = expense as unknown as ExtraExpense;
@@ -375,7 +399,7 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
       header: "تاریخ",
       accessorKey: "date",
       cell: (value: unknown) => (
-        <span className="text-gray-600">{String(value)}</span>
+        <span className="text-gray-600">{convertToShamsi(String(value))}</span>
       ),
     },
     {
@@ -396,10 +420,10 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
   // =============================================================================
   const filterFields = [
     {
-      key: "title",
-      placeholder: "عنوان",
-      value: searchFields.title,
-      onChange: (value: string) => handleSearchFieldChange("title", value),
+      key: "search",
+      placeholder: "عنوان یا توضیحات",
+      value: searchFields.search,
+      onChange: (value: string) => handleSearchFieldChange("search", value),
     },
     {
       key: "category",
@@ -430,18 +454,18 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
   // =============================================================================
   // Initialize search fields from URL params on mount
   useEffect(() => {
-    const title = searchParams.get("title") || "";
-    const category = searchParams.get("category") || "";
-    const amountMin = searchParams.get("amount_min") || "";
-    const amountMax = searchParams.get("amount_max") || "";
+    const search = searchParams.get("expense_search") || "";
+    const category = searchParams.get("expense_category") || "";
+    const amountMin = searchParams.get("expense_amount_min") || "";
+    const amountMax = searchParams.get("expense_amount_max") || "";
 
     setSearchFields({
-      title,
+      search,
       category,
       amount_min: amountMin,
       amount_max: amountMax,
     });
-  }, []); // Empty dependency array to run only on mount
+  }, [searchParams]); // Add searchParams as dependency to update when URL changes
 
   // Fetch expenses when dependencies change
   useEffect(() => {
@@ -470,7 +494,7 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col lg:flex-row items-center justify-between p-5">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             مدیریت هزینه‌های اضافی
@@ -507,7 +531,7 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
             }
             loading={loading}
             pagination={{
-              currentPage: parseInt(searchParams.get("page") || "1"),
+              currentPage: parseInt(searchParams.get("expenses_page") || "1"),
               totalPages,
               onPageChange: handlePageChange,
             }}
@@ -542,6 +566,15 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
           />
         )}
       </Dialog>
+
+      {/* Delete Dialog */}
+      <DeleteExpenseDialog
+        open={isDeleteDialogOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        expense={selectedExpense}
+        loading={loading}
+      />
     </div>
   );
 };
