@@ -173,7 +173,7 @@ const CustomToast = ({
         className="
           text-gray-400 hover:text-gray-600 
           transition-all duration-200 
-          p-1.5 rounded-lg 
+          p-1.5 rounded-[8px] 
           hover:bg-gray-100 hover:scale-110
           focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-1
           active:scale-95

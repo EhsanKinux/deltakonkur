@@ -163,7 +163,11 @@ const StopDialog = ({
                   onValueChange={(value) =>
                     field.onChange(value === "null" ? null : Number(value))
                   }
-                  value={field.value?.toString() || "null"}
+                  value={
+                    field.value !== null && field.value !== undefined
+                      ? String(field.value)
+                      : "null"
+                  }
                 >
                   <FormControl>
                     <SelectTrigger className="w-full text-16 rounded-[8px] text-gray-900 border-slate-400 hover:border-blue-400 focus:border-blue-500 transition-colors">
