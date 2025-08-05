@@ -76,8 +76,8 @@ const MonthlyFinancialReport: React.FC = () => {
   const generateYears = () => {
     const currentYear = new Date().getFullYear();
     const persianCurrentYear = currentYear - 621;
-    const startYear = 1300;
-    const endYear = persianCurrentYear + 10;
+    const startYear = 1380;
+    const endYear = persianCurrentYear + 60;
     const years = [];
 
     for (let year = startYear; year <= endYear; year++) {

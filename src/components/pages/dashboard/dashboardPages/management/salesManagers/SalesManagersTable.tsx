@@ -7,9 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
-import { ISalesManager } from "./interface";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
+import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
+import { ISalesManager } from "./interface";
 
 interface SalesManagersTableProps {
   data: ISalesManager[];
@@ -18,41 +18,6 @@ interface SalesManagersTableProps {
   onViewDetail: (row: ISalesManager) => void;
   loading?: boolean;
 }
-
-// Function to format bank account number for display
-const formatBankAccountDisplay = (accountNumber: string) => {
-  if (!accountNumber) return "-";
-  const cleanValue = accountNumber.replace(/\D/g, "");
-
-  // Format based on length
-  if (cleanValue.length <= 4) return cleanValue;
-  if (cleanValue.length <= 8)
-    return `${cleanValue.slice(0, 4)}-${cleanValue.slice(4)}`;
-  if (cleanValue.length <= 12)
-    return `${cleanValue.slice(0, 4)}-${cleanValue.slice(
-      4,
-      8
-    )}-${cleanValue.slice(8)}`;
-  if (cleanValue.length <= 16)
-    return `${cleanValue.slice(0, 4)}-${cleanValue.slice(
-      4,
-      8
-    )}-${cleanValue.slice(8, 12)}-${cleanValue.slice(12)}`;
-
-  return accountNumber;
-};
-
-// Function to get level display text
-const getLevelDisplay = (level: number) => {
-  const levelMap: Record<number, string> = {
-    1: "سطح 1 - مبتدی",
-    2: "سطح 2 - متوسط",
-    3: "سطح 3 - پیشرفته",
-    4: "سطح 4 - متخصص",
-    5: "سطح 5 - ارشد",
-  };
-  return levelMap[level] || `سطح ${level}`;
-};
 
 export const SalesManagersTable = ({
   data,

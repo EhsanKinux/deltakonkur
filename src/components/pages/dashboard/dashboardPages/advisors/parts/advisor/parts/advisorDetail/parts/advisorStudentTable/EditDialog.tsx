@@ -36,7 +36,9 @@ export function EditStudentDialog({
   formData: StudentWithDetails;
 }) {
   const formSchema = editStudentFormSchemaInAdvisor();
-  const form = useForm<z.infer<ReturnType<typeof editStudentFormSchemaInAdvisor>>>({
+  const form = useForm<
+    z.infer<ReturnType<typeof editStudentFormSchemaInAdvisor>>
+  >({
     resolver: zodResolver(formSchema),
     defaultValues: {
       id: "",
@@ -203,9 +205,6 @@ export function EditStudentDialog({
 
         dialogCloseRef.current?.click();
         showToast.success("ویرایش اطلاعات دانش آموز با موفقیت انجام شد.");
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1300);
       }
     } catch (error) {
       let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";

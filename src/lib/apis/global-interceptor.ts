@@ -8,6 +8,20 @@ const api = axios.create({
   baseURL: BASE_API_URL,
 });
 
+// Request interceptor to add Authorization header
+api.interceptors.request.use(
+  (config) => {
+    const { accessToken } = authStore.getState();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
