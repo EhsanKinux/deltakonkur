@@ -64,7 +64,7 @@ const StopDialog = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       stopDate: "",
-      stopReason: null,
+      stopReason: 1,
     },
   });
 
@@ -175,9 +175,6 @@ const StopDialog = ({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="bg-white rounded-xl shadow-lg border border-gray-200">
-                    <SelectItem value="null" className="text-gray-500">
-                      بدون دلیل خاص
-                    </SelectItem>
                     {stopReasonOptions.map((option) => (
                       <SelectItem
                         key={option.value}
