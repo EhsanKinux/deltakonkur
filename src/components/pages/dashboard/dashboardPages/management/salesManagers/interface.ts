@@ -8,4 +8,6 @@ export interface ISalesManager {
   created_at?: string;
   first_name?: string;
   last_name?: string;
+  level?: number;
+  bank_account?: string;
 }

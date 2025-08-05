@@ -6,6 +6,7 @@ import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import AddEditSalesManagerDialog from "./dialogs/AddEditSalesManagerDialog";
 import DeleteSalesManagerDialog from "./dialogs/DeleteSalesManagerDialog";
+import SalesManagerDetailDialog from "./dialogs/SalesManagerDetailDialog";
 import { ISalesManager } from "./interface";
 import { SalesManagersTable } from "./SalesManagersTable";
 import { authStore } from "@/lib/store/authStore";
@@ -20,6 +21,10 @@ const SalesManagers = () => {
   const [editRow, setEditRow] = useState<ISalesManager | null>(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [rowToDelete, setRowToDelete] = useState<ISalesManager | null>(null);
+  const [detailDialog, setDetailDialog] = useState(false);
+  const [selectedManagerId, setSelectedManagerId] = useState<number | null>(
+    null
+  );
   const [searchFields, setSearchFields] = useState({
     first_name: "",
     last_name: "",
@@ -89,6 +94,8 @@ const SalesManagers = () => {
     first_name: string;
     last_name: string;
     national_number: string;
+    level: number;
+    bank_account: string;
     id?: number;
   }) => {
     try {
@@ -161,6 +168,12 @@ const SalesManagers = () => {
   const handleDelete = (row: ISalesManager) => {
     setRowToDelete(row);
     setDeleteDialog(true);
+  };
+
+  // مشاهده جزئیات
+  const handleViewDetail = (row: ISalesManager) => {
+    setSelectedManagerId(row.id);
+    setDetailDialog(true);
   };
 
   const confirmDelete = async () => {
@@ -246,12 +259,16 @@ const SalesManagers = () => {
               />
             </div>
           </div>
+          <h4 className="text-sm font-bold text-blue-400">
+            برای مشاهده جزئیات بیشتر مسئول فروش روی آن کلیک کنید.
+          </h4>
         </div>
         <SalesManagersTable
           data={data}
           onEdit={handleEdit}
           onDelete={handleDelete}
           loading={loading}
+          onViewDetail={handleViewDetail}
         />
         {/* Pagination controls below the table */}
         <div className="flex justify-center items-center gap-2 mt-4">
@@ -287,6 +304,11 @@ const SalesManagers = () => {
         onClose={() => setDeleteDialog(false)}
         onConfirm={confirmDelete}
         manager={rowToDelete}
+      />
+      <SalesManagerDetailDialog
+        open={detailDialog}
+        onClose={() => setDetailDialog(false)}
+        managerId={selectedManagerId}
       />
     </div>
   );

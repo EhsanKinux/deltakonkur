@@ -5,12 +5,18 @@ import Loading from "./components/loader/Loading.tsx";
 import ProtectedRoute from "./components/pages/auth/ProtectedRoute.tsx";
 import RedirectRoute from "./components/pages/auth/RedirectRoute.tsx";
 import Unauthorized from "./components/pages/auth/Unauthorized.tsx";
-import MonthlyFinancialSummary from "./components/pages/dashboard/dashboardPages/accounting/monthlyFinancialSummary/AccountingMonthlyFinancialSummary.tsx";
 import { DescriptionPage } from "./components/pages/dashboard/dashboardPages/supervision/assess/parts/recentAssassments/DescriptionPage.tsx";
 import "./index.css";
 import ScrollToTop from "./lib/utils/ScrollToTop.tsx";
 
 // Lazy load components
+
+const MonthlyFinancialSummary = lazy(
+  () =>
+    import(
+      "./components/pages/dashboard/dashboardPages/accounting/monthlyFinancialSummary/AccountingMonthlyFinancialSummary.tsx"
+    )
+);
 const ExamAdvisroDetail = lazy(
   () =>
     import(

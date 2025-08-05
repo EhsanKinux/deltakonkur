@@ -37,6 +37,8 @@ type SalesManagerSummary = {
   sales_manager_id: number;
   sales_manager_name: string;
   national_number: string;
+  level: number;
+  percentage: number;
   student_count: number;
   active_student_count: number;
   total_earnings: number;
@@ -104,24 +106,26 @@ const ManagementReports = () => {
           "شناسه مسئولان فروش": String(item.sales_manager_id),
           "نام مسئولان فروش": String(item.sales_manager_name),
           "کد ملی": String(item.national_number),
+          سطح: String(item.level),
+          "درصد کمیسیون": String((item.percentage * 100).toFixed(1) + "%"),
           "تعداد دانش‌آموز": String(item.student_count),
           "تعداد دانش‌آموز فعال": String(item.active_student_count),
           "درآمد کل": String(item.total_earnings),
           "تعداد روابط محاسبه‌شده": String(item.calculated_relationships),
           "تازه محاسبه شده": String(item.newly_calculated),
-          "تعداد کل مسئولین فروش": "",
         }));
         // Add summary row
         rows.push({
           "شناسه مسئولان فروش": "جمع کل",
           "نام مسئولان فروش": "-",
           "کد ملی": "-",
+          سطح: "-",
+          "درصد کمیسیون": "-",
           "تعداد دانش‌آموز": String(summary.total_students),
           "تعداد دانش‌آموز فعال": String(summary.total_active_students),
           "درآمد کل": String(summary.total_earnings),
           "تعداد روابط محاسبه‌شده": "-",
           "تازه محاسبه شده": "-",
-          "تعداد کل مسئولین فروش": String(summary.total_sales_managers),
         });
         return rows;
       }
