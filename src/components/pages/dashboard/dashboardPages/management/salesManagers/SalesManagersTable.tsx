@@ -36,7 +36,7 @@ export const SalesManagersTable = ({
             <TableHead className="!text-center">نام</TableHead>
             <TableHead className="!text-center">نام خانوادگی</TableHead>
             <TableHead className="!text-center">کد ملی</TableHead>
-
+            <TableHead className="!text-center">حساب بانکی</TableHead>
             <TableHead className="!text-center">تعداد دانش‌آموز</TableHead>
             <TableHead className="!text-center">تاریخ ایجاد</TableHead>
             <TableHead className="!text-center">عملیات</TableHead>
@@ -87,7 +87,9 @@ export const SalesManagersTable = ({
                 <TableCell className="!text-center">
                   {row.national_number}
                 </TableCell>
-
+                <TableCell className="!text-center">
+                  {row.bank_account || "-"}
+                </TableCell>
                 <TableCell className="!text-center">
                   {row.student_count}
                 </TableCell>

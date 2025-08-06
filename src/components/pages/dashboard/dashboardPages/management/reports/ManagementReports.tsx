@@ -44,6 +44,7 @@ type SalesManagerSummary = {
   total_earnings: number;
   calculated_relationships: number;
   newly_calculated: number;
+  bank_account: string | null;
 };
 type SalesSummary = {
   total_sales_managers: number;
@@ -106,6 +107,7 @@ const ManagementReports = () => {
           "شناسه مسئولان فروش": String(item.sales_manager_id),
           "نام مسئولان فروش": String(item.sales_manager_name),
           "کد ملی": String(item.national_number),
+          "حساب بانکی": item.bank_account || "بدون حساب",
           سطح: String(item.level),
           "درصد کمیسیون": String((item.percentage * 100).toFixed(1) + "%"),
           "تعداد دانش‌آموز": String(item.student_count),
@@ -119,6 +121,7 @@ const ManagementReports = () => {
           "شناسه مسئولان فروش": "جمع کل",
           "نام مسئولان فروش": "-",
           "کد ملی": "-",
+          "حساب بانکی": "-",
           سطح: "-",
           "درصد کمیسیون": "-",
           "تعداد دانش‌آموز": String(summary.total_students),
