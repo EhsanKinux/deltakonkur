@@ -362,7 +362,7 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
                   placeholder="نام مشاور را وارد کنید..."
                   value={advisorFirstName}
                   onChange={(e) => setAdvisorFirstName(e.target.value)}
-                  className="bg-white pl-10 pr-3 py-2 border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg"
+                  className="bg-white px-7 py-2 border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg"
                 />
                 {advisorFirstName && (
                   <button
@@ -391,7 +391,7 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
                   placeholder="نام خانوادگی مشاور را وارد کنید..."
                   value={advisorLastName}
                   onChange={(e) => setAdvisorLastName(e.target.value)}
-                  className="bg-white pl-10 pr-3 py-2 border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg"
+                  className="bg-white px-7 py-2 border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg"
                 />
                 {advisorLastName && (
                   <button
