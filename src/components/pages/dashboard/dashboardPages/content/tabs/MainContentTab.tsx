@@ -9,6 +9,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import showToast from "@/components/ui/toast";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
@@ -21,7 +30,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
 import { authStore } from "@/lib/store/authStore";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Search, X } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -37,6 +46,7 @@ interface MainContentItem {
     last_name: string;
     phone_number: string;
   };
+  advisor_name: string;
   solar_year: number;
   solar_month: number;
   is_delivered: boolean;
@@ -154,6 +164,11 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [batchLoading, setBatchLoading] = useState(false);
 
+  // Filter states
+  const [advisorFirstName, setAdvisorFirstName] = useState<string>("");
+  const [advisorLastName, setAdvisorLastName] = useState<string>("");
+  const [deliveryStatus, setDeliveryStatus] = useState<string>("all");
+
   // --- Sync state to query params ---
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
@@ -174,13 +189,36 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
       setMainLoading(true);
       try {
         const { accessToken } = authStore.getState();
-        const res = await axios.get(
-          BASE_API_URL + "api/content/contents/monthly-contents/",
-          {
-            params: { page: pageNum, solar_year: year, solar_month: month },
-            headers: { Authorization: `Bearer ${accessToken}` },
-          }
-        );
+
+        // Prepare filter parameters
+        const params: {
+          page: number;
+          solar_year: number;
+          solar_month: number;
+          advisor_first_name?: string;
+          advisor_last_name?: string;
+          is_delivered?: boolean;
+        } = {
+          page: pageNum,
+          solar_year: year,
+          solar_month: month,
+        };
+
+        // Add filter parameters if they have values
+        if (advisorFirstName.trim()) {
+          params.advisor_first_name = advisorFirstName.trim();
+        }
+        if (advisorLastName.trim()) {
+          params.advisor_last_name = advisorLastName.trim();
+        }
+        if (deliveryStatus !== "all") {
+          params.is_delivered = deliveryStatus === "delivered";
+        }
+
+        const res = await axios.get(BASE_API_URL + "api/content/contents/", {
+          params,
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
         setMainData(res.data.results);
         setMainCount(res.data.count);
         setMainNext(res.data.next);
@@ -192,7 +230,15 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
     };
     fetchMainMonthly(mainPage, selectedYear, selectedMonth);
     // eslint-disable-next-line
-  }, [mainPage, selectedYear, selectedMonth, refreshKey]); // اضافه کردن refreshKey
+  }, [
+    mainPage,
+    selectedYear,
+    selectedMonth,
+    refreshKey,
+    advisorFirstName,
+    advisorLastName,
+    deliveryStatus,
+  ]); // اضافه کردن فیلترها
 
   // --- Sync state with query params on mount (for browser refresh) ---
   useEffect(() => {
@@ -294,6 +340,108 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
         >
           ایجاد محتوای جدید +
         </Button>
+      </div>
+
+      {/* Filters Section */}
+      <div className="w-full bg-slate-50 p-4 rounded-xl border border-slate-200 mb-4">
+        <div className="flex flex-col lg:flex-row items-end gap-4">
+          <div className="flex flex-col lg:flex-row items-center gap-4 flex-1 w-full">
+            {/* First Name Filter */}
+            <div className="flex flex-col gap-2 min-w-[200px] w-full">
+              <Label
+                htmlFor="firstName"
+                className="text-sm font-medium text-slate-700"
+              >
+                نام مشاور
+              </Label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input
+                  id="firstName"
+                  type="text"
+                  placeholder="نام مشاور را وارد کنید..."
+                  value={advisorFirstName}
+                  onChange={(e) => setAdvisorFirstName(e.target.value)}
+                  className="bg-white pl-10 pr-3 py-2 border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg"
+                />
+                {advisorFirstName && (
+                  <button
+                    onClick={() => setAdvisorFirstName("")}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Last Name Filter */}
+            <div className="flex flex-col gap-2 min-w-[200px] w-full">
+              <Label
+                htmlFor="lastName"
+                className="text-sm font-medium text-slate-700"
+              >
+                نام خانوادگی مشاور
+              </Label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input
+                  id="lastName"
+                  type="text"
+                  placeholder="نام خانوادگی مشاور را وارد کنید..."
+                  value={advisorLastName}
+                  onChange={(e) => setAdvisorLastName(e.target.value)}
+                  className="bg-white pl-10 pr-3 py-2 border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg"
+                />
+                {advisorLastName && (
+                  <button
+                    onClick={() => setAdvisorLastName("")}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Delivery Status Filter */}
+            <div className="flex flex-col gap-2 min-w-[200px] w-full">
+              <Label
+                htmlFor="deliveryStatus"
+                className="text-sm font-medium text-slate-700"
+              >
+                وضعیت تحویل
+              </Label>
+              <Select value={deliveryStatus} onValueChange={setDeliveryStatus}>
+                <SelectTrigger className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg bg-white">
+                  <SelectValue placeholder="انتخاب وضعیت" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="all">همه موارد</SelectItem>
+                  <SelectItem value="delivered">تحویل شده</SelectItem>
+                  <SelectItem value="not_delivered">تحویل نشده</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Clear Filters Button */}
+          {(advisorFirstName ||
+            advisorLastName ||
+            deliveryStatus !== "all") && (
+            <Button
+              variant="outline"
+              onClick={() => {
+                setAdvisorFirstName("");
+                setAdvisorLastName("");
+                setDeliveryStatus("all");
+              }}
+              className="border-slate-300 text-slate-600 hover:bg-slate-100 rounded-lg"
+            >
+              پاک کردن فیلترها
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Table Controls */}
@@ -470,107 +618,112 @@ const MainContentTab: React.FC<MainContentTabProps> = ({
                 </TableCell>
               </TableRow>
             ) : (
-              (Array.isArray(mainData) ? mainData : []).map((row, idx) => (
-                <TableRow
-                  key={row.id}
-                  className="hover:bg-blue-50 transition-all duration-200 cursor-pointer"
-                  onClick={() => {
-                    const params = new URLSearchParams(searchParams);
-                    navigate(
-                      `/dashboard/content/${row.id}?${params.toString()}`
-                    );
-                  }}
-                >
-                  <TableCell className="!text-center font-bold border-slate-100">
-                    {(mainPage - 1) * 10 + idx + 1}
-                  </TableCell>
-                  <TableCell className="!text-center border-slate-100">
-                    {row.advisor.first_name} {row.advisor.last_name}
-                  </TableCell>
-                  <TableCell className="!text-center border-slate-100">
-                    {row.persian_month_name}
-                  </TableCell>
-                  <TableCell className="!text-center border-slate-100">
-                    {convertToShamsi(row.created)}
-                  </TableCell>
-                  <TableCell className="!text-center border-slate-100">
-                    {row.is_delivered ? (
-                      <Badge className="bg-green-100 text-green-700 border border-green-300 px-3 py-1 rounded-full font-bold">
-                        تحویل داده شده
-                      </Badge>
-                    ) : (
-                      <Badge className="bg-yellow-100 text-yellow-700 border border-yellow-300 px-3 py-1 rounded-full font-bold">
-                        در انتظار تحویل
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="!text-center border-slate-100">
-                    {!row.is_delivered && (
-                      <Checkbox
-                        checked={selectedIds.includes(row.id)}
-                        onCheckedChange={(checked: boolean) =>
-                          handleSelect(row.id, !!checked)
-                        }
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    )}
-                  </TableCell>
-                  <TableCell className="!text-center border-slate-100">
-                    <div className="flex gap-2 justify-center">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label="ویرایش"
-                        className="hover:bg-green-100 text-green-700 border border-green-200 text-base py-2 rounded-xl font-bold shadow-sm transition-all duration-200"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEdit(row);
-                        }}
-                      >
-                        <svg
-                          width="18"
-                          height="18"
-                          fill="none"
-                          viewBox="0 0 24 24"
+              (Array.isArray(mainData) ? mainData : [])
+                .filter(Boolean)
+                .map((row, idx) => (
+                  <TableRow
+                    key={row.id}
+                    className="hover:bg-blue-50 transition-all duration-200 cursor-pointer"
+                    onClick={() => {
+                      const params = new URLSearchParams(searchParams);
+                      navigate(
+                        `/dashboard/content/${row.id}?${params.toString()}`
+                      );
+                    }}
+                  >
+                    <TableCell className="!text-center font-bold border-slate-100">
+                      {(mainPage - 1) * 10 + idx + 1}
+                    </TableCell>
+                    <TableCell className="!text-center border-slate-100">
+                      {row?.advisor_name ?? "-"}
+                    </TableCell>
+                    <TableCell className="!text-center border-slate-100">
+                      {row.persian_month_name ||
+                        months.find((m) => m.value === row.solar_month)
+                          ?.label ||
+                        "-"}
+                    </TableCell>
+                    <TableCell className="!text-center border-slate-100">
+                      {convertToShamsi(row.created)}
+                    </TableCell>
+                    <TableCell className="!text-center border-slate-100">
+                      {row.is_delivered ? (
+                        <Badge className="bg-green-100 text-green-700 border border-green-300 px-3 py-1 rounded-full font-bold">
+                          تحویل داده شده
+                        </Badge>
+                      ) : (
+                        <Badge className="bg-yellow-100 text-yellow-700 border border-yellow-300 px-3 py-1 rounded-full font-bold">
+                          در انتظار تحویل
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="!text-center border-slate-100">
+                      {!row.is_delivered && (
+                        <Checkbox
+                          checked={selectedIds.includes(row.id)}
+                          onCheckedChange={(checked: boolean) =>
+                            handleSelect(row.id, !!checked)
+                          }
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      )}
+                    </TableCell>
+                    <TableCell className="!text-center border-slate-100">
+                      <div className="flex gap-2 justify-center">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label="ویرایش"
+                          className="hover:bg-green-100 text-green-700 border border-green-200 text-base py-2 rounded-xl font-bold shadow-sm transition-all duration-200"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit(row);
+                          }}
                         >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M16.862 5.487c.674-.674 1.768-.674 2.442 0 .674.674.674 1.768 0 2.442l-9.193 9.193-3.256.814.814-3.256 9.193-9.193ZM15.435 7.622l1.943 1.943"
-                          />
-                        </svg>
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label="حذف"
-                        className="hover:bg-red-100 text-red-700 border border-red-200 text-base py-2 rounded-xl font-bold shadow-sm transition-all duration-200"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(row);
-                        }}
-                      >
-                        <svg
-                          width="18"
-                          height="18"
-                          fill="none"
-                          viewBox="0 0 24 24"
+                          <svg
+                            width="18"
+                            height="18"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M16.862 5.487c.674-.674 1.768-.674 2.442 0 .674.674.674 1.768 0 2.442l-9.193 9.193-3.256.814.814-3.256 9.193-9.193ZM15.435 7.622l1.943 1.943"
+                            />
+                          </svg>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label="حذف"
+                          className="hover:bg-red-100 text-red-700 border border-red-200 text-base py-2 rounded-xl font-bold shadow-sm transition-all duration-200"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(row);
+                          }}
                         >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M6 7h12M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7h12Zm-7 4v6m4-6v6"
-                          />
-                        </svg>
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
+                          <svg
+                            width="18"
+                            height="18"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M6 7h12M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7h12Zm-7 4v6m4-6v6"
+                            />
+                          </svg>
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
             )}
           </TableBody>
         </Table>
