@@ -399,8 +399,8 @@ const ManagementReports = () => {
                   : "بدون تغییر",
               دلیل: item.reason,
               "تعداد دانش‌آموز": item.student_count,
-              "رضایت ماهانه": item.monthly_satisfaction,
-              "رضایت کلی": item.overall_satisfaction,
+              "رضایت ماهانه": item.monthly_satisfaction * 100 + "%",
+              "رضایت کلی": item.overall_satisfaction * 100 + "%",
               "محتوا تحویل داده شد": item.content_delivered ? "بله" : "خیر",
             }));
           if (data.summary) {
