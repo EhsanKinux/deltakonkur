@@ -203,7 +203,6 @@ const JustAdvisorDetail = () => {
       const { data } = await axios.get(
         `${BASE_API_URL}api/advisor/advisor/pay-history/${advisorData?.id}/list`,
         {
-          // params: { page, first_name: firstName, last_name: lastName },
           signal,
           headers: {
             "Content-Type": "application/json",

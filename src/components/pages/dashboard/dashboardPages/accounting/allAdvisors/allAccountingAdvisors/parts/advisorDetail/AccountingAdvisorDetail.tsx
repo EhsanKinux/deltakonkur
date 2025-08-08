@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import AccountingAdvisorInfo from "./parts/AccountingAdvisorInfo";
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
@@ -10,10 +10,17 @@ import backIcon from "@/assets/icons/back.svg";
 import {
   AdvisorStudentData,
   StudentWithDetails2,
+  PaymentHistoryRecord,
 } from "@/functions/hooks/advisorsList/interface";
 import { AllAdvisorDetailTable } from "../../../../table/AllAdvisorDetailTable";
 import AdvisorPerformanceChart from "../../../../../advisors/parts/advisor/parts/advisorDetail/parts/AdvisorPerformanceChart";
+import { AdvisorPayHistoryTable } from "../../../../../advisors/parts/table/AdvisorPayHistoryTable";
+import { payHistoryColumns } from "../../../../../advisors/parts/advisor/parts/advisorDetail/parts/advisorPayHistoryTable/PayHistoryColumnDef";
 import type { AdvisorData } from "../../../../../advisors/parts/advisor/parts/advisorDetail/JustAdvisorDetail";
+import { authStore } from "@/lib/store/authStore";
+import { BASE_API_URL } from "@/lib/variables/variables";
+import axios from "axios";
+import { debounce } from "lodash";
 
 const formatNumber = (number: string): string => {
   const num = parseFloat(number);
@@ -34,6 +41,18 @@ const AccountingAdvisorDetail = () => {
     stop: 0,
     cancel: 0,
   });
+
+  // Payment history states
+  const [paymentHistory, setPaymentHistory] = useState<PaymentHistoryRecord[]>(
+    []
+  );
+  const [processedPaymentHistory, setProcessedPaymentHistory] = useState<
+    PaymentHistoryRecord[]
+  >([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const { accessToken } = authStore();
 
   const activeTab = searchParams.get("tab") || "performance";
 
@@ -62,6 +81,42 @@ const AccountingAdvisorDetail = () => {
     }
   };
 
+  const fetchPayHistory = useCallback(async () => {
+    if (!advisorId) return;
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(
+        `${BASE_API_URL}api/advisor/advisor/pay-history/${advisorId}/list`,
+        {
+          signal,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      setPaymentHistory(data);
+    } catch (error) {
+      if (!axios.isCancel(error)) {
+        console.error("خطا در دریافت اطلاعات دریافتی مشاور:", error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [advisorId, accessToken]);
+
+  const debouncedFetchPayHistory = useCallback(debounce(fetchPayHistory, 50), [
+    fetchPayHistory,
+  ]);
+
   useEffect(() => {
     fetchAdvisorData();
   }, [advisorId]);
@@ -71,6 +126,12 @@ const AccountingAdvisorDetail = () => {
       getStudentsOfAdvisor(advisorId);
     }
   }, [advisorId, getStudentsOfAdvisor]);
+
+  useEffect(() => {
+    if (advisorData && activeTab === "payHistory") {
+      debouncedFetchPayHistory();
+    }
+  }, [advisorData, activeTab, debouncedFetchPayHistory]);
 
   useEffect(() => {
     if (advisorDetailData && advisorDetailData.data) {
@@ -103,6 +164,24 @@ const AccountingAdvisorDetail = () => {
       setStatusCounts(counts);
     }
   }, [advisorDetailData]);
+
+  useEffect(() => {
+    if (paymentHistory) {
+      let runningSum = 0;
+
+      const formattedPaymentHistory = paymentHistory.map((record, index) => {
+        runningSum += record.amount;
+        return {
+          ...record,
+          sum_of_amount: runningSum,
+          last_pay: convertToShamsi(record.last_pay),
+          id: index + 1,
+        };
+      });
+
+      setProcessedPaymentHistory(formattedPaymentHistory);
+    }
+  }, [paymentHistory]);
 
   // console.log("advisorDetailData", advisorDetailData);
 
@@ -147,6 +226,12 @@ const AccountingAdvisorDetail = () => {
           >
             لیست دانش‌آموزان
           </TabsTrigger>
+          <TabsTrigger
+            value="payHistory"
+            className="data-[state=active]:bg-slate-50 !rounded-xl pt-2"
+          >
+            دریافتی
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="performance">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-[50vh] w-full">
@@ -158,6 +243,15 @@ const AccountingAdvisorDetail = () => {
             <AllAdvisorDetailTable
               columns={accountStColumns}
               data={processedStudentData}
+            />
+          </div>
+        </TabsContent>
+        <TabsContent value="payHistory">
+          <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-screen">
+            <AdvisorPayHistoryTable
+              columns={payHistoryColumns}
+              data={processedPaymentHistory}
+              isLoading={isLoading}
             />
           </div>
         </TabsContent>
