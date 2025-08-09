@@ -43,6 +43,10 @@ export const accountStColumns: ColumnDef<StudentWithDetails2>[] = [
     header: "تاریخ پایان",
   },
   {
+    accessorKey: "package_price",
+    header: "قیمت پکیج",
+  },
+  {
     accessorKey: "wage",
     header: "دریافتی",
   },

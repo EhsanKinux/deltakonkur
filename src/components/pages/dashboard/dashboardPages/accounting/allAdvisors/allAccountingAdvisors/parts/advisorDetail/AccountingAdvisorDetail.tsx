@@ -146,6 +146,9 @@ const AccountingAdvisorDetail = () => {
           duration: entry.duration,
           start_date: entry.start_date,
           end_date: entry.end_date,
+          package_price: `${formatNumber(
+            Number(entry.student.package_price).toFixed(0)
+          ).toString()} ریال`,
           wage: `${formatNumber(
             Number(entry.wage).toFixed(0)
           ).toString()} ریال`,

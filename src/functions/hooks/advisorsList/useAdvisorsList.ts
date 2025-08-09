@@ -62,6 +62,7 @@ export const useAdvisorsList = () => {
           date_of_birth: item.student.date_of_birth,
           phone_number: item.student.phone_number,
           parent_phone: item.student.parent_phone,
+          package_price: item.student?.package_price,
           home_phone: item.student.home_phone,
           school: item.student.school,
           field: item.student.field,

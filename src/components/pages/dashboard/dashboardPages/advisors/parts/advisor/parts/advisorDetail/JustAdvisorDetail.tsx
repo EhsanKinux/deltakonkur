@@ -163,6 +163,9 @@ const JustAdvisorDetail = () => {
           duration: entry.duration,
           start_date: entry.start_date,
           end_date: entry.end_date,
+          package_price: `${formatNumber(
+            Number(entry.student.package_price).toFixed(0)
+          ).toString()} ریال`,
           wage: `${formatNumber(
             Number(entry.wage).toFixed(0)
           ).toString()} ریال`,
@@ -258,6 +261,7 @@ const JustAdvisorDetail = () => {
         if (userRoles && userRoles.includes(7)) {
           getStudents(String(advisorData?.id));
           getStudentsOfAdvisor(String(advisorData?.id));
+
           const studentData = advisorDetailData?.data.map(
             (entry: AdvisorStudentData, index: number) => ({
               ...advisorDetailData.data[index],
@@ -272,6 +276,9 @@ const JustAdvisorDetail = () => {
               duration: entry.duration,
               start_date: entry.start_date,
               end_date: entry.end_date,
+              package_price: `${formatNumber(
+                Number(entry.student.package_price).toFixed(0)
+              ).toString()} ریال`,
               wage: `${formatNumber(
                 Number(entry.wage).toFixed(0)
               ).toString()} ریال`,
