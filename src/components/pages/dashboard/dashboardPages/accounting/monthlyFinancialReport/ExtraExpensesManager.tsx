@@ -378,7 +378,7 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
       accessorKey: "amount",
       cell: (value: unknown) => (
         <span className="text-red-600 font-medium">
-          {formatNumber(Number(value))} تومان
+          {formatNumber(Number(value))} ریال
         </span>
       ),
     },

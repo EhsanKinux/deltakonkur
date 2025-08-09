@@ -75,7 +75,7 @@ const DeleteExpenseDialog: React.FC<DeleteExpenseDialogProps> = ({
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-600">مبلغ:</span>
               <span className="text-sm font-bold text-red-600">
-                {formatNumber(expense.amount)} تومان
+                {formatNumber(expense.amount)} ریال
               </span>
             </div>
 

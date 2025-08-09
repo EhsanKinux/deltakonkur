@@ -280,7 +280,7 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
       accessorKey: "total_revenue",
       cell: (value: unknown) => (
         <span className="text-green-600 font-medium">
-          {formatNumber(Number(value))} تومان
+          {formatNumber(Number(value))} ریال
         </span>
       ),
     },
@@ -290,7 +290,7 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
       accessorKey: "total_costs",
       cell: (value: unknown) => (
         <span className="text-red-600 font-medium">
-          {formatNumber(Number(value))} تومان
+          {formatNumber(Number(value))} ریال
         </span>
       ),
     },
@@ -300,7 +300,7 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
       accessorKey: "total_profit",
       cell: (value: unknown) => (
         <span className="text-blue-600 font-medium">
-          {formatNumber(Number(value))} تومان
+          {formatNumber(Number(value))} ریال
         </span>
       ),
     },
@@ -551,19 +551,19 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
                 <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
                   <div className="text-sm text-gray-600 mb-1">درآمد کل</div>
                   <div className="text-lg font-bold text-green-600">
-                    {formatNumber(selectedRecord.total_revenue)} تومان
+                    {formatNumber(selectedRecord.total_revenue)} ریال
                   </div>
                 </div>
                 <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
                   <div className="text-sm text-gray-600 mb-1">هزینه کل</div>
                   <div className="text-lg font-bold text-red-600">
-                    {formatNumber(selectedRecord.total_costs)} تومان
+                    {formatNumber(selectedRecord.total_costs)} ریال
                   </div>
                 </div>
                 <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
                   <div className="text-sm text-gray-600 mb-1">سود خالص</div>
                   <div className="text-lg font-bold text-blue-600">
-                    {formatNumber(selectedRecord.total_profit)} تومان
+                    {formatNumber(selectedRecord.total_profit)} ریال
                   </div>
                 </div>
                 <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
@@ -585,7 +585,7 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
                       هزینه مشاوران
                     </div>
                     <div className="text-md font-bold text-gray-800">
-                      {formatNumber(selectedRecord.advisor_costs)} تومان
+                      {formatNumber(selectedRecord.advisor_costs)} ریال
                     </div>
                   </div>
                   <div>
@@ -593,7 +593,7 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
                       هزینه سرپرستان
                     </div>
                     <div className="text-md font-bold text-gray-800">
-                      {formatNumber(selectedRecord.supervisor_costs)} تومان
+                      {formatNumber(selectedRecord.supervisor_costs)} ریال
                     </div>
                   </div>
                   <div>
@@ -601,7 +601,7 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
                       هزینه مدیران فروش
                     </div>
                     <div className="text-md font-bold text-gray-800">
-                      {formatNumber(selectedRecord.sales_manager_costs)} تومان
+                      {formatNumber(selectedRecord.sales_manager_costs)} ریال
                     </div>
                   </div>
                   <div>
@@ -609,7 +609,7 @@ const FinancialRecordsManager: React.FC<FinancialRecordsManagerProps> = ({
                       هزینه‌های اضافی
                     </div>
                     <div className="text-md font-bold text-gray-800">
-                      {formatNumber(selectedRecord.extra_expenses)} تومان
+                      {formatNumber(selectedRecord.extra_expenses)} ریال
                     </div>
                   </div>
                 </div>

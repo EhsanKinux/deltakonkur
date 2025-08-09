@@ -72,7 +72,7 @@ const JustAdvisorDetail = () => {
   const formatNumber = useCallback((number: string): string => {
     const num = parseFloat(number);
     if (isNaN(num)) return "0";
-    return new Intl.NumberFormat("en-US").format(num);
+    return new Intl.NumberFormat("fa-IR").format(num);
   }, []);
 
   const fetchAdvisorData = useCallback(async () => {

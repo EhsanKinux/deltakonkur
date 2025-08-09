@@ -38,7 +38,7 @@ const MonthlySummary: React.FC<MonthlySummaryProps> = ({ data }) => {
           <div className="text-2xl font-bold text-green-700">
             {formatNumber(data.total_revenue)}
           </div>
-          <p className="text-xs text-green-600 mt-1">تومان</p>
+          <p className="text-xs text-green-600 mt-1">ریال</p>
           <Badge className="mt-2 bg-green-100 text-green-700">
             {data.revenue_details?.length || 0} دانشجو
           </Badge>
@@ -57,7 +57,7 @@ const MonthlySummary: React.FC<MonthlySummaryProps> = ({ data }) => {
           <div className="text-2xl font-bold text-red-700">
             {formatNumber(data.total_costs)}
           </div>
-          <p className="text-xs text-red-600 mt-1">تومان</p>
+          <p className="text-xs text-red-600 mt-1">ریال</p>
           <div className="mt-2 space-y-1">
             <div className="flex justify-between text-xs">
               <span className="text-gray-600">مشاوران:</span>
@@ -101,7 +101,7 @@ const MonthlySummary: React.FC<MonthlySummaryProps> = ({ data }) => {
           <div className={`text-2xl font-bold ${profitStatus.color}`}>
             {formatNumber(data.total_profit)}
           </div>
-          <p className={`text-xs ${profitStatus.color} mt-1`}>تومان</p>
+          <p className={`text-xs ${profitStatus.color} mt-1`}>ریال</p>
           <Badge className={`mt-2 ${profitStatus.bg} ${profitStatus.color}`}>
             {data.profit_margin_percentage}% حاشیه سود
           </Badge>
