@@ -6,6 +6,7 @@ export interface Student {
   phone_number: string;
   parent_phone: string;
   home_phone: string;
+  package_price: string;
   school: string;
   field: string;
   grade: number;

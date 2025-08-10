@@ -8,9 +8,36 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TableColumn, TableProps } from "@/types";
 import { Edit, Search, Trash2 } from "lucide-react";
 import { useMemo } from "react";
+
+// Import types from the monthlyFinancialReport types file
+import { TableColumn } from "@/components/pages/dashboard/dashboardPages/accounting/monthlyFinancialReport/types";
+
+// Define TableProps interface locally
+interface TableProps<T extends Record<string, unknown>> {
+  data: T[];
+  columns: TableColumn<T>[];
+  loading?: boolean;
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
+  };
+  search?: {
+    value: string;
+    onChange: (value: string) => void;
+    placeholder?: string;
+  };
+  actions?: {
+    onEdit?: (item: T) => void;
+    onDelete?: (item: T) => void;
+    onView?: (item: T) => void;
+  };
+  enableRowClick?: boolean;
+  onRowClick?: (item: T) => void;
+  getRowClassName?: (item: T) => string;
+}
 
 // =============================================================================
 // DATA TABLE COMPONENT
@@ -37,7 +64,7 @@ export function DataTable<T extends Record<string, unknown>>({
     // Apply search filter
     if (search?.value) {
       const searchValue = search.value.toLowerCase();
-      result = result.filter((item) =>
+      result = result.filter((item: T) =>
         Object.values(item).some((value) =>
           String(value).toLowerCase().includes(searchValue)
         )
@@ -88,7 +115,7 @@ export function DataTable<T extends Record<string, unknown>>({
                 <TableHead className="!text-center w-12 font-semibold text-gray-700">
                   #
                 </TableHead>
-                {columns.map((column) => (
+                {columns.map((column: TableColumn<T>) => (
                   <TableHead
                     key={column.key}
                     className="!text-center font-semibold text-gray-700"
@@ -109,7 +136,7 @@ export function DataTable<T extends Record<string, unknown>>({
                   <TableCell className="!text-center">
                     <div className="h-4 w-8 rounded bg-slate-200 animate-pulse mx-auto" />
                   </TableCell>
-                  {columns.map((column) => (
+                  {columns.map((column: TableColumn<T>) => (
                     <TableCell key={column.key} className="!text-center">
                       <div className="h-4 w-20 rounded bg-slate-200 animate-pulse mx-auto" />
                     </TableCell>
@@ -174,7 +201,7 @@ export function DataTable<T extends Record<string, unknown>>({
               <TableHead className="!text-center w-12 font-semibold text-gray-700">
                 #
               </TableHead>
-              {columns.map((column) => (
+              {columns.map((column: TableColumn<T>) => (
                 <TableHead
                   key={column.key}
                   className="!text-center font-semibold text-gray-700"
@@ -190,7 +217,7 @@ export function DataTable<T extends Record<string, unknown>>({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredData.map((item, index) => {
+            {filteredData.map((item: T, index: number) => {
               // Calculate the correct row number based on pagination
               const currentPage = pagination?.currentPage || 1;
               const itemsPerPage = 10; // Assuming 10 items per page
@@ -209,7 +236,7 @@ export function DataTable<T extends Record<string, unknown>>({
                   <TableCell className="!text-center font-bold text-gray-600">
                     {rowNumber}
                   </TableCell>
-                  {columns.map((column) => (
+                  {columns.map((column: TableColumn<T>) => (
                     <TableCell
                       key={column.key}
                       className="!text-center text-gray-700"

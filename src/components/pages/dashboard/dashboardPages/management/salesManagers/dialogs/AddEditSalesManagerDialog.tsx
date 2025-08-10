@@ -21,6 +21,13 @@ import {
   FormControl,
   Form,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface AddEditSalesManagerDialogProps {
   open: boolean;
@@ -29,9 +36,29 @@ interface AddEditSalesManagerDialogProps {
     first_name: string;
     last_name: string;
     national_number: string;
+    level: number;
+    bank_account: string;
   }) => void;
   editRow: ISalesManager | null;
 }
+
+// Validation function for Iranian bank account number
+const validateBankAccount = (value: string) => {
+  // Remove all non-digit characters
+  const cleanValue = value.replace(/\D/g, "");
+
+  // Iranian bank account numbers are typically 12-16 digits
+  if (cleanValue.length < 12 || cleanValue.length > 16) {
+    return false;
+  }
+
+  // Check if it's all digits
+  if (!/^\d{12,16}$/.test(cleanValue)) {
+    return false;
+  }
+
+  return true;
+};
 
 const salesManagerSchema = z.object({
   first_name: z.string().min(1, { message: "نام را وارد کنید" }),
@@ -39,6 +66,17 @@ const salesManagerSchema = z.object({
   national_number: z
     .string()
     .regex(/^[0-9]{10}$/, { message: "کد ملی باید 10 رقم باشد" }),
+  level: z
+    .number()
+    .min(1, { message: "سطح را انتخاب کنید" })
+    .max(32767, { message: "سطح نمی‌تواند بیشتر از 32767 باشد" }),
+  bank_account: z
+    .string()
+    .min(1, { message: "شماره حساب بانکی را وارد کنید" })
+    .refine(validateBankAccount, {
+      message:
+        "شماره حساب بانکی باید بین ۱۲ تا ۱۶ رقم باشد و فقط شامل اعداد باشد",
+    }),
 });
 type SalesManagerFormType = z.infer<typeof salesManagerSchema>;
 
@@ -54,23 +92,55 @@ const AddEditSalesManagerDialog = ({
       first_name: editRow?.first_name || "",
       last_name: editRow?.last_name || "",
       national_number: editRow?.national_number || "",
+      level: editRow?.level || 1,
+      bank_account: editRow?.bank_account || "",
     },
   });
 
   useEffect(() => {
     if (editRow) {
       form.reset({
-        first_name: editRow.first_name,
-        last_name: editRow.last_name,
-        national_number: editRow.national_number,
+        first_name: editRow.first_name || "",
+        last_name: editRow.last_name || "",
+        national_number: editRow.national_number || "",
+        level: editRow.level || 1,
+        bank_account: editRow.bank_account || "",
       });
     } else {
-      form.reset({ first_name: "", last_name: "", national_number: "" });
+      form.reset({
+        first_name: "",
+        last_name: "",
+        national_number: "",
+        level: 1,
+        bank_account: "",
+      });
     }
-  }, [editRow, open]);
+  }, [editRow, open, form]);
 
   const handleSubmit = (data: SalesManagerFormType) => {
     onSave(data);
+  };
+
+  // Format bank account number for better UX
+  const formatBankAccount = (value: string) => {
+    const cleanValue = value.replace(/\D/g, "");
+
+    // Format based on length
+    if (cleanValue.length <= 4) return cleanValue;
+    if (cleanValue.length <= 8)
+      return `${cleanValue.slice(0, 4)}-${cleanValue.slice(4)}`;
+    if (cleanValue.length <= 12)
+      return `${cleanValue.slice(0, 4)}-${cleanValue.slice(
+        4,
+        8
+      )}-${cleanValue.slice(8)}`;
+    if (cleanValue.length <= 16)
+      return `${cleanValue.slice(0, 4)}-${cleanValue.slice(
+        4,
+        8
+      )}-${cleanValue.slice(8, 12)}-${cleanValue.slice(12)}`;
+
+    return cleanValue;
   };
 
   return (
@@ -97,13 +167,13 @@ const AddEditSalesManagerDialog = ({
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-1">
                   <FormLabel className="font-semibold text-gray-700 mb-1">
-                    نام
+                    نام <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       placeholder="مثلاً علی"
-                      className="rounded-xl border border-slate-300 placeholder:text-gray-500"
+                      className="rounded-xl border border-slate-300 placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                     />
                   </FormControl>
                   <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
@@ -116,13 +186,13 @@ const AddEditSalesManagerDialog = ({
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-1">
                   <FormLabel className="font-semibold text-gray-700 mb-1">
-                    نام خانوادگی
+                    نام خانوادگی <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       placeholder="مثلاً محمدی"
-                      className="rounded-xl border border-slate-300 placeholder:text-gray-500"
+                      className="rounded-xl border border-slate-300 placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                     />
                   </FormControl>
                   <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
@@ -135,15 +205,74 @@ const AddEditSalesManagerDialog = ({
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-1">
                   <FormLabel className="font-semibold text-gray-700 mb-1">
-                    کد ملی
+                    کد ملی <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       placeholder="مثلاً 1234567890"
-                      className="rounded-xl border border-slate-300 placeholder:text-gray-500"
+                      maxLength={10}
+                      className="rounded-xl border border-slate-300 placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                     />
                   </FormControl>
+                  <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="level"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-1">
+                  <FormLabel className="font-semibold text-gray-700 mb-1">
+                    سطح <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <Select
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    defaultValue={field.value?.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                        <SelectValue placeholder="سطح مسئول فروش را انتخاب کنید" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-white">
+                      <SelectItem value="1">سطح 1 - مبتدی</SelectItem>
+                      <SelectItem value="2">سطح 2 - متوسط</SelectItem>
+                      <SelectItem value="3">سطح 3 - پیشرفته</SelectItem>
+                      <SelectItem value="4">سطح 4 - متخصص</SelectItem>
+                      <SelectItem value="5">سطح 5 - ارشد</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bank_account"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-1">
+                  <FormLabel className="font-semibold text-gray-700 mb-1">
+                    شماره حساب بانکی <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={formatBankAccount(field.value)}
+                      onChange={(e) => {
+                        const formatted = formatBankAccount(e.target.value);
+                        field.onChange(formatted);
+                      }}
+                      placeholder="مثلاً 1234-5678-9012-3456"
+                      maxLength={19}
+                      className="rounded-xl border border-slate-300 placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    />
+                  </FormControl>
+                  <div className="text-xs text-gray-500 mt-1">
+                    شماره حساب باید بین ۱۲ تا ۱۶ رقم باشد (فرمت:
+                    XXXX-XXXX-XXXX-XXXX)
+                  </div>
                   <FormMessage className="text-red-500 text-xs mt-1 font-medium" />
                 </FormItem>
               )}

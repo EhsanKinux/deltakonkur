@@ -71,4 +71,11 @@ export interface IFormattedStudentAdvisor {
   stop_date: string;
   ended_date: string;
   status: string;
+  advisor_name: string;
+  package_price: number;
+  // Original date formats for API operations
+  original_expire_date: string;
+  original_stop_date: string;
+  original_ended_date: string;
+  original_created: string;
 }

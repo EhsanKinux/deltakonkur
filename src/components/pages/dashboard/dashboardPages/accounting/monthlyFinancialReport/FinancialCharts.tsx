@@ -65,7 +65,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
         color: "#3B82F6",
         percentage: ((data.advisor_costs / totalCosts) * 100).toFixed(1),
         icon: "👨‍💼",
-        unit: "تومان",
+        unit: "ریال",
       },
       {
         name: "ناظران",
@@ -73,7 +73,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
         color: "#10B981",
         percentage: ((data.supervisor_costs / totalCosts) * 100).toFixed(1),
         icon: "👁️",
-        unit: "تومان",
+        unit: "ریال",
       },
       {
         name: "مدیران فروش",
@@ -81,7 +81,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
         color: "#F59E0B",
         percentage: ((data.sales_manager_costs / totalCosts) * 100).toFixed(1),
         icon: "📈",
-        unit: "تومان",
+        unit: "ریال",
       },
       {
         name: "سایر هزینه‌ها",
@@ -89,7 +89,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
         color: "#EF4444",
         percentage: ((data.extra_expenses / totalCosts) * 100).toFixed(1),
         icon: "📋",
-        unit: "تومان",
+        unit: "ریال",
       },
     ];
 
@@ -99,21 +99,21 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
         value: totalRevenue,
         color: "#10B981",
         trend: "up",
-        unit: "تومان",
+        unit: "ریال",
       },
       {
         name: "هزینه کل",
         value: totalCosts,
         color: "#EF4444",
         trend: "down",
-        unit: "تومان",
+        unit: "ریال",
       },
       {
         name: "سود خالص",
         value: totalProfit,
         color: "#3B82F6",
         trend: totalProfit > 0 ? "up" : "down",
-        unit: "تومان",
+        unit: "ریال",
       },
     ];
 
@@ -212,7 +212,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                 className="text-sm font-bold"
                 style={{ color: entry.color }}
               >
-                {formatNumber(entry.value)} تومان
+                {formatNumber(entry.value)} ریال
               </span>
             </div>
           ))}
@@ -349,7 +349,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                 </CardDescription>
               </div>
               <Badge className="text-xs bg-gray-100 text-gray-700 self-start sm:self-auto">
-                {formatNumber(chartData.totalCosts)} تومان
+                {formatNumber(chartData.totalCosts)} ریال
               </Badge>
             </div>
           </CardHeader>
@@ -489,7 +489,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                     className="text-xs md:text-sm font-bold truncate"
                     style={{ color: item.color }}
                   >
-                    {formatNumber(item.value)}
+                    {formatNumber(item.value)} ریال
                   </p>
                 </div>
               ))}
@@ -623,7 +623,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                   حاشیه سود ماهانه
                 </div>
                 <div className="text-sm md:text-lg font-semibold text-gray-900">
-                  {formatNumber(chartData.totalProfit)} تومان
+                  {formatNumber(chartData.totalProfit)} ریال
                 </div>
                 <div className="text-xs text-gray-500 mt-1">سود خالص</div>
               </div>
@@ -638,7 +638,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                     </span>
                   </div>
                   <span className="text-xs md:text-sm font-bold text-green-600">
-                    {formatNumber(chartData.totalRevenue)}
+                    {formatNumber(chartData.totalRevenue)} ریال
                   </span>
                 </div>
 
@@ -650,7 +650,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                     </span>
                   </div>
                   <span className="text-xs md:text-sm font-bold text-red-600">
-                    {formatNumber(chartData.totalCosts)}
+                    {formatNumber(chartData.totalCosts)} ریال
                   </span>
                 </div>
 
@@ -706,7 +706,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                   هزینه مشاوران
                 </h4>
                 <p className="text-lg md:text-2xl font-bold text-blue-600">
-                  {formatNumber(data.advisor_costs)}
+                  {formatNumber(data.advisor_costs)} ریال
                 </p>
                 <p className="text-xs md:text-sm text-gray-600">
                   {((data.advisor_costs / chartData.totalCosts) * 100).toFixed(
@@ -720,7 +720,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                   هزینه ناظران
                 </h4>
                 <p className="text-lg md:text-2xl font-bold text-green-600">
-                  {formatNumber(data.supervisor_costs)}
+                  {formatNumber(data.supervisor_costs)} ریال
                 </p>
                 <p className="text-xs md:text-sm text-gray-600">
                   {(
@@ -735,7 +735,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                   هزینه مدیران فروش
                 </h4>
                 <p className="text-lg md:text-2xl font-bold text-orange-600">
-                  {formatNumber(data.sales_manager_costs)}
+                  {formatNumber(data.sales_manager_costs)} ریال
                 </p>
                 <p className="text-xs md:text-sm text-gray-600">
                   {(
@@ -750,7 +750,7 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                   سایر هزینه‌ها
                 </h4>
                 <p className="text-lg md:text-2xl font-bold text-red-600">
-                  {formatNumber(data.extra_expenses)}
+                  {formatNumber(data.extra_expenses)} ریال
                 </p>
                 <p className="text-xs md:text-sm text-gray-600">
                   {((data.extra_expenses / chartData.totalCosts) * 100).toFixed(

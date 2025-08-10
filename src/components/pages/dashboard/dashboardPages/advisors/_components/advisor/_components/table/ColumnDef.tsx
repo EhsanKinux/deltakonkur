@@ -30,10 +30,18 @@ export const columns: ColumnDef<Advisor>[] = [
   {
     accessorKey: "overallSatisfaction",
     header: "درصد رضایت کلی",
+    cell: ({ getValue }) => {
+      const value = getValue() as number;
+      return value ? `${value}%` : "-";
+    },
   },
   {
     accessorKey: "currentMonthSatisfaction",
     header: "درصد رضایت ماهیانه",
+    cell: ({ getValue }) => {
+      const value = getValue() as number;
+      return value ? `${value}%` : "-";
+    },
   },
   {
     accessorKey: "level",

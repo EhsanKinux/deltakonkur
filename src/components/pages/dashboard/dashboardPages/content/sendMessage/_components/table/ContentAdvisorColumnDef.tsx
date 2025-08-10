@@ -33,32 +33,4 @@ export const contentAdvisorColumns: ColumnDef<FormEntry>[] = [
       );
     },
   },
-  //   {
-  //     accessorKey: "national_id",
-  //     header: "کد ملی",
-  //   },
-  //   {
-  //     accessorKey: "field",
-  //     header: "رشته",
-  //   },
-  //   {
-  //     accessorKey: "bank_account",
-  //     header: "شماره حساب",
-  //   },
-  //   {
-  //     accessorKey: "activePercentage",
-  //     header: "درصد رضایت",
-  //   },
-  //   {
-  //     accessorKey: "level",
-  //     header: "سطح",
-  //   },
-  //   {
-  //     id: "actions",
-  //     cell: ({ row }) => {
-  //       const formData = row.original;
-
-  //       return <AdvisorDialogButtons formData={formData} />;
-  //     },
-  //   },
 ];

@@ -88,7 +88,7 @@ const ExtraExpenseDetailsDialog: React.FC<ExtraExpenseDetailsDialogProps> = ({
               مبلغ
             </div>
             <div className="text-xl font-bold text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
-              {formatNumber(expense.amount)} تومان
+              {formatNumber(expense.amount)} ریال
             </div>
           </div>
 

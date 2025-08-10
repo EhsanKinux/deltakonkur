@@ -72,7 +72,7 @@ const JustAdvisorDetail = () => {
   const formatNumber = useCallback((number: string): string => {
     const num = parseFloat(number);
     if (isNaN(num)) return "0";
-    return new Intl.NumberFormat("en-US").format(num);
+    return new Intl.NumberFormat("fa-IR").format(num);
   }, []);
 
   const fetchAdvisorData = useCallback(async () => {
@@ -163,6 +163,9 @@ const JustAdvisorDetail = () => {
           duration: entry.duration,
           start_date: entry.start_date,
           end_date: entry.end_date,
+          package_price: `${formatNumber(
+            Number(entry.student.package_price).toFixed(0)
+          ).toString()} ریال`,
           wage: `${formatNumber(
             Number(entry.wage).toFixed(0)
           ).toString()} ریال`,
@@ -203,7 +206,6 @@ const JustAdvisorDetail = () => {
       const { data } = await axios.get(
         `${BASE_API_URL}api/advisor/advisor/pay-history/${advisorData?.id}/list`,
         {
-          // params: { page, first_name: firstName, last_name: lastName },
           signal,
           headers: {
             "Content-Type": "application/json",
@@ -259,6 +261,7 @@ const JustAdvisorDetail = () => {
         if (userRoles && userRoles.includes(7)) {
           getStudents(String(advisorData?.id));
           getStudentsOfAdvisor(String(advisorData?.id));
+
           const studentData = advisorDetailData?.data.map(
             (entry: AdvisorStudentData, index: number) => ({
               ...advisorDetailData.data[index],
@@ -273,6 +276,9 @@ const JustAdvisorDetail = () => {
               duration: entry.duration,
               start_date: entry.start_date,
               end_date: entry.end_date,
+              package_price: `${formatNumber(
+                Number(entry.student.package_price).toFixed(0)
+              ).toString()} ریال`,
               wage: `${formatNumber(
                 Number(entry.wage).toFixed(0)
               ).toString()} ریال`,

@@ -205,9 +205,6 @@ export function EditStudentDialog({
 
         dialogCloseRef.current?.click();
         showToast.success("ویرایش اطلاعات دانش آموز با موفقیت انجام شد.");
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1300);
       }
     } catch (error) {
       let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";

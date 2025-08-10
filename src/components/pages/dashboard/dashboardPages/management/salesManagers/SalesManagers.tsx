@@ -15,10 +15,13 @@ import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { ISalesManager } from "./interface";
 import AddEditSalesManagerDialog from "./dialogs/AddEditSalesManagerDialog";
 import DeleteSalesManagerDialog from "./dialogs/DeleteSalesManagerDialog";
+import SalesManagerDetailDialog from "./dialogs/SalesManagerDetailDialog";
+import { ISalesManager } from "./interface";
+import { SalesManagersTable } from "./SalesManagersTable";
+import { authStore } from "@/lib/store/authStore";
+import { useSearchParams } from "react-router-dom";
 
-// =============================================================================
-// SALES MANAGERS COMPONENT
-// =============================================================================
+const API_URL = BASE_API_URL + "api/sales/sales-managers/";
 
 const SalesManagers = () => {
   // =============================================================================
@@ -36,124 +39,55 @@ const SalesManagers = () => {
   const [editRow, setEditRow] = useState<ISalesManager | null>(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [rowToDelete, setRowToDelete] = useState<ISalesManager | null>(null);
-
-  // New utilities
-  const { loading, executeWithLoading } = useApiState();
-  const { executeWithToast } = useToastPromise();
-
-  // Reference to track abort controller for API requests
-  const abortControllerRef = useRef<AbortController | null>(null);
-  // Reference to track search timeout
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // =============================================================================
-  // MEMOIZED VALUES
-  // =============================================================================
-  // Memoize search parameters to avoid unnecessary API calls
-  const searchParamsMemo = useMemo(() => {
-    const page = searchParams.get("page") || "1";
-    const firstName = searchParams.get("first_name") || "";
-    const lastName = searchParams.get("last_name") || "";
-    const nationalNumber = searchParams.get("national_number") || "";
-
-    return { page, firstName, lastName, nationalNumber };
-  }, [searchParams]);
-
-  // Separate memoized values for API call dependencies
-  const apiDependencies = useMemo(
-    () => ({
-      page: searchParamsMemo.page,
-      firstName: searchParamsMemo.firstName,
-      lastName: searchParamsMemo.lastName,
-      nationalNumber: searchParamsMemo.nationalNumber,
-    }),
-    [
-      searchParamsMemo.page,
-      searchParamsMemo.firstName,
-      searchParamsMemo.lastName,
-      searchParamsMemo.nationalNumber,
-    ]
+  const [detailDialog, setDetailDialog] = useState(false);
+  const [selectedManagerId, setSelectedManagerId] = useState<number | null>(
+    null
   );
+  const [searchFields, setSearchFields] = useState({
+    first_name: "",
+    last_name: "",
+    national_number: "",
+    search: "",
+  });
+  const [page, setPage] = useState(1);
+  const [count, setCount] = useState(0);
+  const [next, setNext] = useState<string | null>(null);
+  const [previous, setPrevious] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // =============================================================================
-  // API CALLS
-  // =============================================================================
+  const { accessToken } = authStore.getState();
 
-  const fetchData = useCallback(async () => {
-    // Cancel previous request if it exists
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
-    // Create new AbortController for the current request
-    abortControllerRef.current = new AbortController();
-
-    const { page, firstName, lastName, nationalNumber } = apiDependencies;
-
+  // گرفتن لیست
+  const fetchData = async () => {
+    setLoading(true);
     try {
-      const response = await executeWithLoading(async () => {
-        return await api.getPaginated<ISalesManager>(
-          "api/sales/sales-managers/",
-          {
-            page: parseInt(page),
-            first_name: firstName,
-            last_name: lastName,
-            national_number: nationalNumber,
-          }
-        );
+      const params: Record<string, string> = { page: String(page) };
+      if (searchFields.first_name) params.first_name = searchFields.first_name;
+      if (searchFields.last_name) params.last_name = searchFields.last_name;
+      if (searchFields.national_number)
+        params.national_number = searchFields.national_number;
+      if (searchFields.search) params.search = searchFields.search;
+      setSearchParams(params);
+      const res = await axios.get(API_URL, {
+        params,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
-
-      setData(response.results);
-      setTotalPages(Math.ceil(response.count / 10));
-    } catch (error: unknown) {
-      if (error instanceof Error && error.name === "AbortError") {
-        console.log("Request was aborted");
-      } else {
-        console.error("Error fetching sales managers:", error);
-      }
+      setData(res.data.results);
+      setCount(res.data.count);
+      setNext(res.data.next);
+      setPrevious(res.data.previous);
+    } catch (e) {
+      showToast.error("خطا در دریافت داده‌ها");
     }
-  }, [apiDependencies, executeWithLoading]);
+    setLoading(false);
+  };
 
-  // =============================================================================
-  // SEARCH HANDLING
-  // =============================================================================
-
-  const handleSearchFieldChange = useCallback(
-    (field: string, value: string) => {
-      setSearchFields((prev) => {
-        const updatedFields = { ...prev, [field]: value };
-
-        // Clear previous timeout
-        if (searchTimeoutRef.current) {
-          clearTimeout(searchTimeoutRef.current);
-        }
-
-        // Set new timeout for search
-        searchTimeoutRef.current = setTimeout(() => {
-          const newSearchParams = new URLSearchParams();
-
-          Object.entries(updatedFields).forEach(([key, val]) => {
-            if (val.trim()) {
-              newSearchParams.set(key, val);
-            }
-          });
-
-          newSearchParams.set("page", "1");
-          setSearchParams(newSearchParams);
-        }, 600); // 600ms delay for better UX
-
-        return updatedFields;
-      });
-    },
-    [setSearchParams]
-  );
-
-  const handleClearAllFilters = useCallback(() => {
-    // Clear search timeout if exists
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-
+  useEffect(() => {
+    // اگر searchParams تغییر کرد، stateها را آپدیت کن
+    const pageParam = Number(searchParams.get("page")) || 1;
+    setPage(pageParam);
     setSearchFields({
       first_name: "",
       last_name: "",
@@ -188,59 +122,90 @@ const SalesManagers = () => {
     setOpenDialog(true);
   }, []);
 
-  const handleSave = useCallback(
-    async (manager: {
-      first_name: string;
-      last_name: string;
-      national_number: string;
-      id?: number;
-    }) => {
-      const isEdit = !!editRow;
-      const promise = isEdit
-        ? api.put(`api/sales/sales-managers/${editRow!.id}/`, manager)
-        : api.post("api/sales/sales-managers/", manager);
+  const handleSave = async (manager: {
+    first_name: string;
+    last_name: string;
+    national_number: string;
+    level: number;
+    bank_account: string;
+    id?: number;
+  }) => {
+    try {
+      if (editRow) {
+        await axios.put(`${API_URL}${editRow.id}/`, manager, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        showToast.success("ویرایش شد");
+      } else {
+        await axios.post(API_URL, manager, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        showToast.success("افزوده شد");
+      }
+      setOpenDialog(false);
+      fetchData();
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      let errorMessage =
+        "خطا: دقت کنید این کد ملی از قبل موجود نباشد. در غیر اینصورت بعدا امتحان کنید.";
 
-      await executeWithToast(promise, {
-        loadingMessage: isEdit ? "در حال ویرایش..." : "در حال افزودن...",
-        successMessage: isEdit ? "ویرایش شد" : "افزوده شد",
-        errorMessage: (error) => {
-          // Handle specific error cases
-          if (error && typeof error === "object" && "response" in error) {
-            const axiosError = error as { response?: { data?: unknown } };
-            const data = axiosError.response?.data;
-
-            if (data && typeof data === "object" && "national_number" in data) {
-              const nationalNumberError = (
-                data as { national_number?: string | string[] }
-              ).national_number;
-              if (
-                nationalNumberError ===
-                "مدیر فروش with this national number already exists."
-              ) {
-                return "کد ملی وارد شده از قبل موجود است.";
-              }
-            }
+      if (axiosError.response?.data && axiosError.response.status != 500) {
+        const data = axiosError.response.data;
+        if (typeof data === "string") {
+          errorMessage = data;
+        } else if (
+          typeof data === "object" &&
+          data !== null &&
+          "national_number" in data
+        ) {
+          type NationalNumberErrorType = {
+            national_number?: string | string[];
+          };
+          const nationalNumberError = (data as NationalNumberErrorType)
+            .national_number;
+          if (
+            nationalNumberError ===
+            "مدیر فروش with this national number already exists."
+          ) {
+            errorMessage = "کد ملی وارد شده از قبل موجود است.";
+          } else if (typeof nationalNumberError === "string") {
+            errorMessage = nationalNumberError;
+          } else if (Array.isArray(nationalNumberError)) {
+            errorMessage =
+              nationalNumberError[0] ==
+              "مدیر فروش with this national number already exists."
+                ? "کد ملی وارد شده از قبل موجود است."
+                : nationalNumberError[0];
           }
-          return "خطا در عملیات";
-        },
-        onSuccess: () => {
-          setOpenDialog(false);
-          fetchData();
-        },
-      });
-    },
-    [editRow, executeWithToast, fetchData]
-  );
+        }
+      }
 
-  const handleEdit = useCallback((row: Record<string, unknown>) => {
-    setEditRow(row as unknown as ISalesManager);
+      showToast.error(errorMessage);
+
+      // console.error(`خطا: ${err}`);
+    }
+  };
+
+  // ویرایش
+  const handleEdit = (row: ISalesManager) => {
+    setEditRow(row);
     setOpenDialog(true);
   }, []);
 
   const handleDelete = useCallback((row: Record<string, unknown>) => {
     setRowToDelete(row as unknown as ISalesManager);
     setDeleteDialog(true);
-  }, []);
+  };
+
+  // مشاهده جزئیات
+  const handleViewDetail = (row: ISalesManager) => {
+    setSelectedManagerId(row.id);
+    setDetailDialog(true);
+  };
 
   const confirmDelete = useCallback(async () => {
     if (!rowToDelete) return;
@@ -372,24 +337,77 @@ const SalesManagers = () => {
       <h1 className="border-b-2 border-slate-300 w-fit font-bold text-xl mb-6">
         مسئولان فروش
       </h1>
-
-      <div className="flex flex-col gap-6">
-        {/* Add Button */}
-        <div className="w-full flex justify-start">
-          <Button
-            className="w-full bg-white hover:bg-green-100 text-green-700 border border-green-200 text-base py-2 rounded-xl font-bold shadow-sm transition-all duration-200 flex gap-2 items-center"
-            onClick={handleAdd}
-            aria-label="افزودن مسئول فروش"
-          >
-            افزودن مسئول فروش جدید +
-          </Button>
+      <div className="flex flex-col justify-center items-center gap-3 p-5 lg:p-10 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-[60vh] w-full overflow-auto">
+        <div className="w-full flex flex-col gap-4 mb-4">
+          <div className="w-full flex justify-start">
+            <Button
+              className="hover:bg-green-100 text-green-700 border border-green-200 flex-1 text-base py-2 rounded-xl font-bold shadow-sm transition-all duration-200 flex gap-2 items-center "
+              onClick={handleAdd}
+              aria-label="افزودن مسئول فروش"
+            >
+              افزودن مسئول فروش
+            </Button>
+          </div>
+          <div className="flex flex-col lg:flex-row items-center gap-2 py-2 w-full ">
+            <div className="relative flex items-center w-full text-14 rounded-[8px] gap-2 flex-col lg:flex-row">
+              <Input
+                name="first_name"
+                value={searchFields.first_name}
+                onChange={(e) => {
+                  setSearchFields((f) => ({
+                    ...f,
+                    first_name: e.target.value,
+                  }));
+                  setPage(1);
+                }}
+                placeholder="نام"
+                className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
+              />
+              <Input
+                name="last_name"
+                value={searchFields.last_name}
+                onChange={(e) => {
+                  setSearchFields((f) => ({ ...f, last_name: e.target.value }));
+                  setPage(1);
+                }}
+                placeholder="نام خانوادگی"
+                className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
+              />
+              <Input
+                name="national_number"
+                value={searchFields.national_number}
+                onChange={(e) => {
+                  setSearchFields((f) => ({
+                    ...f,
+                    national_number: e.target.value,
+                  }));
+                  setPage(1);
+                }}
+                placeholder="کد ملی"
+                className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
+              />
+              <Input
+                name="search"
+                value={searchFields.search}
+                onChange={(e) => {
+                  setSearchFields((f) => ({ ...f, search: e.target.value }));
+                  setPage(1);
+                }}
+                placeholder="جستجو کلی (نام یا کد ملی)"
+                className="text-xs placeholder:text-xs rounded-[8px] text-gray-900 border-slate-400 placeholder:text-gray-500 hover:placeholder:text-blue-500 hover:cursor-pointer"
+              />
+            </div>
+          </div>
+          <h4 className="text-sm font-bold text-blue-400">
+            برای مشاهده جزئیات بیشتر مسئول فروش روی آن کلیک کنید.
+          </h4>
         </div>
-
-        {/* Filter Panel */}
-        <FilterPanel
-          fields={filterFields}
-          onClearAll={handleClearAllFilters}
-          title="فیلتر مسئولان فروش"
+        <SalesManagersTable
+          data={data}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          loading={loading}
+          onViewDetail={handleViewDetail}
         />
 
         {/* DataTable */}
@@ -423,6 +441,11 @@ const SalesManagers = () => {
         onClose={() => setDeleteDialog(false)}
         onConfirm={confirmDelete}
         manager={rowToDelete}
+      />
+      <SalesManagerDetailDialog
+        open={detailDialog}
+        onClose={() => setDetailDialog(false)}
+        managerId={selectedManagerId}
       />
     </div>
   );

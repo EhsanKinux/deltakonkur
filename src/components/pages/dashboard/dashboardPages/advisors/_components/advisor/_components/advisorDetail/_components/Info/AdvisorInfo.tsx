@@ -389,14 +389,14 @@ const AdvisorInfo = ({ advisorId }: { advisorId: string }) => {
                   رضایت ماهیانه:
                 </span>
                 <span className="font-bold text-green-700">
-                  {levelAnalysis.monthly_satisfaction}%
+                  {levelAnalysis.monthly_satisfaction * 100}%
                 </span>
               </div>
               <div className="flex items-center gap-2 py-2 border-b last:border-b-0">
                 <CheckCircleIcon className="w-5 h-5 text-blue-500" />
                 <span className="text-gray-500 font-medium">رضایت کلی:</span>
                 <span className="font-bold text-blue-700">
-                  {levelAnalysis.overall_satisfaction}%
+                  {levelAnalysis.overall_satisfaction * 100}%
                 </span>
               </div>
               <div className="flex items-center gap-2 py-2 border-b last:border-b-0">

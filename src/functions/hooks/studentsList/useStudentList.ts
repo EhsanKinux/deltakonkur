@@ -112,8 +112,12 @@ export const useStudentList = () => {
       setError(null);
       try {
         const now = new Date();
-        const expireDate = new Date(now);
-        expireDate.setDate(now.getDate() + 31);
+        // Set the time to the beginning of the current day to ensure proper day calculation
+        now.setHours(0, 0, 0, 0);
+        // Create a new date with the same time but add 31 days + 1 for inclusive counting
+        const expireDate = new Date(
+          now.getTime() + (31 + 1) * 24 * 60 * 60 * 1000
+        );
 
         const body: ISetStudentAdvisor = {
           student: String(studentId),

@@ -2,6 +2,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { IFormattedStudentAdvisor } from "./interfaces";
 import ActiveStDialogButtons from "./studentDialogButton/ActiveStDialogButtons";
 
+// Formats numeric values with Persian separators and appends Rial
+const formatPrice = (value: unknown): string => {
+  const num = Number(value);
+  if (!isFinite(num)) return "-";
+  return new Intl.NumberFormat("fa-IR").format(num) + " ریال";
+};
+
 export const activeAccountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] =
   [
     {
@@ -55,6 +62,11 @@ export const activeAccountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] =
     {
       accessorKey: "package_price",
       header: "هزینه بسته",
+      cell: ({ getValue }) => (
+        <span className="font-bold text-slate-700">
+          {formatPrice(getValue())}
+        </span>
+      ),
     },
     {
       accessorKey: "controls",

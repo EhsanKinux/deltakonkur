@@ -19,6 +19,7 @@ import showToast from "@/components/ui/toast";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import {
   ExtraExpense,
+  ExtraExpensesResponse,
   formatNumber,
   expenseCategories,
   persianMonths,
@@ -143,7 +144,7 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
       if (amountMax) params.amount_max = parseInt(amountMax);
 
       const response = await executeWithLoading(async () => {
-        return await api.getPaginated<ExtraExpense>(
+        return await api.getPaginated<ExtraExpensesResponse>(
           "api/finances/extra-expenses/",
           params
         );
@@ -377,7 +378,7 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
       accessorKey: "amount",
       cell: (value: unknown) => (
         <span className="text-red-600 font-medium">
-          {formatNumber(Number(value))} تومان
+          {formatNumber(Number(value))} ریال
         </span>
       ),
     },

@@ -76,8 +76,8 @@ const MonthlyFinancialReport: React.FC = () => {
   const generateYears = () => {
     const currentYear = new Date().getFullYear();
     const persianCurrentYear = currentYear - 621;
-    const startYear = 1300;
-    const endYear = persianCurrentYear + 10;
+    const startYear = 1380;
+    const endYear = persianCurrentYear + 60;
     const years = [];
 
     for (let year = startYear; year <= endYear; year++) {
@@ -234,7 +234,7 @@ const MonthlyFinancialReport: React.FC = () => {
                 <div>
                   <p className="text-sm text-green-600 font-medium">درآمد کل</p>
                   <p className="text-2xl font-bold text-green-700">
-                    {formatNumber(financialData.total_revenue)} تومان
+                    {formatNumber(financialData.total_revenue)} ریال
                   </p>
                 </div>
                 <TrendingUp className="w-8 h-8 text-green-600" />
@@ -244,7 +244,7 @@ const MonthlyFinancialReport: React.FC = () => {
                 <div>
                   <p className="text-sm text-red-600 font-medium">هزینه کل</p>
                   <p className="text-2xl font-bold text-red-700">
-                    {formatNumber(financialData.total_costs)} تومان
+                    {formatNumber(financialData.total_costs)} ریال
                   </p>
                 </div>
                 <TrendingDown className="w-8 h-8 text-red-600" />
@@ -254,7 +254,7 @@ const MonthlyFinancialReport: React.FC = () => {
                 <div>
                   <p className="text-sm text-blue-600 font-medium">سود خالص</p>
                   <p className="text-2xl font-bold text-blue-700">
-                    {formatNumber(financialData.total_profit)} تومان
+                    {formatNumber(financialData.total_profit)} ریال
                   </p>
                 </div>
                 <DollarSign className="w-8 h-8 text-blue-600" />

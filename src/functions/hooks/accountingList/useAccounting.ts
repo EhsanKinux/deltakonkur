@@ -71,11 +71,13 @@ export const useAccounting = () => {
       studentId,
       advisorId,
       stopDate,
+      stopReason,
     }: {
       id: string;
       studentId: string;
       advisorId: string;
       stopDate: string;
+      stopReason?: number | null;
     }) => {
       setLoading(true);
       setError("");
@@ -86,6 +88,7 @@ export const useAccounting = () => {
           advisor: String(advisorId),
           status: "stop",
           stop_date: stopDate,
+          stop_reason: stopReason,
         };
         await stop_student_advisor(body);
       } catch (err) {
