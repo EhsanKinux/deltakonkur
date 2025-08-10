@@ -54,6 +54,36 @@ export const activeAccountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] =
     {
       accessorKey: "left_days_to_expire",
       header: "روز مانده",
+      cell: ({ getValue }) => {
+        const value = getValue() as string | number;
+        const numValue = Number(value);
+
+        if (value === 0 || value === "0" || numValue === 0) {
+          return (
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-gray-800">
+              0 روز
+            </span>
+          );
+        }
+
+        if (numValue < 0) {
+          return (
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+              {value} روز
+            </span>
+          );
+        }
+
+        if (value && value !== "-" && numValue > 0) {
+          return (
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              {value} روز
+            </span>
+          );
+        }
+
+        return <span className="text-gray-400">-</span>;
+      },
     },
     {
       accessorKey: "expire_date",
