@@ -50,6 +50,7 @@ const AccountingAdvisorDetail = () => {
     PaymentHistoryRecord[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const { accessToken } = authStore();
@@ -60,12 +61,7 @@ const AccountingAdvisorDetail = () => {
     if (!advisorId) return;
 
     try {
-      const { accessToken } = await import("@/lib/store/authStore").then((m) =>
-        m.authStore.getState()
-      );
-      const { BASE_API_URL } = await import("@/lib/variables/variables");
-      const axios = await import("axios").then((m) => m.default);
-
+      setError(null);
       const response = await axios.get(
         `${BASE_API_URL}api/advisor/advisors/${advisorId}/`,
         {
@@ -78,6 +74,8 @@ const AccountingAdvisorDetail = () => {
       setAdvisorData(response.data);
     } catch (error) {
       console.error("خطا در دریافت اطلاعات مشاور:", error);
+      setError("خطا در دریافت اطلاعات مشاور");
+      // در production، می‌توانید این خطا را به سیستم monitoring ارسال کنید
     }
   };
 
@@ -93,6 +91,7 @@ const AccountingAdvisorDetail = () => {
 
     try {
       setIsLoading(true);
+      setError(null);
       const { data } = await axios.get(
         `${BASE_API_URL}api/advisor/advisor/pay-history/${advisorId}/list`,
         {
@@ -107,15 +106,16 @@ const AccountingAdvisorDetail = () => {
     } catch (error) {
       if (!axios.isCancel(error)) {
         console.error("خطا در دریافت اطلاعات دریافتی مشاور:", error);
+        setError("خطا در دریافت اطلاعات دریافتی");
+        // در production، می‌توانید این خطا را به سیستم monitoring ارسال کنید
       }
     } finally {
       setIsLoading(false);
     }
   }, [advisorId, accessToken]);
 
-  const debouncedFetchPayHistory = useCallback(debounce(fetchPayHistory, 50), [
-    fetchPayHistory,
-  ]);
+  // حذف debounce از dependency array و استفاده از useRef
+  const debouncedFetchPayHistoryRef = useRef(debounce(fetchPayHistory, 300));
 
   useEffect(() => {
     fetchAdvisorData();
@@ -129,9 +129,9 @@ const AccountingAdvisorDetail = () => {
 
   useEffect(() => {
     if (advisorData && activeTab === "payHistory") {
-      debouncedFetchPayHistory();
+      debouncedFetchPayHistoryRef.current();
     }
-  }, [advisorData, activeTab, debouncedFetchPayHistory]);
+  }, [advisorData, activeTab]);
 
   useEffect(() => {
     if (advisorDetailData && advisorDetailData.data) {
@@ -210,6 +210,13 @@ const AccountingAdvisorDetail = () => {
         <img className="w-5 pb-[2px]" src={backIcon} alt="backIcon" />
         <span>بازگشت</span>
       </Button>
+
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
+        </div>
+      )}
+
       <AccountingAdvisorInfo
         advisorId={advisorId}
         advisorDetailData={advisorDetailData}
@@ -238,7 +245,17 @@ const AccountingAdvisorDetail = () => {
         </TabsList>
         <TabsContent value="performance">
           <div className="flex flex-col justify-center items-center gap-3 mt-4 shadow-sidebar bg-slate-100 rounded-xl relative min-h-[50vh] w-full">
-            <AdvisorPerformanceChart advisorData={advisorData} />
+            {advisorData ? (
+              <AdvisorPerformanceChart advisorData={advisorData} />
+            ) : (
+              <div className="text-center py-8">
+                {error ? (
+                  <p className="text-red-600">خطا در بارگذاری اطلاعات عملکرد</p>
+                ) : (
+                  <p className="text-gray-600">در حال بارگذاری...</p>
+                )}
+              </div>
+            )}
           </div>
         </TabsContent>
         <TabsContent value="students">
