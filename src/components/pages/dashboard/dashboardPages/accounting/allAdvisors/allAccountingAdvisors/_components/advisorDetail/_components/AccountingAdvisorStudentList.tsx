@@ -11,6 +11,16 @@ import { TableColumn } from "@/types";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
 
 // =============================================================================
+// UTILITIES
+// =============================================================================
+
+const formatNumber = (number: string | number): string => {
+  const num = typeof number === "string" ? parseFloat(number) : number;
+  if (isNaN(num)) return "0";
+  return new Intl.NumberFormat("fa-IR").format(num);
+};
+
+// =============================================================================
 // INTERFACES
 // =============================================================================
 
@@ -178,12 +188,12 @@ const AccountingAdvisorStudentList = ({
     const baseClasses = "transition-all duration-200 hover:shadow-sm";
 
     if (status === "active") {
-      return `${baseClasses} bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-l-green-500 hover:from-green-100 hover:to-emerald-100`;
+      return `${baseClasses} bg-gradient-to-r from-green-100 to-emerald-100 border-l-4 border-l-green-500 hover:from-green-200 hover:to-emerald-200`;
     }
     if (status === "stop") {
-      return `${baseClasses} bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-l-amber-500 hover:from-amber-100 hover:to-yellow-100`;
+      return `${baseClasses} bg-gradient-to-r from-amber-100 to-yellow-100 border-l-4 border-l-amber-500 hover:from-amber-200 hover:to-yellow-200`;
     }
-    return `${baseClasses} bg-gradient-to-r from-red-50 to-rose-50 border-l-4 border-l-red-500 hover:from-red-100 hover:to-rose-100`;
+    return `${baseClasses} bg-gradient-to-r from-red-100 to-rose-100 border-l-4 border-l-red-500 hover:from-red-200 hover:to-rose-200`;
   }, []);
 
   // =============================================================================
@@ -239,9 +249,15 @@ const AccountingAdvisorStudentList = ({
       cell: (_, row) => row.student.ended_date || "-",
     },
     {
+      key: "package_price",
+      header: "قیمت پکیج",
+      cell: (_, row) =>
+        formatNumber(row.student?.package_price) + " ریال" || "-",
+    },
+    {
       key: "wage",
       header: "دریافتی",
-      cell: (_, row) => row.wage.toLocaleString() + " تومان",
+      cell: (_, row) => formatNumber(row.wage) + " ریال",
     },
   ];
 

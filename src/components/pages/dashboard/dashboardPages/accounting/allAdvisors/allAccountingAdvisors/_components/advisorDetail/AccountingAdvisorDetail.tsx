@@ -1,36 +1,31 @@
-import BackButton from "@/components/ui/BackButton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type {
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import AccountingAdvisorInfo from "./parts/AccountingAdvisorInfo";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import BackButton from "@/components/ui/BackButton";
+import axios from "axios";
+import { debounce } from "lodash";
+
+// Components
+import AccountingAdvisorInfo from "./_components/AccountingAdvisorInfo";
+import AccountingAdvisorStudentList from "./_components/AccountingAdvisorStudentList";
+import AdvisorPerformanceChart from "../../../../../advisors/_components/advisor/_components/advisorDetail/_components/AdvisorPerformanceChart";
+import AdvisorAssessment from "../../../../../advisors/_components/advisor/_components/advisorDetail/_components/assessments/AdvisorAssessment";
+import { AdvisorPayHistoryTable } from "../../../../../advisors/_components/table/AdvisorPayHistoryTable";
+import { payHistoryColumns } from "../../../../../advisors/_components/advisor/_components/advisorDetail/_components/advisorPayHistoryTable/PayHistoryColumnDef";
+
+// Hooks and utilities
 import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
 import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { accountStColumns } from "./parts/ColumnDef";
-import backIcon from "@/assets/icons/back.svg";
-import {
+import { authStore } from "@/lib/store/authStore";
+import { BASE_API_URL } from "@/lib/variables/variables";
+
+// Types
+import type { AdvisorData } from "../../../../../advisors/_components/advisor/_components/advisorDetail/JustAdvisorDetail";
+import type {
   AdvisorStudentData,
   StudentWithDetails2,
   PaymentHistoryRecord,
 } from "@/functions/hooks/advisorsList/interface";
-import { useAdvisorsList } from "@/functions/hooks/advisorsList/useAdvisorsList";
-import { convertToShamsi } from "@/lib/utils/date/convertDate";
-import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
-import type { AdvisorData } from "../../../../../advisors/_components/advisor/_components/advisorDetail/JustAdvisorDetail";
-import AdvisorPerformanceChart from "../../../../../advisors/_components/advisor/_components/advisorDetail/_components/AdvisorPerformanceChart";
-import AdvisorAssessment from "../../../../../advisors/_components/advisor/_components/advisorDetail/_components/assessments/AdvisorAssessment";
-import AccountingAdvisorInfo from "./_components/AccountingAdvisorInfo";
-import AccountingAdvisorStudentList from "./_components/AccountingAdvisorStudentList";
-import { AllAdvisorDetailTable } from "../../../../table/AllAdvisorDetailTable";
-import AdvisorPerformanceChart from "../../../../../advisors/parts/advisor/parts/advisorDetail/parts/AdvisorPerformanceChart";
-import { AdvisorPayHistoryTable } from "../../../../../advisors/parts/table/AdvisorPayHistoryTable";
-import { payHistoryColumns } from "../../../../../advisors/parts/advisor/parts/advisorDetail/parts/advisorPayHistoryTable/PayHistoryColumnDef";
-import type { AdvisorData } from "../../../../../advisors/parts/advisor/parts/advisorDetail/JustAdvisorDetail";
-import { authStore } from "@/lib/store/authStore";
-import { BASE_API_URL } from "@/lib/variables/variables";
-import axios from "axios";
-import { debounce } from "lodash";
 
 const formatNumber = (number: string): string => {
   const num = parseFloat(number);

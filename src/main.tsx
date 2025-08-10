@@ -11,12 +11,6 @@ import ScrollToTop from "./lib/utils/ScrollToTop.tsx";
 
 // Lazy load components
 
-const MonthlyFinancialSummary = lazy(
-  () =>
-    import(
-      "./components/pages/dashboard/dashboardPages/accounting/monthlyFinancialSummary/AccountingMonthlyFinancialSummary.tsx"
-    )
-);
 const ExamAdvisroDetail = lazy(
   () =>
     import(
