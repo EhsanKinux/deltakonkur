@@ -61,7 +61,8 @@ const EnhancedSelect = <T extends FieldValues>({
               )}
               <Select
                 onValueChange={field.onChange}
-                defaultValue={field.value as string}
+                value={field.value as string}
+                key={field.value} // Add key to force re-render when value changes
               >
                 <SelectTrigger
                   className={cn(
@@ -73,7 +74,11 @@ const EnhancedSelect = <T extends FieldValues>({
                     "text-gray-900"
                   )}
                 >
-                  <SelectValue placeholder={placeholder} />
+                  <SelectValue placeholder={placeholder}>
+                    {field.value
+                      ? options.find((opt) => opt.value === field.value)?.label
+                      : placeholder}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="bg-white rounded-lg shadow-lg border border-gray-200">
                   {options.map((option) => (

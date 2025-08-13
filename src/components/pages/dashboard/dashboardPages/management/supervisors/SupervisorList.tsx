@@ -4,7 +4,7 @@ import { DataTable } from "@/components/ui/DataTable";
 import { FilterPanel } from "@/components/ui/FilterPanel";
 import api from "@/lib/apis/global-interceptor";
 import { useApiState } from "@/hooks/useApiState";
-import { SupervisorFormData, TableColumn } from "@/types";
+import { TableColumn } from "@/types";
 import {
   Dialog,
   DialogContent,
@@ -12,20 +12,38 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { showToast } from "@/components/ui/toast";
-import { Plus } from "lucide-react";
+import { CreditCard, User } from "lucide-react";
 import { motion } from "framer-motion";
 import { authStore } from "@/lib/store/authStore";
 import { BASE_API_URL } from "@/lib/variables/variables";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Form } from "@/components/ui/form";
+import { FormField, FormMessage } from "@/components/ui/form";
+import SmartInput from "@/components/ui/SmartInput";
+import EnhancedSelect from "@/components/ui/EnhancedSelect";
+import PersianDatePicker from "@/components/pages/dashboard/dashboardPages/accounting/monthlyFinancialReport/PersianDatePicker";
+
+// =============================================================================
+// VALIDATION SCHEMA
+// =============================================================================
+const editSupervisorSchema = z.object({
+  level: z.string().min(1, "سطح باید انتخاب شود"),
+  bank_account: z.string().refine((val) => {
+    // If empty, it's valid
+    if (!val || val.trim() === "") return true;
+
+    // If not empty, check length
+    const cleanValue = val.replace(/\D/g, "");
+    return cleanValue.length >= 12 && cleanValue.length <= 16;
+  }, "شماره حساب باید بین 12 تا 16 رقم باشد"),
+  last_withdraw: z.string().min(1, "* تاریخ آخرین برداشت باید انتخاب شود."),
+});
+
+type EditSupervisorFormData = z.infer<typeof editSupervisorSchema>;
 
 // =============================================================================
 // SUPERVISOR INTERFACE (Local definition for compatibility)
@@ -33,6 +51,7 @@ import { BASE_API_URL } from "@/lib/variables/variables";
 interface Supervisor extends Record<string, unknown> {
   id: number;
   level: number;
+  originalLevel: number; // Add this field to store original level
   bank_account: string | null;
   created: string;
   updated: string;
@@ -72,13 +91,23 @@ const SupervisorList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedSupervisor, setSelectedSupervisor] =
     useState<Supervisor | null>(null);
-  const [editingSupervisor, setEditingSupervisor] =
-    useState<SupervisorFormData | null>(null);
 
   // Reference to track abort controller for API requests
   const abortControllerRef = useRef<AbortController | null>(null);
   // Reference to track search timeout
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // =============================================================================
+  // FORM SETUP
+  // =============================================================================
+  const editForm = useForm<EditSupervisorFormData>({
+    resolver: zodResolver(editSupervisorSchema),
+    defaultValues: {
+      level: "1",
+      bank_account: "",
+      last_withdraw: "",
+    },
+  });
 
   // =============================================================================
   // MEMOIZED VALUES
@@ -130,6 +159,7 @@ const SupervisorList = () => {
       const formattedData = response.data.results.map(
         (supervisor: Record<string, unknown>) => ({
           ...supervisor,
+          originalLevel: supervisor.level, // Keep original level number
           level:
             levelMapping[supervisor.level as keyof typeof levelMapping] ||
             supervisor.level,
@@ -166,6 +196,37 @@ const SupervisorList = () => {
   useEffect(() => {
     getSupervisors();
   }, [getSupervisors]);
+
+  // Effect to set form values when editing supervisor
+  useEffect(() => {
+    if (isEditModalOpen && selectedSupervisor) {
+      // Use originalLevel which contains the actual numeric value
+      const supervisorLevel = selectedSupervisor.originalLevel;
+      let levelString = "1"; // default value
+
+      if (supervisorLevel !== null && supervisorLevel !== undefined) {
+        // If level is a number, convert to string
+        if (typeof supervisorLevel === "number") {
+          levelString = supervisorLevel.toString();
+        } else if (typeof supervisorLevel === "string") {
+          // If it's already a string, use it directly
+          levelString = supervisorLevel;
+        }
+      }
+
+      editForm.reset({
+        level: levelString,
+        bank_account: selectedSupervisor.bank_account || "",
+        last_withdraw: selectedSupervisor.last_withdraw || "",
+      });
+    }
+  }, [isEditModalOpen, selectedSupervisor, editForm]);
+
+  // Effect to sync searchFields with URL search parameters
+  useEffect(() => {
+    const supervisor = searchParams.get("supervisor") || "";
+    setSearchFields({ supervisor });
+  }, [searchParams]);
 
   // =============================================================================
   // SEARCH HANDLERS
@@ -209,74 +270,81 @@ const SupervisorList = () => {
   // =============================================================================
   const handleView = useCallback((supervisor: Record<string, unknown>) => {
     // Safe type conversion with validation
-    if (isSupervisorData(supervisor)) {
-      setSelectedSupervisor(supervisor);
-      setIsViewModalOpen(true);
-    }
+    const supervisorData = supervisor as Supervisor;
+    setSelectedSupervisor(supervisorData);
+    setIsViewModalOpen(true);
   }, []);
 
   const handleEdit = useCallback((supervisor: Record<string, unknown>) => {
     // Safe type conversion with validation
-    if (isSupervisorData(supervisor)) {
-      setSelectedSupervisor(supervisor);
-      setEditingSupervisor({
-        level: supervisor.level as number,
-        bank_account: supervisor.bank_account || "",
-        user: supervisor.user.id,
-        last_withdraw: supervisor.last_withdraw || "",
-      });
-      setIsEditModalOpen(true);
-    }
+    const supervisorData = supervisor as Supervisor;
+    setSelectedSupervisor(supervisorData);
+    setIsEditModalOpen(true);
   }, []);
 
   const handleDelete = useCallback((supervisor: Record<string, unknown>) => {
     // Safe type conversion with validation
-    if (isSupervisorData(supervisor)) {
-      setSelectedSupervisor(supervisor);
-      setIsDeleteModalOpen(true);
-    }
+    const supervisorData = supervisor as Supervisor;
+    setSelectedSupervisor(supervisorData);
+    setIsDeleteModalOpen(true);
   }, []);
 
-  const handleEditSubmit = useCallback(async () => {
-    if (!editingSupervisor || !selectedSupervisor) return;
+  const handleEditSubmit = useCallback(
+    async (data: EditSupervisorFormData) => {
+      if (!selectedSupervisor) return;
 
-    try {
-      await executeWithLoading(async () => {
-        await api.put(
-          `${BASE_API_URL}api/supervisor/profile/${selectedSupervisor.id}/`,
-          editingSupervisor
-        );
-      });
+      try {
+        await executeWithLoading(async () => {
+          await api.put(
+            `${BASE_API_URL}api/supervisor/profile/${selectedSupervisor.id}/`,
+            {
+              ...data,
+              level: parseInt(data.level), // Convert string back to number
+              user: (selectedSupervisor.user as { id: number }).id,
+            }
+          );
+        });
 
-      showToast.success("اطلاعات ناظر با موفقیت بروزرسانی شد");
-      setIsEditModalOpen(false);
-      setEditingSupervisor(null);
-      setSelectedSupervisor(null);
-      getSupervisors(); // Refresh data
-    } catch (error) {
-      console.error("Error updating supervisor:", error);
+        showToast.success("اطلاعات ناظر با موفقیت بروزرسانی شد");
+        setIsEditModalOpen(false);
+        setSelectedSupervisor(null);
+        editForm.reset();
+        getSupervisors(); // Refresh data
+      } catch (error) {
+        console.error("Error updating supervisor:", error);
 
-      // Check if it's an authentication error
-      if (error && typeof error === "object" && "response" in error) {
-        const axiosError = error as { response?: { status?: number } };
-        if (axiosError.response?.status === 401) {
-          showToast.error("جلسه شما منقضی شده است. لطفاً دوباره وارد شوید.");
-          clearAuth();
-          navigate("/auth/signIn");
+        // Check if it's an authentication error
+        if (error && typeof error === "object" && "response" in error) {
+          const axiosError = error as {
+            response?: { status?: number; data?: { message?: string } };
+          };
+          if (axiosError.response?.status === 401) {
+            showToast.error("جلسه شما منقضی شده است. لطفاً دوباره وارد شوید.");
+            clearAuth();
+            navigate("/auth/signIn");
+            return;
+          }
+
+          // Show the actual error message from API if available
+          const errorMessage =
+            axiosError.response?.data?.message ||
+            "خطا در بروزرسانی اطلاعات ناظر";
+          showToast.error(errorMessage);
           return;
         }
-      }
 
-      showToast.error("خطا در بروزرسانی اطلاعات ناظر");
-    }
-  }, [
-    editingSupervisor,
-    selectedSupervisor,
-    executeWithLoading,
-    getSupervisors,
-    clearAuth,
-    navigate,
-  ]);
+        showToast.error("خطا در بروزرسانی اطلاعات ناظر");
+      }
+    },
+    [
+      selectedSupervisor,
+      executeWithLoading,
+      getSupervisors,
+      clearAuth,
+      navigate,
+      editForm,
+    ]
+  );
 
   const handleDeleteConfirm = useCallback(async () => {
     if (!selectedSupervisor) return;
@@ -297,13 +365,21 @@ const SupervisorList = () => {
 
       // Check if it's an authentication error
       if (error && typeof error === "object" && "response" in error) {
-        const axiosError = error as { response?: { status?: number } };
+        const axiosError = error as {
+          response?: { status?: number; data?: { message?: string } };
+        };
         if (axiosError.response?.status === 401) {
           showToast.error("جلسه شما منقضی شده است. لطفاً دوباره وارد شوید.");
           clearAuth();
           navigate("/auth/signIn");
           return;
         }
+
+        // Show the actual error message from API if available
+        const errorMessage =
+          axiosError.response?.data?.message || "خطا در حذف ناظر";
+        showToast.error(errorMessage);
+        return;
       }
 
       showToast.error("خطا در حذف ناظر");
@@ -325,10 +401,10 @@ const SupervisorList = () => {
       header: "نام",
       accessorKey: "user.first_name",
       cell: (_, row) => {
-        if (isSupervisorData(row)) {
-          return row.user?.first_name || "-";
-        }
-        return "-";
+        const supervisorData = row as Supervisor;
+        return (
+          (supervisorData.user as { first_name: string })?.first_name || "-"
+        );
       },
     },
     {
@@ -336,10 +412,8 @@ const SupervisorList = () => {
       header: "نام خانوادگی",
       accessorKey: "user.last_name",
       cell: (_, row) => {
-        if (isSupervisorData(row)) {
-          return row.user?.last_name || "-";
-        }
-        return "-";
+        const supervisorData = row as Supervisor;
+        return (supervisorData.user as { last_name: string })?.last_name || "-";
       },
     },
     {
@@ -347,10 +421,10 @@ const SupervisorList = () => {
       header: "شماره همراه",
       accessorKey: "user.phone_number",
       cell: (_, row) => {
-        if (isSupervisorData(row)) {
-          return row.user?.phone_number || "-";
-        }
-        return "-";
+        const supervisorData = row as Supervisor;
+        return (
+          (supervisorData.user as { phone_number: string })?.phone_number || "-"
+        );
       },
     },
     {
@@ -358,12 +432,11 @@ const SupervisorList = () => {
       header: "سطح",
       accessorKey: "level",
       cell: (_, row) => {
-        if (isSupervisorData(row)) {
-          return (
-            levelMapping[row.level as keyof typeof levelMapping] || row.level
-          );
-        }
-        return "-";
+        const supervisorData = row as Supervisor;
+        return (
+          levelMapping[supervisorData.level as keyof typeof levelMapping] ||
+          supervisorData.level
+        );
       },
     },
     {
@@ -371,10 +444,8 @@ const SupervisorList = () => {
       header: "شماره حساب",
       accessorKey: "bank_account",
       cell: (_, row) => {
-        if (isSupervisorData(row)) {
-          return row.bank_account || "-";
-        }
-        return "-";
+        const supervisorData = row as Supervisor;
+        return supervisorData.bank_account || "-";
       },
     },
     {
@@ -382,10 +453,10 @@ const SupervisorList = () => {
       header: "تاریخ ایجاد",
       accessorKey: "created",
       cell: (_, row) => {
-        if (isSupervisorData(row)) {
-          return new Date(row.created).toLocaleDateString("fa-IR");
-        }
-        return "-";
+        const supervisorData = row as Supervisor;
+        return new Date(supervisorData.created as string).toLocaleDateString(
+          "fa-IR"
+        );
       },
     },
     {
@@ -393,12 +464,12 @@ const SupervisorList = () => {
       header: "آخرین برداشت",
       accessorKey: "last_withdraw",
       cell: (_, row) => {
-        if (isSupervisorData(row)) {
-          return row.last_withdraw
-            ? new Date(row.last_withdraw).toLocaleDateString("fa-IR")
-            : "-";
-        }
-        return "-";
+        const supervisorData = row as Supervisor;
+        return supervisorData.last_withdraw
+          ? new Date(supervisorData.last_withdraw as string).toLocaleDateString(
+              "fa-IR"
+            )
+          : "-";
       },
     },
   ];
@@ -417,6 +488,17 @@ const SupervisorList = () => {
   ];
 
   // =============================================================================
+  // LEVEL OPTIONS FOR ENHANCED SELECT
+  // =============================================================================
+  const levelOptions = [
+    { value: "1", label: "سطح 1", description: "ناظر تازه کار" },
+    { value: "2", label: "سطح 2", description: "ناظر با تجربه" },
+    { value: "3", label: "سطح 3", description: "ناظر ارشد" },
+    { value: "4", label: "ارشد 1", description: "ناظر ارشد سطح 1" },
+    { value: "5", label: "ارشد 2", description: "ناظر ارشد سطح 2" },
+  ];
+
+  // =============================================================================
   // RENDER
   // =============================================================================
   return (
@@ -431,16 +513,6 @@ const SupervisorList = () => {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">لیست ناظران</h1>
           <p className="text-gray-600">مدیریت و نظارت بر ناظران سیستم</p>
         </div>
-        <Button
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
-          onClick={() => {
-            // TODO: Implement add supervisor functionality
-            showToast.info("قابلیت افزودن ناظر جدید در حال توسعه است");
-          }}
-        >
-          <Plus className="w-5 h-5 ml-2" />
-          افزودن ناظر جدید
-        </Button>
       </motion.div>
 
       {/* Filter Panel */}
@@ -472,11 +544,6 @@ const SupervisorList = () => {
             totalPages,
             onPageChange: handlePageChange,
           }}
-          search={{
-            value: searchFields.supervisor,
-            onChange: (value: string) => handleSearch("supervisor", value),
-            placeholder: "جستجو در ناظران...",
-          }}
           actions={{
             onEdit: handleEdit,
             onDelete: handleDelete,
@@ -504,7 +571,7 @@ const SupervisorList = () => {
                   <Label className="text-sm font-medium text-gray-700">
                     نام
                   </Label>
-                  <div className="p-3 bg-gray-50 rounded-lg text-gray-900">
+                  <div className="p-3 bg-gray-100 rounded-lg text-gray-900">
                     {selectedSupervisor.user.first_name}
                   </div>
                 </div>
@@ -512,7 +579,7 @@ const SupervisorList = () => {
                   <Label className="text-sm font-medium text-gray-700">
                     نام خانوادگی
                   </Label>
-                  <div className="p-3 bg-gray-50 rounded-lg text-gray-900">
+                  <div className="p-3 bg-gray-100 rounded-lg text-gray-900">
                     {selectedSupervisor.user.last_name}
                   </div>
                 </div>
@@ -520,7 +587,7 @@ const SupervisorList = () => {
                   <Label className="text-sm font-medium text-gray-700">
                     شماره همراه
                   </Label>
-                  <div className="p-3 bg-gray-50 rounded-lg text-gray-900">
+                  <div className="p-3 bg-gray-100 rounded-lg text-gray-900">
                     {selectedSupervisor.user.phone_number}
                   </div>
                 </div>
@@ -528,7 +595,7 @@ const SupervisorList = () => {
                   <Label className="text-sm font-medium text-gray-700">
                     سطح
                   </Label>
-                  <div className="p-3 bg-gray-50 rounded-lg text-gray-900">
+                  <div className="p-3 bg-gray-100 rounded-lg text-gray-900">
                     {levelMapping[
                       selectedSupervisor.level as keyof typeof levelMapping
                     ] || selectedSupervisor.level}
@@ -538,7 +605,7 @@ const SupervisorList = () => {
                   <Label className="text-sm font-medium text-gray-700">
                     شماره حساب
                   </Label>
-                  <div className="p-3 bg-gray-50 rounded-lg text-gray-900">
+                  <div className="p-3 bg-gray-100 rounded-lg text-gray-900">
                     {selectedSupervisor.bank_account || "-"}
                   </div>
                 </div>
@@ -546,7 +613,7 @@ const SupervisorList = () => {
                   <Label className="text-sm font-medium text-gray-700">
                     آخرین برداشت
                   </Label>
-                  <div className="p-3 bg-gray-50 rounded-lg text-gray-900">
+                  <div className="p-3 bg-gray-100 rounded-lg text-gray-900">
                     {selectedSupervisor.last_withdraw
                       ? new Date(
                           selectedSupervisor.last_withdraw
@@ -558,7 +625,7 @@ const SupervisorList = () => {
                   <Label className="text-sm font-medium text-gray-700">
                     تاریخ ایجاد
                   </Label>
-                  <div className="p-3 bg-gray-50 rounded-lg text-gray-900">
+                  <div className="p-3 bg-gray-100 rounded-lg text-gray-900">
                     {new Date(selectedSupervisor.created).toLocaleDateString(
                       "fa-IR"
                     )}
@@ -568,7 +635,7 @@ const SupervisorList = () => {
                   <Label className="text-sm font-medium text-gray-700">
                     آخرین بروزرسانی
                   </Label>
-                  <div className="p-3 bg-gray-50 rounded-lg text-gray-900">
+                  <div className="p-3 bg-gray-100 rounded-lg text-gray-900">
                     {new Date(selectedSupervisor.updated).toLocaleDateString(
                       "fa-IR"
                     )}
@@ -588,81 +655,68 @@ const SupervisorList = () => {
               ویرایش ناظر
             </DialogTitle>
           </DialogHeader>
-          {editingSupervisor && (
-            <div className="space-y-6 p-6">
+          <Form {...editForm}>
+            <form
+              onSubmit={editForm.handleSubmit(handleEditSubmit)}
+              className="space-y-6 p-6"
+              autoFocus={false}
+            >
               <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="level"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    سطح
-                  </Label>
-                  <Select
-                    value={editingSupervisor.level.toString()}
-                    onValueChange={(value) =>
-                      setEditingSupervisor((prev) => ({
-                        ...prev!,
-                        level: parseInt(value),
-                      }))
-                    }
-                  >
-                    <SelectTrigger className="h-12 rounded-lg border-gray-300">
-                      <SelectValue placeholder="انتخاب سطح" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(levelMapping).map(([key, value]) => (
-                        <SelectItem key={key} value={key}>
-                          {value}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="bank_account"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    شماره حساب
-                  </Label>
-                  <Input
-                    id="bank_account"
-                    type="text"
-                    value={editingSupervisor.bank_account}
-                    onChange={(e) =>
-                      setEditingSupervisor((prev) => ({
-                        ...prev!,
-                        bank_account: e.target.value,
-                      }))
-                    }
-                    className="h-12 rounded-lg border-gray-300"
-                    placeholder="شماره حساب بانکی"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="last_withdraw"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    آخرین برداشت
-                  </Label>
-                  <Input
-                    id="last_withdraw"
-                    type="date"
-                    value={editingSupervisor.last_withdraw}
-                    onChange={(e) =>
-                      setEditingSupervisor((prev) => ({
-                        ...prev!,
-                        last_withdraw: e.target.value,
-                      }))
-                    }
-                    className="h-12 rounded-lg border-gray-300"
-                  />
-                </div>
+                <FormField
+                  control={editForm.control}
+                  name="level"
+                  render={() => (
+                    <div className="space-y-2">
+                      <EnhancedSelect
+                        control={editForm.control}
+                        name="level"
+                        label="سطح"
+                        placeholder="انتخاب سطح"
+                        options={levelOptions}
+                        icon={User}
+                        required={true}
+                      />
+                      <FormMessage className="text-red-400" />
+                    </div>
+                  )}
+                />
+                <FormField
+                  control={editForm.control}
+                  name="bank_account"
+                  render={() => (
+                    <div className="space-y-2">
+                      <SmartInput
+                        control={editForm.control}
+                        name="bank_account"
+                        label="شماره حساب"
+                        placeholder="شماره حساب بانکی"
+                        icon={CreditCard}
+                        validationType="bankAccount"
+                        autoFormat={true}
+                      />
+                    </div>
+                  )}
+                />
+                <FormField
+                  control={editForm.control}
+                  name="last_withdraw"
+                  render={() => (
+                    <div className="col-span-2 space-y-2">
+                      <PersianDatePicker
+                        value={editForm.watch("last_withdraw") || ""}
+                        onChange={(date) =>
+                          editForm.setValue("last_withdraw", date)
+                        }
+                        placeholder="انتخاب تاریخ آخرین برداشت"
+                      />
+                      <FormMessage className="text-red-400" />
+                    </div>
+                  )}
+                />
               </div>
               <div className="flex justify-end space-x-3 space-x-reverse pt-4">
                 <Button
+                  type="button"
                   variant="outline"
                   onClick={() => setIsEditModalOpen(false)}
                   className="px-6 py-2 rounded-lg"
@@ -670,14 +724,14 @@ const SupervisorList = () => {
                   انصراف
                 </Button>
                 <Button
-                  onClick={handleEditSubmit}
+                  type="submit"
                   className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-2 rounded-lg"
                 >
                   ذخیره تغییرات
                 </Button>
               </div>
-            </div>
-          )}
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
 
@@ -724,27 +778,3 @@ const SupervisorList = () => {
 };
 
 export default SupervisorList;
-
-// =============================================================================
-// TYPE GUARD FUNCTION
-// =============================================================================
-const isSupervisorData = (
-  data: Record<string, unknown>
-): data is Supervisor => {
-  if (!data.user || typeof data.user !== "object" || data.user === null) {
-    return false;
-  }
-
-  const user = data.user as Record<string, unknown>;
-
-  return (
-    typeof data.id === "number" &&
-    typeof data.level === "number" &&
-    typeof data.created === "string" &&
-    typeof data.updated === "string" &&
-    typeof user.id === "number" &&
-    typeof user.first_name === "string" &&
-    typeof user.last_name === "string" &&
-    typeof user.phone_number === "string"
-  );
-};
