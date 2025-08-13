@@ -35,10 +35,10 @@ const DeleteConfirmationDialog = ({
       if (dialogCloseRef.current) {
         dialogCloseRef.current.click();
       }
+
+      // Always call onSuccess callback instead of reloading
       if (onSuccess) {
         onSuccess();
-      } else {
-        window.location.reload();
       }
     } catch (error: unknown) {
       showToast.dismiss(loadingToastId);

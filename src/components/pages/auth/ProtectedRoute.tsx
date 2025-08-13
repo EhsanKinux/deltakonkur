@@ -1,20 +1,34 @@
-import { authStore } from "@/lib/store/authStore";
+import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
+import { authStore } from "@/lib/store/authStore";
 
 interface ProtectedRouteProps {
-  // path: string;
   element: React.ReactElement;
   requiredRole?: number[];
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, requiredRole = [] }) => {
-  const { accessToken, userRoles } = authStore();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  element,
+  requiredRole = [],
+}) => {
+  const { isAuthenticated, validateToken, userRoles } = authStore();
 
-  if (!accessToken) {
+  useEffect(() => {
+    // Check authentication on mount and when dependencies change
+    if (!isAuthenticated() || !validateToken()) {
+      // Redirect to login if not authenticated
+      window.location.href = "/auth/signIn";
+    }
+  }, [isAuthenticated, validateToken]);
+
+  if (!isAuthenticated() || !validateToken()) {
     return <Navigate to="/auth/signIn" />;
   }
 
-  if (userRoles === null || !userRoles.some((role) => requiredRole.includes(role))) {
+  if (
+    userRoles === null ||
+    !userRoles.some((role) => requiredRole.includes(role))
+  ) {
     return <Navigate to="/unauthorized" />;
   }
 

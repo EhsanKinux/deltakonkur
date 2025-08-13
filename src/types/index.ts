@@ -148,6 +148,41 @@ export interface SalesManager extends BaseEntity {
 }
 
 // =============================================================================
+// SUPERVISOR RELATED TYPES
+// =============================================================================
+
+export interface Supervisor extends BaseEntity {
+  level: number;
+  bank_account: string | null;
+  created: string;
+  updated: string;
+  user: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+  };
+  last_withdraw: string | null;
+}
+
+export interface SupervisorDetail {
+  id: number;
+  level: number;
+  bank_account: string | null;
+  created: string;
+  updated: string;
+  user: number; // For API responses
+  last_withdraw: string | null;
+}
+
+export interface SupervisorFormData {
+  level: number;
+  bank_account: string;
+  user: number;
+  last_withdraw: string;
+}
+
+// =============================================================================
 // FORM RELATED TYPES
 // =============================================================================
 

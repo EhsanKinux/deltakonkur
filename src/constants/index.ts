@@ -117,6 +117,13 @@ export const sidebarLinks = [
         label: "گزارش گیری",
         roles: [0],
       },
+      {
+        id: 104,
+        imgURL: supervisorIcon,
+        route: "/dashboard/management/supervisors",
+        label: "لیست ناظران",
+        roles: [0],
+      },
     ],
   },
   {

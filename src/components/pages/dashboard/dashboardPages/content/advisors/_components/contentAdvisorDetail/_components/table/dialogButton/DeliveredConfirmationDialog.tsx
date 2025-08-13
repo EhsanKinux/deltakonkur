@@ -13,7 +13,13 @@ import { useContent } from "@/functions/hooks/content/useContent";
 import { IDelivered } from "@/lib/apis/content/interface";
 import { useRef } from "react";
 
-const DeliveredConfirmationDialog = ({ data }: { data: IAdvisorContent }) => {
+const DeliveredConfirmationDialog = ({
+  data,
+  onSuccess,
+}: {
+  data: IAdvisorContent;
+  onSuccess?: () => void;
+}) => {
   const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
 
   const { sendContentDelivered, loading } = useContent(); // Destructure the required function from the hook
@@ -35,10 +41,11 @@ const DeliveredConfirmationDialog = ({ data }: { data: IAdvisorContent }) => {
       dialogCloseRef.current?.click();
       showToast.dismiss(loadingToastId);
       showToast.success("وضعیت ارسال با موفقیت به‌روزرسانی شد.");
-      // navigate("/dashboard/content/sendMessage");
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+
+      // Call onSuccess callback instead of reloading the page
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       showToast.dismiss(loadingToastId);
       let errorMessage = "خطایی رخ داده است، لطفا دوباره تلاش کنید";

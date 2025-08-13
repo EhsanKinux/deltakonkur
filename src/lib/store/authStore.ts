@@ -11,12 +11,16 @@ interface AuthState {
   setTokens: (access: string, refresh: string) => void;
   setUserRoles: (roles: number[]) => void;
   clearAuth: () => void;
+  isAuthenticated: () => boolean;
+  validateToken: () => boolean;
 }
 
-export const authStore = create<AuthState>((set) => ({
+export const authStore = create<AuthState>((set, get) => ({
   accessToken: Cookies.get("accessToken") || null,
   refreshToken: Cookies.get("refreshToken") || null,
-  userRoles: Cookies.get("userRoles") ? JSON.parse(Cookies.get("userRoles") as string) : null,
+  userRoles: Cookies.get("userRoles")
+    ? JSON.parse(Cookies.get("userRoles") as string)
+    : null,
   username: null,
   password: null,
 
@@ -25,13 +29,26 @@ export const authStore = create<AuthState>((set) => ({
   },
 
   setTokens: (access, refresh) => {
-    Cookies.set("accessToken", access, { sameSite: "strict" });
-    Cookies.set("refreshToken", refresh, { sameSite: "strict" });
+    // Set cookies with proper expiration and security options
+    Cookies.set("accessToken", access, {
+      sameSite: "strict",
+      secure: window.location.protocol === "https:",
+      expires: 1, // 1 day
+    });
+    Cookies.set("refreshToken", refresh, {
+      sameSite: "strict",
+      secure: window.location.protocol === "https:",
+      expires: 7, // 7 days
+    });
     set({ accessToken: access, refreshToken: refresh });
   },
 
   setUserRoles: (roles) => {
-    Cookies.set("userRoles", JSON.stringify(roles), { sameSite: "strict" });
+    Cookies.set("userRoles", JSON.stringify(roles), {
+      sameSite: "strict",
+      secure: window.location.protocol === "https:",
+      expires: 7, // 7 days
+    });
     set({ userRoles: roles });
   },
 
@@ -39,6 +56,40 @@ export const authStore = create<AuthState>((set) => ({
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
     Cookies.remove("userRoles");
-    set({ accessToken: null, refreshToken: null, userRoles: null, username: null, password: null });
+    set({
+      accessToken: null,
+      refreshToken: null,
+      userRoles: null,
+      username: null,
+      password: null,
+    });
+  },
+
+  isAuthenticated: () => {
+    const { accessToken, refreshToken } = get();
+    return !!(accessToken && refreshToken);
+  },
+
+  validateToken: () => {
+    const { accessToken } = get();
+    if (!accessToken) return false;
+
+    try {
+      // Basic token validation - check if it's a valid JWT format
+      const parts = accessToken.split(".");
+      if (parts.length !== 3) return false;
+
+      // Check if token is expired (basic check)
+      const payload = JSON.parse(atob(parts[1]));
+      const currentTime = Math.floor(Date.now() / 1000);
+
+      if (payload.exp && payload.exp < currentTime) {
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      return false;
+    }
   },
 }));
