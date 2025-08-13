@@ -106,8 +106,13 @@ const AuthForm = () => {
     <div className="w-full">
       {/* Enhanced Header */}
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-600 rounded-2xl mb-6 shadow-lg animate-glow-pulse">
-          <Shield className="w-8 h-8 text-white" />
+        <div className="inline-flex items-center justify-center lg:w-16 lg:h-16 w-24 h-24 p-1 bg-white lg:bg-gradient-to-br lg:from-blue-500 lg:via-purple-600 lg:to-indigo-600 rounded-2xl mb-6 shadow-lg lg:animate-glow-pulse">
+          <Shield className="w-8 h-8 text-white hidden lg:block" />
+          <img
+            src="/DeltaKonkur_Logo.png"
+            alt="delta logo"
+            className="lg:hidden"
+          />
         </div>
         <h1 className="text-2xl font-bold text-gray-900 mb-3">خوش آمدید</h1>
         <p className="text-gray-600 text-sm leading-relaxed">

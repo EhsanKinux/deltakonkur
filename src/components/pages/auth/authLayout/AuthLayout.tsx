@@ -91,11 +91,11 @@ const AuthLayout = () => {
         {/* Left Side - Brand Section (Desktop Only) */}
         <div className="hidden lg:flex lg:w-1/2 relative z-10">
           <div className="flex flex-col justify-center items-center text-gray-800 px-16 py-12 w-full">
-            <div className="text-center space-y-10 max-w-md animate-fade-in-down">
+            <div className="text-center space-y-5 max-w-md animate-fade-in-down">
               {/* Enhanced Logo */}
-              <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-600 rounded-3xl shadow-2xl animate-glow-pulse">
+              <div className="inline-flex items-center justify-center w-32 h-32 bg-white rounded-3xl shadow-2xl animate-glow-pulse p-2">
                 <span className="text-5xl font-extrabold text-white drop-shadow-lg">
-                  Δ
+                  <img src="/DeltaKonkur_Logo.png" alt="delta logo" />
                 </span>
               </div>
 

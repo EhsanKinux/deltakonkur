@@ -47,7 +47,7 @@ const SignIn = () => {
               {/* Enhanced Logo */}
               <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-600 rounded-3xl shadow-2xl animate-glow-pulse">
                 <span className="text-5xl font-extrabold text-white drop-shadow-lg">
-                  Δ
+                  <img src="/DeltaKonkur_Logo.png" alt="delta logo" />
                 </span>
               </div>
 
