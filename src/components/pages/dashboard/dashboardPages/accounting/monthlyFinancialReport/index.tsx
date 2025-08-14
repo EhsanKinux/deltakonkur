@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { ResponsiveTabs, TabItem } from "@/components/ui/ResponsiveTabs";
 import {
   Select,
@@ -20,26 +14,26 @@ import {
   AlertCircle,
   BarChart3,
   Calendar,
-  DollarSign,
-  FileText,
-  History,
   Loader2,
-  PieChart,
-  TrendingDown,
-  TrendingUp,
-  Users,
+  CreditCard,
+  History,
 } from "lucide-react";
 import moment from "moment-jalaali";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import FinancialCharts from "./FinancialCharts";
-import FinancialDetails from "./FinancialDetails";
-import FinancialRecordsManager from "./FinancialRecordsManager";
-import MonthlySummary from "./MonthlySummary";
-import { FinancialReport, formatNumber, persianMonths } from "./types";
+import { useSearchParams } from "react-router-dom";
+import { FinancialReport, persianMonths } from "./types";
+import FinancialDashboardTab from "./tabs/FinancialDashboardTab";
+import ExtraExpensesTab from "./tabs/ExtraExpensesTab";
+import FinancialRecordsTab from "./tabs/FinancialRecordsTab";
 
 moment.loadPersian({ dialect: "persian-modern" });
 
 const MonthlyFinancialReport: React.FC = () => {
+  // =============================================================================
+  // ROUTER & SEARCH PARAMS
+  // =============================================================================
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // =============================================================================
   // STATE MANAGEMENT
   // =============================================================================
@@ -53,19 +47,33 @@ const MonthlyFinancialReport: React.FC = () => {
 
   const currentPersianDate = getCurrentPersianDate();
 
-  const [selectedYear, setSelectedYear] = useState<number>(
-    currentPersianDate.year
-  );
-  const [selectedMonth, setSelectedMonth] = useState<number>(
-    currentPersianDate.month
-  );
-  const [financialData, setFinancialData] = useState<FinancialReport | null>(
+  // Get initial values from URL or use current date
+  const getInitialYear = () => {
+    const urlYear = searchParams.get("year");
+    if (urlYear) {
+      const year = parseInt(urlYear);
+      return isNaN(year) ? currentPersianDate.year : year;
+    }
+    return currentPersianDate.year;
+  };
+
+  const getInitialMonth = () => {
+    const urlMonth = searchParams.get("month");
+    if (urlMonth) {
+      const month = parseInt(urlMonth);
+      return isNaN(month) ? currentPersianDate.month : month;
+    }
+    return currentPersianDate.month;
+  };
+
+  const [selectedYear, setSelectedYear] = useState<number>(getInitialYear);
+  const [selectedMonth, setSelectedMonth] = useState<number>(getInitialMonth);
+  const [dashboardData, setDashboardData] = useState<FinancialReport | null>(
     null
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<string>("charts");
-  const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<string>("dashboard");
 
   const { executeWithLoading } = useApiState();
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -93,10 +101,21 @@ const MonthlyFinancialReport: React.FC = () => {
     return persianMonths.find((m) => m.value === month)?.label || "";
   };
 
+  // Update URL search params
+  const updateSearchParams = useCallback(
+    (year: number, month: number) => {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("year", year.toString());
+      newSearchParams.set("month", month.toString());
+      setSearchParams(newSearchParams);
+    },
+    [searchParams, setSearchParams]
+  );
+
   // =============================================================================
   // API CALLS
   // =============================================================================
-  const fetchFinancialReport = useCallback(async () => {
+  const fetchDashboardData = useCallback(async () => {
     if (!selectedYear || !selectedMonth) {
       return;
     }
@@ -114,32 +133,54 @@ const MonthlyFinancialReport: React.FC = () => {
 
     try {
       const response = await executeWithLoading(async () => {
-        return await api.get<FinancialReport>(
-          "api/finances/financial-report/",
-          {
-            params: {
-              solar_month: selectedMonth,
-              solar_year: selectedYear,
-            },
-          }
-        );
+        return await api.get<FinancialReport>("api/finances/dashboard/", {
+          params: {
+            solar_month: selectedMonth,
+            solar_year: selectedYear,
+          },
+        });
       });
 
-      setFinancialData(response.data);
-      setIsDataLoaded(true);
-      showToast.success("اطلاعات مالی با موفقیت دریافت شد");
+      setDashboardData(response.data);
+      showToast.success("اطلاعات داشبورد مالی با موفقیت دریافت شد");
     } catch (err: unknown) {
       if (err instanceof Error && err.name === "AbortError") {
         console.log("Request was aborted");
       } else {
-        console.error("Error fetching financial report:", err);
-        setError("خطا در دریافت اطلاعات مالی");
-        showToast.error("خطا در دریافت اطلاعات مالی");
+        console.error("Error fetching dashboard data:", err);
+        setError("خطا در دریافت اطلاعات داشبورد مالی");
+        showToast.error("خطا در دریافت اطلاعات داشبورد مالی");
       }
     } finally {
       setLoading(false);
     }
   }, [selectedYear, selectedMonth, executeWithLoading]);
+
+  // Callback to refresh dashboard data when changes occur in other tabs
+  const refreshDashboardData = useCallback(() => {
+    if (selectedYear && selectedMonth) {
+      fetchDashboardData();
+    }
+  }, [selectedYear, selectedMonth, fetchDashboardData]);
+
+  // Clear search params except year and month when tabs change
+  const clearTabSpecificParams = useCallback(() => {
+    const newSearchParams = new URLSearchParams();
+    // Keep only year and month params
+    newSearchParams.set("year", selectedYear.toString());
+    newSearchParams.set("month", selectedMonth.toString());
+    setSearchParams(newSearchParams);
+  }, [selectedYear, selectedMonth, setSearchParams]);
+
+  // Handle tab change
+  const handleTabChange = useCallback(
+    (newTab: string) => {
+      setActiveTab(newTab);
+      // Clear all search params except year and month when changing tabs
+      clearTabSpecificParams();
+    },
+    [clearTabSpecificParams]
+  );
 
   // =============================================================================
   // EVENT HANDLERS
@@ -147,17 +188,17 @@ const MonthlyFinancialReport: React.FC = () => {
   const handleYearChange = (year: string) => {
     const newYear = parseInt(year);
     setSelectedYear(newYear);
-    setIsDataLoaded(false);
-    setFinancialData(null);
+    setDashboardData(null);
     setError(null);
+    updateSearchParams(newYear, selectedMonth);
   };
 
   const handleMonthChange = (month: string) => {
     const newMonth = parseInt(month);
     setSelectedMonth(newMonth);
-    setIsDataLoaded(false);
-    setFinancialData(null);
+    setDashboardData(null);
     setError(null);
+    updateSearchParams(selectedYear, newMonth);
   };
 
   // =============================================================================
@@ -165,181 +206,42 @@ const MonthlyFinancialReport: React.FC = () => {
   // =============================================================================
   const tabItems: TabItem[] = [
     {
-      value: "charts",
-      label: "خلاصه عملکرد به صورت نموداری",
+      value: "dashboard",
+      label: "داشبورد مالی",
       icon: BarChart3,
-      description: "نمودارهای تعاملی مالی",
-      content: financialData ? (
-        <FinancialCharts data={financialData} />
-      ) : (
-        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-          <CardContent className="pt-6">
-            <div className="text-center py-8">
-              {loading ? (
-                <>
-                  <Loader2 className="w-12 h-12 text-blue-500 mx-auto mb-4 animate-spin" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    در حال بارگذاری نمودارها...
-                  </h3>
-                  <p className="text-gray-600">
-                    لطفاً صبر کنید، اطلاعات مالی در حال دریافت است
-                  </p>
-                </>
-              ) : (
-                <>
-                  <BarChart3 className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    نمودارهای مالی
-                  </h3>
-                  <p className="text-gray-600">
-                    اطلاعات مالی در حال بارگذاری است، لطفاً صبر کنید
-                  </p>
-                </>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      ),
-    },
-    {
-      value: "records",
-      label: "سوابق مالی",
-      icon: History,
-      description: "سوابق و تاریخچه مالی",
+      description: "نمای کلی و خلاصه وضعیت مالی",
       content: (
-        <FinancialRecordsManager
-          selectedYear={selectedYear}
+        <FinancialDashboardTab
+          data={dashboardData}
+          loading={loading}
           selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
         />
       ),
     },
-
     {
-      value: "summary",
-      label: "خلاصه وضعیت مالی",
-      icon: FileText,
-      description: "خلاصه مالی ماه",
-      content: financialData ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>خلاصه مالی ماه</CardTitle>
-            <CardDescription>
-              خلاصه‌ای از وضعیت مالی در ماه {getMonthLabel(selectedMonth)} سال{" "}
-              {selectedYear}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
-                <div>
-                  <p className="text-sm text-green-600 font-medium">درآمد کل</p>
-                  <p className="text-2xl font-bold text-green-700">
-                    {formatNumber(financialData.total_revenue)} ریال
-                  </p>
-                </div>
-                <TrendingUp className="w-8 h-8 text-green-600" />
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
-                <div>
-                  <p className="text-sm text-red-600 font-medium">هزینه کل</p>
-                  <p className="text-2xl font-bold text-red-700">
-                    {formatNumber(financialData.total_costs)} ریال
-                  </p>
-                </div>
-                <TrendingDown className="w-8 h-8 text-red-600" />
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <div>
-                  <p className="text-sm text-blue-600 font-medium">سود خالص</p>
-                  <p className="text-2xl font-bold text-blue-700">
-                    {formatNumber(financialData.total_profit)} ریال
-                  </p>
-                </div>
-                <DollarSign className="w-8 h-8 text-blue-600" />
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg border border-purple-200">
-                <div>
-                  <p className="text-sm text-purple-600 font-medium">
-                    درصد سود
-                  </p>
-                  <p className="text-2xl font-bold text-purple-700">
-                    {financialData.profit_margin_percentage}%
-                  </p>
-                </div>
-                <Users className="w-8 h-8 text-purple-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
-          <CardContent className="pt-6">
-            <div className="text-center py-8">
-              {loading ? (
-                <>
-                  <Loader2 className="w-12 h-12 text-green-500 mx-auto mb-4 animate-spin" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    در حال بارگذاری خلاصه...
-                  </h3>
-                  <p className="text-gray-600">
-                    لطفاً صبر کنید، اطلاعات مالی در حال دریافت است
-                  </p>
-                </>
-              ) : (
-                <>
-                  <FileText className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    خلاصه مالی
-                  </h3>
-                  <p className="text-gray-600">
-                    اطلاعات مالی در حال بارگذاری است، لطفاً صبر کنید
-                  </p>
-                </>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+      value: "extra-expenses",
+      label: "سایر هزینه‌ها",
+      icon: CreditCard,
+      description: "مدیریت هزینه‌های اضافی و غیرمستقیم",
+      content: (
+        <ExtraExpensesTab
+          selectedYear={selectedYear}
+          selectedMonth={selectedMonth}
+          onDataChange={refreshDashboardData}
+        />
       ),
     },
-
     {
-      value: "details",
-      label: "جزئیات",
-      icon: PieChart,
-      description: "جزئیات کامل مالی",
-      content: financialData ? (
-        <FinancialDetails data={financialData} />
-      ) : (
-        <Card className="bg-gradient-to-r from-purple-50 to-violet-50 border-purple-200">
-          <CardContent className="pt-6">
-            <div className="text-center py-8">
-              {loading ? (
-                <>
-                  <Loader2 className="w-12 h-12 text-purple-500 mx-auto mb-4 animate-spin" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    در حال بارگذاری جزئیات...
-                  </h3>
-                  <p className="text-gray-600">
-                    لطفاً صبر کنید، اطلاعات مالی در حال دریافت است
-                  </p>
-                </>
-              ) : (
-                <>
-                  <PieChart className="w-12 h-12 text-purple-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    جزئیات مالی
-                  </h3>
-                  <p className="text-gray-600">
-                    اطلاعات مالی در حال بارگذاری است، لطفاً صبر کنید
-                  </p>
-                </>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+      value: "financial-records",
+      label: "سوابق مالی",
+      icon: History,
+      description: "تاریخچه و سوابق کامل مالی",
+      content: (
+        <FinancialRecordsTab
+          selectedYear={selectedYear}
+          selectedMonth={selectedMonth}
+        />
       ),
     },
   ];
@@ -347,12 +249,24 @@ const MonthlyFinancialReport: React.FC = () => {
   // =============================================================================
   // EFFECTS
   // =============================================================================
-  // Auto-load financial report when month/year changes
+  // Initialize URL params if they don't exist
+  useEffect(() => {
+    if (!searchParams.get("year") || !searchParams.get("month")) {
+      updateSearchParams(currentPersianDate.year, currentPersianDate.month);
+    }
+  }, [
+    currentPersianDate.year,
+    currentPersianDate.month,
+    searchParams,
+    updateSearchParams,
+  ]);
+
+  // Auto-load dashboard data when month/year changes
   useEffect(() => {
     if (selectedYear && selectedMonth) {
-      fetchFinancialReport();
+      fetchDashboardData();
     }
-  }, [selectedYear, selectedMonth, fetchFinancialReport]);
+  }, [selectedYear, selectedMonth, fetchDashboardData]);
 
   // Cleanup effect
   useEffect(() => {
@@ -367,16 +281,16 @@ const MonthlyFinancialReport: React.FC = () => {
   // RENDER
   // =============================================================================
   return (
-    <div className="space-y-6 p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <div className="space-y-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       {/* Header */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              حساب و کتاب ماهیانه
+              گزارش مالی ماهیانه
             </h1>
             <p className="text-gray-600">
-              مدیریت و تحلیل مالی ماهانه مرکز آموزشی
+              مدیریت، تحلیل و نظارت بر وضعیت مالی مرکز آموزشی
             </p>
           </div>
 
@@ -479,66 +393,19 @@ const MonthlyFinancialReport: React.FC = () => {
         </Card>
       )}
 
-      {/* Financial Data */}
-      {financialData && !loading && (
-        <>
-          {/* Summary Cards */}
-          <MonthlySummary data={financialData} />
-
-          {/* Responsive Tabs */}
-          <ResponsiveTabs
-            tabs={tabItems}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            title="گزارش‌های مالی"
-            subtitle={`ماه ${getMonthLabel(selectedMonth)} سال ${selectedYear}`}
-            titleIcon={Calendar}
-            className="bg-white rounded-xl shadow-sm border border-gray-200"
-            showHeader={true}
-            headerClassName="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50"
-            contentClassName=""
-          />
-        </>
-      )}
-
-      {/* No Data State */}
-      {!financialData && !loading && !error && isDataLoaded && (
-        <Card className="bg-white border border-gray-200">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  اطلاعات مالی یافت نشد
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  برای ماه {getMonthLabel(selectedMonth)} سال {selectedYear}{" "}
-                  اطلاعات مالی موجود نیست
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Initial State - Show tabs without financial data */}
-      {!financialData && !loading && !error && !isDataLoaded && (
-        <>
-          {/* Responsive Tabs */}
-          <ResponsiveTabs
-            tabs={tabItems}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            title="گزارش‌های مالی"
-            subtitle={`ماه ${getMonthLabel(selectedMonth)} سال ${selectedYear}`}
-            titleIcon={Calendar}
-            className="bg-white rounded-xl shadow-sm border border-gray-200"
-            showHeader={true}
-            headerClassName="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50"
-            contentClassName="p-6"
-          />
-        </>
-      )}
+      {/* Responsive Tabs */}
+      <ResponsiveTabs
+        tabs={tabItems}
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        title="گزارش‌های مالی"
+        subtitle={`ماه ${getMonthLabel(selectedMonth)} سال ${selectedYear}`}
+        titleIcon={Calendar}
+        className="bg-white rounded-xl shadow-sm border border-gray-200"
+        showHeader={true}
+        headerClassName="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50"
+        contentClassName="p-6"
+      />
     </div>
   );
 };

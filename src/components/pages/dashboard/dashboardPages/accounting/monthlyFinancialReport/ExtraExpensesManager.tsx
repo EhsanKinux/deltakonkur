@@ -32,6 +32,7 @@ import DeleteExpenseDialog from "./DeleteExpenseDialog";
 interface ExtraExpensesManagerProps {
   selectedYear: number;
   selectedMonth: number;
+  onDataChange?: () => void;
 }
 
 // Define the form data type to match the dialog
@@ -48,6 +49,7 @@ interface ExtraExpenseFormData {
 const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
   selectedYear,
   selectedMonth,
+  onDataChange,
 }) => {
   // =============================================================================
   // STATE MANAGEMENT
@@ -172,12 +174,17 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
         showToast.success("هزینه با موفقیت اضافه شد");
         fetchExpenses();
         setIsDialogOpen(false);
+
+        // Notify parent component to refresh dashboard data
+        if (onDataChange) {
+          onDataChange();
+        }
       } catch (error) {
         console.error("Error creating expense:", error);
         showToast.error("خطا در ایجاد هزینه");
       }
     },
-    [executeWithLoading, fetchExpenses]
+    [executeWithLoading, fetchExpenses, onDataChange]
   );
 
   const updateExpense = useCallback(
@@ -190,12 +197,17 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
         showToast.success("هزینه با موفقیت بروزرسانی شد");
         fetchExpenses();
         setIsDialogOpen(false);
+
+        // Notify parent component to refresh dashboard data
+        if (onDataChange) {
+          onDataChange();
+        }
       } catch (error) {
         console.error("Error updating expense:", error);
         showToast.error("خطا در بروزرسانی هزینه");
       }
     },
-    [executeWithLoading, fetchExpenses]
+    [executeWithLoading, fetchExpenses, onDataChange]
   );
 
   const deleteExpense = useCallback(
@@ -207,12 +219,17 @@ const ExtraExpensesManager: React.FC<ExtraExpensesManagerProps> = ({
 
         showToast.success("هزینه با موفقیت حذف شد");
         fetchExpenses();
+
+        // Notify parent component to refresh dashboard data
+        if (onDataChange) {
+          onDataChange();
+        }
       } catch (error) {
         console.error("Error deleting expense:", error);
         showToast.error("خطا در حذف هزینه");
       }
     },
-    [executeWithLoading, fetchExpenses]
+    [executeWithLoading, fetchExpenses, onDataChange]
   );
 
   // =============================================================================
