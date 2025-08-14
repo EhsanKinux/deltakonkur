@@ -5,7 +5,7 @@ import { DollarSign } from "lucide-react";
 import showToast from "@/components/ui/toast";
 
 interface FormattedAmountInputProps {
-  value: number;
+  value: string;
   onChange: (value: number) => void;
   label?: string;
   placeholder?: string;
@@ -22,9 +22,11 @@ const FormattedAmountInput: React.FC<FormattedAmountInputProps> = ({
   const [displayValue, setDisplayValue] = useState<string>("");
 
   // Format number with commas
-  const formatNumber = (num: number): string => {
-    if (num === 0) return "";
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const formatNumber = (num: string): string => {
+    if (!num || num === "0") return "";
+    const numericValue = parseFloat(num);
+    if (isNaN(numericValue)) return "";
+    return numericValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   // Parse input value to number (remove commas)
@@ -58,7 +60,7 @@ const FormattedAmountInput: React.FC<FormattedAmountInputProps> = ({
     }
 
     // Format and update display value
-    const formattedValue = formatNumber(numericValue);
+    const formattedValue = formatNumber(numericValue.toString());
     setDisplayValue(formattedValue);
 
     // Call onChange with numeric value

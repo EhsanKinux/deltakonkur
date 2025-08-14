@@ -39,7 +39,7 @@ interface ExtraExpensesManagerProps {
 interface ExtraExpenseFormData {
   title: string;
   description?: string;
-  amount: number;
+  amount: string;
   category: string;
   date: string;
   solar_year: number;

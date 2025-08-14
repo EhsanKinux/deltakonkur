@@ -28,9 +28,16 @@ const extraExpenseSchema = z.object({
     .min(3, "عنوان باید حداقل 3 کاراکتر باشد"),
   description: z.string().optional(),
   amount: z
-    .number()
-    .min(1, "مبلغ باید بیشتر از 0 باشد")
-    .max(2147483647, "مبلغ نمی‌تواند بیشتر از 2,147,483,647 باشد"),
+    .string()
+    .min(1, "مبلغ الزامی است")
+    .refine((val) => {
+      const num = parseFloat(val);
+      return !isNaN(num) && num > 0;
+    }, "مبلغ باید بیشتر از 0 باشد")
+    .refine((val) => {
+      const num = parseFloat(val);
+      return !isNaN(num) && num <= 2147483647;
+    }, "مبلغ نمی‌تواند بیشتر از 2,147,483,647 باشد"),
   category: z.string().min(1, "دسته‌بندی الزامی است"),
   date: z.string().min(1, "تاریخ الزامی است"),
   solar_year: z.number(),
@@ -61,7 +68,7 @@ const ExtraExpenseDialog: React.FC<ExtraExpenseDialogProps> = ({
     defaultValues: {
       title: "",
       description: "",
-      amount: 0,
+      amount: "",
       category: "",
       date: "",
       solar_year: selectedYear,
@@ -110,7 +117,7 @@ const ExtraExpenseDialog: React.FC<ExtraExpenseDialogProps> = ({
       form.reset({
         title: "",
         description: "",
-        amount: 0,
+        amount: "",
         category: "",
         date: new Date().toISOString().split("T")[0],
         solar_year: selectedYear,
@@ -131,7 +138,7 @@ const ExtraExpenseDialog: React.FC<ExtraExpenseDialogProps> = ({
   });
 
   const handleAmountChange = (amount: number) => {
-    form.setValue("amount", amount);
+    form.setValue("amount", amount.toString());
   };
 
   const handleDateChange = (date: string) => {

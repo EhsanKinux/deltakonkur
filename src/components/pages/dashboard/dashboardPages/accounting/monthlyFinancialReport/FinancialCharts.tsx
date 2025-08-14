@@ -52,42 +52,47 @@ interface MetricType {
 const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
   const [showDetails, setShowDetails] = useState(false);
 
-  const chartData = useMemo(() => {
-    const totalRevenue = data.total_revenue;
-    const totalCosts = data.total_costs;
-    const totalProfit = data.total_profit;
-    const profitMargin = data.profit_margin_percentage;
+  // Convert string amounts to numbers for calculations
+  const totalRevenue = parseFloat(data.total_revenue);
+  const totalCosts = parseFloat(data.total_costs);
+  const totalProfit = parseFloat(data.total_profit);
+  const profitMargin = data.profit_margin_percentage;
+  const advisorCosts = parseFloat(data.advisor_costs);
+  const supervisorCosts = parseFloat(data.supervisor_costs);
+  const salesManagerCosts = parseFloat(data.sales_manager_costs);
+  const extraExpenses = parseFloat(data.extra_expenses);
 
+  const chartData = useMemo(() => {
     const costBreakdownData = [
       {
         name: "مشاوران",
-        value: data.advisor_costs,
+        value: data.advisor_costs, // Keep original string for display
         color: "#3B82F6",
-        percentage: ((data.advisor_costs / totalCosts) * 100).toFixed(1),
+        percentage: ((advisorCosts / totalCosts) * 100).toFixed(1),
         icon: "👨‍💼",
         unit: "ریال",
       },
       {
         name: "ناظران",
-        value: data.supervisor_costs,
+        value: data.supervisor_costs, // Keep original string for display
         color: "#10B981",
-        percentage: ((data.supervisor_costs / totalCosts) * 100).toFixed(1),
+        percentage: ((supervisorCosts / totalCosts) * 100).toFixed(1),
         icon: "👁️",
         unit: "ریال",
       },
       {
         name: "مدیران فروش",
-        value: data.sales_manager_costs,
+        value: data.sales_manager_costs, // Keep original string for display
         color: "#F59E0B",
-        percentage: ((data.sales_manager_costs / totalCosts) * 100).toFixed(1),
+        percentage: ((salesManagerCosts / totalCosts) * 100).toFixed(1),
         icon: "📈",
         unit: "ریال",
       },
       {
         name: "سایر هزینه‌ها",
-        value: data.extra_expenses,
+        value: data.extra_expenses, // Keep original string for display
         color: "#EF4444",
-        percentage: ((data.extra_expenses / totalCosts) * 100).toFixed(1),
+        percentage: ((extraExpenses / totalCosts) * 100).toFixed(1),
         icon: "📋",
         unit: "ریال",
       },
@@ -96,21 +101,21 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
     const revenueVsCostsData = [
       {
         name: "درآمد کل",
-        value: totalRevenue,
+        value: data.total_revenue, // Keep original string for display
         color: "#10B981",
         trend: "up",
         unit: "ریال",
       },
       {
         name: "هزینه کل",
-        value: totalCosts,
+        value: data.total_costs, // Keep original string for display
         color: "#EF4444",
         trend: "down",
         unit: "ریال",
       },
       {
         name: "سود خالص",
-        value: totalProfit,
+        value: data.total_profit, // Keep original string for display
         color: "#3B82F6",
         trend: totalProfit > 0 ? "up" : "down",
         unit: "ریال",
@@ -709,10 +714,8 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                   {formatNumber(data.advisor_costs)} ریال
                 </p>
                 <p className="text-xs md:text-sm text-gray-600">
-                  {((data.advisor_costs / chartData.totalCosts) * 100).toFixed(
-                    1
-                  )}
-                  % از کل هزینه‌ها
+                  {((advisorCosts / totalCosts) * 100).toFixed(1)}% از کل
+                  هزینه‌ها
                 </p>
               </div>
               <div className="p-3 md:p-4 bg-gray-50 rounded-lg">
@@ -723,11 +726,8 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                   {formatNumber(data.supervisor_costs)} ریال
                 </p>
                 <p className="text-xs md:text-sm text-gray-600">
-                  {(
-                    (data.supervisor_costs / chartData.totalCosts) *
-                    100
-                  ).toFixed(1)}
-                  % از کل هزینه‌ها
+                  {((supervisorCosts / totalCosts) * 100).toFixed(1)}% از کل
+                  هزینه‌ها
                 </p>
               </div>
               <div className="p-3 md:p-4 bg-gray-50 rounded-lg">
@@ -738,11 +738,8 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                   {formatNumber(data.sales_manager_costs)} ریال
                 </p>
                 <p className="text-xs md:text-sm text-gray-600">
-                  {(
-                    (data.sales_manager_costs / chartData.totalCosts) *
-                    100
-                  ).toFixed(1)}
-                  % از کل هزینه‌ها
+                  {((salesManagerCosts / totalCosts) * 100).toFixed(1)}% از کل
+                  هزینه‌ها
                 </p>
               </div>
               <div className="p-3 md:p-4 bg-gray-50 rounded-lg">
@@ -753,10 +750,8 @@ const FinancialCharts: React.FC<FinancialChartsProps> = ({ data }) => {
                   {formatNumber(data.extra_expenses)} ریال
                 </p>
                 <p className="text-xs md:text-sm text-gray-600">
-                  {((data.extra_expenses / chartData.totalCosts) * 100).toFixed(
-                    1
-                  )}
-                  % از کل هزینه‌ها
+                  {((extraExpenses / totalCosts) * 100).toFixed(1)}% از کل
+                  هزینه‌ها
                 </p>
               </div>
             </div>

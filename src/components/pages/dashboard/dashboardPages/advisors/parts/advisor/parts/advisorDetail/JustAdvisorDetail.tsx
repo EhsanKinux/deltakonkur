@@ -337,7 +337,7 @@ const JustAdvisorDetail = () => {
       let runningSum = 0;
 
       const formattedPaymentHistory = paymentHistory.map((record, index) => {
-        runningSum += record.amount;
+        runningSum += parseFloat(record.amount);
         return {
           ...record,
           sum_of_amount: runningSum,

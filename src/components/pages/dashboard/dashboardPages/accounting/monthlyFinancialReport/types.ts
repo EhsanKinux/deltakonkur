@@ -1,33 +1,33 @@
 export interface FinancialReport {
   solar_year: number;
   solar_month: number;
-  total_revenue: number;
+  total_revenue: string;
   active_students_count: number;
   prolonging_students_count: number;
-  total_costs: number;
-  advisor_costs: number;
-  supervisor_costs: number;
-  sales_manager_costs: number;
-  extra_expenses: number;
-  total_profit: number;
+  total_costs: string;
+  advisor_costs: string;
+  supervisor_costs: string;
+  sales_manager_costs: string;
+  extra_expenses: string;
+  total_profit: string;
   profit_margin_percentage: number;
   revenue_details: Array<{
     student_id: number;
     student_name: string;
-    package_price: number;
-    revenue: number;
+    package_price: string;
+    revenue: string;
   }>;
   cost_details: {
     advisor_details: Array<{
       advisor_id: number;
       advisor_name: string;
-      amount: number;
+      amount: string;
       level: number;
     }>;
     supervisor_details: Array<{
       supervisor_id: number;
       supervisor_name: string;
-      amount: number;
+      amount: string;
       level: number;
     }>;
     sales_manager_details: Array<{
@@ -36,23 +36,58 @@ export interface FinancialReport {
       level: number;
       percentage: number;
       students_count: number;
-      total_earnings: number;
+      total_earnings: string;
       students_details: Array<{
         student_id: number;
         student_name: string;
-        package_price: number;
+        package_price: string;
         percentage: number;
-        earnings: number;
+        earnings: string;
       }>;
     }>;
     extra_expenses_details: Array<{
       expense_id: number;
       title: string;
       category: string;
-      amount: number;
+      amount: string;
       date: string;
     }>;
   };
+}
+
+export interface FinancialDashboard {
+  summary: {
+    total_extra_expenses: string;
+    total_revenue: string;
+    total_costs: string;
+    total_profit: string;
+    average_profit_margin: number;
+  };
+  extra_expenses: Array<{
+    id: number;
+    title: string;
+    amount: string;
+    category: string;
+  }>;
+  monthly_revenues: Array<{
+    id: number;
+    solar_year: number;
+    solar_month: number;
+    total_revenue: string;
+  }>;
+  monthly_costs: Array<{
+    id: number;
+    solar_year: number;
+    solar_month: number;
+    total_costs: string;
+  }>;
+  monthly_financial_records: Array<{
+    id: number;
+    solar_year: number;
+    solar_month: number;
+    total_profit: string;
+    profit_margin_percentage: number;
+  }>;
 }
 
 // Financial Records interfaces
@@ -60,15 +95,15 @@ export interface FinancialRecord {
   id: number;
   solar_year: number;
   solar_month: number;
-  total_revenue: number;
+  total_revenue: string;
   active_students_count: number;
   prolonging_students_count: number;
-  total_costs: number;
-  advisor_costs: number;
-  supervisor_costs: number;
-  sales_manager_costs: number;
-  extra_expenses: number;
-  total_profit: number;
+  total_costs: string;
+  advisor_costs: string;
+  supervisor_costs: string;
+  sales_manager_costs: string;
+  extra_expenses: string;
+  total_profit: string;
   profit_margin_percentage: number;
   record_type: string;
   notes: string;
@@ -88,11 +123,11 @@ export interface MonthlyCost {
   id: number;
   solar_year: number;
   solar_month: number;
-  total_costs: number;
-  advisor_costs: number;
-  supervisor_costs: number;
-  sales_manager_costs: number;
-  extra_expenses: number;
+  total_costs: string;
+  advisor_costs: string;
+  supervisor_costs: string;
+  sales_manager_costs: string;
+  extra_expenses: string;
   created_at: string;
   updated_at: string;
 }
@@ -109,7 +144,7 @@ export interface MonthlyRevenue {
   id: number;
   solar_year: number;
   solar_month: number;
-  total_revenue: number;
+  total_revenue: string;
   active_students_count: number;
   prolonging_students_count: number;
   created_at: string;
@@ -128,15 +163,15 @@ export interface HistoricalData {
   id: number;
   solar_year: number;
   solar_month: number;
-  total_revenue: number;
+  total_revenue: string;
   active_students_count: number;
   prolonging_students_count: number;
-  total_costs: number;
-  advisor_costs: number;
-  supervisor_costs: number;
-  sales_manager_costs: number;
-  extra_expenses: number;
-  total_profit: number;
+  total_costs: string;
+  advisor_costs: string;
+  supervisor_costs: string;
+  sales_manager_costs: string;
+  extra_expenses: string;
+  total_profit: string;
   profit_margin_percentage: number;
   record_type: string;
   notes: string;
@@ -149,7 +184,7 @@ export interface ExtraExpense {
   id: number;
   title: string;
   description: string;
-  amount: number;
+  amount: string;
   category: string;
   date: string;
   solar_year: number;
@@ -161,7 +196,7 @@ export interface ExtraExpense {
 export interface ExtraExpenseFormData {
   title: string;
   description: string;
-  amount: number;
+  amount: string;
   category: string;
   date: string;
   solar_year: number;
@@ -177,8 +212,8 @@ export interface ExtraExpensesResponse {
 
 // Filter interfaces
 export interface ExtraExpensesFilter {
-  amount_max?: number;
-  amount_min?: number;
+  amount_max?: string;
+  amount_min?: string;
   category?: string;
   date_from?: string;
   date_to?: string;
@@ -190,26 +225,26 @@ export interface FinancialRecordsFilter {
   notes_search?: string;
   profit_margin_max?: number;
   profit_margin_min?: number;
-  profit_max?: number;
-  profit_min?: number;
-  revenue_max?: number;
-  revenue_min?: number;
+  profit_max?: string;
+  profit_min?: string;
+  revenue_max?: string;
+  revenue_min?: string;
   solar_month?: number;
   solar_year?: number;
 }
 
 export interface MonthlyCostsFilter {
-  advisor_costs_max?: number;
-  advisor_costs_min?: number;
-  cost_max?: number;
-  cost_min?: number;
+  advisor_costs_max?: string;
+  advisor_costs_min?: string;
+  cost_max?: string;
+  cost_min?: string;
   solar_month?: number;
   solar_year?: number;
 }
 
 export interface MonthlyRevenueFilter {
-  revenue_max?: number;
-  revenue_min?: number;
+  revenue_max?: string;
+  revenue_min?: string;
   solar_month?: number;
   solar_year?: number;
   students_max?: number;
@@ -247,8 +282,9 @@ export interface TableColumn<T> {
 }
 
 // Helper function to format numbers
-export const formatNumber = (num: number): string => {
-  return new Intl.NumberFormat("fa-IR").format(num);
+export const formatNumber = (num: string | number): string => {
+  const numericValue = typeof num === "string" ? parseFloat(num) : num;
+  return new Intl.NumberFormat("fa-IR").format(numericValue);
 };
 
 // Persian months data

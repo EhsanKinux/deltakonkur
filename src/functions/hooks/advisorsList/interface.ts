@@ -30,7 +30,7 @@ export interface AdvisorStudentData {
 
 export interface AdvisorDataResponse {
   data: AdvisorStudentData[];
-  total_wage: number;
+  total_wage: string;
 }
 
 export interface StudentWithDetails2 extends Student {
@@ -46,6 +46,6 @@ export interface StudentWithDetails2 extends Student {
 export interface PaymentHistoryRecord {
   id: number;
   advisor: string;
-  amount: number;
+  amount: string;
   last_pay: string; // Date as ISO string
 }

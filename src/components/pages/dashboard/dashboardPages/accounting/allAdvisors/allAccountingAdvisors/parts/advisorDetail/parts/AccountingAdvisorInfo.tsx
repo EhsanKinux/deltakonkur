@@ -170,7 +170,8 @@ const AccountingAdvisorInfo = ({
               مجموع دریافتی:
             </div>
             <span className="font-mono text-2xl text-blue-600">
-              {formatNumber(advisorDetailData?.total_wage)} ریال
+              {formatNumber(parseFloat(advisorDetailData?.total_wage || "0"))}{" "}
+              ریال
             </span>
           </div>
         ) : (

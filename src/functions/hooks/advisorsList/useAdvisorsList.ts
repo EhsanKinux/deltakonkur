@@ -50,7 +50,7 @@ export const useAdvisorsList = () => {
   const processData = (response: any): AdvisorDataResponse => {
     const result: AdvisorDataResponse = {
       data: [],
-      total_wage: 0,
+      total_wage: "0",
     };
 
     if (response && response.data) {

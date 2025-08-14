@@ -24,7 +24,7 @@ import { useSearchParams } from "react-router-dom";
 import ExtraExpensesTab from "./tabs/ExtraExpensesTab";
 import FinancialDashboardTab from "./tabs/FinancialDashboardTab";
 import FinancialRecordsTab from "./tabs/FinancialRecordsTab";
-import { FinancialReport, persianMonths } from "./types";
+import { FinancialDashboard, persianMonths } from "./types";
 
 moment.loadPersian({ dialect: "persian-modern" });
 
@@ -68,7 +68,7 @@ const MonthlyFinancialReport: React.FC = () => {
 
   const [selectedYear, setSelectedYear] = useState<number>(getInitialYear);
   const [selectedMonth, setSelectedMonth] = useState<number>(getInitialMonth);
-  const [dashboardData, setDashboardData] = useState<FinancialReport | null>(
+  const [dashboardData, setDashboardData] = useState<FinancialDashboard | null>(
     null
   );
   const [loading, setLoading] = useState<boolean>(false);
@@ -133,7 +133,7 @@ const MonthlyFinancialReport: React.FC = () => {
 
     try {
       const response = await executeWithLoading(async () => {
-        return await api.get<FinancialReport>("api/finances/dashboard/", {
+        return await api.get<FinancialDashboard>("api/finances/dashboard/", {
           params: {
             solar_month: selectedMonth,
             solar_year: selectedYear,

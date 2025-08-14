@@ -13,10 +13,11 @@ import {
 import { MonthlySummaryProps, formatNumber } from "./types";
 
 const MonthlySummary: React.FC<MonthlySummaryProps> = ({ data }) => {
-  const getProfitStatus = (profit: number) => {
-    if (profit > 0)
+  const getProfitStatus = (profit: string) => {
+    const profitNumber = parseFloat(profit);
+    if (profitNumber > 0)
       return { color: "text-green-600", bg: "bg-green-50", icon: TrendingUp };
-    if (profit < 0)
+    if (profitNumber < 0)
       return { color: "text-red-600", bg: "bg-red-50", icon: TrendingDown };
     return { color: "text-gray-600", bg: "bg-gray-50", icon: DollarSign };
   };

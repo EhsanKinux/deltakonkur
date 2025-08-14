@@ -28,7 +28,7 @@ export interface IStudent {
   solar_date_day: string;
   solar_date_month: string;
   solar_date_year: string;
-  package_price: number;
+  package_price: string;
 }
 
 // Interface for the main student-advisor object
@@ -72,7 +72,7 @@ export interface IFormattedStudentAdvisor {
   ended_date: string;
   status: string;
   advisor_name: string;
-  package_price: number;
+  package_price: string;
   // Original date formats for API operations
   original_expire_date: string;
   original_stop_date: string;
