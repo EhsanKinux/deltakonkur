@@ -82,14 +82,14 @@ api.interceptors.response.use(
     }
     const errorMessage =
       error.response?.data?.detail ||
-      (typeof error.response?.data === "string"
-        ? error.response.data
-        : "An unexpected error occurred.");
-    showToast.error(
-      errorMessage == "No active account found with the given credentials"
-        ? "نام کاربری یا رمز عبور اشتباه است."
-        : errorMessage
-    ); // Show the server error message
+      (typeof error.response?.data === "string" ? error.response.data : "");
+    if (errorMessage) {
+      showToast.error(
+        errorMessage == "No active account found with the given credentials"
+          ? "نام کاربری یا رمز عبور اشتباه است."
+          : errorMessage
+      ); // Show the server error message
+    }
     return Promise.reject(error);
   }
 );

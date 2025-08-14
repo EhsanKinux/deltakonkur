@@ -169,6 +169,14 @@ const SalesManagers = lazy(
       "./components/pages/dashboard/dashboardPages/management/salesManagers/SalesManagers"
     )
 );
+
+const SupervisorList = lazy(
+  () =>
+    import(
+      "./components/pages/dashboard/dashboardPages/management/supervisors/SupervisorList"
+    )
+);
+
 const ContentList = lazy(
   () =>
     import("./components/pages/dashboard/dashboardPages/content/ContentList")
@@ -442,6 +450,19 @@ const router = createBrowserRouter([
                 element={
                   <Suspense fallback={<Loading />}>
                     <SalesManagers />
+                  </Suspense>
+                }
+                requiredRole={[0]}
+              />
+            ),
+          },
+          {
+            path: "management/supervisors",
+            element: (
+              <ProtectedRoute
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <SupervisorList />
                   </Suspense>
                 }
                 requiredRole={[0]}

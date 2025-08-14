@@ -96,6 +96,7 @@ export const sidebarLinks = [
         label: "مسئولان فروش",
         roles: [0],
       },
+
       {
         id: 101,
         imgURL: addSquareIcon,
@@ -112,6 +113,13 @@ export const sidebarLinks = [
       },
       {
         id: 103,
+        imgURL: supervisorIcon,
+        route: "/dashboard/management/supervisors",
+        label: "لیست ناظران",
+        roles: [0],
+      },
+      {
+        id: 104,
         imgURL: financeIcon,
         route: "/dashboard/management/reports",
         label: "گزارش گیری",

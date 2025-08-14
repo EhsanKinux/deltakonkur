@@ -502,7 +502,7 @@ const SupervisorList = () => {
   // RENDER
   // =============================================================================
   return (
-    <div className="w-full p-6 space-y-6">
+    <div className="w-full p-6 space-y-6 bg-white">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
