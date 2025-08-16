@@ -179,14 +179,16 @@ const ManagementReports = () => {
         const rows = supervisorData.supervisors.map((item) => ({
           "شناسه ناظر": String(item.supervisor_id),
           "نام ناظر": String(item.supervisor_name),
-          "حساب بانکی": String(item.bank_account),
+          "حساب بانکی":
+            String(item.bank_account) == "Not set"
+              ? "-"
+              : String(item.bank_account),
           "تعداد دانش‌آموز فعال": String(item.active_student_count),
           "تعداد دانش‌آموز غیرفعال": String(item.inactive_student_count),
           "درآمد کل": String(item.total_earnings),
           سطح: String(item.level),
-          "آخرین برداشت": item.last_withdraw || "بدون برداشت",
-          "روزهای گذشته از آخرین برداشت":
-            item.days_since_last_withdraw || "بدون برداشت",
+          "آخرین برداشت": item.last_withdraw || "-",
+          "روزهای گذشته از آخرین برداشت": item.days_since_last_withdraw || "-",
         }));
 
         // Add summary row
@@ -220,7 +222,10 @@ const ManagementReports = () => {
         ).map((item) => ({
           "شناسه ناظر": String(item.supervisor_id),
           "نام ناظر": String(item.supervisor_name),
-          "حساب بانکی": String(item.bank_account),
+          "حساب بانکی":
+            String(item.bank_account) == "Not set"
+              ? "-"
+              : String(item.bank_account),
           مبلغ: String(item.amount),
           "آخرین برداشت": item.last_withdraw || "بدون برداشت",
         }));
