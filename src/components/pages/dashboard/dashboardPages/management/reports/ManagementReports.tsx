@@ -193,8 +193,7 @@ const ManagementReports = () => {
         };
 
         const rows = supervisorData.supervisors.map((item) => ({
-          "شناسه ناظر": handleUndefinedValue(undefined),
-          // handleUndefinedValue(item.supervisor_id),
+          "شناسه ناظر": handleUndefinedValue(item.supervisor_id),
           "نام ناظر": handleUndefinedValue(item.supervisor_name),
           "حساب بانکی": handleUndefinedValue(
             String(item.bank_account) == "Not set"
