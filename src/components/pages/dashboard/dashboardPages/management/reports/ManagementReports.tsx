@@ -72,6 +72,14 @@ const ManagementReports = () => {
   // Add state for alignment dialog
   const [openAlignmentDialog, setOpenAlignmentDialog] = useState(false);
 
+  // Utility function to handle undefined values
+  const handleUndefinedValue = (value: unknown): string => {
+    if (value === undefined || value === null) {
+      return "-";
+    }
+    return String(value);
+  };
+
   const getCurrentShamsiDate = () => {
     const today = new Date().toISOString();
     return convertToShamsi2(today);
@@ -104,17 +112,23 @@ const ManagementReports = () => {
           }
         ).summary;
         const rows = salesManagers.map((item) => ({
-          "شناسه مسئولان فروش": String(item.sales_manager_id),
-          "نام مسئولان فروش": String(item.sales_manager_name),
-          "کد ملی": String(item.national_number),
-          "حساب بانکی": item.bank_account || "بدون حساب",
-          سطح: String(item.level),
-          "درصد کمیسیون": String((item.percentage * 100).toFixed(1) + "%"),
-          "تعداد دانش‌آموز": String(item.student_count),
-          "تعداد دانش‌آموز فعال": String(item.active_student_count),
-          "درآمد کل": String(item.total_earnings),
-          "تعداد روابط محاسبه‌شده": String(item.calculated_relationships),
-          "تازه محاسبه شده": String(item.newly_calculated),
+          "شناسه مسئولان فروش": handleUndefinedValue(item.sales_manager_id),
+          "نام مسئولان فروش": handleUndefinedValue(item.sales_manager_name),
+          "کد ملی": handleUndefinedValue(item.national_number),
+          "حساب بانکی": handleUndefinedValue(item.bank_account),
+          سطح: handleUndefinedValue(item.level),
+          "درصد کمیسیون": handleUndefinedValue(
+            (item.percentage * 100).toFixed(1) + "%"
+          ),
+          "تعداد دانش‌آموز": handleUndefinedValue(item.student_count),
+          "تعداد دانش‌آموز فعال": handleUndefinedValue(
+            item.active_student_count
+          ),
+          "درآمد کل": handleUndefinedValue(item.total_earnings),
+          "تعداد روابط محاسبه‌شده": handleUndefinedValue(
+            item.calculated_relationships
+          ),
+          "تازه محاسبه شده": handleUndefinedValue(item.newly_calculated),
         }));
         // Add summary row
         rows.push({
@@ -124,9 +138,11 @@ const ManagementReports = () => {
           "حساب بانکی": "-",
           سطح: "-",
           "درصد کمیسیون": "-",
-          "تعداد دانش‌آموز": String(summary.total_students),
-          "تعداد دانش‌آموز فعال": String(summary.total_active_students),
-          "درآمد کل": String(summary.total_earnings),
+          "تعداد دانش‌آموز": handleUndefinedValue(summary.total_students),
+          "تعداد دانش‌آموز فعال": handleUndefinedValue(
+            summary.total_active_students
+          ),
+          "درآمد کل": handleUndefinedValue(summary.total_earnings),
           "تعداد روابط محاسبه‌شده": "-",
           "تازه محاسبه شده": "-",
         });
@@ -141,10 +157,10 @@ const ManagementReports = () => {
           amount: number;
         }>
       ).map((item) => ({
-        "شناسه مسئولان فروش": item.sales_manager_id,
-        "نام مسئولان فروش": item.sales_manager_name,
-        "کد ملی": item.national_number,
-        مبلغ: item.amount,
+        "شناسه مسئولان فروش": handleUndefinedValue(item.sales_manager_id),
+        "نام مسئولان فروش": handleUndefinedValue(item.sales_manager_name),
+        "کد ملی": handleUndefinedValue(item.national_number),
+        مبلغ: handleUndefinedValue(item.amount),
       }));
     } else if (rolePrefix === "Supervisor") {
       // ناظر: Handle both main report (with supervisors array and summary) and test report (simple array)
@@ -177,18 +193,26 @@ const ManagementReports = () => {
         };
 
         const rows = supervisorData.supervisors.map((item) => ({
-          "شناسه ناظر": String(item.supervisor_id),
-          "نام ناظر": String(item.supervisor_name),
-          "حساب بانکی":
+          "شناسه ناظر": handleUndefinedValue(undefined),
+          // handleUndefinedValue(item.supervisor_id),
+          "نام ناظر": handleUndefinedValue(item.supervisor_name),
+          "حساب بانکی": handleUndefinedValue(
             String(item.bank_account) == "Not set"
               ? "-"
-              : String(item.bank_account),
-          "تعداد دانش‌آموز فعال": String(item.active_student_count),
-          "تعداد دانش‌آموز غیرفعال": String(item.inactive_student_count),
-          "درآمد کل": String(item.total_earnings),
-          سطح: String(item.level),
-          "آخرین برداشت": item.last_withdraw || "-",
-          "روزهای گذشته از آخرین برداشت": item.days_since_last_withdraw || "-",
+              : String(item.bank_account)
+          ),
+          "تعداد دانش‌آموز فعال": handleUndefinedValue(
+            item.active_student_count
+          ),
+          "تعداد دانش‌آموز غیرفعال": handleUndefinedValue(
+            item.inactive_student_count
+          ),
+          "درآمد کل": handleUndefinedValue(item.total_earnings),
+          سطح: handleUndefinedValue(item.level),
+          "آخرین برداشت": handleUndefinedValue(item.last_withdraw),
+          "روزهای گذشته از آخرین برداشت": handleUndefinedValue(
+            item.days_since_last_withdraw
+          ),
         }));
 
         // Add summary row
@@ -196,13 +220,15 @@ const ManagementReports = () => {
           "شناسه ناظر": "جمع کل",
           "نام ناظر": "-",
           "حساب بانکی": "-",
-          "تعداد دانش‌آموز فعال": String(
+          "تعداد دانش‌آموز فعال": handleUndefinedValue(
             supervisorData.summary.total_active_students
           ),
-          "تعداد دانش‌آموز غیرفعال": String(
+          "تعداد دانش‌آموز غیرفعال": handleUndefinedValue(
             supervisorData.summary.total_inactive_students
           ),
-          "درآمد کل": String(supervisorData.summary.total_earnings),
+          "درآمد کل": handleUndefinedValue(
+            supervisorData.summary.total_earnings
+          ),
           سطح: "-",
           "آخرین برداشت": "-",
           "روزهای گذشته از آخرین برداشت": "-",
@@ -220,14 +246,17 @@ const ManagementReports = () => {
             last_withdraw: string | null;
           }>
         ).map((item) => ({
-          "شناسه ناظر": String(item.supervisor_id),
-          "نام ناظر": String(item.supervisor_name),
-          "حساب بانکی":
+          "شناسه ناظر": handleUndefinedValue(item.supervisor_id),
+          "نام ناظر": handleUndefinedValue(item.supervisor_name),
+          "حساب بانکی": handleUndefinedValue(
             String(item.bank_account) == "Not set"
               ? "-"
-              : String(item.bank_account),
-          مبلغ: String(item.amount),
-          "آخرین برداشت": item.last_withdraw || "بدون برداشت",
+              : String(item.bank_account)
+          ),
+          مبلغ: handleUndefinedValue(item.amount),
+          "آخرین برداشت": handleUndefinedValue(
+            item.last_withdraw || "بدون برداشت"
+          ),
         }));
       }
     } else {
@@ -241,11 +270,11 @@ const ManagementReports = () => {
           amount: number;
         }>
       ).map((item) => ({
-        نام: item.first_name,
-        "نام خانوادگی": item.last_name,
-        "از حساب": item.from_account,
-        "به حساب": item.to_account,
-        مبلغ: item.amount,
+        نام: handleUndefinedValue(item.first_name),
+        "نام خانوادگی": handleUndefinedValue(item.last_name),
+        "از حساب": handleUndefinedValue(item.from_account),
+        "به حساب": handleUndefinedValue(item.to_account),
+        مبلغ: handleUndefinedValue(item.amount),
       }));
     }
   };
@@ -392,21 +421,28 @@ const ManagementReports = () => {
           // Transform for Excel
           const excelData: Record<string, string | number>[] =
             data.level_changes.map((item: LevelChange) => ({
-              "شناسه مشاور": item.advisor_id,
-              "نام مشاور": item.advisor_name,
-              "سطح قبلی": item.old_level,
-              "سطح جدید": item.new_level,
-              "نوع تغییر":
+              "شناسه مشاور": handleUndefinedValue(item.advisor_id),
+              "نام مشاور": handleUndefinedValue(item.advisor_name),
+              "سطح قبلی": handleUndefinedValue(item.old_level),
+              "سطح جدید": handleUndefinedValue(item.new_level),
+              "نوع تغییر": handleUndefinedValue(
                 item.change_type === "level_up"
                   ? "ارتقا"
                   : item.change_type === "level_down"
                   ? "سقوط"
-                  : "بدون تغییر",
-              دلیل: item.reason,
-              "تعداد دانش‌آموز": item.student_count,
-              "رضایت ماهانه": item.monthly_satisfaction * 100 + "%",
-              "رضایت کلی": item.overall_satisfaction * 100 + "%",
-              "محتوا تحویل داده شد": item.content_delivered ? "بله" : "خیر",
+                  : "بدون تغییر"
+              ),
+              دلیل: handleUndefinedValue(item.reason),
+              "تعداد دانش‌آموز": handleUndefinedValue(item.student_count),
+              "رضایت ماهانه": handleUndefinedValue(
+                item.monthly_satisfaction * 100 + "%"
+              ),
+              "رضایت کلی": handleUndefinedValue(
+                item.overall_satisfaction * 100 + "%"
+              ),
+              "محتوا تحویل داده شد": handleUndefinedValue(
+                item.content_delivered ? "بله" : "خیر"
+              ),
             }));
           if (data.summary) {
             excelData.push({
@@ -434,9 +470,9 @@ const ManagementReports = () => {
               "محتوا تحویل داده شد": "",
             });
             excelData.push({
-              "شناسه مشاور": data.summary.leveled_up,
-              "نام مشاور": data.summary.leveled_down,
-              "سطح قبلی": data.summary.no_change,
+              "شناسه مشاور": handleUndefinedValue(data.summary.leveled_up),
+              "نام مشاور": handleUndefinedValue(data.summary.leveled_down),
+              "سطح قبلی": handleUndefinedValue(data.summary.no_change),
               "سطح جدید": "",
               "نوع تغییر": "",
               دلیل: "",
