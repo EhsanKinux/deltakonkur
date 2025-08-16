@@ -40,7 +40,6 @@ const editSupervisorSchema = z.object({
     const cleanValue = val.replace(/\D/g, "");
     return cleanValue.length >= 12 && cleanValue.length <= 16;
   }, "شماره حساب باید بین 12 تا 16 رقم باشد"),
-  last_withdraw: z.string().min(1, "* تاریخ آخرین برداشت باید انتخاب شود."),
 });
 
 type EditSupervisorFormData = z.infer<typeof editSupervisorSchema>;
@@ -103,9 +102,8 @@ const SupervisorList = () => {
   const editForm = useForm<EditSupervisorFormData>({
     resolver: zodResolver(editSupervisorSchema),
     defaultValues: {
-      level: "1",
+      level: "0",
       bank_account: "",
-      last_withdraw: "",
     },
   });
 
@@ -115,11 +113,11 @@ const SupervisorList = () => {
   // Memoize level mapping to avoid recreation on every render
   const levelMapping = useMemo(
     () => ({
-      1: "سطح 1",
-      2: "سطح 2",
-      3: "سطح 3",
-      4: "ارشد 1",
-      5: "ارشد 2",
+      0: "سطح 1",
+      1: "سطح 2",
+      2: "سطح 3",
+      3: "ارشد 1",
+      4: "ارشد 2",
     }),
     []
   );
@@ -202,7 +200,7 @@ const SupervisorList = () => {
     if (isEditModalOpen && selectedSupervisor) {
       // Use originalLevel which contains the actual numeric value
       const supervisorLevel = selectedSupervisor.originalLevel;
-      let levelString = "1"; // default value
+      let levelString = "0"; // default value
 
       if (supervisorLevel !== null && supervisorLevel !== undefined) {
         // If level is a number, convert to string
@@ -217,7 +215,6 @@ const SupervisorList = () => {
       editForm.reset({
         level: levelString,
         bank_account: selectedSupervisor.bank_account || "",
-        last_withdraw: selectedSupervisor.last_withdraw || "",
       });
     }
   }, [isEditModalOpen, selectedSupervisor, editForm]);
@@ -491,11 +488,11 @@ const SupervisorList = () => {
   // LEVEL OPTIONS FOR ENHANCED SELECT
   // =============================================================================
   const levelOptions = [
-    { value: "1", label: "سطح 1", description: "ناظر تازه کار" },
-    { value: "2", label: "سطح 2", description: "ناظر با تجربه" },
-    { value: "3", label: "سطح 3", description: "ناظر ارشد" },
-    { value: "4", label: "ارشد 1", description: "ناظر ارشد سطح 1" },
-    { value: "5", label: "ارشد 2", description: "ناظر ارشد سطح 2" },
+    { value: "0", label: "سطح 1", description: "ناظر تازه کار" },
+    { value: "1", label: "سطح 2", description: "ناظر با تجربه" },
+    { value: "2", label: "سطح 3", description: "ناظر ارشد" },
+    { value: "3", label: "ارشد 1", description: "ناظر ارشد سطح 1" },
+    { value: "4", label: "ارشد 2", description: "ناظر ارشد سطح 2" },
   ];
 
   // =============================================================================
@@ -655,83 +652,89 @@ const SupervisorList = () => {
               ویرایش ناظر
             </DialogTitle>
           </DialogHeader>
-          <Form {...editForm}>
-            <form
-              onSubmit={editForm.handleSubmit(handleEditSubmit)}
-              className="space-y-6 p-6"
-              autoFocus={false}
-            >
-              <div className="grid grid-cols-2 gap-6">
-                <FormField
-                  control={editForm.control}
-                  name="level"
-                  render={() => (
-                    <div className="space-y-2">
-                      <EnhancedSelect
-                        control={editForm.control}
-                        name="level"
-                        label="سطح"
-                        placeholder="انتخاب سطح"
-                        options={levelOptions}
-                        icon={User}
-                        required={true}
-                      />
-                      <FormMessage className="text-red-400" />
-                    </div>
-                  )}
-                />
-                <FormField
-                  control={editForm.control}
-                  name="bank_account"
-                  render={() => (
-                    <div className="space-y-2">
-                      <SmartInput
-                        control={editForm.control}
-                        name="bank_account"
-                        label="شماره حساب"
-                        placeholder="شماره حساب بانکی"
-                        icon={CreditCard}
-                        validationType="bankAccount"
-                        autoFormat={true}
-                      />
-                    </div>
-                  )}
-                />
-                <FormField
-                  control={editForm.control}
-                  name="last_withdraw"
-                  render={() => (
-                    <div className="col-span-2 space-y-2">
-                      <PersianDatePicker
-                        value={editForm.watch("last_withdraw") || ""}
-                        onChange={(date) =>
-                          editForm.setValue("last_withdraw", date)
-                        }
-                        placeholder="انتخاب تاریخ آخرین برداشت"
-                      />
-                      <FormMessage className="text-red-400" />
-                    </div>
-                  )}
-                />
+          {selectedSupervisor && (
+            <div className="p-6">
+              {/* Supervisor Name Display - Readonly */}
+              <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                <div className="flex items-center space-x-3 space-x-reverse">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <User className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-blue-700 mb-1">
+                      در حال ویرایش ناظر:
+                    </p>
+                    <p className="text-lg font-bold text-blue-900">
+                      {selectedSupervisor.user.first_name}{" "}
+                      {selectedSupervisor.user.last_name}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-end space-x-3 space-x-reverse pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsEditModalOpen(false)}
-                  className="px-6 py-2 rounded-lg"
+
+              <Form {...editForm}>
+                <form
+                  onSubmit={editForm.handleSubmit(handleEditSubmit)}
+                  className="space-y-6"
+                  autoFocus={false}
                 >
-                  انصراف
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-2 rounded-lg"
-                >
-                  ذخیره تغییرات
-                </Button>
-              </div>
-            </form>
-          </Form>
+                  <div className="grid grid-cols-2 gap-6">
+                    <FormField
+                      control={editForm.control}
+                      name="level"
+                      render={() => (
+                        <div className="space-y-2">
+                          <EnhancedSelect
+                            control={editForm.control}
+                            name="level"
+                            label="سطح"
+                            placeholder="انتخاب سطح"
+                            options={levelOptions}
+                            icon={User}
+                            required={true}
+                          />
+                          <FormMessage className="text-red-400" />
+                        </div>
+                      )}
+                    />
+                    <FormField
+                      control={editForm.control}
+                      name="bank_account"
+                      render={() => (
+                        <div className="space-y-2">
+                          <SmartInput
+                            control={editForm.control}
+                            name="bank_account"
+                            label="شماره حساب"
+                            placeholder="شماره حساب بانکی"
+                            icon={CreditCard}
+                            validationType="bankAccount"
+                            autoFormat={true}
+                          />
+                        </div>
+                      )}
+                    />
+                  </div>
+                  <div className="flex justify-end space-x-3 space-x-reverse pt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsEditModalOpen(false)}
+                      className="px-6 py-2 rounded-lg"
+                    >
+                      انصراف
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-2 rounded-lg"
+                    >
+                      ذخیره تغییرات
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
