@@ -38,6 +38,7 @@ export const SalesManagersTable = ({
             <TableHead className="!text-center">کد ملی</TableHead>
             <TableHead className="!text-center">حساب بانکی</TableHead>
             <TableHead className="!text-center">تعداد دانش‌آموز</TableHead>
+            <TableHead className="!text-center">سطح</TableHead>
             <TableHead className="!text-center">تاریخ ایجاد</TableHead>
             <TableHead className="!text-center">عملیات</TableHead>
           </TableRow>
@@ -92,6 +93,15 @@ export const SalesManagersTable = ({
                 </TableCell>
                 <TableCell className="!text-center">
                   {row.student_count}
+                </TableCell>
+                <TableCell className="!text-center">
+                  {row?.level === 1
+                    ? "مبتدی"
+                    : row?.level === 2
+                    ? "با تجربه"
+                    : row?.level === 3
+                    ? "حرفه‌ای"
+                    : row?.level || "-"}
                 </TableCell>
                 <TableCell className="!text-center">
                   {row.created_at ? convertToShamsi(row.created_at) : ""}

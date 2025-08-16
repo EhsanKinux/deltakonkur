@@ -1,24 +1,23 @@
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import showToast from "@/components/ui/toast";
+import { authStore } from "@/lib/store/authStore";
+import { convertToShamsi } from "@/lib/utils/date/convertDate";
 import { BASE_API_URL } from "@/lib/variables/variables";
 import axios from "axios";
-import { authStore } from "@/lib/store/authStore";
-import showToast from "@/components/ui/toast";
-import { convertToShamsi } from "@/lib/utils/date/convertDate";
+import { useEffect, useState } from "react";
 import {
-  FaUser,
-  FaIdCard,
-  FaGraduationCap,
   FaCalendarAlt,
+  FaGraduationCap,
+  FaIdCard,
   FaLevelUpAlt,
-  FaTimes,
   FaSpinner,
+  FaUser,
 } from "react-icons/fa";
 
 interface SalesManagerDetail {
@@ -68,10 +67,8 @@ const formatBankAccountDisplay = (accountNumber: string) => {
 const getLevelDisplay = (level: number) => {
   const levelMap: Record<number, string> = {
     1: "سطح 1 - مبتدی",
-    2: "سطح 2 - متوسط",
-    3: "سطح 3 - پیشرفته",
-    4: "سطح 4 - متخصص",
-    5: "سطح 5 - ارشد",
+    2: "سطح 2 - با تجربه",
+    3: "سطح 3 - حرفه‌ای",
   };
   return levelMap[level] || `سطح ${level}`;
 };
@@ -82,8 +79,6 @@ const getLevelColor = (level: number) => {
     1: "bg-gray-100 text-gray-800",
     2: "bg-blue-100 text-blue-800",
     3: "bg-green-100 text-green-800",
-    4: "bg-purple-100 text-purple-800",
-    5: "bg-red-100 text-red-800",
   };
   return colorMap[level] || "bg-gray-100 text-gray-800";
 };
@@ -136,17 +131,8 @@ const SalesManagerDetailDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="bg-white !rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
+      <DialogContent className="bg-white !rounded-2xl max-w-2xl w-full p-6">
         <DialogHeader className="relative">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleClose}
-            className="absolute top-0 right-0 hover:bg-gray-100 rounded-full p-2"
-            aria-label="بستن"
-          >
-            <FaTimes className="h-4 w-4" />
-          </Button>
           <DialogTitle className="text-xl font-bold text-center mb-4 text-gray-800">
             جزئیات مسئول فروش
           </DialogTitle>
@@ -160,7 +146,7 @@ const SalesManagerDetailDialog = ({
             </p>
           </div>
         ) : data ? (
-          <div className="space-y-6">
+          <div className="space-y-6 max-h-[60vh] overflow-y-auto">
             {/* Header Card */}
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
               <div className="flex items-center gap-4">

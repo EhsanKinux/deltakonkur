@@ -116,7 +116,15 @@ const ManagementReports = () => {
           "نام مسئولان فروش": handleUndefinedValue(item.sales_manager_name),
           "کد ملی": handleUndefinedValue(item.national_number),
           "حساب بانکی": handleUndefinedValue(item.bank_account),
-          سطح: handleUndefinedValue(item.level),
+          سطح: handleUndefinedValue(
+            item.level === 1
+              ? "سطح 1 - مبتدی"
+              : item.level === 2
+              ? "سطح 2 - با تجربه"
+              : item.level === 3
+              ? "سطح 3 - حرفه‌ای"
+              : item.level
+          ),
           "درصد کمیسیون": handleUndefinedValue(
             (item.percentage * 100).toFixed(1) + "%"
           ),
@@ -207,7 +215,19 @@ const ManagementReports = () => {
             item.inactive_student_count
           ),
           "درآمد کل": handleUndefinedValue(item.total_earnings),
-          سطح: handleUndefinedValue(item.level),
+          سطح: handleUndefinedValue(
+            item.level === 0
+              ? "سطح 1"
+              : item.level === 1
+              ? "سطح 2"
+              : item.level === 2
+              ? "سطح 3"
+              : item.level === 3
+              ? "ارشد 1"
+              : item.level === 4
+              ? "ارشد 2"
+              : item.level
+          ),
           "آخرین برداشت": handleUndefinedValue(item.last_withdraw),
           "روزهای گذشته از آخرین برداشت": handleUndefinedValue(
             item.days_since_last_withdraw
