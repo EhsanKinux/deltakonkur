@@ -24,7 +24,11 @@ import { useSearchParams } from "react-router-dom";
 import ExtraExpensesTab from "./tabs/ExtraExpensesTab";
 import FinancialDashboardTab from "./tabs/FinancialDashboardTab";
 import FinancialRecordsTab from "./tabs/FinancialRecordsTab";
-import { FinancialDashboard, persianMonths } from "./types";
+import {
+  FinancialDashboard,
+  persianMonths,
+  FinancialReportResponse,
+} from "./types";
 
 moment.loadPersian({ dialect: "persian-modern" });
 
@@ -71,6 +75,8 @@ const MonthlyFinancialReport: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<FinancialDashboard | null>(
     null
   );
+  const [financialReportData, setFinancialReportData] =
+    useState<FinancialReportResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("dashboard");
@@ -156,12 +162,41 @@ const MonthlyFinancialReport: React.FC = () => {
     }
   }, [selectedYear, selectedMonth, executeWithLoading]);
 
+  const fetchFinancialReportData = useCallback(async () => {
+    if (!selectedYear || !selectedMonth) {
+      return;
+    }
+
+    try {
+      const response = await api.get<FinancialReportResponse>(
+        "api/finances/financial-report/",
+        {
+          params: {
+            solar_month: selectedMonth,
+            solar_year: selectedYear,
+          },
+        }
+      );
+
+      setFinancialReportData(response.data);
+    } catch (err: unknown) {
+      console.error("Error fetching financial report data:", err);
+      // Don't show error toast for this as it's not critical
+    }
+  }, [selectedYear, selectedMonth]);
+
   // Callback to refresh dashboard data when changes occur in other tabs
   const refreshDashboardData = useCallback(() => {
     if (selectedYear && selectedMonth) {
       fetchDashboardData();
+      fetchFinancialReportData();
     }
-  }, [selectedYear, selectedMonth, fetchDashboardData]);
+  }, [
+    selectedYear,
+    selectedMonth,
+    fetchDashboardData,
+    fetchFinancialReportData,
+  ]);
 
   // Clear search params except year and month when tabs change
   const clearTabSpecificParams = useCallback(() => {
@@ -189,6 +224,7 @@ const MonthlyFinancialReport: React.FC = () => {
     const newYear = parseInt(year);
     setSelectedYear(newYear);
     setDashboardData(null);
+    setFinancialReportData(null);
     setError(null);
     updateSearchParams(newYear, selectedMonth);
   };
@@ -197,6 +233,7 @@ const MonthlyFinancialReport: React.FC = () => {
     const newMonth = parseInt(month);
     setSelectedMonth(newMonth);
     setDashboardData(null);
+    setFinancialReportData(null);
     setError(null);
     updateSearchParams(selectedYear, newMonth);
   };
@@ -213,6 +250,7 @@ const MonthlyFinancialReport: React.FC = () => {
       content: (
         <FinancialDashboardTab
           data={dashboardData}
+          financialReportData={financialReportData}
           loading={loading}
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}
@@ -265,8 +303,14 @@ const MonthlyFinancialReport: React.FC = () => {
   useEffect(() => {
     if (selectedYear && selectedMonth) {
       fetchDashboardData();
+      fetchFinancialReportData();
     }
-  }, [selectedYear, selectedMonth, fetchDashboardData]);
+  }, [
+    selectedYear,
+    selectedMonth,
+    fetchDashboardData,
+    fetchFinancialReportData,
+  ]);
 
   // Cleanup effect
   useEffect(() => {

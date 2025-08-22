@@ -55,6 +55,24 @@ export interface FinancialReport {
   };
 }
 
+// New interface for the financial report endpoint
+export interface FinancialReportResponse {
+  solar_year: number;
+  solar_month: number;
+  total_revenue: number;
+  active_students_count: number;
+  prolonging_students_count: number;
+  total_costs: number;
+  advisor_costs: number;
+  supervisor_costs: number;
+  sales_manager_costs: number;
+  extra_expenses: number;
+  total_profit: number;
+  profit_margin_percentage: number;
+  revenue_details: any[];
+  cost_details: any;
+}
+
 export interface FinancialDashboard {
   summary: {
     total_extra_expenses: string;
