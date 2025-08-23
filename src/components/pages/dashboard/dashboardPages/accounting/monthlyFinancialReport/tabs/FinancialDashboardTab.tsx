@@ -20,12 +20,12 @@ import {
   FinancialDashboard,
   formatNumber,
   persianMonths,
-  FinancialReportResponse,
+  MonthlyCostsResponse,
 } from "../types";
 
 interface FinancialDashboardTabProps {
   data: FinancialDashboard | null;
-  financialReportData: FinancialReportResponse | null;
+  monthlyCostData: MonthlyCostsResponse | null;
   loading: boolean;
   selectedMonth: number;
   selectedYear: number;
@@ -33,11 +33,13 @@ interface FinancialDashboardTabProps {
 
 const FinancialDashboardTab: React.FC<FinancialDashboardTabProps> = ({
   data,
-  financialReportData,
+  monthlyCostData,
   loading,
   selectedMonth,
   selectedYear,
 }) => {
+  console.log(monthlyCostData);
+
   const getMonthLabel = (month: number) => {
     return persianMonths.find((m) => m.value === month)?.label || "";
   };
@@ -84,147 +86,6 @@ const FinancialDashboardTab: React.FC<FinancialDashboardTabProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Financial Report Summary - New Section */}
-      {financialReportData && (
-        <Card className="bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-200">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <BarChart3 className="w-6 h-6 text-emerald-600" />
-              <div>
-                <CardTitle className="text-lg text-emerald-800">
-                  خلاصه گزارش مالی
-                </CardTitle>
-                <CardDescription className="text-emerald-700">
-                  اطلاعات کلی وضعیت مالی ماه {getMonthLabel(selectedMonth)} سال{" "}
-                  {selectedYear}
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              {/* Active Students Count */}
-              <div className="p-4 bg-white/50 rounded-lg border border-emerald-200">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-emerald-800 mb-1">
-                    {financialReportData.active_students_count}
-                  </div>
-                  <p className="text-sm text-emerald-700">دانشجویان فعال</p>
-                </div>
-              </div>
-
-              {/* Prolonging Students Count */}
-              <div className="p-4 bg-white/50 rounded-lg border border-emerald-200">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-emerald-800 mb-1">
-                    {financialReportData.prolonging_students_count}
-                  </div>
-                  <p className="text-sm text-emerald-700">
-                    دانشجویان تمدیدکننده
-                  </p>
-                </div>
-              </div>
-
-              {/* Total Costs */}
-              <div className="p-4 bg-white/50 rounded-lg border border-emerald-200">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-emerald-800 mb-1">
-                    {formatNumber(financialReportData.total_costs)} ریال
-                  </div>
-                  <p className="text-sm text-emerald-700">هزینه کل</p>
-                </div>
-              </div>
-
-              {/* Profit Margin */}
-              <div className="p-4 bg-white/50 rounded-lg border border-emerald-200">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-emerald-800 mb-1">
-                    {financialReportData.profit_margin_percentage}%
-                  </div>
-                  <p className="text-sm text-emerald-700">درصد سود</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Cost Breakdown */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="text-lg font-semibold text-emerald-800 mb-3">
-                  جزئیات هزینه‌ها
-                </h4>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-emerald-200">
-                    <span className="text-sm font-medium text-emerald-700">
-                      هزینه مشاوران
-                    </span>
-                    <span className="text-sm font-semibold text-emerald-800">
-                      {formatNumber(financialReportData.advisor_costs)} ریال
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-emerald-200">
-                    <span className="text-sm font-medium text-emerald-700">
-                      هزینه ناظران{" "}
-                    </span>
-                    <span className="text-sm font-semibold text-emerald-800">
-                      {formatNumber(financialReportData.supervisor_costs)} ریال
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-emerald-200">
-                    <span className="text-sm font-medium text-emerald-700">
-                      هزینه مدیران فروش
-                    </span>
-                    <span className="text-sm font-semibold text-emerald-800">
-                      {formatNumber(financialReportData.sales_manager_costs)}{" "}
-                      ریال
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-emerald-200">
-                    <span className="text-sm font-medium text-emerald-700">
-                      سایر هزینه‌ها
-                    </span>
-                    <span className="text-sm font-semibold text-emerald-800">
-                      {formatNumber(financialReportData.extra_expenses)} ریال
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="text-lg font-semibold text-emerald-800 mb-3">
-                  خلاصه مالی
-                </h4>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-emerald-200">
-                    <span className="text-sm font-medium text-emerald-700">
-                      درآمد کل
-                    </span>
-                    <span className="text-sm font-semibold text-emerald-800">
-                      {formatNumber(financialReportData.total_revenue)} ریال
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-emerald-200">
-                    <span className="text-sm font-medium text-emerald-700">
-                      هزینه کل
-                    </span>
-                    <span className="text-sm font-semibold text-emerald-800">
-                      {formatNumber(financialReportData.total_costs)} ریال
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-emerald-200">
-                    <span className="text-sm font-medium text-emerald-700">
-                      سود خالص
-                    </span>
-                    <span className="text-sm font-semibold text-emerald-800">
-                      {formatNumber(financialReportData.total_profit)} ریال
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Revenue Card */}
@@ -305,6 +166,56 @@ const FinancialDashboardTab: React.FC<FinancialDashboardTabProps> = ({
           </CardContent>
         </Card>
       </div>
+
+      {/* Financial Report Summary - New Section */}
+      {monthlyCostData &&
+        monthlyCostData?.results &&
+        monthlyCostData.results.length > 0 && (
+          <Card className="bg-gradient-to-r from-rose-50 to-red-50 border-rose-200 py-5">
+            <CardContent>
+              {/* Cost Breakdown */}
+
+              <div>
+                <h4 className="text-lg font-semibold text-rose-800 mb-3">
+                  جزئیات هزینه‌ها
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-rose-200">
+                    <span className="text-sm font-medium text-rose-700">
+                      هزینه مشاوران
+                    </span>
+                    <span className="text-sm font-semibold text-rose-800">
+                      {formatNumber(monthlyCostData.results[0].advisor_costs)}{" "}
+                      ریال
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-rose-200">
+                    <span className="text-sm font-medium text-rose-700">
+                      هزینه ناظران{" "}
+                    </span>
+                    <span className="text-sm font-semibold text-rose-800">
+                      {formatNumber(
+                        monthlyCostData.results[0].supervisor_costs
+                      )}{" "}
+                      ریال
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg border border-rose-200">
+                    <span className="text-sm font-medium text-rose-700">
+                      هزینه مدیران فروش
+                    </span>
+                    <span className="text-sm font-semibold text-rose-800">
+                      {formatNumber(
+                        monthlyCostData.results[0].sales_manager_costs
+                      )}{" "}
+                      ریال
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
       {/* Extra Expenses Summary */}
       <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
@@ -448,7 +359,7 @@ const FinancialDashboardTab: React.FC<FinancialDashboardTabProps> = ({
       </div>
 
       {/* Financial Records Summary */}
-      <Card className="bg-gradient-to-r from-indigo-50 to-blue-50 border-indigo-200">
+      {/* <Card className="bg-gradient-to-r from-indigo-50 to-blue-50 border-indigo-200">
         <CardHeader>
           <div className="flex items-center gap-2">
             <BarChart3 className="w-5 h-5 text-indigo-600" />
@@ -492,7 +403,7 @@ const FinancialDashboardTab: React.FC<FinancialDashboardTabProps> = ({
             )}
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 };

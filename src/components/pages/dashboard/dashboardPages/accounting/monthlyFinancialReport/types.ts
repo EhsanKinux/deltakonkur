@@ -69,8 +69,6 @@ export interface FinancialReportResponse {
   extra_expenses: number;
   total_profit: number;
   profit_margin_percentage: number;
-  revenue_details: any[];
-  cost_details: any;
 }
 
 export interface FinancialDashboard {
@@ -141,11 +139,11 @@ export interface MonthlyCost {
   id: number;
   solar_year: number;
   solar_month: number;
-  total_costs: string;
-  advisor_costs: string;
-  supervisor_costs: string;
-  sales_manager_costs: string;
-  extra_expenses: string;
+  total_costs: number;
+  advisor_costs: number;
+  supervisor_costs: number;
+  sales_manager_costs: number;
+  extra_expenses: number;
   created_at: string;
   updated_at: string;
 }
