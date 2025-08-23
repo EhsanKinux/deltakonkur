@@ -188,6 +188,7 @@ const ManagementReports = () => {
             active_student_count: number;
             inactive_student_count: number;
             total_earnings: number;
+            amount: number;
             level: number;
             last_withdraw: string | null;
             days_since_last_withdraw: number | null;
@@ -214,7 +215,7 @@ const ManagementReports = () => {
           "تعداد دانش‌آموز غیرفعال": handleUndefinedValue(
             item.inactive_student_count
           ),
-          "درآمد کل": handleUndefinedValue(item.total_earnings),
+          "درآمد کل": handleUndefinedValue(item.amount),
           سطح: handleUndefinedValue(
             item.level === 0
               ? "سطح 1"
