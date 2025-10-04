@@ -29,6 +29,7 @@ export interface Student {
   solar_date_month: string | null;
   solar_date_year: string | null;
   package_price: string;
+  plan?: number;
   advisor_id: string | null;
   advisor_name: string | null;
 }

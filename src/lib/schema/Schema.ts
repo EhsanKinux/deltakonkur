@@ -94,6 +94,11 @@ export const editStudentFormSchema = () =>
     supervisor: z.string().optional(),
     // date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
     package_price: z.string().optional(),
+    plan: z
+      .number()
+      .min(1, { message: "طرح انتخاب شده نامعتبر است" })
+      .max(5, { message: "طرح انتخاب شده نامعتبر است" })
+      .optional(),
     solar_date_day: z.string().optional(),
     solar_date_month: z.string().optional(),
     solar_date_year: z.string().optional(),
@@ -123,6 +128,11 @@ export const editStudentFormSchemaInAdvisor = () =>
       .string()
       .min(1, { message: "تاریخ ثبت دانش آموز را تعیین کنید!" }),
     advisor: z.string(),
+    plan: z
+      .number()
+      .min(1, { message: "طرح انتخاب شده نامعتبر است" })
+      .max(5, { message: "طرح انتخاب شده نامعتبر است" })
+      .optional(),
     date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
     solar_date_day: z.string(),
     solar_date_month: z.string(),
@@ -164,6 +174,10 @@ export const registerFormSchema = () =>
     solar_date_day: z.string(),
     solar_date_month: z.string(),
     solar_date_year: z.string(),
+    plan: z
+      .number()
+      .min(1, { message: "طرح را انتخاب کنید" })
+      .max(5, { message: "طرح انتخاب شده نامعتبر است" }),
   });
 
 export const registerAdvisorFormSchema = () =>

@@ -54,6 +54,7 @@ export function EditStudentDialog() {
       grade: "",
       created: "",
       package_price: "",
+      plan: 1,
       advisor: "",
       supervisor: "",
       solar_date_day: "",
@@ -82,6 +83,7 @@ export function EditStudentDialog() {
         grade: String(studentInfo.grade || ""),
         created: studentInfo.created,
         package_price: String(studentInfo.package_price),
+        plan: studentInfo.plan || 1,
         advisor: String(studentInfo.advisor_id),
         supervisor: String(studentInfo.supervisor_id || ""),
         solar_date_day: studentInfo.solar_date_day || "",
@@ -131,7 +133,8 @@ export function EditStudentDialog() {
           data.field !== (studentInfo.field || "") ||
           data.grade !== String(studentInfo.grade || "") ||
           data.created !== studentInfo.created ||
-          data.package_price !== String(studentInfo.package_price);
+          data.package_price !== String(studentInfo.package_price) ||
+          data.plan !== (studentInfo.plan || 1);
 
         // Extract supervisor date fields for use in supervisor change section
         const {
@@ -172,6 +175,7 @@ export function EditStudentDialog() {
             grade: data.grade || "",
             created: String(data.created),
             package_price: data.package_price || "",
+            plan: data.plan || 1,
             solar_date_day: created_solar_day,
             solar_date_month: created_solar_month,
             solar_date_year: created_solar_year,

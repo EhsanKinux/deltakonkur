@@ -52,6 +52,7 @@ const Reserve = () => {
       grade: "",
       created: "",
       package_price: "",
+      plan: 1,
       solar_date_day: "",
       solar_date_month: "",
       solar_date_year: "",

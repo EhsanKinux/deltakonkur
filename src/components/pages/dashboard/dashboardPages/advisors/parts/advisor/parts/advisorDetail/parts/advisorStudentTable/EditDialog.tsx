@@ -52,6 +52,7 @@ export function EditStudentDialog({
       field: "",
       grade: "",
       created: "",
+      plan: 1,
       advisor: "",
       solar_date_day: "",
       solar_date_month: "",
@@ -74,6 +75,7 @@ export function EditStudentDialog({
         field: String(formData.field),
         grade: String(formData.grade),
         created: String(formData.created),
+        plan: formData.plan || 1,
         advisor: formData.advisor_id ? String(formData.advisor_id) : "",
         solar_date_day: formData.solar_date_day || "",
         solar_date_month: formData.solar_date_month || "",
@@ -111,7 +113,8 @@ export function EditStudentDialog({
           data.parent_phone !== formData.parent_phone ||
           data.field !== formData.field ||
           data.grade !== String(formData.grade) ||
-          data.created !== String(formData.created);
+          data.created !== String(formData.created) ||
+          data.plan !== (formData.plan || 1);
 
         // If only advisor changed, skip student data update
         if (isOnlyAdvisorChanged && !otherFieldsChanged) {
@@ -143,6 +146,7 @@ export function EditStudentDialog({
             grade: data.grade || "",
             created: String(data.created),
             package_price: formData.package_price || "",
+            plan: data.plan || 1,
             solar_date_day: created_solar_day,
             solar_date_month: created_solar_month,
             solar_date_year: created_solar_year,

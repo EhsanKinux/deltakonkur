@@ -11,6 +11,7 @@ export interface ISubmitStudentRegisterService {
   grade: string;
   created: string;
   package_price: string;
+  plan: number;
   solar_date_day?: string;
   solar_date_month?: string;
   solar_date_year?: string;
@@ -28,6 +29,7 @@ export interface IRegisterStudentService {
   grade: string;
   created: string;
   package_price: string;
+  plan: number;
   solar_date_day: string;
   solar_date_month: string;
   solar_date_year: string;
