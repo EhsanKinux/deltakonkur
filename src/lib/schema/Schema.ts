@@ -94,6 +94,7 @@ export const editStudentFormSchema = () =>
     supervisor: z.string().optional(),
     // date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
     package_price: z.string().optional(),
+    real_package_price: z.string().optional(),
     plan: z
       .number()
       .min(1, { message: "طرح انتخاب شده نامعتبر است" })
@@ -171,6 +172,7 @@ export const registerFormSchema = () =>
     // date_of_birth: z.string().min(1, { message: "تاریخ تولد را وارد کنید" }),
     created: z.string(),
     package_price: z.string().min(1, { message: "هزینه را به ریال وارد کنید" }),
+    real_package_price: z.string().optional(),
     solar_date_day: z.string(),
     solar_date_month: z.string(),
     solar_date_year: z.string(),

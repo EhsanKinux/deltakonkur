@@ -52,6 +52,7 @@ const Reserve = () => {
       grade: "",
       created: "",
       package_price: "",
+      real_package_price: "",
       plan: 1,
       solar_date_day: "",
       solar_date_month: "",
@@ -236,6 +237,11 @@ const Reserve = () => {
                   name="package_price"
                   control={form.control}
                   label="هزینه ی بسته (به ریال)"
+                />
+                <PlansType
+                  name="real_package_price"
+                  control={form.control}
+                  label="مبلغ اصلی (به ریال)"
                 />
               </section>
 

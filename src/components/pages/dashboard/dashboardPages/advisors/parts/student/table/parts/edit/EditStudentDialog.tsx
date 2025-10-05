@@ -54,6 +54,7 @@ export function EditStudentDialog() {
       grade: "",
       created: "",
       package_price: "",
+      real_package_price: "",
       plan: 1,
       advisor: "",
       supervisor: "",
@@ -83,6 +84,7 @@ export function EditStudentDialog() {
         grade: String(studentInfo.grade || ""),
         created: studentInfo.created,
         package_price: String(studentInfo.package_price),
+        real_package_price: String(studentInfo.real_package_price || ""),
         plan: studentInfo.plan || 1,
         advisor: String(studentInfo.advisor_id),
         supervisor: String(studentInfo.supervisor_id || ""),
@@ -134,6 +136,7 @@ export function EditStudentDialog() {
           data.grade !== String(studentInfo.grade || "") ||
           data.created !== studentInfo.created ||
           data.package_price !== String(studentInfo.package_price) ||
+          data.real_package_price !== String(studentInfo.real_package_price || "") ||
           data.plan !== (studentInfo.plan || 1);
 
         // Extract supervisor date fields for use in supervisor change section
@@ -345,6 +348,11 @@ export function EditStudentDialog() {
                 name="package_price"
                 control={form.control}
                 label="هزینه ی بسته"
+              />
+              <PlansType
+                name="real_package_price"
+                control={form.control}
+                label="مبلغ اصلی"
               />
             </div>
             <DialogFooter>

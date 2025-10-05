@@ -47,7 +47,8 @@ const PlansType = ({
     | "parent_phone"
     | "field"
     | "grade"
-    | "package_price";
+    | "package_price"
+    | "real_package_price";
   label: string;
 }) => {
   //   const { register, setValue } = form;

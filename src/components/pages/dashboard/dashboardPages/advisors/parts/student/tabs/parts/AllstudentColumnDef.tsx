@@ -44,6 +44,14 @@ export const stColumns: ColumnDef<FormEntry>[] = [
     header: "تاریخ ثبت",
   },
   {
+    accessorKey: "package_price",
+    header: "هزینه بسته",
+  },
+  {
+    accessorKey: "real_package_price",
+    header: "مبلغ اصلی",
+  },
+  {
     accessorKey: "controls",
     header: "دسترسی",
     id: "actions",
