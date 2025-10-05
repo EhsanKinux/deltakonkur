@@ -30,6 +30,8 @@ export type FormData = {
   grade: string;
   created?: string;
   package_price?: string;
+  real_package_price?: string;
+  plan?: number;
   advisor: string | null;
   advisor_id: string | null;
   advisor_name: string | null;

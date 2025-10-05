@@ -69,7 +69,7 @@ const Down = ({
             <div className="flex flex-col w-full max-w-sm">
               <CustomSelect
                 value={String(field.value)}
-                onValueChange={(value) => field.onChange(Number(value))}
+                onValueChange={(value: string) => field.onChange(Number(value))}
                 onBlur={field.onBlur}
                 name={field.name}
                 ref={field.ref}

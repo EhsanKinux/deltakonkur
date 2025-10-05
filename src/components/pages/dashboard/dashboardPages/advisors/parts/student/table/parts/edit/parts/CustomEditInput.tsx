@@ -29,6 +29,8 @@ const CustomEditInput = ({
       advisor: string;
       supervisor: string;
       package_price: string;
+      real_package_price: string;
+      plan: number;
       solar_date_day: string;
       solar_date_month: string;
       solar_date_year: string;
@@ -47,7 +49,8 @@ const CustomEditInput = ({
     | "parent_phone"
     | "field"
     | "grade"
-    | "package_price";
+    | "package_price"
+    | "real_package_price";
   label: string;
   customclass?: string;
 }) => {

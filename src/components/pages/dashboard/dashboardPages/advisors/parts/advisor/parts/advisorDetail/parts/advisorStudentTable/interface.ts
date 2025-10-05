@@ -10,6 +10,7 @@ export interface IEditAdvisorStudents {
   field: string;
   grade: string;
   created: string;
+  plan?: number;
   advisor: string;
   solar_date_day: string;
   solar_date_month: string;

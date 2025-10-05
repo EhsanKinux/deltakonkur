@@ -28,6 +28,8 @@ type FormValues = {
   grade: string;
   created: string;
   package_price: string;
+  real_package_price: string;
+  plan: number;
   advisor: string;
   supervisor: string;
   solar_date_day: string;

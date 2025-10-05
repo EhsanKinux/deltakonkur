@@ -322,6 +322,8 @@ export function EditStudentDialog({
                           advisor: string;
                           supervisor: string;
                           package_price: string;
+                          real_package_price: string;
+                          plan: number;
                           solar_date_day: string;
                           solar_date_month: string;
                           solar_date_year: string;
