@@ -68,7 +68,33 @@ export function EditStudentDialog() {
   });
 
   const { formState } = form;
-  const { isSubmitting, isDirty } = formState;
+  const { isSubmitting } = formState;
+
+  // Custom function to check if all required fields have been changed
+  const areAllRequiredFieldsChanged = () => {
+    if (!studentInfo) return false;
+    
+    const currentValues = form.getValues();
+    
+    // Check if all required fields have been changed from their original values
+    const requiredFieldsChanged = 
+      currentValues.first_name !== studentInfo.first_name ||
+      currentValues.last_name !== studentInfo.last_name ||
+      currentValues.school !== studentInfo.school ||
+      currentValues.phone_number !== studentInfo.phone_number ||
+      currentValues.home_phone !== (studentInfo.home_phone || "") ||
+      currentValues.parent_phone !== (studentInfo.parent_phone || "") ||
+      currentValues.field !== (studentInfo.field || "") ||
+      currentValues.grade !== String(studentInfo.grade || "") ||
+      currentValues.created !== studentInfo.created ||
+      currentValues.package_price !== String(studentInfo.package_price) ||
+      currentValues.real_package_price !== String(studentInfo.real_package_price || "") ||
+      currentValues.plan !== (studentInfo.plan || 1) ||
+      currentValues.advisor !== String(studentInfo.advisor_id) ||
+      currentValues.supervisor !== String(studentInfo.supervisor_id || "");
+
+    return requiredFieldsChanged;
+  };
 
   useEffect(() => {
     if (studentInfo) {
@@ -361,11 +387,11 @@ export function EditStudentDialog() {
                   type="button"
                   onClick={() => onSubmit(form.getValues())}
                   className={`text-white rounded-xl pt-2 ${
-                    isSubmitting || !isDirty
+                    isSubmitting || !areAllRequiredFieldsChanged()
                       ? "opacity-50 cursor-not-allowed bg-gray-500"
                       : "bg-blue-500 hover:bg-blue-700"
                   }`}
-                  disabled={isSubmitting || !isDirty}
+                  disabled={isSubmitting || !areAllRequiredFieldsChanged()}
                 >
                   {isSubmitting ? "در حال ثبت..." : "ثبت ویرایش"}
                 </Button>

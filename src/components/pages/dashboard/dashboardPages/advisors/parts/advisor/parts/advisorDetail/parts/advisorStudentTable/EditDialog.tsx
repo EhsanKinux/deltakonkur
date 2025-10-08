@@ -95,7 +95,30 @@ export function EditStudentDialog({
     String(formData.advisor_id) !== watchedAdvisor;
 
   const { formState } = form;
-  const { isSubmitting, isDirty } = formState;
+  const { isSubmitting } = formState;
+
+  // Custom function to check if all required fields have been changed
+  const areAllRequiredFieldsChanged = () => {
+    if (!formData) return false;
+    
+    const currentValues = form.getValues();
+    
+    // Check if all required fields have been changed from their original values
+    const requiredFieldsChanged = 
+      currentValues.first_name !== formData.first_name ||
+      currentValues.last_name !== formData.last_name ||
+      currentValues.school !== formData.school ||
+      currentValues.phone_number !== formData.phone_number ||
+      currentValues.home_phone !== formData.home_phone ||
+      currentValues.parent_phone !== formData.parent_phone ||
+      currentValues.field !== formData.field ||
+      currentValues.grade !== String(formData.grade) ||
+      currentValues.created !== String(formData.created) ||
+      currentValues.plan !== (formData.plan || 1) ||
+      currentValues.advisor !== String(formData.advisor_id);
+
+    return requiredFieldsChanged;
+  };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
@@ -343,11 +366,11 @@ export function EditStudentDialog({
                     type="button"
                     onClick={() => onSubmit(form.getValues())}
                     className={`text-white rounded-xl pt-2 ${
-                      isSubmitting || !isDirty
+                      isSubmitting || !areAllRequiredFieldsChanged()
                         ? "opacity-50 cursor-not-allowed bg-gray-500"
                         : "bg-blue-500 hover:bg-blue-700"
                     }`}
-                    disabled={isSubmitting || !isDirty}
+                    disabled={isSubmitting || !areAllRequiredFieldsChanged()}
                   >
                     {isSubmitting ? "در حال ثبت..." : "ثبت ویرایش"}
                   </Button>

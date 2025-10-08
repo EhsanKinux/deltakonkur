@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { IFormattedStudentAdvisor } from "./interfaces";
+import { IFormattedStudentAdvisor, getPlanName } from "./interfaces";
 import StopStDialogButtons from "./studentDialogButton/StopStDialogButtons";
 
 // Formats numeric values with Persian separators and appends Rial
@@ -96,6 +96,20 @@ export const stopAccountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] = [
         {formatPrice(getValue())}
       </span>
     ),
+  },
+  {
+    accessorKey: "plan",
+    header: "طرح",
+    cell: ({ getValue }) => {
+      const planNumber = getValue() as number;
+      const planName = getPlanName(planNumber);
+      
+      return (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+          {planName}
+        </span>
+      );
+    },
   },
 
   {

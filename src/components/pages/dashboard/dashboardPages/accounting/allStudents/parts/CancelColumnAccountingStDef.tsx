@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { IFormattedStudentAdvisor } from "./interfaces";
+import { IFormattedStudentAdvisor, getPlanName } from "./interfaces";
 
 export const cancelAccountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] =
   [
@@ -80,6 +80,20 @@ export const cancelAccountingStColumns: ColumnDef<IFormattedStudentAdvisor>[] =
     {
       accessorKey: "expire_date",
       header: "تاریخ انقضا",
+    },
+    {
+      accessorKey: "plan",
+      header: "طرح",
+      cell: ({ getValue }) => {
+        const planNumber = getValue() as number;
+        const planName = getPlanName(planNumber);
+        
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+            {planName}
+          </span>
+        );
+      },
     },
     // {
     //   accessorKey: "status",

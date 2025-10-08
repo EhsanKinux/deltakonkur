@@ -94,6 +94,7 @@ const AllAccountingStudents = () => {
             status: item.status || "",
             advisor_name: item.advisor_name || "",
             package_price: item.student?.package_price || 0,
+            plan: item.student?.plan || undefined,
             // Preserve original date formats for API operations
             original_expire_date: item.expire_date || "",
             original_stop_date: item.stop_date || "",

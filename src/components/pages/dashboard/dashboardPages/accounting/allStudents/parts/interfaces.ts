@@ -11,6 +11,21 @@ export type IAccountingStudents = {
   created: string;
 };
 
+// Plan mapping function to convert plan numbers to Persian names
+export const getPlanName = (planNumber?: number): string => {
+  if (!planNumber) return "-";
+  
+  const planMap: Record<number, string> = {
+    1: "دلتالانچ",
+    2: "دلتامستر", 
+    3: "دلتانیکس",
+    4: "دلتامکس",
+    5: "طرح قدیم"
+  };
+  
+  return planMap[planNumber] || "-";
+};
+
 // Interface for the student object
 export interface IStudent {
   id: string;
@@ -29,6 +44,7 @@ export interface IStudent {
   solar_date_month: string;
   solar_date_year: string;
   package_price: string;
+  plan?: number;
 }
 
 // Interface for the main student-advisor object
@@ -73,6 +89,7 @@ export interface IFormattedStudentAdvisor {
   status: string;
   advisor_name: string;
   package_price: string;
+  plan?: number;
   // Original date formats for API operations
   original_expire_date: string;
   original_stop_date: string;
